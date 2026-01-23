@@ -1,0 +1,35 @@
+{
+  "name": "analytics-visualization",
+  "version": "1.0.0",
+  "description": "Build beautiful analytics charts and dashboards using Highcharts with the Cursor design system",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/getcursor/plugins",
+  "repository": "https://github.com/getcursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "analytics",
+    "visualization",
+    "charts",
+    "highcharts",
+    "dashboard",
+    "react",
+    "typescript"
+  ],
+  "category": "data-visualization",
+  "tags": [
+    "charts",
+    "analytics",
+    "dashboard",
+    "highcharts",
+    "design-system"
+  ],
+  "agents": "./agents/",
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./mcp.json",
+  "extensions": "./extensions/"
+}

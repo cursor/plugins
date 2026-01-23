@@ -1,0 +1,269 @@
+---
+description: Highcharts chart patterns and best practices for analytics visualizations
+globs:
+  - "**/charts/**/*.tsx"
+  - "**/charts/**/*.ts"
+  - "**/analytics/**/*.tsx"
+  - "**/dashboard/**/*.tsx"
+  - "**/visualization/**/*.tsx"
+alwaysApply: false
+---
+
+# Highcharts Best Practices
+
+When building analytics charts with Highcharts, follow these patterns for consistency and quality.
+
+## Chart Configuration
+
+### Always Use Transparent Backgrounds
+
+```typescript
+// ✅ Good - inherits page/card background
+chart: {
+  backgroundColor: "transparent",
+}
+
+// ❌ Bad - hardcoded background
+chart: {
+  backgroundColor: "#ffffff",
+}
+```
+
+### Disable Animation in Production
+
+```typescript
+// ✅ Good - better performance
+chart: {
+  animation: false,
+},
+plotOptions: {
+  series: {
+    animation: false,
+  },
+}
+```
+
+### Disable Credits
+
+```typescript
+// ✅ Good - always disable Highcharts branding
+credits: { enabled: false }
+```
+
+## Color Usage
+
+### Use Design System Colors
+
+```typescript
+import { COLORS, COLOR_ARRAY } from "@/lib/chart-constants";
+
+// ✅ Good - use predefined palette
+series: [{
+  color: COLORS.greenPrimary,
+}]
+
+// ✅ Good - auto-assign from array
+plotOptions: {
+  bar: {
+    colorByPoint: true,
+    colors: COLOR_ARRAY,
+  }
+}
+
+// ❌ Bad - hardcoded arbitrary colors
+series: [{
+  color: "#ff0000",
+}]
+```
+
+### Use Semantic Colors for Meaningful Data
+
+```typescript
+import { COMPLEXITY_COLORS, INTENT_COLORS } from "@/lib/chart-constants";
+
+// ✅ Good - complexity data uses semantic colors
+const color = COMPLEXITY_COLORS[dataItem.complexity] || COLORS.neutralPrimary;
+
+// ❌ Bad - arbitrary colors for semantic data
+const color = COLOR_ARRAY[index];
+```
+
+## Styling
+
+### Use CSS Variables for Theme Support
+
+```typescript
+// ✅ Good - supports light/dark themes
+style: {
+  color: "var(--color-theme-text-secondary)",
+}
+
+// ❌ Bad - hardcoded colors break themes
+style: {
+  color: "#666666",
+}
+```
+
+### Use Shared Style Constants
+
+```typescript
+import { CHART_STYLES, COMMON_CHART_OPTIONS } from "@/lib/chart-constants";
+
+// ✅ Good - consistent styling
+xAxis: {
+  labels: {
+    style: CHART_STYLES.text.tertiary,
+  },
+},
+yAxis: COMMON_CHART_OPTIONS.yAxis("Count"),
+tooltip: COMMON_CHART_OPTIONS.tooltip,
+```
+
+## Data Handling
+
+### Filter Low-Percentage Outliers
+
+```typescript
+import { filterLowPercentage } from "@/lib/data-utils";
+
+// ✅ Good - remove noise from LLM classification data
+const filteredData = filterLowPercentage(data, 1); // Remove items under 1%
+```
+
+### Limit Categories for Readability
+
+```typescript
+// ✅ Good - limit to top N categories
+const topCategories = sortedData.slice(0, 7);
+const otherCount = sortedData.slice(7).reduce((sum, d) => sum + d.count, 0);
+if (otherCount > 0) {
+  topCategories.push({ category: "Other", count: otherCount });
+}
+
+// ❌ Bad - show all 50 categories
+const allCategories = sortedData; // Creates unreadable chart
+```
+
+### Sort Data Appropriately
+
+```typescript
+// ✅ Good - sort by value for rankings
+const sorted = [...data].sort((a, b) => b.count - a.count);
+
+// ✅ Good - sort chronologically for time series
+const sorted = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
+```
+
+## Pie Charts
+
+### Use Donut Style with Inner Size
+
+```typescript
+plotOptions: {
+  pie: {
+    innerSize: "50%", // Creates donut effect
+    borderWidth: 2,
+    borderColor: "var(--color-theme-bg)",
+  }
+}
+```
+
+### Limit to 7 Categories Maximum
+
+If you have more than 7 categories, aggregate smaller ones into "Other" or switch to a bar chart.
+
+## Bar Charts
+
+### Use Horizontal Bars for Long Labels
+
+```typescript
+// ✅ Good for long category names
+chart: {
+  type: "bar", // Horizontal bars
+}
+
+// Consider vertical column only for short labels
+chart: {
+  type: "column", // Vertical bars
+}
+```
+
+### Calculate Dynamic Height
+
+```typescript
+// ✅ Good - height scales with data
+chart: {
+  height: Math.max(300, data.length * 28),
+}
+```
+
+## Time Series Charts
+
+### Use Stacked Area for Composition Over Time
+
+```typescript
+plotOptions: {
+  area: {
+    stacking: "normal",
+    lineWidth: 1,
+    lineColor: "transparent",
+    marker: { enabled: false },
+  }
+}
+```
+
+### Format Date Labels Consistently
+
+```typescript
+import { formatDateLabel } from "@/lib/data-utils";
+
+xAxis: {
+  categories: dates.map(formatDateLabel), // "Dec 8", "Dec 9", etc.
+}
+```
+
+## Tooltips
+
+### Use Shared Tooltips for Multi-Series Charts
+
+```typescript
+tooltip: {
+  ...COMMON_CHART_OPTIONS.tooltip,
+  shared: true,
+}
+```
+
+### Show Percentages in Tooltips
+
+```typescript
+tooltip: {
+  pointFormat: "{series.name}: <b>{point.y} ({point.percentage:.1f}%)</b>",
+}
+```
+
+## Accessibility
+
+### Provide Meaningful Descriptions
+
+```typescript
+accessibility: {
+  description: "Bar chart showing user activity by category over the past 30 days",
+}
+```
+
+## Empty States
+
+### Always Handle No Data
+
+```typescript
+if (!data || data.length === 0) {
+  return (
+    <Card>
+      <DashboardEmptyState
+        title="No Data Available"
+        description="No data found for the selected date range."
+      />
+    </Card>
+  );
+}
+```

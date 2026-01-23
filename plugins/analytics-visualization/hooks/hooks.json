@@ -1,0 +1,21 @@
+{
+  "$schema": "https://cursor.com/schemas/hooks.json",
+  "hooks": [
+    {
+      "name": "chart-type-check",
+      "description": "Validate Highcharts configuration follows design system",
+      "trigger": "pre-commit",
+      "pattern": "**/charts/**/*.{ts,tsx}",
+      "command": "./scripts/validate-charts.sh",
+      "enabled": false
+    },
+    {
+      "name": "color-palette-check",
+      "description": "Ensure charts use design system colors",
+      "trigger": "post-save",
+      "pattern": "**/charts/**/*.{ts,tsx}",
+      "command": "echo 'Reminder: Use COLORS from chart-constants.ts'",
+      "enabled": false
+    }
+  ]
+}

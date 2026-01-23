@@ -1,0 +1,12 @@
+{
+  "$schema": "https://cursor.com/schemas/mcp.json",
+  "mcpServers": {
+    "chart-generator": {
+      "command": "node",
+      "args": ["./scripts/chart-generator.js"],
+      "description": "Generate chart components from data schemas (optional)",
+      "disabled": true,
+      "env": {}
+    }
+  }
+}

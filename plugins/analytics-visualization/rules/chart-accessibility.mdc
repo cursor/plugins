@@ -1,0 +1,223 @@
+---
+description: Accessibility guidelines for analytics charts and visualizations
+globs:
+  - "**/charts/**/*.tsx"
+  - "**/analytics/**/*.tsx"
+  - "**/dashboard/**/*.tsx"
+  - "**/visualization/**/*.tsx"
+alwaysApply: false
+---
+
+# Chart Accessibility Guidelines
+
+Ensure analytics visualizations are accessible to all users.
+
+## Color Contrast
+
+### Don't Rely on Color Alone
+
+```typescript
+// ✅ Good - use patterns or labels in addition to color
+dataLabels: {
+  enabled: true,
+  format: "{point.name}: {point.y}",
+}
+
+// ✅ Good - include values in legend
+legend: {
+  labelFormatter: function() {
+    return `${this.name}: ${this.y}`;
+  }
+}
+```
+
+### Maintain Sufficient Contrast
+
+```typescript
+// ✅ Good - high contrast colors from design system
+import { COLORS } from "@/lib/chart-constants";
+
+// The COLORS palette is designed with WCAG AA contrast ratios
+series: [{
+  color: COLORS.greenPrimary, // Tested for contrast
+}]
+```
+
+## Screen Reader Support
+
+### Add Chart Descriptions
+
+```typescript
+// ✅ Good - describe the chart purpose
+accessibility: {
+  enabled: true,
+  description: "Pie chart showing distribution of user intents: 45% Write Code, 28% Ask Questions, 17% Planning, 10% Automation",
+}
+```
+
+### Provide Data Table Alternative
+
+```tsx
+// ✅ Good - offer table view for screen readers
+<div role="region" aria-label="User activity chart">
+  <HighchartsReact options={options} />
+  <details className="sr-only">
+    <summary>View as table</summary>
+    <table>
+      <caption>User Activity Data</caption>
+      <thead>
+        <tr>
+          <th scope="col">Category</th>
+          <th scope="col">Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map(item => (
+          <tr key={item.category}>
+            <td>{item.category}</td>
+            <td>{item.count}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </details>
+</div>
+```
+
+## Keyboard Navigation
+
+### Enable Keyboard Support
+
+```typescript
+// ✅ Good - enable keyboard navigation
+accessibility: {
+  keyboardNavigation: {
+    enabled: true,
+  }
+}
+```
+
+## Focus Indicators
+
+### Ensure Visible Focus States
+
+```typescript
+// ✅ Good - visible focus on interactive elements
+plotOptions: {
+  series: {
+    states: {
+      hover: {
+        enabled: true,
+        brightness: 0.1,
+      },
+      select: {
+        enabled: true,
+        color: COLORS.bluePrimary,
+      }
+    }
+  }
+}
+```
+
+## Semantic Labels
+
+### Use Descriptive Titles
+
+```typescript
+// ✅ Good - descriptive, not generic
+title: {
+  text: "Monthly Revenue by Product Category",
+}
+
+// ❌ Bad - vague title
+title: {
+  text: "Chart 1",
+}
+```
+
+### Label Axes Clearly
+
+```typescript
+// ✅ Good - clear axis labels
+xAxis: {
+  title: {
+    text: "Date",
+  },
+  accessibility: {
+    description: "Dates from January to December 2024",
+  }
+},
+yAxis: {
+  title: {
+    text: "Revenue (USD)",
+  },
+  accessibility: {
+    description: "Revenue in US dollars, ranging from $0 to $100,000",
+  }
+}
+```
+
+## Animation Considerations
+
+### Respect Reduced Motion Preferences
+
+```typescript
+// ✅ Good - disable animation for accessibility
+chart: {
+  animation: false,
+},
+plotOptions: {
+  series: {
+    animation: false,
+  }
+}
+
+// Or detect user preference
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+chart: {
+  animation: !prefersReducedMotion,
+}
+```
+
+## Text Sizing
+
+### Use Readable Font Sizes
+
+```typescript
+// ✅ Good - minimum 11px for labels
+dataLabels: {
+  style: {
+    fontSize: "11px", // Minimum readable size
+  }
+},
+legend: {
+  itemStyle: {
+    fontSize: "12px",
+  }
+}
+
+// ❌ Bad - too small to read
+dataLabels: {
+  style: {
+    fontSize: "8px",
+  }
+}
+```
+
+## Alternative Formats
+
+### Offer Download Options
+
+```tsx
+// ✅ Good - allow data export
+<ChartContainer>
+  <HighchartsReact options={options} />
+  <button
+    onClick={() => downloadAsCSV(data)}
+    aria-label="Download chart data as CSV file"
+  >
+    Download Data
+  </button>
+</ChartContainer>
+```

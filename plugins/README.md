@@ -73,6 +73,7 @@ The `.cursor/plugin.json` manifest is required and defines your plugin's metadat
 | Plugin        | Description                                              |
 |:--------------|:---------------------------------------------------------|
 | `boilerplate` | Complete example plugin demonstrating all components     |
+| `analytics-visualization` | Build beautiful charts and dashboards with Highcharts |
 
 ## Installation
 
