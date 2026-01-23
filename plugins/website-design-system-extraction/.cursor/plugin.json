@@ -1,0 +1,36 @@
+{
+  "name": "website-design-system-extraction",
+  "version": "1.0.0",
+  "description": "Extract design systems from any website and integrate design tokens into your codebase. Extracts colors, typography, spacing, shadows, borders, and more.",
+  "author": {
+    "name": "Cursor Community",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/website-design-system-extraction",
+  "repository": "https://github.com/cursor/website-design-system-extraction",
+  "license": "MIT",
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "css",
+    "styling",
+    "website",
+    "extraction",
+    "colors",
+    "typography",
+    "theming"
+  ],
+  "category": "design",
+  "tags": [
+    "design",
+    "ui",
+    "styling",
+    "tokens"
+  ],
+  "agents": "./agents/",
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./mcp.json",
+  "extensions": "./extensions/"
+}

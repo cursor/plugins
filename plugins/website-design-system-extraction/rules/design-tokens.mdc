@@ -1,0 +1,113 @@
+---
+description: Guidelines for working with design tokens and design systems
+globs:
+  - "**/*tokens*"
+  - "**/*theme*"
+  - "**/tailwind.config.*"
+  - "**/*.css"
+  - "**/*.scss"
+alwaysApply: false
+---
+
+# Design Token Best Practices
+
+When working with design tokens and design systems, follow these conventions:
+
+## Naming Conventions
+
+1. **Use semantic names** - Name tokens by purpose, not appearance
+   - ✅ `--color-text-primary` 
+   - ❌ `--color-dark-gray`
+
+2. **Use consistent prefixes** - Group related tokens
+   - `--color-*` for colors
+   - `--space-*` for spacing
+   - `--font-*` for typography
+   - `--radius-*` for border radius
+   - `--shadow-*` for shadows
+
+3. **Use scales for variants** - Number or size-based scales
+   - `--space-1`, `--space-2`, `--space-4`
+   - `--font-size-sm`, `--font-size-base`, `--font-size-lg`
+
+## Token Organization
+
+```css
+:root {
+  /* Colors - organized by category */
+  --color-primary: #...;
+  --color-primary-hover: #...;
+  
+  --color-bg-primary: #...;
+  --color-bg-secondary: #...;
+  
+  --color-text-primary: #...;
+  --color-text-secondary: #...;
+  
+  /* Typography */
+  --font-family-sans: ...;
+  --font-size-base: ...;
+  
+  /* Spacing */
+  --space-1: ...;
+  --space-2: ...;
+  
+  /* Effects */
+  --shadow-sm: ...;
+  --radius-md: ...;
+}
+```
+
+## Dark Mode Support
+
+Always provide dark mode variants:
+
+```css
+/* Method 1: Media query */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-primary: #111827;
+    --color-text-primary: #F9FAFB;
+  }
+}
+
+/* Method 2: Class-based */
+.dark {
+  --color-bg-primary: #111827;
+  --color-text-primary: #F9FAFB;
+}
+```
+
+## Usage Guidelines
+
+1. **Always use tokens** - Never hardcode colors, sizes, or other design values
+2. **Fallback values** - Provide fallbacks for critical tokens
+3. **Document tokens** - Add comments explaining token purposes
+4. **Single source of truth** - Define tokens in one place only
+
+## Example Usage
+
+```css
+/* ✅ Good - Using tokens */
+.button {
+  background-color: var(--color-primary);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+}
+
+/* ❌ Bad - Hardcoded values */
+.button {
+  background-color: #5E6AD2;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+```
+
+## Accessibility
+
+1. Ensure color contrast meets WCAG 2.1 AA standards (4.5:1 for text)
+2. Test tokens with color blindness simulators
+3. Provide sufficient focus indicators
+4. Don't rely on color alone for meaning
