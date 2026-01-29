@@ -73,6 +73,7 @@ The `.cursor/plugin.json` manifest is required and defines your plugin's metadat
 | Plugin        | Description                                              |
 |:--------------|:---------------------------------------------------------|
 | `boilerplate` | Complete example plugin demonstrating all components     |
+| `stripe-mcp`  | Stripe MCP integration for AI-powered payment workflows  |
 
 ## Installation
 

@@ -1,0 +1,21 @@
+{
+  "name": "stripe-mcp",
+  "version": "1.0.0",
+  "description": "Stripe MCP integration for AI-powered payment workflows",
+  "author": {
+    "name": "Cursor",
+    "email": "support@cursor.com"
+  },
+  "homepage": "https://docs.stripe.com/mcp",
+  "repository": "https://github.com/stripe/agent-toolkit",
+  "license": "MIT",
+  "keywords": ["stripe", "payments", "mcp", "ai", "billing", "subscriptions"],
+  "category": "integrations",
+  "tags": ["payments", "fintech", "api"],
+  "agents": "./agents/",
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./mcp.json",
+  "extensions": "./extensions/"
+}

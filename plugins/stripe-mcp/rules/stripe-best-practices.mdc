@@ -1,0 +1,124 @@
+---
+description: Stripe payment integration best practices
+globs:
+  - "**/stripe/**"
+  - "**/payment/**"
+  - "**/billing/**"
+  - "**/checkout/**"
+  - "**/subscription/**"
+alwaysApply: false
+---
+
+# Stripe Integration Best Practices
+
+When working with Stripe payment code, follow these guidelines:
+
+## API Key Security
+
+1. **Never hardcode API keys** - Always use environment variables
+2. **Use restricted keys** - Create keys with minimal required permissions
+3. **Rotate keys regularly** - Especially after team member departures
+
+```typescript
+// ✅ Good - Environment variable
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+// ❌ Bad - Hardcoded key
+const stripe = new Stripe('sk_live_xxx');
+```
+
+## Error Handling
+
+Always wrap Stripe calls in try-catch blocks:
+
+```typescript
+// ✅ Good - Proper error handling
+try {
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: 1000,
+    currency: 'usd',
+  });
+} catch (error) {
+  if (error instanceof Stripe.errors.StripeCardError) {
+    // Handle card errors (declined, expired, etc.)
+  } else if (error instanceof Stripe.errors.StripeRateLimitError) {
+    // Handle rate limiting
+  } else {
+    // Handle other errors
+  }
+}
+```
+
+## Idempotency
+
+Use idempotency keys for payment operations:
+
+```typescript
+// ✅ Good - Idempotent request
+const paymentIntent = await stripe.paymentIntents.create(
+  { amount: 1000, currency: 'usd' },
+  { idempotencyKey: `order_${orderId}` }
+);
+```
+
+## Webhook Security
+
+Always verify webhook signatures:
+
+```typescript
+// ✅ Good - Signature verification
+const event = stripe.webhooks.constructEvent(
+  request.body,
+  request.headers['stripe-signature'],
+  process.env.STRIPE_WEBHOOK_SECRET
+);
+
+// ❌ Bad - No verification
+const event = JSON.parse(request.body);
+```
+
+## Amount Handling
+
+Stripe uses the smallest currency unit (cents for USD):
+
+```typescript
+// ✅ Good - Amount in cents
+const amount = Math.round(priceInDollars * 100);
+
+// ❌ Bad - Amount in dollars
+const amount = priceInDollars; // Will charge 1/100th of expected
+```
+
+## Test Mode
+
+Use test mode during development:
+
+```typescript
+// ✅ Good - Test mode check
+if (process.env.NODE_ENV !== 'production') {
+  console.log('Using Stripe test mode');
+}
+
+// Ensure test key in development
+const key = process.env.STRIPE_SECRET_KEY;
+if (process.env.NODE_ENV !== 'production' && !key?.startsWith('sk_test_')) {
+  throw new Error('Use test mode keys in development');
+}
+```
+
+## Metadata
+
+Use metadata for tracking:
+
+```typescript
+// ✅ Good - Helpful metadata
+await stripe.paymentIntents.create({
+  amount: 1000,
+  currency: 'usd',
+  metadata: {
+    order_id: orderId,
+    customer_email: email,
+    product_name: productName,
+  },
+});
+```
