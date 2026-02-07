@@ -1,0 +1,206 @@
+---
+description: Best practices for writing and maintaining GitHub Actions workflow files
+globs:
+  - .github/workflows/*.yml
+  - .github/workflows/*.yaml
+alwaysApply: false
+---
+
+# GitHub Actions Best Practices
+
+## Pin Action Versions to Full-Length Commit SHAs
+
+Always pin third-party actions to a specific commit SHA rather than a mutable tag. Tags can be reassigned, creating a supply-chain risk. Using a SHA guarantees that the action code you reviewed is the code that runs.
+
+```yaml
+# Bad — mutable tag can change without notice
+- uses: actions/checkout@v4
+
+# Good — pinned to an immutable commit SHA
+- uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+```
+
+Include a trailing comment with the human-readable version so maintainers can see the intent at a glance and tools like Dependabot can still propose updates.
+
+## Use Environment Variables for Secrets
+
+Never hard-code credentials, tokens, or sensitive values in workflow files. Always reference them through GitHub-encrypted secrets and surface them as environment variables.
+
+```yaml
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  API_KEY: ${{ secrets.API_KEY }}
+
+steps:
+  - name: Deploy
+    run: ./deploy.sh
+    env:
+      DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+```
+
+Prefer scoping secrets to the narrowest context possible — step-level `env` rather than job-level or workflow-level when the value is only needed in one step.
+
+## Set Minimum Permissions with `permissions:`
+
+Apply the principle of least privilege. Declare the exact permissions a workflow or job needs and nothing more. Setting `permissions: {}` at the workflow level and overriding per-job prevents accidental token exposure.
+
+```yaml
+permissions: {} # Default to no permissions
+
+jobs:
+  build:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+```
+
+Common permission scopes to consider:
+- `contents: read` — clone the repo
+- `pull-requests: write` — post comments or reviews
+- `issues: write` — label or close issues
+- `packages: write` — publish container images or packages
+- `id-token: write` — OIDC-based cloud authentication (AWS, GCP, Azure)
+
+## Avoid `pull_request_target` with Checkout of PR Code
+
+The `pull_request_target` event runs in the context of the base branch and has access to secrets. If you check out the pull request HEAD inside such a workflow, untrusted code from a fork can exfiltrate secrets.
+
+```yaml
+# Dangerous — grants PR code access to base-branch secrets
+on: pull_request_target
+steps:
+  - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    with:
+      ref: ${{ github.event.pull_request.head.sha }}
+  - run: npm test  # Runs PR code with secrets available
+```
+
+If you must use `pull_request_target`, never check out the PR branch. Perform only metadata operations (labeling, commenting) or use a two-workflow approach where the untrusted build runs under `pull_request` and a separate privileged workflow consumes its artifacts.
+
+## Use Concurrency Groups to Prevent Redundant Runs
+
+Cancel in-progress runs when a newer commit is pushed to the same branch or PR, saving runner minutes and avoiding race conditions on deployments.
+
+```yaml
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+```
+
+For production deployment workflows, you may want to let runs finish instead:
+
+```yaml
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+```
+
+## Cache Dependencies to Speed Up Builds
+
+Use `actions/cache` or the built-in caching of setup actions (e.g., `actions/setup-node`) to persist downloaded dependencies across runs.
+
+```yaml
+- uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+  with:
+    node-version: 20
+    cache: npm
+
+# Or explicit cache step for full control
+- uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+  with:
+    path: |
+      ~/.npm
+      node_modules
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    restore-keys: |
+      ${{ runner.os }}-node-
+```
+
+Cache paths to consider by ecosystem:
+- **Node.js**: `~/.npm` or `node_modules`
+- **Python**: `~/.cache/pip`
+- **Go**: `~/go/pkg/mod` and `~/.cache/go-build`
+- **Rust**: `~/.cargo/registry` and `target/`
+- **Java/Gradle**: `~/.gradle/caches`
+
+## Use Matrix Strategies Efficiently
+
+Matrix builds let you test across multiple versions, OSes, or configurations in parallel. Keep matrices focused and use `exclude` or `include` to avoid combinatorial explosion.
+
+```yaml
+strategy:
+  fail-fast: false
+  matrix:
+    os: [ubuntu-latest, macos-latest, windows-latest]
+    node-version: [18, 20, 22]
+    exclude:
+      - os: windows-latest
+        node-version: 18
+    include:
+      - os: ubuntu-latest
+        node-version: 22
+        experimental: true
+```
+
+Set `fail-fast: false` when you want full coverage (e.g., in CI checks). Use `fail-fast: true` (default) when you only care about any failure, such as gating a deployment.
+
+Use `continue-on-error` on experimental matrix entries:
+
+```yaml
+steps:
+  - run: npm test
+    continue-on-error: ${{ matrix.experimental || false }}
+```
+
+## Prefer Reusable Workflows and Composite Actions
+
+Avoid duplicating workflow logic. Extract shared patterns into reusable workflows (called via `workflow_call`) or composite actions.
+
+### Reusable Workflow
+
+```yaml
+# .github/workflows/reusable-build.yml
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: true
+        type: string
+    secrets:
+      NPM_TOKEN:
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: ${{ inputs.node-version }}
+      - run: npm ci
+      - run: npm test
+```
+
+### Calling a Reusable Workflow
+
+```yaml
+jobs:
+  test:
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      node-version: '20'
+    secrets: inherit
+```
+
+## Additional Guidelines
+
+- **Timeout**: Always set `timeout-minutes` on jobs to prevent stuck runners from consuming hours of billing.
+- **Artifacts**: Use `actions/upload-artifact` and `actions/download-artifact` to pass data between jobs — never rely on shared file systems.
+- **Conditional execution**: Use `if:` expressions to skip expensive steps when they are not needed (e.g., `if: github.event_name == 'push' && github.ref == 'refs/heads/main'`).
+- **Workflow dispatch**: Add `workflow_dispatch` to production workflows so they can be triggered manually for debugging.
+- **Status checks**: Mark required checks in branch protection rules to enforce that CI passes before merging.
+- **Self-hosted runners**: If using self-hosted runners, keep them ephemeral (container-based or auto-scaling) and never store secrets on the runner file system.

@@ -1,0 +1,285 @@
+---
+description: Best practices for interacting with the GitHub REST and GraphQL APIs
+globs:
+  - "**/*.ts"
+  - "**/*.js"
+alwaysApply: false
+---
+
+# GitHub API Best Practices
+
+## Use the Octokit SDK
+
+Prefer the official Octokit SDK over raw HTTP calls. Octokit handles authentication, pagination, media types, and error formatting, reducing boilerplate and surface area for bugs.
+
+```typescript
+import { Octokit } from "@octokit/rest";
+
+const octokit = new Octokit({
+  auth: process.env.GITHUB_TOKEN,
+});
+
+// Typed, auto-completed API calls
+const { data: repo } = await octokit.repos.get({
+  owner: "octocat",
+  repo: "hello-world",
+});
+```
+
+For GitHub Apps, use the `@octokit/app` or `@octokit/auth-app` packages to manage installation tokens automatically:
+
+```typescript
+import { App } from "@octokit/app";
+
+const app = new App({
+  appId: process.env.GITHUB_APP_ID!,
+  privateKey: process.env.GITHUB_APP_PRIVATE_KEY!,
+});
+
+const octokit = await app.getInstallationOctokit(installationId);
+```
+
+## Handle Rate Limiting with Retry Logic
+
+GitHub enforces rate limits (5,000 requests/hour for authenticated users, 15,000 for GitHub Apps). Always implement retry logic with exponential back-off that respects the `x-ratelimit-reset` and `retry-after` headers.
+
+Use the `@octokit/plugin-throttling` and `@octokit/plugin-retry` plugins:
+
+```typescript
+import { Octokit } from "@octokit/rest";
+import { throttling } from "@octokit/plugin-throttling";
+import { retry } from "@octokit/plugin-retry";
+
+const ThrottledOctokit = Octokit.plugin(throttling, retry);
+
+const octokit = new ThrottledOctokit({
+  auth: process.env.GITHUB_TOKEN,
+  throttle: {
+    onRateLimit: (retryAfter: number, options: any, octokit: Octokit, retryCount: number) => {
+      octokit.log.warn(`Rate limit hit for ${options.method} ${options.url}`);
+      if (retryCount < 3) {
+        octokit.log.info(`Retrying after ${retryAfter} seconds`);
+        return true;
+      }
+      return false;
+    },
+    onSecondaryRateLimit: (retryAfter: number, options: any, octokit: Octokit) => {
+      octokit.log.warn(`Secondary rate limit hit for ${options.method} ${options.url}`);
+      return true;
+    },
+  },
+  retry: {
+    doNotRetry: ["429"],
+  },
+});
+```
+
+Always check rate-limit headers before intensive operations:
+
+```typescript
+const { headers } = await octokit.rateLimit.get();
+const remaining = parseInt(headers["x-ratelimit-remaining"] ?? "0", 10);
+const resetAt = new Date(parseInt(headers["x-ratelimit-reset"] ?? "0", 10) * 1000);
+
+if (remaining < 100) {
+  const waitMs = resetAt.getTime() - Date.now();
+  console.warn(`Only ${remaining} requests remaining. Resets at ${resetAt.toISOString()}`);
+  if (waitMs > 0) await delay(waitMs);
+}
+```
+
+## Paginate Results Properly
+
+Many GitHub API endpoints return paginated data. Never assume a single response contains all results. Use Octokit's built-in pagination helpers.
+
+```typescript
+// Automatically fetches all pages
+const allIssues = await octokit.paginate(octokit.issues.listForRepo, {
+  owner: "octocat",
+  repo: "hello-world",
+  state: "open",
+  per_page: 100,
+});
+
+// Or iterate page by page for memory efficiency
+for await (const response of octokit.paginate.iterator(octokit.pulls.list, {
+  owner: "octocat",
+  repo: "hello-world",
+  state: "all",
+  per_page: 100,
+})) {
+  for (const pr of response.data) {
+    await processPullRequest(pr);
+  }
+}
+```
+
+When working with the REST API directly, follow `Link` headers:
+
+```typescript
+function parseLinkHeader(header: string): Record<string, string> {
+  const links: Record<string, string> = {};
+  for (const part of header.split(",")) {
+    const match = part.match(/<([^>]+)>;\s*rel="([^"]+)"/);
+    if (match) links[match[2]] = match[1];
+  }
+  return links;
+}
+```
+
+## Use the GraphQL API for Complex Queries
+
+When you need data from multiple related resources — such as a PR with its reviews, check runs, and changed files — a single GraphQL query is far more efficient than multiple REST calls.
+
+```typescript
+const result = await octokit.graphql<PullRequestQueryResult>(`
+  query ($owner: String!, $repo: String!, $number: Int!) {
+    repository(owner: $owner, name: $repo) {
+      pullRequest(number: $number) {
+        title
+        state
+        mergeable
+        additions
+        deletions
+        reviews(last: 10) {
+          nodes {
+            author { login }
+            state
+            body
+          }
+        }
+        commits(last: 1) {
+          nodes {
+            commit {
+              statusCheckRollup {
+                state
+                contexts(first: 50) {
+                  nodes {
+                    ... on CheckRun {
+                      name
+                      conclusion
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        files(first: 100) {
+          nodes {
+            path
+            additions
+            deletions
+          }
+        }
+      }
+    }
+  }
+`, {
+  owner: "octocat",
+  repo: "hello-world",
+  number: 42,
+});
+```
+
+Observe the GraphQL rate limit: each query costs a calculated number of "points" based on the objects requested. Use `rateLimit` in queries to monitor:
+
+```graphql
+query {
+  rateLimit {
+    limit
+    cost
+    remaining
+    resetAt
+  }
+}
+```
+
+## Validate Webhook Signatures
+
+When receiving GitHub webhooks, always verify the `x-hub-signature-256` header to confirm the payload was sent by GitHub and has not been tampered with.
+
+```typescript
+import { createHmac, timingSafeEqual } from "node:crypto";
+
+function verifyWebhookSignature(
+  payload: string | Buffer,
+  signature: string,
+  secret: string,
+): boolean {
+  const expected = "sha256=" +
+    createHmac("sha256", secret)
+      .update(payload)
+      .digest("hex");
+
+  if (expected.length !== signature.length) return false;
+
+  return timingSafeEqual(
+    Buffer.from(expected),
+    Buffer.from(signature),
+  );
+}
+
+// Express middleware example
+app.post("/webhooks/github", (req, res) => {
+  const signature = req.headers["x-hub-signature-256"] as string;
+  if (!verifyWebhookSignature(req.body, signature, process.env.WEBHOOK_SECRET!)) {
+    return res.status(401).send("Invalid signature");
+  }
+  // Process event...
+  const event = req.headers["x-github-event"] as string;
+  handleEvent(event, JSON.parse(req.body));
+  res.status(200).send("OK");
+});
+```
+
+Use `timingSafeEqual` (not `===`) to prevent timing attacks.
+
+## Handle API Errors Gracefully
+
+GitHub returns structured error responses. Parse them properly and provide actionable messages to callers or end-users.
+
+```typescript
+import { RequestError } from "@octokit/request-error";
+
+async function getRepository(owner: string, repo: string) {
+  try {
+    const { data } = await octokit.repos.get({ owner, repo });
+    return data;
+  } catch (error) {
+    if (error instanceof RequestError) {
+      switch (error.status) {
+        case 401:
+          throw new Error("Authentication failed. Check your GITHUB_TOKEN.");
+        case 403:
+          if (error.response?.headers["x-ratelimit-remaining"] === "0") {
+            const resetAt = new Date(
+              Number(error.response.headers["x-ratelimit-reset"]) * 1000,
+            );
+            throw new Error(`Rate limit exceeded. Resets at ${resetAt.toISOString()}`);
+          }
+          throw new Error(`Forbidden: ${error.message}`);
+        case 404:
+          throw new Error(`Repository ${owner}/${repo} not found or you lack access.`);
+        case 422:
+          const validationErrors = (error.response?.data as any)?.errors ?? [];
+          throw new Error(
+            `Validation failed: ${validationErrors.map((e: any) => e.message).join(", ")}`,
+          );
+        default:
+          throw new Error(`GitHub API error (${error.status}): ${error.message}`);
+      }
+    }
+    throw error;
+  }
+}
+```
+
+## Additional Guidelines
+
+- **Conditional requests**: Use `If-None-Match` / `If-Modified-Since` headers (Octokit handles this via ETags) to avoid consuming rate-limit quota for unchanged data.
+- **Preview headers**: Some API features require preview `Accept` headers. Check the GitHub docs and pass the appropriate media type.
+- **Idempotency**: Design webhook handlers and API consumers to be idempotent — the same event may be delivered more than once.
+- **Scoped tokens**: Use fine-grained personal access tokens or GitHub App installation tokens with the minimum required permissions. Never use classic PATs with broad scopes.
+- **Audit logging**: Log all API calls (method, URL, status, rate-limit remaining) for debugging and compliance.
+- **Testing**: Use `@octokit/fixtures` or mock responses in tests rather than calling the live API. For integration tests, create a dedicated test organization or use `gh api` with a test token.
