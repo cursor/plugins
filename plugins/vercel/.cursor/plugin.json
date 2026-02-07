@@ -1,0 +1,18 @@
+{
+  "name": "vercel",
+  "version": "1.0.0",
+  "description": "Cursor plugin for Vercel — deployments, serverless functions, Edge Runtime, and project configuration",
+  "author": { "name": "Cursor", "email": "plugins@cursor.com" },
+  "homepage": "https://github.com/cursor/service-plugin-generation",
+  "repository": "https://github.com/cursor/service-plugin-generation",
+  "license": "MIT",
+  "keywords": ["vercel", "deployment", "serverless", "edge", "next-js"],
+  "category": "deployment",
+  "tags": ["hosting", "serverless", "edge-computing"],
+  "agents": "./agents/",
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./mcp.json",
+  "extensions": "./extensions/"
+}

@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "vercel": {
+      "command": "npx",
+      "args": ["-y", "vercel-mcp-server"],
+      "description": "Vercel MCP server for managing deployments, environment variables, domains, and project settings",
+      "env": {
+        "VERCEL_TOKEN": "${VERCEL_TOKEN}"
+      },
+      "capabilities": [
+        "list-projects",
+        "get-project",
+        "list-deployments",
+        "get-deployment",
+        "create-deployment",
+        "list-domains",
+        "add-domain",
+        "remove-domain",
+        "list-env-vars",
+        "add-env-var",
+        "remove-env-var",
+        "get-deployment-logs"
+      ]
+    }
+  }
+}

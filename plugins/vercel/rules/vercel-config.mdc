@@ -1,0 +1,248 @@
+---
+description: Best practices for Vercel project configuration
+globs:
+  - "vercel.json"
+  - "next.config.*"
+alwaysApply: false
+---
+
+# Vercel Configuration Best Practices
+
+## vercel.json Fundamentals
+
+- Keep `vercel.json` minimal — only add configuration that differs from Vercel's smart defaults.
+- Use the correct framework preset; Vercel auto-detects Next.js, Nuxt, SvelteKit, Remix, Astro, and others. Only override when necessary.
+- Validate your `vercel.json` against the official schema before deploying.
+
+```jsonc
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs"
+}
+```
+
+## Rewrites
+
+- Use rewrites to proxy API requests, mask external services, or create clean URL patterns without changing the client-side URL.
+- Prefer `source` / `destination` syntax for clarity.
+- Order rewrites from most specific to least specific — first match wins.
+
+```json
+{
+  "rewrites": [
+    {
+      "source": "/api/v1/:path*",
+      "destination": "https://api.example.com/v1/:path*"
+    },
+    {
+      "source": "/blog/:slug",
+      "destination": "/posts/:slug"
+    }
+  ]
+}
+```
+
+## Redirects
+
+- Use `permanent: true` (308) for SEO-preserving permanent redirects and `permanent: false` (307) for temporary redirects.
+- Group related redirects together with comments.
+- For large redirect lists (100+), consider using Next.js middleware instead.
+
+```json
+{
+  "redirects": [
+    {
+      "source": "/old-path",
+      "destination": "/new-path",
+      "permanent": true
+    },
+    {
+      "source": "/docs/v1/:path*",
+      "destination": "/docs/v2/:path*",
+      "permanent": false
+    }
+  ]
+}
+```
+
+## Security Headers
+
+- Always set security headers globally via `vercel.json` or `next.config.js`.
+- Include `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, and `Strict-Transport-Security`.
+- Use `Content-Security-Policy` to prevent XSS and data injection attacks.
+
+```json
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "0" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, max-age=0" }
+      ]
+    }
+  ]
+}
+```
+
+## Build Settings
+
+- Set the build command and output directory only if they differ from framework defaults.
+- Use `installCommand` to customize the package manager or add pre-install steps.
+- Pin the Node.js version via the `engines` field in `package.json` or the `VERCEL_PROJECT_NODE_VERSION` env var.
+
+```json
+{
+  "buildCommand": "pnpm run build",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "outputDirectory": ".next"
+}
+```
+
+## Framework Presets
+
+- Let Vercel auto-detect your framework whenever possible — it applies optimized build and output settings.
+- Explicitly set `"framework"` in `vercel.json` only when auto-detection fails or when using a monorepo.
+- Supported presets include: `nextjs`, `nuxtjs`, `sveltekit`, `remix`, `astro`, `gatsby`, `vite`, `create-react-app`, `angular`, `hugo`, `eleventy`, and more.
+
+## Function Regions
+
+- By default functions deploy to `iad1` (US East). Set `regions` to deploy closer to your users or data sources.
+- Use a single region for consistency when accessing a regional database.
+- Use multiple regions or `"all"` (Enterprise) for globally distributed low-latency APIs.
+
+```json
+{
+  "functions": {
+    "api/**/*.ts": {
+      "memory": 1024,
+      "maxDuration": 30,
+      "regions": ["iad1", "sfo1", "cdg1"]
+    },
+    "api/heavy-compute.ts": {
+      "memory": 3008,
+      "maxDuration": 60,
+      "regions": ["iad1"]
+    }
+  }
+}
+```
+
+## Cron Jobs
+
+- Use Vercel Cron to schedule recurring tasks (cache warming, data sync, cleanup).
+- Define cron jobs in `vercel.json` — each entry maps a cron expression to an API route.
+- Secure cron endpoints by checking the `CRON_SECRET` header.
+- Cron expressions use UTC timezone.
+
+```json
+{
+  "crons": [
+    {
+      "path": "/api/cron/sync-data",
+      "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/cron/cleanup",
+      "schedule": "0 0 * * 0"
+    }
+  ]
+}
+```
+
+Secure the cron endpoint:
+
+```ts
+// app/api/cron/sync-data/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  const authHeader = request.headers.get('authorization');
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  await performSync();
+  return NextResponse.json({ ok: true });
+}
+```
+
+## next.config.js / next.config.mjs Best Practices
+
+- Use `next.config.mjs` (ES modules) for cleaner syntax and top-level `await` support.
+- Enable `images.remotePatterns` instead of the deprecated `images.domains`.
+- Configure `experimental.serverActions` and other experimental features explicitly.
+- Set `output: 'standalone'` only when deploying outside Vercel (Docker, etc.). On Vercel, omit it for optimal output tracing.
+
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.example.com',
+      },
+    ],
+  },
+  headers: async () => [
+    {
+      source: '/:path*',
+      headers: [
+        { key: 'X-DNS-Prefetch-Control', value: 'on' },
+      ],
+    },
+  ],
+  redirects: async () => [
+    {
+      source: '/old-route',
+      destination: '/new-route',
+      permanent: true,
+    },
+  ],
+};
+
+export default nextConfig;
+```
+
+## Environment Variables Configuration
+
+- Define environment variables in the Vercel Dashboard or via `vercel env add`.
+- Use separate values for Production, Preview, and Development environments.
+- Prefix client-side variables with `NEXT_PUBLIC_` (Next.js) so they are inlined at build time.
+- Never commit `.env.local` or `.env.production` to version control.
+
+## Monorepo Configuration
+
+- Set `rootDirectory` in Project Settings to point to the app directory within the monorepo.
+- Use `ignoreCommand` to skip builds when the relevant package hasn't changed (turbo prune, nx affected).
+
+```json
+{
+  "ignoreCommand": "npx turbo-ignore"
+}
+```
+
+## Deployment Protection
+
+- Enable **Vercel Authentication** for Preview deployments to prevent unauthorized access.
+- Use **Password Protection** for staging environments shared with external stakeholders.
+- Configure **Trusted IPs** (Enterprise) to restrict access by network.
+- Set `"protection"` in `vercel.json` or via the Dashboard.
