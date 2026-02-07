@@ -1,0 +1,10 @@
+{
+  "hooks": [
+    {
+      "event": "pre-commit",
+      "script": "./scripts/check-stripe-keys.sh",
+      "description": "Prevents committing live Stripe secret keys (sk_live_*, rk_live_*) to the repository. Test keys (sk_test_*, pk_test_*) are allowed.",
+      "enabled": true
+    }
+  ]
+}

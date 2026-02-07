@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "stripe": {
+      "command": "npx",
+      "args": ["-y", "@stripe/mcp", "--tools=all", "--api-key=${STRIPE_SECRET_KEY}"],
+      "description": "Stripe MCP server — interact with Stripe API resources directly from Cursor. Supports creating customers, products, prices, checkout sessions, subscriptions, invoices, and more.",
+      "env": {
+        "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}"
+      }
+    }
+  }
+}
