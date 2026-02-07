@@ -1,0 +1,209 @@
+---
+description: Best practices for Supabase database migrations and SQL schema management
+globs: ["supabase/migrations/**/*.sql", "**/*.sql"]
+---
+
+# Supabase Database Migration Best Practices
+
+## Always Use Migrations
+
+- Never make schema changes directly in the Supabase dashboard SQL editor for production databases. All schema changes must go through migration files.
+- Use `supabase migration new <name>` to create timestamped migration files.
+- Keep migrations in version control alongside application code.
+- Apply migrations with `supabase db push` (for remote) or `supabase db reset` (for local development).
+- Treat migrations as immutable once applied to production; create new migrations to fix issues.
+
+## Migration File Naming
+
+- Use descriptive names: `supabase migration new create_users_table`, `supabase migration new add_email_index_to_profiles`.
+- Migrations are applied in alphabetical/timestamp order. Never rename existing migration files.
+- One logical change per migration file. Don't combine unrelated schema changes.
+
+## Enable RLS on Every New Table
+
+- Always add `ALTER TABLE <table_name> ENABLE ROW LEVEL SECURITY;` immediately after creating a new table.
+- Create at least one RLS policy for each table. A table with RLS enabled but no policies denies all access (except to service role).
+- Use `auth.uid()` to reference the currently authenticated user in policies.
+
+```sql
+-- Good: table with RLS enabled and a baseline policy
+CREATE TABLE public.profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  username TEXT UNIQUE NOT NULL,
+  avatar_url TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+-- Users can read any profile
+CREATE POLICY "Profiles are viewable by everyone"
+  ON public.profiles
+  FOR SELECT
+  USING (true);
+
+-- Users can only update their own profile
+CREATE POLICY "Users can update own profile"
+  ON public.profiles
+  FOR UPDATE
+  USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);
+```
+
+## Create Proper Indexes
+
+- Add indexes on columns used in WHERE clauses, JOIN conditions, and ORDER BY.
+- Use partial indexes when queries filter on a constant condition.
+- Use GIN indexes for JSONB columns and full-text search (`tsvector`).
+- Use `CONCURRENTLY` for indexes on large, live tables to avoid locking.
+- Don't over-index — each index adds write overhead.
+
+```sql
+-- Standard B-tree index
+CREATE INDEX idx_orders_user_id ON public.orders (user_id);
+
+-- Composite index for common query pattern
+CREATE INDEX idx_orders_user_status ON public.orders (user_id, status);
+
+-- Partial index for active records
+CREATE INDEX idx_orders_active ON public.orders (created_at)
+  WHERE status = 'active';
+
+-- GIN index for JSONB
+CREATE INDEX idx_products_metadata ON public.products USING gin (metadata);
+
+-- Concurrent index (safe for production, must run outside a transaction)
+CREATE INDEX CONCURRENTLY idx_events_timestamp ON public.events (created_at);
+```
+
+## Use Foreign Key Constraints
+
+- Always define foreign keys to enforce referential integrity.
+- Choose the appropriate `ON DELETE` action:
+  - `CASCADE` — delete child rows when parent is deleted (e.g., user → posts).
+  - `SET NULL` — set FK column to NULL when parent is deleted.
+  - `RESTRICT` — prevent parent deletion if children exist.
+- Reference `auth.users(id)` for user-owned tables.
+- Add indexes on foreign key columns (Postgres does not auto-index them).
+
+```sql
+CREATE TABLE public.posts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  author_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  body TEXT,
+  published BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Index the FK column for efficient joins and cascading deletes
+CREATE INDEX idx_posts_author_id ON public.posts (author_id);
+```
+
+## Write Reversible Migrations
+
+- Whenever possible, write a corresponding rollback comment or block so the migration can be conceptually reversed.
+- Use `DROP TABLE IF EXISTS`, `DROP INDEX IF EXISTS` for safe teardowns.
+- Prefer `ALTER TABLE ... ADD COLUMN` with a `DEFAULT` value to avoid full table rewrites on large tables.
+- For column removal, first deploy code that no longer references the column, then drop it in a subsequent migration.
+
+```sql
+-- Forward migration
+ALTER TABLE public.profiles ADD COLUMN bio TEXT DEFAULT '';
+
+-- Rollback (document in comments or a separate down migration)
+-- ALTER TABLE public.profiles DROP COLUMN bio;
+```
+
+## Use Proper Column Types
+
+- Use `UUID` for primary keys (`DEFAULT gen_random_uuid()`).
+- Use `TIMESTAMPTZ` (not `TIMESTAMP`) for all date/time columns to handle time zones correctly.
+- Use `TEXT` instead of `VARCHAR(n)` unless you need a hard length constraint enforced at the DB level.
+- Use `BOOLEAN` instead of integer flags.
+- Use `JSONB` (not `JSON`) when storing structured data — it supports indexing and is more efficient.
+- Use `BIGINT` for counters or IDs that could exceed 2 billion.
+- Use `NUMERIC` or `BIGINT` (in cents) for monetary values — never `FLOAT` or `DOUBLE PRECISION`.
+
+```sql
+CREATE TABLE public.orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  amount_cents BIGINT NOT NULL CHECK (amount_cents >= 0),
+  currency TEXT NOT NULL DEFAULT 'usd' CHECK (currency ~ '^[a-z]{3}$'),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'refunded', 'cancelled')),
+  metadata JSONB DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+```
+
+## Add Comments to Tables and Columns
+
+- Use `COMMENT ON TABLE` and `COMMENT ON COLUMN` to document purpose, constraints, and business rules.
+- Comments appear in the Supabase dashboard and in generated documentation.
+
+```sql
+COMMENT ON TABLE public.orders IS 'Customer orders with payment status tracking';
+COMMENT ON COLUMN public.orders.amount_cents IS 'Order total in the smallest currency unit (e.g., cents for USD)';
+COMMENT ON COLUMN public.orders.status IS 'Order lifecycle: pending → paid → refunded | cancelled';
+```
+
+## Triggers and Functions
+
+- Use triggers for automatic timestamps (`updated_at`), audit logging, and computed columns.
+- Define functions as `SECURITY DEFINER` only when they need to bypass RLS; prefer `SECURITY INVOKER`.
+- Set `search_path` explicitly in security-definer functions to prevent search-path attacks.
+
+```sql
+-- Reusable trigger function for updated_at
+CREATE OR REPLACE FUNCTION public.handle_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_updated_at
+  BEFORE UPDATE ON public.orders
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_updated_at();
+```
+
+## Seed Data
+
+- Keep seed data in `supabase/seed.sql` for local development and testing.
+- Never put seed data in migration files.
+- Use `INSERT ... ON CONFLICT DO NOTHING` for idempotent seeds.
+- Reset with `supabase db reset` which runs all migrations then seed.
+
+## Enums and Lookup Tables
+
+- Prefer `CHECK` constraints or lookup tables over Postgres `ENUM` types.
+- Postgres ENUMs cannot have values removed and are painful to modify.
+- If you must use ENUMs, create them in a separate migration so they can be extended later with `ALTER TYPE ... ADD VALUE`.
+
+```sql
+-- Preferred: CHECK constraint
+status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'suspended'));
+
+-- Alternative: lookup table
+CREATE TABLE public.order_statuses (
+  status TEXT PRIMARY KEY
+);
+INSERT INTO public.order_statuses (status) VALUES ('pending'), ('paid'), ('refunded'), ('cancelled');
+
+ALTER TABLE public.orders
+  ADD CONSTRAINT fk_order_status
+  FOREIGN KEY (status) REFERENCES public.order_statuses(status);
+```
+
+## Multi-Environment Workflow
+
+- Use `supabase link --project-ref <ref>` to connect to remote projects.
+- Run `supabase db diff` to detect drift between local and remote schemas.
+- Apply migrations to staging before production.
+- Use `supabase db push` for remote migration application.
+- Back up production database before applying destructive migrations.

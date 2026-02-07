@@ -1,0 +1,40 @@
+{
+  "hooks": [
+    {
+      "name": "generate-types-on-migration",
+      "description": "Regenerate TypeScript types whenever a new migration file is added or modified",
+      "event": "file_save",
+      "pattern": "supabase/migrations/**/*.sql",
+      "command": "bash ./scripts/generate-types.sh",
+      "runInBackground": true,
+      "debounceMs": 2000
+    },
+    {
+      "name": "lint-migration-sql",
+      "description": "Validate SQL syntax and best practices in migration files on save",
+      "event": "file_save",
+      "pattern": "supabase/migrations/**/*.sql",
+      "command": "supabase db lint",
+      "runInBackground": true,
+      "debounceMs": 1000
+    },
+    {
+      "name": "check-rls-on-new-table",
+      "description": "Warn if a CREATE TABLE statement is missing a corresponding ENABLE ROW LEVEL SECURITY",
+      "event": "file_save",
+      "pattern": "supabase/migrations/**/*.sql",
+      "command": "bash -c 'FILE=\"$1\"; if grep -qi \"CREATE TABLE\" \"$FILE\" && ! grep -qi \"ENABLE ROW LEVEL SECURITY\" \"$FILE\"; then echo \"WARNING: New table detected without RLS enabled. Add ALTER TABLE <name> ENABLE ROW LEVEL SECURITY;\"; exit 1; fi' -- \"${file}\"",
+      "runInBackground": true,
+      "debounceMs": 500
+    },
+    {
+      "name": "format-sql-on-save",
+      "description": "Auto-format SQL files on save using pg_format if available",
+      "event": "file_save",
+      "pattern": "**/*.sql",
+      "command": "bash -c 'if command -v pg_format &>/dev/null; then pg_format -i \"${file}\"; fi'",
+      "runInBackground": true,
+      "debounceMs": 1000
+    }
+  ]
+}

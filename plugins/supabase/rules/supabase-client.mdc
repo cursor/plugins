@@ -1,0 +1,202 @@
+---
+description: Best practices for Supabase client usage in TypeScript and JavaScript projects
+globs: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
+---
+
+# Supabase Client Best Practices
+
+## Typed Client with Generated Types
+
+- Always generate TypeScript types from your Supabase schema using `supabase gen types typescript`.
+- Create a single typed client instance and export it from a shared module.
+- Use the generated `Database` type as the generic parameter for `createClient<Database>()`.
+
+```ts
+import { createClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/supabase';
+
+export const supabase = createClient<Database>(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+```
+
+## Server-Side vs Client-Side Clients
+
+- Use `createServerClient` from `@supabase/ssr` for all server-side code (API routes, server components, middleware, server actions).
+- Use `createBrowserClient` from `@supabase/ssr` for client-side code in SSR frameworks (Next.js, SvelteKit, Nuxt).
+- Never share a single client instance across server and client boundaries.
+
+```ts
+// Server-side (e.g., Next.js Server Component)
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+
+export async function createSupabaseServerClient() {
+  const cookieStore = await cookies();
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+}
+```
+
+```ts
+// Client-side (e.g., Next.js Client Component)
+import { createBrowserClient } from '@supabase/ssr';
+
+export function createSupabaseBrowserClient() {
+  return createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
+```
+
+## Row Level Security (RLS)
+
+- Always rely on RLS policies as the primary data-access control mechanism rather than application-level checks alone.
+- Use the anon key on the client; never expose the service role key in client-side code.
+- Design RLS policies using `auth.uid()` and `auth.jwt()` to scope data to the authenticated user.
+- Test RLS policies thoroughly by querying as different users to confirm they cannot access unauthorized rows.
+
+## Auth State Handling
+
+- Subscribe to auth state changes with `supabase.auth.onAuthStateChange()` and clean up the subscription on unmount.
+- Always call `supabase.auth.getSession()` (not `getUser()`) for quick session checks; call `getUser()` when you need a server-verified identity.
+- Handle `TOKEN_REFRESHED`, `SIGNED_IN`, and `SIGNED_OUT` events appropriately.
+- Store session tokens in secure, httpOnly cookies for SSR applications via `@supabase/ssr`.
+
+```ts
+useEffect(() => {
+  const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    (event, session) => {
+      if (event === 'SIGNED_OUT') {
+        // Clear local state / redirect
+      } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        // Update local state with session.user
+      }
+    }
+  );
+  return () => subscription.unsubscribe();
+}, []);
+```
+
+## Query Best Practices
+
+- Use `.single()` when you expect exactly one row (e.g., fetching by primary key). This returns the object directly instead of an array, and throws if zero or multiple rows match.
+- Use `.maybeSingle()` when zero or one rows are expected and you want `null` instead of an error for no match.
+- Always destructure and check `{ data, error }` from every query. Never ignore the `error` field.
+- Use `.select('col1, col2')` to limit returned columns and reduce payload size.
+- Use `.select('*, relation(col1, col2)')` for joins instead of making multiple queries.
+
+```ts
+// Good — typed, scoped select, single row, error handled
+const { data: profile, error } = await supabase
+  .from('profiles')
+  .select('id, username, avatar_url')
+  .eq('id', userId)
+  .single();
+
+if (error) {
+  console.error('Failed to fetch profile:', error.message);
+  throw error;
+}
+```
+
+## Error Handling
+
+- Always check the `error` property returned by every Supabase call before using `data`.
+- Use structured error handling: map Supabase error codes to user-facing messages.
+- Log errors with context (table name, operation, parameters) for debugging.
+- Wrap database calls in try/catch when using `.single()` or `.maybeSingle()` as they can throw.
+
+```ts
+const { data, error } = await supabase
+  .from('orders')
+  .insert({ user_id: userId, total: amount })
+  .select()
+  .single();
+
+if (error) {
+  if (error.code === '23505') {
+    // Unique constraint violation
+    return { error: 'Duplicate order detected' };
+  }
+  if (error.code === '42501') {
+    // RLS policy violation
+    return { error: 'Unauthorized' };
+  }
+  throw error;
+}
+```
+
+## Connection Pooling in Serverless
+
+- In serverless environments (Vercel, Cloudflare Workers, AWS Lambda), always use the connection pooler URL (port 6543) instead of the direct connection (port 5432).
+- Set the `db` option in `createClient` or use the pooler connection string in `DATABASE_URL` for Prisma / Drizzle.
+- For long-running servers, the direct connection is acceptable.
+- Keep connection timeouts short in serverless; connections are not reused across invocations.
+
+## Security
+
+- **Never expose the `service_role` key on the client.** It bypasses RLS entirely.
+- Use the `service_role` key only in trusted server environments (background jobs, admin APIs, migrations).
+- Store `SUPABASE_URL` and `SUPABASE_ANON_KEY` as public environment variables; store `SUPABASE_SERVICE_ROLE_KEY` as a secret.
+- Validate and sanitize all user input before passing to `.eq()`, `.filter()`, or `.rpc()` to prevent injection via crafted filter values.
+- Use Postgres functions (`rpc`) for complex business logic to keep it inside the security boundary.
+
+## Realtime
+
+- Subscribe to realtime changes using `supabase.channel()` API.
+- Always unsubscribe on component unmount by calling `supabase.removeChannel(channel)`.
+- Enable realtime on specific tables via `alter table <name> replica identity full;` and Supabase dashboard.
+- Use channel-level filters (`filter: 'column=eq.value'`) to limit the events received.
+
+```ts
+useEffect(() => {
+  const channel = supabase
+    .channel('orders')
+    .on(
+      'postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'orders', filter: `user_id=eq.${userId}` },
+      (payload) => {
+        setOrders((prev) => [...prev, payload.new]);
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, [userId]);
+```
+
+## Storage
+
+- Use signed URLs for private assets; use public URLs only for truly public files.
+- Set appropriate cache-control headers when uploading.
+- Use `upsert: true` to overwrite files with the same path.
+- Organize storage buckets by access pattern (e.g., `avatars`, `documents`, `public-assets`).
+- Create storage RLS policies to control who can upload, read, and delete files.
+
+```ts
+const { data, error } = await supabase.storage
+  .from('avatars')
+  .upload(`${userId}/avatar.png`, file, {
+    cacheControl: '3600',
+    upsert: true,
+  });
+```
