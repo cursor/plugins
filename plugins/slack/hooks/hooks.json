@@ -1,0 +1,82 @@
+{
+  "hooks": [
+    {
+      "name": "validate-slack-bolt-listeners",
+      "event": "pre-commit",
+      "description": "Validates that Slack Bolt event and action listeners call ack() before performing other operations",
+      "match": {
+        "files": [
+          "src/**/*.ts",
+          "src/**/*.js",
+          "lib/**/*.ts",
+          "lib/**/*.js"
+        ]
+      },
+      "steps": [
+        {
+          "name": "check-ack-calls",
+          "command": "grep -n 'app\\.\\(command\\|action\\|view\\|shortcut\\|options\\)' ${file} | head -20",
+          "description": "List Bolt listeners to verify ack() is present in handler files",
+          "onFailure": "ignore"
+        },
+        {
+          "name": "check-missing-ack",
+          "command": "python3 -c \"import re, sys; content=open(sys.argv[1]).read(); listeners=re.findall(r'app\\.(command|action|view|shortcut|options)\\([^)]+,\\s*async\\s*\\([^)]*\\)\\s*=>\\s*\\{([^}]{0,500})', content); missing=[l for l in listeners if 'ack()' not in l[1] and 'ack(' not in l[1]]; sys.exit(1) if missing else sys.exit(0)\" ${file}",
+          "description": "Check that all Bolt listeners call ack() early in the handler body",
+          "onFailure": "warn"
+        },
+        {
+          "name": "check-hardcoded-tokens",
+          "command": "grep -nE '(xoxb-[0-9]|xapp-1-|xoxp-[0-9])' ${file}",
+          "description": "Detect hard-coded Slack tokens in source files",
+          "onFailure": "block"
+        }
+      ]
+    },
+    {
+      "name": "validate-block-kit-json",
+      "event": "pre-commit",
+      "description": "Validates Block Kit JSON payloads for common structural issues",
+      "match": {
+        "files": [
+          "**/*.json"
+        ]
+      },
+      "steps": [
+        {
+          "name": "json-syntax-check",
+          "command": "python3 -c \"import json, sys; json.load(open(sys.argv[1]))\" ${file}",
+          "description": "Verify the file is valid JSON",
+          "onFailure": "block"
+        },
+        {
+          "name": "check-block-limit",
+          "command": "python3 -c \"import json, sys; data=json.load(open(sys.argv[1])); blocks=data.get('blocks', []); sys.exit(1) if len(blocks) > 50 else sys.exit(0)\" ${file}",
+          "description": "Ensure Block Kit payloads do not exceed the 50-block limit",
+          "onFailure": "warn",
+          "condition": "grep -q '\"blocks\"' ${file}"
+        }
+      ]
+    },
+    {
+      "name": "format-slack-source",
+      "event": "post-save",
+      "description": "Auto-formats Slack app TypeScript and JavaScript files on save",
+      "match": {
+        "files": [
+          "src/**/*.ts",
+          "src/**/*.js"
+        ]
+      },
+      "steps": [
+        {
+          "name": "prettier-format",
+          "command": "npx prettier --write ${file}",
+          "description": "Format source code with Prettier for consistent style",
+          "onFailure": "ignore",
+          "condition": "command -v npx &> /dev/null"
+        }
+      ]
+    }
+  ]
+}

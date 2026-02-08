@@ -1,0 +1,273 @@
+---
+description: LaunchDarkly SDK best practices for TypeScript and JavaScript projects
+globs: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
+---
+
+# LaunchDarkly SDK Best Practices
+
+## Singleton Client Initialization
+
+- Initialize the LaunchDarkly client **once** at application startup and reuse it everywhere.
+- Never create a new client per request, per component render, or per function invocation.
+- Store the client instance in a module-level singleton or dependency injection container.
+
+```typescript
+// ✅ Correct — singleton pattern
+import * as LaunchDarkly from "@launchdarkly/node-server-sdk";
+
+let ldClient: LaunchDarkly.LDClient | null = null;
+
+export async function getLDClient(): Promise<LaunchDarkly.LDClient> {
+  if (!ldClient) {
+    ldClient = LaunchDarkly.init(process.env.LAUNCHDARKLY_SDK_KEY!);
+    await ldClient.waitForInitialization({ timeout: 5 });
+  }
+  return ldClient;
+}
+```
+
+```typescript
+// ❌ Wrong — new client per request
+app.get("/api/feature", async (req, res) => {
+  const client = LaunchDarkly.init(process.env.LAUNCHDARKLY_SDK_KEY!);
+  await client.waitForInitialization();
+  const value = await client.variation("my-flag", context, false);
+  res.json({ value });
+});
+```
+
+## Typed Variation Methods
+
+- Use the typed variation methods (`boolVariation`, `stringVariation`, `numberVariation`, `jsonVariation`) instead of the generic `variation` method when your SDK version supports them.
+- Typed methods provide better type safety and make flag value expectations explicit.
+
+```typescript
+// ✅ Correct — typed variation methods
+const showBanner = await client.boolVariation("show-promo-banner", context, false);
+const bannerColor = await client.stringVariation("banner-color", context, "blue");
+const maxRetries = await client.numberVariation("max-retries", context, 3);
+const uiConfig = await client.jsonVariation("ui-config", context, { layout: "default" });
+```
+
+```typescript
+// ❌ Avoid — untyped variation
+const showBanner = await client.variation("show-promo-banner", context, false);
+```
+
+## Always Provide Default Values
+
+- Every `variation` or typed variation call **must** include a meaningful default value as the last argument.
+- The default is returned when the client is offline, the flag does not exist, or evaluation fails.
+- Choose defaults that represent the **safe, pre-existing behavior** (e.g., feature off, conservative limit).
+
+```typescript
+// ✅ Correct — safe default
+const rateLimit = await client.numberVariation("api-rate-limit", context, 100);
+
+// ❌ Wrong — no thought given to default
+const rateLimit = await client.numberVariation("api-rate-limit", context, 0);
+```
+
+## Context Construction
+
+- Always identify users/contexts with a unique, stable `key`.
+- Include attributes that are useful for targeting (e.g., `email`, `plan`, `country`).
+- Use `anonymous: true` for unauthenticated users to avoid polluting your user base.
+- Never use PII as the context key — use an opaque ID and pass PII as attributes.
+
+```typescript
+// ✅ Correct — well-formed context
+const context: LaunchDarkly.LDContext = {
+  kind: "user",
+  key: user.id,
+  name: user.displayName,
+  email: user.email,
+  custom: {
+    plan: user.plan,
+    company: user.companyId,
+    country: user.country,
+  },
+};
+```
+
+## Multi-Contexts for Complex Targeting
+
+- Use multi-contexts when targeting involves more than one entity (e.g., user + organization + device).
+- Each context kind has its own `key` and attributes.
+- Multi-contexts enable targeting rules like "enable for users in organization X on mobile devices."
+
+```typescript
+// ✅ Correct — multi-context
+const context: LaunchDarkly.LDContext = {
+  kind: "multi",
+  user: {
+    key: user.id,
+    name: user.name,
+    email: user.email,
+  },
+  organization: {
+    key: org.id,
+    name: org.name,
+    custom: { plan: org.plan, industry: org.industry },
+  },
+  device: {
+    key: deviceId,
+    custom: { platform: "ios", appVersion: "3.2.1" },
+  },
+};
+```
+
+## Graceful Client Shutdown
+
+- Always close the LaunchDarkly client when the application shuts down.
+- This flushes pending analytics events and releases resources.
+- Register shutdown handlers for `SIGTERM` and `SIGINT`.
+
+```typescript
+async function shutdown(): Promise<void> {
+  const client = await getLDClient();
+  await client.close();
+  process.exit(0);
+}
+
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);
+```
+
+## Handle Initialization Errors
+
+- Wrap `waitForInitialization()` in a try-catch and handle timeouts.
+- Decide whether your application can start in degraded mode (serving defaults) or should fail fast.
+- Log initialization failures with enough detail for debugging (but never log the SDK key).
+
+```typescript
+try {
+  const client = LaunchDarkly.init(sdkKey);
+  await client.waitForInitialization({ timeout: 5 });
+  console.log("LaunchDarkly client initialized successfully");
+} catch (error) {
+  console.error("LaunchDarkly initialization failed:", error);
+  // Option A: Fail fast
+  process.exit(1);
+  // Option B: Continue with defaults (degraded mode)
+  // All variation calls will return default values
+}
+```
+
+## Flag Key Naming Convention
+
+- Use **kebab-case** for all flag keys: `enable-dark-mode`, `max-upload-size`, `checkout-v2`.
+- Prefix flags with the feature area or team: `payments-enable-stripe-v2`, `search-use-new-algorithm`.
+- Never use camelCase, snake_case, or spaces in flag keys.
+- Keep keys concise but descriptive.
+
+```typescript
+// ✅ Correct — kebab-case with feature prefix
+await client.boolVariation("checkout-enable-express-pay", context, false);
+await client.numberVariation("search-max-results", context, 50);
+
+// ❌ Wrong — inconsistent naming
+await client.boolVariation("enableExpressPay", context, false);
+await client.boolVariation("search_max_results", context, 50);
+```
+
+## Avoid Flag Dependencies and Nesting
+
+- Do not nest flag evaluations (checking one flag inside another flag's branch).
+- Flag dependencies create hidden coupling and make rollouts unpredictable.
+- If you need complex logic, use a single multivariate flag or LaunchDarkly's prerequisite feature.
+
+```typescript
+// ❌ Wrong — nested flag checks
+const enableV2 = await client.boolVariation("checkout-v2", context, false);
+if (enableV2) {
+  const enableExpress = await client.boolVariation("checkout-v2-express", context, false);
+  // ...
+}
+
+// ✅ Correct — single multivariate flag or use prerequisites in the dashboard
+const checkoutMode = await client.stringVariation("checkout-mode", context, "v1");
+// "v1" | "v2-standard" | "v2-express"
+```
+
+## Clean Up Stale Flags
+
+- Remove flags from code after they have been fully rolled out or deprecated.
+- Stale flags add code complexity, confuse developers, and create evaluation overhead.
+- Mark flags as temporary or permanent when creating them in the LaunchDarkly dashboard.
+- Audit flags quarterly — if a flag has been 100% rolled out for more than 2 sprints, remove it.
+- Use LaunchDarkly's code references feature to track where flags are used in your codebase.
+
+```typescript
+// ❌ Stale — flag has been 100% on for 6 months
+const enabled = await client.boolVariation("new-homepage", context, false);
+if (enabled) {
+  renderNewHomepage();
+} else {
+  renderOldHomepage(); // Dead code
+}
+
+// ✅ Cleaned up — old code path removed
+renderNewHomepage();
+```
+
+## Use Offline Mode for Testing
+
+- Use the LaunchDarkly test data source or offline mode in unit tests and local development.
+- Never connect to the production LaunchDarkly environment from test suites.
+- Use `TestData` to set flag values deterministically in tests.
+
+```typescript
+import * as LaunchDarkly from "@launchdarkly/node-server-sdk";
+import { TestData } from "@launchdarkly/node-server-sdk/integrations";
+
+// ✅ Correct — test data source
+const td = TestData();
+td.update(td.flag("my-flag").booleanFlag().variationForAll(true));
+
+const testClient = LaunchDarkly.init("fake-sdk-key", {
+  updateProcessor: td,
+});
+await testClient.waitForInitialization();
+
+// Now all evaluations of "my-flag" return true
+const result = await testClient.boolVariation("my-flag", context, false);
+expect(result).toBe(true);
+```
+
+## React SDK Patterns
+
+- Use the `LDProvider` at the app root and `useFlags` / `useLDClient` hooks in components.
+- Never call `variation` directly in React components — use the hook-based API.
+- Wrap flag-dependent components in `Suspense` or handle the loading state from the provider.
+
+```tsx
+// ✅ Correct — React provider and hooks
+import { LDProvider, useFlags } from "launchdarkly-react-client-sdk";
+
+function App() {
+  return (
+    <LDProvider clientSideID={process.env.REACT_APP_LD_CLIENT_ID!}>
+      <FeatureBanner />
+    </LDProvider>
+  );
+}
+
+function FeatureBanner() {
+  const { showPromoBanner } = useFlags();
+  if (!showPromoBanner) return null;
+  return <Banner text="Special offer!" />;
+}
+```
+
+## Debugging
+
+- Enable the SDK's built-in logger during development to see flag evaluation details.
+- Log the flag key, context key, and returned value for debugging targeting issues.
+- Use LaunchDarkly's live flag evaluation debugger in the dashboard.
+
+```typescript
+const client = LaunchDarkly.init(sdkKey, {
+  logger: LaunchDarkly.basicLogger({ level: "debug" }),
+});
+```

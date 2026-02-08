@@ -1,0 +1,275 @@
+---
+description: Best practices for designing and building Slack messages with Block Kit
+globs:
+  - "**/*.ts"
+  - "**/*.js"
+  - "**/*.json"
+alwaysApply: false
+---
+
+# Slack Block Kit Best Practices
+
+## Use Block Kit Builder for Design
+
+Always prototype messages and modals in the [Block Kit Builder](https://app.slack.com/block-kit-builder) before writing code. The builder provides a live preview across desktop, mobile, and notification contexts, making it easy to catch layout issues early.
+
+Export the JSON payload from the builder and use it as the starting point for your code. This reduces iteration time and ensures visual fidelity.
+
+## Keep Messages Concise
+
+Slack messages should be scannable. Users read messages in a fast-moving stream, so every block must earn its space.
+
+- Lead with the most important information in a `header` or bold `mrkdwn` text.
+- Use `section` fields (side-by-side layout) for key-value data instead of stacking multiple sections.
+- Reserve `context` blocks for metadata (timestamps, usernames, source labels) — not primary content.
+- Use `divider` blocks sparingly to separate logically distinct sections.
+
+```typescript
+// Good — scannable, key info first
+const blocks = [
+  {
+    type: "header",
+    text: { type: "plain_text", text: "🚨 Incident Alert" },
+  },
+  {
+    type: "section",
+    fields: [
+      { type: "mrkdwn", text: "*Severity:*\nP1 — Critical" },
+      { type: "mrkdwn", text: "*Service:*\nPayment API" },
+      { type: "mrkdwn", text: "*Started:*\n<!date^1706000000^{date_short} at {time}|2025-01-23>" },
+      { type: "mrkdwn", text: "*On-Call:*\n<@U12345678>" },
+    ],
+  },
+  {
+    type: "actions",
+    elements: [
+      {
+        type: "button",
+        text: { type: "plain_text", text: "Acknowledge" },
+        style: "primary",
+        action_id: "ack_incident",
+      },
+      {
+        type: "button",
+        text: { type: "plain_text", text: "View Dashboard" },
+        url: "https://grafana.example.com/d/abc123",
+        action_id: "view_dashboard",
+      },
+    ],
+  },
+];
+```
+
+## Use the Right Block Types
+
+Each block type serves a specific purpose. Choose the right one for the content:
+
+| Block Type | Purpose | Max Per Message |
+|-----------|---------|-----------------|
+| `header` | Page/section title — renders large, bold | Unlimited (but use sparingly) |
+| `section` | Primary content with optional accessory (button, image, overflow) | 50 |
+| `divider` | Visual separator between logical sections | 50 |
+| `actions` | Row of interactive elements (buttons, selects, date pickers) | 50 (max 25 elements per block) |
+| `context` | Supplementary metadata — small text and images | 50 (max 10 elements per block) |
+| `image` | Full-width image with alt text | 50 |
+| `input` | Form field — only valid inside modals and workflow steps | 50 |
+| `rich_text` | Formatted text with lists, quotes, code blocks | 50 |
+| `video` | Embedded video player | 50 |
+
+## Handle Interactive Components Properly
+
+Every interactive element (`button`, `static_select`, `overflow`, `datepicker`, `timepicker`, `checkboxes`, `radio_buttons`, `multi_select`) must have a unique `action_id`. Register a Bolt listener for each `action_id`.
+
+```typescript
+// Button
+{
+  type: "button",
+  text: { type: "plain_text", text: "Approve" },
+  style: "primary",
+  action_id: "approve_request",
+  value: "req_12345",  // Pass context data
+}
+
+// Static select
+{
+  type: "static_select",
+  action_id: "select_environment",
+  placeholder: { type: "plain_text", text: "Choose environment" },
+  options: [
+    { text: { type: "plain_text", text: "Staging" }, value: "staging" },
+    { text: { type: "plain_text", text: "Production" }, value: "production" },
+  ],
+}
+```
+
+Corresponding listeners:
+
+```typescript
+app.action("approve_request", async ({ ack, action, say }) => {
+  await ack();
+  const requestId = (action as ButtonAction).value;
+  await approveRequest(requestId);
+  await say(`Request ${requestId} approved ✓`);
+});
+
+app.action("select_environment", async ({ ack, action }) => {
+  await ack();
+  const env = (action as StaticSelectAction).selected_option?.value;
+  // Process selection
+});
+```
+
+## Use Composition Objects Correctly
+
+Block Kit has two text object types. Using the wrong one causes API errors.
+
+| Type | Supports Formatting | Max Length | Use In |
+|------|---------------------|-----------|--------|
+| `plain_text` | No (renders literally) | Varies by context | Buttons, headers, placeholders, option labels |
+| `mrkdwn` | Yes (`*bold*`, `_italic_`, `~strike~`, `` `code` ``, links, mentions) | Varies by context | Section text, section fields, context elements |
+
+```typescript
+// plain_text — for button labels, header text, input labels
+{ type: "plain_text", text: "Submit Request", emoji: true }
+
+// mrkdwn — for rich content in sections
+{ type: "mrkdwn", text: "*Status:* ✅ Deployed to `production`" }
+```
+
+Rules:
+- `header` blocks only accept `plain_text`.
+- `section.text` accepts both, but prefer `mrkdwn` for rich formatting.
+- `section.fields` accepts both — prefer `mrkdwn` for label-value pairs.
+- Button `text` only accepts `plain_text`.
+- `context` elements can be `mrkdwn` text objects or `image` elements.
+- Set `emoji: true` on `plain_text` objects to render emoji shortcodes like `:rocket:`.
+
+## Validate Block Limits
+
+Slack enforces strict limits. Exceeding them causes the API to reject the entire message.
+
+| Limit | Value |
+|-------|-------|
+| Blocks per message / modal | 50 |
+| Elements per `actions` block | 25 |
+| Elements per `context` block | 10 |
+| Fields per `section` block | 10 |
+| Options per `static_select` / `multi_static_select` | 100 |
+| Options per `overflow` menu | 5 |
+| Characters in `plain_text` (button) | 75 |
+| Characters in `mrkdwn` text (section) | 3000 |
+| Characters in modal title | 24 |
+| Total message text | 40000 |
+
+Build a validation utility to check limits before sending:
+
+```typescript
+function validateBlocks(blocks: KnownBlock[]): void {
+  if (blocks.length > 50) {
+    throw new Error(`Block limit exceeded: ${blocks.length}/50`);
+  }
+
+  for (const block of blocks) {
+    if (block.type === "actions" && block.elements.length > 25) {
+      throw new Error(`Actions block element limit exceeded: ${block.elements.length}/25`);
+    }
+    if (block.type === "context" && block.elements.length > 10) {
+      throw new Error(`Context block element limit exceeded: ${block.elements.length}/10`);
+    }
+    if (block.type === "section" && block.fields && block.fields.length > 10) {
+      throw new Error(`Section fields limit exceeded: ${block.fields.length}/10`);
+    }
+  }
+}
+```
+
+## Use `mrkdwn` Formatting Effectively
+
+Slack's `mrkdwn` is similar to — but not the same as — Markdown. Key differences:
+
+| Format | Syntax | Example |
+|--------|--------|---------|
+| Bold | `*text*` | *bold* |
+| Italic | `_text_` | _italic_ |
+| Strikethrough | `~text~` | ~struck~ |
+| Code | `` `text` `` | `code` |
+| Code block | ` ```text``` ` | (preformatted) |
+| Link | `<https://url\|label>` | [label](https://url) |
+| User mention | `<@U12345678>` | @user |
+| Channel mention | `<#C12345678>` | #channel |
+| Date/time | `<!date^timestamp^format\|fallback>` | Jan 23, 2025 |
+| Emoji | `:emoji_name:` | 🚀 |
+| Blockquote | `> text` | (quoted text) |
+| Ordered list | `1. item` | 1. item |
+| Bulleted list | `• item` or `- item` | • item |
+
+Notable differences from standard Markdown:
+- `**bold**` does **not** work — use `*bold*`.
+- `[label](url)` does **not** work — use `<url|label>`.
+- Line breaks require `\n`, not double-space.
+
+## Handle Modal Submissions
+
+Modal views use `callback_id` to route submissions. Always validate input values before processing and return `response_action: "errors"` for validation failures so the modal stays open.
+
+```typescript
+app.view("feedback_modal", async ({ ack, view, body, client }) => {
+  const values = view.state.values;
+  const rating = values.rating_block.rating_input.selected_option?.value;
+  const comment = values.comment_block.comment_input.value;
+
+  // Validation
+  const errors: Record<string, string> = {};
+  if (!rating) errors.rating_block = "Please select a rating";
+  if (comment && comment.length > 500) errors.comment_block = "Comment must be under 500 characters";
+
+  if (Object.keys(errors).length > 0) {
+    await ack({ response_action: "errors", errors });
+    return;
+  }
+
+  await ack();
+
+  // Process submission
+  await saveFeedback({ userId: body.user.id, rating, comment });
+
+  // Notify the user via DM
+  await client.chat.postMessage({
+    channel: body.user.id,
+    text: `Thanks for your feedback! You rated us ${rating}/5.`,
+  });
+});
+```
+
+### Updating and Pushing Modals
+
+Use `response_action: "update"` to replace the current modal view, or `response_action: "push"` to stack a new view on top (max 3 views deep).
+
+```typescript
+// Update the modal to show a confirmation screen
+await ack({
+  response_action: "update",
+  view: {
+    type: "modal",
+    title: { type: "plain_text", text: "Confirmed" },
+    blocks: [
+      {
+        type: "section",
+        text: { type: "mrkdwn", text: "✅ Your ticket has been created." },
+      },
+    ],
+  },
+});
+```
+
+## Additional Guidelines
+
+- **Fallback text**: Always set the top-level `text` property on messages that use `blocks`. This text appears in notifications, screen readers, and clients that cannot render blocks.
+- **Accessibility**: Use descriptive `alt_text` on all `image` elements. Use meaningful button labels — not "Click here".
+- **Confirm dialogs**: Add `confirm` objects to destructive buttons to prevent accidental actions.
+- **Overflow menus**: Use `overflow` for secondary actions to keep the `actions` block clean.
+- **Dynamic options**: For large option sets, use `external_select` with an `options` handler instead of `static_select` to avoid the 100-option limit.
+- **Ephemeral messages**: Use `chat.postEphemeral` for messages only the triggering user should see (e.g., validation errors, help text).
+- **Message updates**: Use `chat.update` to edit messages in-place (e.g., reflecting the result of a button press) instead of posting new messages.
+- **Metadata**: Use `metadata` on messages to attach structured event payloads for downstream automation.
+- **Unfurling**: When building link unfurls, return a single `section` with an `image` accessory for compact previews.

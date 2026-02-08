@@ -1,0 +1,321 @@
+---
+description: Best practices for building Slack apps with the Bolt framework and Slack APIs
+globs:
+  - "**/*.ts"
+  - "**/*.js"
+alwaysApply: false
+---
+
+# Slack Bolt Framework Best Practices
+
+## Use the Bolt SDK — Not Raw HTTP Calls
+
+Always use the official `@slack/bolt` SDK rather than hand-rolling HTTP requests to the Slack API. Bolt handles request verification, event parsing, retry headers, and middleware chaining out of the box.
+
+```typescript
+import { App } from "@slack/bolt";
+
+const app = new App({
+  token: process.env.SLACK_BOT_TOKEN,
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+});
+```
+
+Never import `axios` or `node-fetch` to call `https://slack.com/api/*` directly. The `@slack/web-api` client (bundled with Bolt) provides typed methods, automatic pagination, and rate-limit handling.
+
+## Acknowledge Events Immediately with `ack()`
+
+Every listener — commands, actions, view submissions, shortcuts, options — **must** call `await ack()` within 3 seconds. Perform heavy work after acknowledging.
+
+```typescript
+// Good — ack first, then do work
+app.command("/deploy", async ({ ack, say, command }) => {
+  await ack(); // Respond to Slack within 3 seconds
+  const result = await runDeployment(command.text);
+  await say(`Deployment complete: ${result.url}`);
+});
+
+// Bad — long operation before ack causes timeout
+app.command("/deploy", async ({ ack, say, command }) => {
+  const result = await runDeployment(command.text); // May exceed 3s
+  await ack(); // Too late — Slack already timed out
+});
+```
+
+For interactions that need to send an immediate visible response, pass a response body to `ack()`:
+
+```typescript
+app.action("approve_button", async ({ ack, action, say }) => {
+  await ack({ text: "Processing approval…" });
+  await processApproval(action);
+  await say("Request approved ✓");
+});
+```
+
+## Use Block Kit for Rich Messages
+
+Build messages with Block Kit blocks and elements instead of plain text or legacy attachments. Block Kit provides a consistent, interactive, and accessible UI across all Slack clients.
+
+```typescript
+await say({
+  blocks: [
+    {
+      type: "header",
+      text: { type: "plain_text", text: "Deployment Summary" },
+    },
+    {
+      type: "section",
+      fields: [
+        { type: "mrkdwn", text: "*Environment:*\nProduction" },
+        { type: "mrkdwn", text: "*Status:*\n✅ Success" },
+      ],
+    },
+    {
+      type: "actions",
+      elements: [
+        {
+          type: "button",
+          text: { type: "plain_text", text: "View Logs" },
+          url: "https://example.com/logs",
+          action_id: "view_logs",
+        },
+      ],
+    },
+  ],
+  text: "Deployment Summary — fallback for notifications",
+});
+```
+
+Always include a `text` property alongside `blocks` as a fallback for notifications and accessibility.
+
+## Validate Request Signatures
+
+When deploying outside of Socket Mode (i.e., receiving HTTP events), always verify the `x-slack-signature` header to prevent forgery. Bolt does this automatically when you set `signingSecret`, but if you use a custom Express server, make sure the Bolt receiver processes the raw body.
+
+```typescript
+// If using a custom Express receiver, ensure rawBody is available
+import { App, ExpressReceiver } from "@slack/bolt";
+
+const receiver = new ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET!,
+});
+
+// Mount additional routes AFTER Bolt middleware so signature verification runs
+receiver.router.get("/health", (_req, res) => res.send("ok"));
+
+const app = new App({ token: process.env.SLACK_BOT_TOKEN!, receiver });
+```
+
+Never disable signature verification in production. Never log or expose your signing secret.
+
+## Handle Rate Limiting with Retry Logic
+
+Slack API methods return HTTP 429 with a `Retry-After` header when rate-limited. The `@slack/web-api` client retries automatically (up to a configurable limit), but be aware of the default behavior and tune it for your workload.
+
+```typescript
+import { WebClient, LogLevel } from "@slack/web-api";
+
+const client = new WebClient(process.env.SLACK_BOT_TOKEN, {
+  retryConfig: {
+    retries: 3,
+    factor: 2, // Exponential backoff
+  },
+  logLevel: LogLevel.WARN,
+});
+```
+
+For bulk operations (e.g., messaging all members of a channel), add your own delay between calls:
+
+```typescript
+for (const userId of userIds) {
+  await client.chat.postMessage({ channel: userId, text: message });
+  await new Promise((resolve) => setTimeout(resolve, 1200)); // ~50 req/min tier
+}
+```
+
+## Use Socket Mode for Development and Firewalled Environments
+
+Socket Mode connects to Slack over a WebSocket instead of requiring a public HTTP endpoint. Use it during development, behind corporate firewalls, or when you cannot expose a URL.
+
+```typescript
+const app = new App({
+  token: process.env.SLACK_BOT_TOKEN,
+  appToken: process.env.SLACK_APP_TOKEN, // xapp-1-... token with connections:write scope
+  socketMode: true,
+});
+```
+
+Generate an App-Level Token with the `connections:write` scope in the Slack App settings. Do **not** use Socket Mode in high-throughput production deployments — use HTTP mode with a load balancer instead.
+
+## Request Minimal OAuth Scopes
+
+Only request the scopes your app actually needs. Excessive scopes erode user trust and increase the blast radius of a token compromise.
+
+| Scope | Use Case |
+|-------|----------|
+| `chat:write` | Post messages to channels the bot is a member of |
+| `commands` | Register and receive slash commands |
+| `app_mentions:read` | Receive `app_mention` events |
+| `channels:read` | List public channels |
+| `groups:read` | List private channels the bot is in |
+| `im:read` / `im:write` | Read and send direct messages |
+| `reactions:read` | Track emoji reactions |
+| `files:read` | Access shared files |
+| `users:read` | Look up user profiles |
+
+Review scopes when adding new features and remove unused ones.
+
+## Store Tokens Securely
+
+Never hard-code `SLACK_BOT_TOKEN`, `SLACK_SIGNING_SECRET`, or `SLACK_APP_TOKEN` in source code. Use environment variables, a secrets manager (AWS Secrets Manager, Vault, Doppler), or encrypted configuration.
+
+```typescript
+// Good — environment variables
+const app = new App({
+  token: process.env.SLACK_BOT_TOKEN!,
+  signingSecret: process.env.SLACK_SIGNING_SECRET!,
+});
+
+// Bad — hard-coded tokens
+const app = new App({
+  token: "xoxb-1234567890-abcdefghij",
+  signingSecret: "abc123def456",
+});
+```
+
+For multi-workspace apps using OAuth, store installation data (tokens, team IDs) in an encrypted database and implement the `InstallationStore` interface:
+
+```typescript
+import { InstallationStore } from "@slack/bolt";
+
+const installationStore: InstallationStore = {
+  storeInstallation: async (installation) => {
+    await db.installations.upsert(installation);
+  },
+  fetchInstallation: async (installQuery) => {
+    return await db.installations.findOne(installQuery);
+  },
+  deleteInstallation: async (installQuery) => {
+    await db.installations.delete(installQuery);
+  },
+};
+```
+
+## Distinguish `app_mention` vs `message` Events
+
+- **`app_mention`** — Fires only when the bot is explicitly `@mentioned`. Use it for commands directed at your bot.
+- **`message`** — Fires for every message in channels the bot is a member of. Use it for keyword-based triggers or monitoring.
+
+```typescript
+// Respond only when someone @mentions the bot
+app.event("app_mention", async ({ event, say }) => {
+  await say(`Hey <@${event.user}>, how can I help?`);
+});
+
+// React to any message containing "help" — careful with volume
+app.message(/help/i, async ({ message, say }) => {
+  await say("Here are some things I can do…");
+});
+```
+
+Prefer `app_mention` for interactive bot commands to avoid processing every message in busy channels. If you must listen to `message` events, filter aggressively and debounce if needed.
+
+## Use Modals for Complex Interactions
+
+For multi-step workflows, forms, or data entry, use Slack modals (views) instead of threaded messages or ephemeral prompts. Modals provide a structured form with input validation.
+
+```typescript
+app.command("/create-ticket", async ({ ack, body, client }) => {
+  await ack();
+
+  await client.views.open({
+    trigger_id: body.trigger_id,
+    view: {
+      type: "modal",
+      callback_id: "ticket_modal",
+      title: { type: "plain_text", text: "Create Ticket" },
+      submit: { type: "plain_text", text: "Submit" },
+      blocks: [
+        {
+          type: "input",
+          block_id: "title_block",
+          label: { type: "plain_text", text: "Title" },
+          element: {
+            type: "plain_text_input",
+            action_id: "title_input",
+            placeholder: { type: "plain_text", text: "Brief description" },
+          },
+        },
+        {
+          type: "input",
+          block_id: "priority_block",
+          label: { type: "plain_text", text: "Priority" },
+          element: {
+            type: "static_select",
+            action_id: "priority_select",
+            options: [
+              { text: { type: "plain_text", text: "Low" }, value: "low" },
+              { text: { type: "plain_text", text: "Medium" }, value: "medium" },
+              { text: { type: "plain_text", text: "High" }, value: "high" },
+            ],
+          },
+        },
+      ],
+    },
+  });
+});
+
+// Handle modal submission
+app.view("ticket_modal", async ({ ack, view, body }) => {
+  const title = view.state.values.title_block.title_input.value;
+  const priority = view.state.values.priority_block.priority_select.selected_option?.value;
+
+  // Validate
+  if (!title || title.length < 5) {
+    await ack({
+      response_action: "errors",
+      errors: { title_block: "Title must be at least 5 characters" },
+    });
+    return;
+  }
+
+  await ack();
+  await createTicket({ title, priority, userId: body.user.id });
+});
+```
+
+## Paginate API Responses
+
+Many Slack API methods return paginated results. Always handle pagination to avoid missing data. The `@slack/web-api` client provides cursor-based pagination helpers.
+
+```typescript
+// Manual cursor pagination
+let cursor: string | undefined;
+const allChannels = [];
+
+do {
+  const result = await client.conversations.list({
+    limit: 200,
+    cursor,
+  });
+  allChannels.push(...(result.channels ?? []));
+  cursor = result.response_metadata?.next_cursor || undefined;
+} while (cursor);
+
+// Or use the built-in pagination helper
+for await (const page of client.paginate("conversations.list", { limit: 200 })) {
+  allChannels.push(...(page.channels ?? []));
+}
+```
+
+Never assume the first page contains all results. Set `limit` to reduce the number of pages when you only need a few records.
+
+## Additional Guidelines
+
+- **Error handling**: Wrap every listener body in try/catch. Unhandled errors crash the Bolt process or leave interactions hanging.
+- **Logging**: Use Bolt's built-in logger (`app.logger`) instead of `console.log`. Set `logLevel` to control verbosity.
+- **Middleware**: Use Bolt's global and listener middleware for cross-cutting concerns like authentication, logging, and feature flags.
+- **App Home**: Use `app.event("app_home_opened")` to render a dynamic Home tab with Block Kit.
+- **Unfurl links**: Register link domains and use `app.event("link_shared")` to provide rich previews.
+- **Testing**: Mock the Slack client in unit tests. Use `@slack/bolt`'s `App` constructor with `authorize` to inject test tokens.
+- **Graceful shutdown**: Handle `SIGTERM` and `SIGINT` to call `await app.stop()` so in-flight events complete.

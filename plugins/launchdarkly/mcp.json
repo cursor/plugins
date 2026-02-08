@@ -1,0 +1,64 @@
+{
+  "mcpServers": {
+    "launchdarkly": {
+      "command": "npx",
+      "args": ["-y", "@launchdarkly/mcp-server"],
+      "description": "LaunchDarkly MCP server — manage feature flags, segments, environments, and experiments directly from Cursor",
+      "env": {
+        "LAUNCHDARKLY_ACCESS_TOKEN": "${LAUNCHDARKLY_ACCESS_TOKEN}",
+        "LAUNCHDARKLY_PROJECT_KEY": "${LAUNCHDARKLY_PROJECT_KEY:-default}",
+        "LAUNCHDARKLY_ENVIRONMENT_KEY": "${LAUNCHDARKLY_ENVIRONMENT_KEY:-production}"
+      },
+      "tools": [
+        {
+          "name": "list_flags",
+          "description": "List all feature flags in the project with their status, variations, and targeting state"
+        },
+        {
+          "name": "get_flag",
+          "description": "Get detailed information about a specific feature flag including targeting rules, prerequisites, and variations"
+        },
+        {
+          "name": "create_flag",
+          "description": "Create a new feature flag with specified key, name, description, type, and variations"
+        },
+        {
+          "name": "toggle_flag",
+          "description": "Turn a feature flag on or off in a specific environment"
+        },
+        {
+          "name": "update_flag_targeting",
+          "description": "Update targeting rules, percentage rollouts, and individual targeting for a flag"
+        },
+        {
+          "name": "evaluate_flag",
+          "description": "Evaluate a feature flag for a given context and return the variation and reason"
+        },
+        {
+          "name": "list_segments",
+          "description": "List user segments in the project"
+        },
+        {
+          "name": "get_flag_status",
+          "description": "Get the status of a flag: active, launched, inactive, or new"
+        },
+        {
+          "name": "list_environments",
+          "description": "List all environments in the project (development, staging, production, etc.)"
+        },
+        {
+          "name": "get_audit_log",
+          "description": "Get recent audit log entries for flag changes, targeting updates, and other modifications"
+        },
+        {
+          "name": "search_flags",
+          "description": "Search for flags by name, key, tag, or description"
+        },
+        {
+          "name": "archive_flag",
+          "description": "Archive a feature flag that is no longer needed"
+        }
+      ]
+    }
+  }
+}
