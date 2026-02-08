@@ -1,0 +1,266 @@
+---
+description: Best practices for Cloudflare wrangler.toml and project configuration
+globs:
+  - "wrangler.toml"
+  - "wrangler.jsonc"
+alwaysApply: false
+---
+
+# Cloudflare Wrangler Configuration Best Practices
+
+## Fundamentals
+
+- Use `wrangler.toml` as the single source of truth for Worker configuration. All bindings, routes, compatibility settings, and environment overrides belong here.
+- Validate your configuration with `wrangler deploy --dry-run` before pushing changes.
+- Keep `wrangler.toml` in version control — it defines the infrastructure-as-code contract for your Worker.
+
+```toml
+name = "my-worker"
+main = "src/index.ts"
+compatibility_date = "2025-12-01"
+compatibility_flags = ["nodejs_compat"]
+```
+
+## Compatibility Date
+
+- **Always set `compatibility_date`** to pin runtime behavior. Without it, your Worker may break when Cloudflare changes default behavior.
+- Use the latest stable date when creating a new project. Only advance the date deliberately, after testing.
+- `compatibility_flags` opt into specific features ahead of their compatibility date (e.g., `nodejs_compat` for Node.js API polyfills).
+
+```toml
+compatibility_date = "2025-12-01"
+compatibility_flags = ["nodejs_compat"]
+```
+
+## KV Namespace Bindings
+
+- Define KV bindings with a clear `binding` name that matches your `Env` interface and an `id` referencing the KV namespace.
+- Use `preview_id` for local development with `wrangler dev`.
+
+```toml
+[[kv_namespaces]]
+binding = "CACHE"
+id = "abcdef1234567890abcdef1234567890"
+preview_id = "preview_abcdef1234567890abcdef12"
+```
+
+## R2 Bucket Bindings
+
+- Bind R2 buckets by `bucket_name`. The `binding` name is how your Worker code references the bucket.
+- Use `preview_bucket_name` for local development to avoid writing to production buckets.
+
+```toml
+[[r2_buckets]]
+binding = "ASSETS"
+bucket_name = "my-assets-bucket"
+preview_bucket_name = "my-assets-bucket-preview"
+```
+
+## D1 Database Bindings
+
+- Bind D1 databases with `database_name` and `database_id`.
+- Use `wrangler d1 create <name>` to create a database and get the `database_id`.
+- Always use parameterized queries (`.bind()`) to prevent SQL injection.
+
+```toml
+[[d1_databases]]
+binding = "DB"
+database_name = "my-app-db"
+database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+```
+
+## Durable Object Bindings
+
+- Declare Durable Object classes in `[durable_objects.bindings]` and list migration tags in `[[migrations]]` to manage schema changes.
+- Each Durable Object class must be exported from your Worker's entry point.
+
+```toml
+[durable_objects]
+bindings = [
+  { name = "CHAT_ROOM", class_name = "ChatRoom" },
+  { name = "RATE_LIMITER", class_name = "RateLimiter" },
+]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["ChatRoom", "RateLimiter"]
+```
+
+## Queue Bindings
+
+- Define producers and consumers separately. A Worker can be both a producer and a consumer.
+
+```toml
+# Producer
+[[queues.producers]]
+queue = "my-task-queue"
+binding = "TASK_QUEUE"
+
+# Consumer
+[[queues.consumers]]
+queue = "my-task-queue"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 3
+dead_letter_queue = "my-dlq"
+```
+
+## Routes and Custom Domains
+
+- Use `routes` to map URL patterns to your Worker. Routes require an existing Cloudflare zone (domain).
+- Use `custom_domain` for Workers that should be accessible on their own domain without a zone route.
+- Use `workers.dev` subdomain (enabled by default) for development and testing.
+
+```toml
+# Route-based (requires zone)
+routes = [
+  { pattern = "api.example.com/v1/*", zone_name = "example.com" },
+  { pattern = "example.com/api/*", zone_name = "example.com" },
+]
+
+# Or custom domain (no zone config needed)
+# routes = [
+#   { pattern = "api.example.com", custom_domain = true },
+# ]
+
+# workers.dev subdomain (default: true)
+workers_dev = true
+```
+
+## Environment-Specific Configuration
+
+- Use `[env.staging]` and `[env.production]` blocks to override settings per environment.
+- Deploy to a specific environment with `wrangler deploy --env staging`.
+- Each environment can have its own bindings, routes, variables, and compatibility settings.
+- Keep common configuration at the top level and override only what differs per environment.
+
+```toml
+name = "my-worker"
+main = "src/index.ts"
+compatibility_date = "2025-12-01"
+
+[vars]
+LOG_LEVEL = "info"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "dev-kv-id"
+
+# ─── Staging ──────────────────────────────────────────────
+[env.staging]
+name = "my-worker-staging"
+routes = [
+  { pattern = "staging-api.example.com/*", zone_name = "example.com" }
+]
+
+[env.staging.vars]
+LOG_LEVEL = "debug"
+
+[[env.staging.kv_namespaces]]
+binding = "CACHE"
+id = "staging-kv-id"
+
+# ─── Production ──────────────────────────────────────────
+[env.production]
+name = "my-worker-production"
+routes = [
+  { pattern = "api.example.com/*", zone_name = "example.com" }
+]
+
+[[env.production.kv_namespaces]]
+binding = "CACHE"
+id = "production-kv-id"
+```
+
+## Cron Triggers
+
+- Use `[triggers]` to define cron schedules for Workers that run on a timer.
+- Cron expressions use UTC timezone.
+- The Worker must export a `scheduled` handler to respond to cron triggers.
+
+```toml
+[triggers]
+crons = [
+  "0 */6 * * *",   # Every 6 hours
+  "0 0 * * 0",     # Every Sunday at midnight
+  "*/15 * * * *",  # Every 15 minutes
+]
+```
+
+Handler:
+
+```ts
+export default {
+  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+    switch (event.cron) {
+      case "0 */6 * * *":
+        await syncData(env);
+        break;
+      case "0 0 * * 0":
+        await weeklyCleanup(env);
+        break;
+    }
+  },
+};
+```
+
+## Limits and Resource Configuration
+
+- Set `usage_model` to `"bundled"` (default, includes CPU time) or `"unbound"` (pay-per-use, higher CPU limits) depending on workload.
+- Configure `logpush` to send Worker logs to an external destination for production monitoring.
+- Set `placement` to `{ mode = "smart" }` for Smart Placement, which automatically runs your Worker near your back-end services to reduce latency.
+
+```toml
+# Smart Placement — run near your origin/database
+[placement]
+mode = "smart"
+
+# Observability
+[observability]
+enabled = true
+```
+
+## Secrets Management
+
+- **Never put secrets in `wrangler.toml`** — use `wrangler secret put <NAME>` to set encrypted secrets.
+- Secrets are available as `env.<NAME>` in your Worker code, just like `[vars]`.
+- Use `[vars]` for non-sensitive configuration (feature flags, log levels, public API URLs).
+- List secrets with `wrangler secret list` and delete with `wrangler secret delete <NAME>`.
+
+```bash
+# Set a secret
+wrangler secret put API_TOKEN
+
+# Set a secret for a specific environment
+wrangler secret put API_TOKEN --env production
+```
+
+## Static Assets (Sites / Pages)
+
+- For Workers serving static assets alongside dynamic logic, configure `[site]` or use Cloudflare Pages instead.
+- Use `[assets]` (modern approach) to serve a directory of static files from your Worker.
+
+```toml
+[assets]
+directory = "./public"
+```
+
+## Build Configuration
+
+- Use `[build]` to customize the build command if your project requires a compilation step before deployment.
+- Wrangler uses esbuild by default for TypeScript/JavaScript bundling — most projects don't need a custom build.
+
+```toml
+[build]
+command = "npm run build"
+watch_dir = "src"
+```
+
+## Tail Workers (Logging)
+
+- Use `tail_consumers` to send Worker logs to a Tail Worker for custom log processing, filtering, and forwarding.
+
+```toml
+[[tail_consumers]]
+service = "my-log-worker"
+```

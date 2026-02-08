@@ -1,0 +1,36 @@
+{
+  "hooks": [
+    {
+      "event": "pre-commit",
+      "command": "npx wrangler deploy --dry-run --outdir /tmp/worker-build",
+      "description": "Validate Worker build and wrangler.toml configuration before committing changes",
+      "enabled": false
+    },
+    {
+      "event": "pre-push",
+      "command": "npx wrangler deploy --dry-run --outdir /tmp/worker-build",
+      "description": "Run a full Worker build validation before pushing to ensure deployment will succeed",
+      "enabled": false
+    },
+    {
+      "event": "post-deploy",
+      "command": "scripts/deploy-worker.sh",
+      "description": "Execute post-deployment tasks such as health checks and log tailing",
+      "enabled": true
+    },
+    {
+      "event": "file-change",
+      "pattern": "wrangler.toml",
+      "command": "npx wrangler deploy --dry-run --outdir /tmp/worker-build",
+      "description": "Validate wrangler.toml whenever it is modified to catch configuration errors early",
+      "enabled": true
+    },
+    {
+      "event": "file-change",
+      "pattern": "src/**/*.ts",
+      "command": "npx tsc --noEmit",
+      "description": "Type-check Worker source files when they are modified",
+      "enabled": true
+    }
+  ]
+}
