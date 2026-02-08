@@ -1,0 +1,194 @@
+---
+description: Best practices for Docker Compose configuration files
+globs:
+  - "docker-compose*.yml"
+  - "docker-compose*.yaml"
+  - "compose*.yml"
+  - "compose*.yaml"
+alwaysApply: false
+---
+
+# Docker Compose Best Practices
+
+## Use Named Volumes for Persistence
+
+- Always use named volumes instead of bind mounts for data that needs to persist across container restarts.
+- Define volumes in the top-level `volumes` section.
+- Use bind mounts only for development-time source code mounting.
+
+```yaml
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+services:
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+```
+
+## Define Networks Explicitly
+
+- Create and name networks explicitly rather than relying on the default network.
+- Use separate networks to isolate services that should not communicate directly.
+- Use `internal: true` for networks that should not have external access.
+
+```yaml
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true
+
+services:
+  api:
+    networks:
+      - frontend
+      - backend
+  db:
+    networks:
+      - backend
+```
+
+## Set Resource Limits
+
+- Always define memory and CPU limits to prevent a single container from consuming all host resources.
+- Set both `limits` and `reservations` for predictable resource allocation.
+
+```yaml
+services:
+  api:
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 128M
+```
+
+## Use Healthchecks
+
+- Define healthchecks for every service to enable proper dependency management.
+- Use service-appropriate health check commands.
+- Configure sensible intervals, timeouts, and retries.
+
+```yaml
+services:
+  api:
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+  db:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+```
+
+## Use Environment Files for Secrets
+
+- Never hardcode secrets or sensitive values in `docker-compose.yml`.
+- Use `.env` files or Docker secrets for sensitive configuration.
+- Reference environment files using `env_file` and add `.env` to `.gitignore`.
+
+```yaml
+services:
+  api:
+    env_file:
+      - .env
+      - .env.local
+```
+
+## Pin Image Versions
+
+- Always specify explicit image tags — never use `:latest` in production.
+- Use the most specific tag available (e.g., `postgres:16.2-alpine` not `postgres:16`).
+- Document why a specific version is pinned.
+
+```yaml
+services:
+  db:
+    image: postgres:16.2-alpine
+  cache:
+    image: redis:7.2-alpine
+```
+
+## Use depends_on with Conditions
+
+- Use `depends_on` with `condition` to wait for services to be healthy, not just started.
+- Combine with healthchecks for reliable startup ordering.
+
+```yaml
+services:
+  api:
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+```
+
+## Configure Restart Policies
+
+- Set appropriate restart policies for each service.
+- Use `unless-stopped` for production services.
+- Use `no` or `on-failure` for one-off tasks or development.
+
+```yaml
+services:
+  api:
+    restart: unless-stopped
+  worker:
+    restart: on-failure:5
+  migration:
+    restart: "no"
+```
+
+## Use Profiles for Optional Services
+
+- Use profiles to group optional services (e.g., monitoring, debugging, testing).
+- This keeps the default `docker compose up` lightweight.
+- Activate profiles with `--profile` flag when needed.
+
+```yaml
+services:
+  api:
+    # Always starts (no profile)
+    image: myapp:latest
+
+  prometheus:
+    image: prom/prometheus:latest
+    profiles:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    profiles:
+      - monitoring
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    profiles:
+      - debug
+```
+
+## Additional Guidelines
+
+- Use `docker compose` (V2) instead of `docker-compose` (V1).
+- Set a `container_name` only when necessary — it prevents scaling.
+- Use `logging` configuration to control log output and rotation.
+- Prefer `build.context` and `build.dockerfile` over inline Dockerfile paths.
+- Use `init: true` to ensure proper signal handling with PID 1.
+- Set `stop_grace_period` for services that need time to shut down gracefully.
+- Use `tmpfs` mounts for ephemeral data that doesn't need persistence.
+- Group related services logically and add comments for clarity.

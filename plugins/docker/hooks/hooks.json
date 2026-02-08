@@ -1,0 +1,36 @@
+{
+  "hooks": [
+    {
+      "name": "lint-dockerfile",
+      "description": "Lint Dockerfiles using Hadolint before committing",
+      "event": "pre-commit",
+      "command": "bash ./scripts/lint-dockerfile.sh",
+      "filePattern": ["Dockerfile*", "*.dockerfile"],
+      "enabled": true
+    },
+    {
+      "name": "validate-compose",
+      "description": "Validate Docker Compose files before committing",
+      "event": "pre-commit",
+      "command": "docker compose config --quiet",
+      "filePattern": ["docker-compose*.yml", "docker-compose*.yaml", "compose*.yml", "compose*.yaml"],
+      "enabled": true
+    },
+    {
+      "name": "check-dockerignore",
+      "description": "Warn if .dockerignore is missing when Dockerfile exists",
+      "event": "pre-commit",
+      "command": "bash -c 'if ls Dockerfile* 1>/dev/null 2>&1 && [ ! -f .dockerignore ]; then echo \"WARNING: .dockerignore is missing. Consider adding one to reduce build context size.\"; exit 1; fi'",
+      "filePattern": ["Dockerfile*"],
+      "enabled": true
+    },
+    {
+      "name": "scan-dockerfile-secrets",
+      "description": "Check for hardcoded secrets in Dockerfiles",
+      "event": "pre-commit",
+      "command": "bash -c 'if grep -rn -E \"(password|secret|api_key|token)\\s*=\\s*[^$]\" Dockerfile* 2>/dev/null; then echo \"ERROR: Possible hardcoded secrets found in Dockerfile.\"; exit 1; fi'",
+      "filePattern": ["Dockerfile*", "*.dockerfile"],
+      "enabled": true
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "mcpServers": {
+    "docker": {
+      "command": "docker",
+      "args": ["mcp", "server"],
+      "description": "Docker MCP server for container and image management operations",
+      "env": {
+        "DOCKER_HOST": "${DOCKER_HOST:-unix:///var/run/docker.sock}"
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "docker_list_containers",
+            "description": "List running and stopped Docker containers"
+          },
+          {
+            "name": "docker_list_images",
+            "description": "List locally available Docker images"
+          },
+          {
+            "name": "docker_build",
+            "description": "Build a Docker image from a Dockerfile"
+          },
+          {
+            "name": "docker_run",
+            "description": "Run a new Docker container"
+          },
+          {
+            "name": "docker_stop",
+            "description": "Stop a running Docker container"
+          },
+          {
+            "name": "docker_remove",
+            "description": "Remove a Docker container"
+          },
+          {
+            "name": "docker_logs",
+            "description": "Retrieve logs from a Docker container"
+          },
+          {
+            "name": "docker_inspect",
+            "description": "Inspect a Docker container or image"
+          },
+          {
+            "name": "docker_compose_up",
+            "description": "Start services defined in a Docker Compose file"
+          },
+          {
+            "name": "docker_compose_down",
+            "description": "Stop and remove services defined in a Docker Compose file"
+          },
+          {
+            "name": "docker_compose_ps",
+            "description": "List status of Docker Compose services"
+          },
+          {
+            "name": "docker_exec",
+            "description": "Execute a command inside a running container"
+          }
+        ]
+      }
+    }
+  }
+}
