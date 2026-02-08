@@ -18,9 +18,10 @@ plugins/cloudflare/
 ├── .cursor/
 │   └── plugin.json                # Plugin manifest
 ├── agents/
-│   └── cloudflare-worker-agent.md # Worker development agent
+│   └── cloudflare-workers-agent.md # Worker development agent
 ├── rules/
 │   ├── cloudflare-workers.mdc     # Workers best practices
+│   ├── cloudflare-d1.mdc          # D1 database best practices
 │   └── cloudflare-config.mdc      # wrangler.toml configuration rules
 ├── skills/
 │   ├── create-worker/
@@ -53,7 +54,8 @@ This plugin is included in the `service-plugin-generation` repository. To use it
 
 1. Clone the repository or copy the `plugins/cloudflare/` directory into your project
 2. The plugin's rules will automatically activate when you edit matching files:
-   - `src/**/*.ts`, `src/**/*.js`, `worker.*`, `functions/**/*` → Workers best practices
+   - `src/**/*.ts`, `src/**/*.js`, `worker*.*`, `**/workers/**` → Workers best practices
+   - `**/*.sql`, `**/migrations/**`, `**/*.ts` → D1 database best practices
    - `wrangler.toml`, `wrangler.jsonc` → configuration best practices
 3. Access the Worker agent for interactive help with development and deployment
 
@@ -84,7 +86,22 @@ Activated when editing Worker source files. Covers:
 - CORS configuration
 - Environment bindings and typed `Env` interface
 - Module Worker syntax (ES modules)
-- Cache API and HTMLRewriter
+- Cache API for edge caching
+- HTMLRewriter for streaming HTML transformation
+
+### cloudflare-d1.mdc
+
+Activated when editing SQL files, migrations, and TypeScript sources. Covers:
+
+- Parameterized queries with `.bind()` — never concatenate strings
+- Batch operations with `db.batch()` for transactions and performance
+- D1 error handling (constraint violations, missing records)
+- Migration workflow with Wrangler (`create`, `apply --local`, `apply --remote`)
+- Query optimization for the edge (LIMIT, SELECT specific columns, indexes)
+- D1 consistency model (strong consistency, single-region writes, read replication)
+- SQLite-compatible data types (TEXT keys, INTEGER booleans, datetime as TEXT)
+- Prepared statements (`.first()`, `.all()`, `.run()`, `.raw()`)
+- Pagination patterns (offset-based and cursor-based)
 
 ### cloudflare-config.mdc
 

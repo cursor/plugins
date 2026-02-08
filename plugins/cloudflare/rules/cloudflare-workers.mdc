@@ -3,8 +3,8 @@ description: Best practices for Cloudflare Workers and edge computing
 globs:
   - "src/**/*.ts"
   - "src/**/*.js"
-  - "worker.*"
-  - "functions/**/*"
+  - "worker*.*"
+  - "**/workers/**"
 alwaysApply: false
 ---
 
@@ -269,6 +269,77 @@ export default {
 // addEventListener("fetch", (event) => { ... });
 ```
 
+## HTMLRewriter — Streaming HTML Transformation
+
+- Use `HTMLRewriter` to transform HTML responses on the fly without buffering the entire document into memory.
+- Common use cases: inject analytics scripts, rewrite links, localize content, add headers/footers, A/B testing.
+- Handlers are streaming — they process elements as they are encountered, keeping memory usage constant.
+
+```ts
+// Inject a script tag before </head>
+const rewriter = new HTMLRewriter()
+  .on("head", {
+    element(element) {
+      element.append('<script src="/analytics.js"></script>', { html: true });
+    },
+  })
+  .on("a[href]", {
+    element(element) {
+      const href = element.getAttribute("href");
+      if (href?.startsWith("http://")) {
+        element.setAttribute("href", href.replace("http://", "https://"));
+      }
+    },
+  })
+  .on("title", {
+    text(text) {
+      // Modify text content within <title> elements
+      if (text.text) {
+        text.replace(text.text.toUpperCase());
+      }
+    },
+  });
+
+// Apply the rewriter to an upstream response
+const response = await fetch(request);
+return rewriter.transform(response);
+```
+
+- **Do not** use HTMLRewriter on non-HTML responses — check `Content-Type` first.
+- Chain multiple handlers for different selectors on the same `HTMLRewriter` instance.
+- Use `element.onEndTag()` for inserting content at the closing tag.
+
+## Cache API — Edge Caching
+
+- Use the **Cache API** (`caches.default`) to cache responses at the Cloudflare edge.
+- Cache API is separate from browser Cache-Control headers — it stores responses in Cloudflare's CDN.
+- Only `GET` requests are cacheable by default. Use a custom cache key for dynamic content.
+
+```ts
+export default {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    const cache = caches.default;
+    const cacheKey = new Request(request.url, request);
+
+    // Check cache first
+    let response = await cache.match(cacheKey);
+    if (response) {
+      return response;
+    }
+
+    // Fetch from origin
+    response = await fetch(request);
+    response = new Response(response.body, response);
+    response.headers.set("Cache-Control", "s-maxage=3600");
+
+    // Store in cache (non-blocking)
+    ctx.waitUntil(cache.put(cacheKey, response.clone()));
+
+    return response;
+  },
+};
+```
+
 ## Performance Tips
 
 - Return responses as early as possible — avoid unnecessary `await` chains.
@@ -276,3 +347,5 @@ export default {
 - Use `HTMLRewriter` for efficient streaming HTML transformations without buffering the entire document.
 - Prefer `Response.json()` over manually setting `Content-Type` and `JSON.stringify()`.
 - Minimize global scope code — it runs on every cold start across all isolates.
+- Parallelize independent I/O with `Promise.all()` instead of sequential `await`.
+- Use streaming responses (`ReadableStream`) for large payloads instead of buffering.

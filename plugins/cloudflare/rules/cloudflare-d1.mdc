@@ -1,0 +1,377 @@
+---
+description: Best practices for Cloudflare D1 serverless SQL database
+globs:
+  - "**/*.sql"
+  - "**/migrations/**"
+  - "**/*.ts"
+alwaysApply: false
+---
+
+# Cloudflare D1 Best Practices
+
+D1 is Cloudflare's serverless SQL database built on SQLite, designed to run at the edge alongside Workers.
+
+## Parameterized Queries — Prevent SQL Injection
+
+- **Always** use `.bind()` with `?` placeholders for user-supplied values — never concatenate strings into SQL.
+- `.bind()` parameters are positional: the first `?` maps to the first `.bind()` argument.
+- This applies to all query methods: `.prepare()`, `.first()`, `.all()`, `.run()`, `.raw()`.
+
+```ts
+// ✅ Safe — parameterized query
+const user = await env.DB.prepare(
+  "SELECT id, email, name FROM users WHERE email = ? AND active = ?"
+)
+  .bind(email, 1)
+  .first();
+
+// ✅ Safe — parameterized INSERT
+await env.DB.prepare(
+  "INSERT INTO users (id, email, name) VALUES (?, ?, ?)"
+)
+  .bind(crypto.randomUUID(), email, name)
+  .run();
+
+// ❌ DANGEROUS — SQL injection vulnerability
+const user = await env.DB.prepare(
+  `SELECT * FROM users WHERE email = '${email}'`
+).first();
+
+// ❌ DANGEROUS — string concatenation
+const query = "SELECT * FROM users WHERE name = '" + name + "'";
+```
+
+## Batch Operations for Performance and Atomicity
+
+- Use `db.batch()` to execute multiple statements in a **single transaction** — all succeed or all fail.
+- Batching reduces round-trips between the Worker and D1, significantly improving performance.
+- Each statement in a batch must be a prepared statement with `.bind()` already applied.
+
+```ts
+// Transactional: create user + default settings in one atomic operation
+const userId = crypto.randomUUID();
+const results = await env.DB.batch([
+  env.DB.prepare(
+    "INSERT INTO users (id, email, name) VALUES (?, ?, ?)"
+  ).bind(userId, email, name),
+  env.DB.prepare(
+    "INSERT INTO user_settings (user_id, theme, notifications) VALUES (?, ?, ?)"
+  ).bind(userId, "system", 1),
+  env.DB.prepare(
+    "INSERT INTO audit_log (user_id, action) VALUES (?, ?)"
+  ).bind(userId, "account_created"),
+]);
+
+// All three inserts succeed or none do
+```
+
+- Use batching for bulk inserts instead of individual `INSERT` statements:
+
+```ts
+// ✅ Efficient — single batch for multiple rows
+const statements = items.map((item) =>
+  env.DB.prepare(
+    "INSERT INTO products (id, name, price) VALUES (?, ?, ?)"
+  ).bind(item.id, item.name, item.price)
+);
+await env.DB.batch(statements);
+
+// ❌ Inefficient — N separate round-trips
+for (const item of items) {
+  await env.DB.prepare(
+    "INSERT INTO products (id, name, price) VALUES (?, ?, ?)"
+  ).bind(item.id, item.name, item.price).run();
+}
+```
+
+## Prepared Statements
+
+- Always use `db.prepare()` to create prepared statements — they are parsed once and can be reused with different bindings.
+- Use the correct result method for your query:
+
+| Method | Returns | Use When |
+|---|---|---|
+| `.first()` | Single row or `null` | Fetching one record (e.g., by primary key) |
+| `.first<T>()` | Typed single row or `null` | Fetching one record with TypeScript types |
+| `.all()` | `{ results, success, meta }` | Fetching multiple rows |
+| `.run()` | `{ success, meta }` | INSERT, UPDATE, DELETE (no result rows) |
+| `.raw()` | `any[][]` (array of arrays) | Raw row arrays without column names |
+
+```ts
+// .first() — single record lookup
+const user = await env.DB.prepare(
+  "SELECT id, name, email FROM users WHERE id = ?"
+).bind(userId).first<{ id: string; name: string; email: string }>();
+
+// .all() — multiple records
+const { results: posts } = await env.DB.prepare(
+  "SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC LIMIT ?"
+).bind(userId, 20).all();
+
+// .run() — mutations (no result rows needed)
+const { meta } = await env.DB.prepare(
+  "UPDATE users SET name = ?, updated_at = datetime('now') WHERE id = ?"
+).bind(newName, userId).run();
+console.log(`Rows changed: ${meta.changes}`);
+```
+
+## D1 Error Handling
+
+- D1 operations can throw exceptions — always wrap database calls in `try/catch`.
+- Check the `error` property on results for query-level errors.
+- Common error scenarios: constraint violations (UNIQUE, NOT NULL, CHECK, FOREIGN KEY), syntax errors, and database-not-found.
+
+```ts
+try {
+  await env.DB.prepare(
+    "INSERT INTO users (id, email, name) VALUES (?, ?, ?)"
+  ).bind(id, email, name).run();
+} catch (err: unknown) {
+  if (err instanceof Error) {
+    if (err.message.includes("UNIQUE constraint failed")) {
+      return Response.json(
+        { error: "A user with this email already exists" },
+        { status: 409 }
+      );
+    }
+    if (err.message.includes("NOT NULL constraint failed")) {
+      return Response.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+    console.error("D1 error:", err.message);
+  }
+  return Response.json(
+    { error: "Database error" },
+    { status: 500 }
+  );
+}
+```
+
+- Always check that `.first()` did not return `null` before using the result:
+
+```ts
+const user = await env.DB.prepare(
+  "SELECT * FROM users WHERE id = ?"
+).bind(userId).first();
+
+if (!user) {
+  return Response.json({ error: "User not found" }, { status: 404 });
+}
+```
+
+## Migrations
+
+- Use Wrangler's built-in migration system to manage schema changes over time.
+- Migrations are numbered SQL files in a `migrations/` directory, executed in order.
+- **Never** edit a migration that has already been applied — create a new one instead.
+- Test migrations locally before applying to production.
+
+```bash
+# Create a new migration
+wrangler d1 migrations create my-db add_comments_table
+
+# Apply migrations locally (development)
+wrangler d1 migrations apply my-db --local
+
+# List pending migrations (remote)
+wrangler d1 migrations list my-db --remote
+
+# Apply migrations to production
+wrangler d1 migrations apply my-db --remote
+```
+
+### Migration File Conventions
+
+```sql
+-- migrations/0001_create_users.sql
+CREATE TABLE IF NOT EXISTS users (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  email TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'admin')),
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+```
+
+- Use `IF NOT EXISTS` / `IF EXISTS` to make migrations idempotent where possible.
+- Use `CHECK` constraints for enum-like text columns.
+- Use `REFERENCES ... ON DELETE CASCADE` for foreign keys.
+- Include indexes in the same migration as the table they reference.
+
+## Optimize Queries for the Edge
+
+D1 runs on Cloudflare's edge network. Keep queries small and efficient:
+
+- **Limit result sets** — always use `LIMIT` to prevent unbounded queries:
+
+```ts
+// ✅ Bounded query
+const { results } = await env.DB.prepare(
+  "SELECT id, title, slug FROM posts WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?"
+).bind("published", limit, offset).all();
+
+// ❌ Unbounded — could return millions of rows
+const { results } = await env.DB.prepare(
+  "SELECT * FROM posts"
+).all();
+```
+
+- **Select only needed columns** — avoid `SELECT *` in production code:
+
+```ts
+// ✅ Select specific columns
+const { results } = await env.DB.prepare(
+  "SELECT id, name, email FROM users WHERE active = ?"
+).bind(1).all();
+
+// ❌ Wasteful — fetches all columns including large text/blob
+const { results } = await env.DB.prepare(
+  "SELECT * FROM users WHERE active = ?"
+).bind(1).all();
+```
+
+- **Use indexes** — add indexes on columns used in `WHERE`, `JOIN`, and `ORDER BY`:
+
+```sql
+-- Index for filtered + sorted queries
+CREATE INDEX idx_posts_status_date ON posts(status, created_at DESC);
+
+-- Partial index — only index the rows you actually query
+CREATE INDEX idx_posts_published ON posts(published_at DESC)
+  WHERE status = 'published';
+
+-- Composite index for JOINs
+CREATE INDEX idx_post_tags_tag_id ON post_tags(tag_id);
+```
+
+- **Parallelize independent queries** using `Promise.all()`:
+
+```ts
+const [postsResult, tagsResult, statsResult] = await Promise.all([
+  env.DB.prepare("SELECT * FROM posts WHERE status = ? LIMIT 20")
+    .bind("published").all(),
+  env.DB.prepare("SELECT * FROM tags ORDER BY name").all(),
+  env.DB.prepare("SELECT COUNT(*) as total FROM posts WHERE status = ?")
+    .bind("published").first<{ total: number }>(),
+]);
+```
+
+## D1 Consistency Model
+
+- D1 provides **strong consistency** within a single database — reads always reflect the latest writes.
+- Each D1 database has a **primary location**. Reads and writes are routed to this location.
+- D1 uses **read replication** to serve read queries from edge locations closer to the user, reducing latency for read-heavy workloads.
+- For write-heavy workloads, consider co-locating your Worker near the D1 database using **Smart Placement**:
+
+```toml
+# wrangler.toml — place Worker near D1 primary
+[placement]
+mode = "smart"
+```
+
+- `db.batch()` runs all statements in a single transaction at the primary location, ensuring atomicity and consistency across multiple writes.
+- Be aware that D1 is **single-region for writes** — all write operations go to the primary location regardless of where the Worker runs.
+
+## SQLite-Specific Data Types
+
+D1 is built on SQLite. Use SQLite-compatible types:
+
+| Concept | Recommended Type | Notes |
+|---|---|---|
+| Primary key | `TEXT` with `randomblob` or UUID | SQLite has no native UUID type |
+| Timestamps | `TEXT` with `datetime('now')` | ISO 8601 format, stored as text |
+| Boolean | `INTEGER` (0 or 1) | SQLite has no native boolean |
+| JSON data | `TEXT` | Store serialized JSON, parse in Worker code |
+| Enums | `TEXT` with `CHECK` constraint | Enforced at the database level |
+| Money/decimals | `INTEGER` (store as cents) | Avoid floating-point precision issues |
+| Auto-increment | `INTEGER PRIMARY KEY` | SQLite's built-in rowid alias |
+
+```sql
+CREATE TABLE orders (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  total_cents INTEGER NOT NULL,            -- money as cents
+  metadata TEXT,                            -- JSON blob
+  is_paid INTEGER NOT NULL DEFAULT 0,      -- boolean
+  status TEXT NOT NULL DEFAULT 'pending'
+    CHECK (status IN ('pending', 'processing', 'completed', 'cancelled')),
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+```
+
+## Pagination Patterns
+
+### Offset-Based Pagination
+
+Simple but less efficient for large offsets:
+
+```ts
+async function listPosts(db: D1Database, page: number, pageSize: number = 20) {
+  const offset = (page - 1) * pageSize;
+
+  const [data, countRow] = await Promise.all([
+    db.prepare(
+      "SELECT id, title, slug, created_at FROM posts WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?"
+    ).bind("published", pageSize, offset).all(),
+    db.prepare(
+      "SELECT COUNT(*) as total FROM posts WHERE status = ?"
+    ).bind("published").first<{ total: number }>(),
+  ]);
+
+  return {
+    posts: data.results,
+    total: countRow?.total ?? 0,
+    page,
+    pageSize,
+    totalPages: Math.ceil((countRow?.total ?? 0) / pageSize),
+  };
+}
+```
+
+### Cursor-Based Pagination
+
+More efficient for large datasets — uses the last seen value as a cursor:
+
+```ts
+async function listPostsCursor(
+  db: D1Database,
+  cursor?: string,
+  limit: number = 20
+) {
+  let query = "SELECT id, title, created_at FROM posts WHERE status = ?";
+  const params: any[] = ["published"];
+
+  if (cursor) {
+    query += " AND created_at < ?";
+    params.push(cursor);
+  }
+
+  query += " ORDER BY created_at DESC LIMIT ?";
+  params.push(limit + 1); // Fetch one extra to detect if there's a next page
+
+  const stmt = db.prepare(query);
+  const { results } = await stmt.bind(...params).all();
+
+  const hasMore = results.length > limit;
+  const items = hasMore ? results.slice(0, limit) : results;
+  const nextCursor = hasMore ? items[items.length - 1].created_at : null;
+
+  return { posts: items, nextCursor, hasMore };
+}
+```
+
+## Common Pitfalls
+
+- **String concatenation in queries** — always use `.bind()` for parameterized queries.
+- **Editing applied migrations** — never modify a migration after it has been applied; create a new one.
+- **Missing indexes on foreign keys** — SQLite does not auto-index foreign key columns; add explicit indexes.
+- **Unbounded queries** — always use `LIMIT` to prevent fetching entire tables.
+- **Using `SELECT *`** — select only the columns you need to reduce data transfer.
+- **Forgetting `--local` vs. `--remote`** — test migrations locally first before applying to production.
+- **Not using `.batch()`** — multiple related writes should use `.batch()` for atomicity and performance.
+- **Ignoring error handling** — always wrap D1 operations in `try/catch` and handle constraint violations gracefully.
