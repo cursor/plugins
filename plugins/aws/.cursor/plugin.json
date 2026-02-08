@@ -6,7 +6,7 @@
   "homepage": "https://github.com/cursor/service-plugin-generation",
   "repository": "https://github.com/cursor/service-plugin-generation",
   "license": "MIT",
-  "keywords": ["aws", "lambda", "s3", "dynamodb", "cdk", "iam", "cloud"],
+  "keywords": ["aws", "lambda", "s3", "dynamodb", "cdk", "cloudformation", "iam"],
   "category": "infrastructure",
   "tags": ["cloud", "serverless", "infrastructure"],
   "agents": "./agents/",

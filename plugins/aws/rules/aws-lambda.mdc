@@ -1,0 +1,276 @@
+---
+description: AWS Lambda best practices for serverless function development
+globs: ["**/*.ts", "**/*.js", "**/lambda/**", "**/functions/**"]
+---
+
+# AWS Lambda Best Practices
+
+## Minimize Cold Starts
+
+- Keep handler files lean — only import what each function needs.
+- Lazy-load AWS SDK clients and heavy dependencies; initialize them on first invocation, not at module load time, unless the function is invoked frequently.
+- Use provisioned concurrency for latency-critical paths (APIs, synchronous workflows).
+- Prefer ARM64 (Graviton2) runtimes — they cold-start faster and cost less.
+- Minimize deployment package size: tree-shake, minify, and exclude dev dependencies.
+- Avoid importing the entire AWS SDK when you only need one service client.
+
+```typescript
+// ✅ Lazy-load SDK clients — initialized once, reused across warm invocations
+import type { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+
+let docClient: DynamoDBDocumentClient | undefined;
+
+async function getDocClient(): Promise<DynamoDBDocumentClient> {
+  if (!docClient) {
+    const { DynamoDBClient } = await import("@aws-sdk/client-dynamodb");
+    const { DynamoDBDocumentClient } = await import("@aws-sdk/lib-dynamodb");
+    docClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+  }
+  return docClient;
+}
+
+export const handler = async (event: any) => {
+  const client = await getDocClient();
+  // ...
+};
+```
+
+## Reuse SDK Clients Outside the Handler
+
+- Declare SDK client instances at module scope so they are reused across warm invocations.
+- Never create a new client inside the handler on every call.
+
+```typescript
+// ✅ Module-level client — reused across invocations
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+
+const s3 = new S3Client({});
+
+export const handler = async (event: any) => {
+  const result = await s3.send(new GetObjectCommand({
+    Bucket: process.env.BUCKET_NAME!,
+    Key: event.key,
+  }));
+  // ...
+};
+
+// ❌ Client created inside handler — new connection every invocation
+export const badHandler = async (event: any) => {
+  const s3 = new S3Client({});
+  // ...
+};
+```
+
+## Use Environment Variables for Configuration
+
+- Never hardcode resource names, table names, bucket names, or ARNs in handler code.
+- Pass all configuration through environment variables set in your infrastructure definition (CDK, SAM, CloudFormation).
+- Use AWS Systems Manager Parameter Store or Secrets Manager for sensitive configuration.
+
+```typescript
+const TABLE_NAME = process.env.TABLE_NAME!;
+const BUCKET_NAME = process.env.BUCKET_NAME!;
+const LOG_LEVEL = process.env.LOG_LEVEL ?? "info";
+```
+
+## Follow Least-Privilege IAM
+
+- Grant each Lambda function only the permissions it needs — no wildcards on actions or resources.
+- Use CDK `grant*` helper methods instead of manually writing IAM policies.
+- Prefer resource-level permissions over account-wide permissions.
+- Regularly audit function execution roles with IAM Access Analyzer.
+
+```typescript
+// ✅ CDK — least privilege with grant helpers
+table.grantReadWriteData(myFunction);
+bucket.grantRead(myFunction);
+
+// ❌ Avoid — overly broad permissions
+myFunction.addToRolePolicy(new iam.PolicyStatement({
+  actions: ["dynamodb:*"],
+  resources: ["*"],
+}));
+```
+
+## Handle Timeouts Gracefully
+
+- Always set an explicit `timeout` shorter than the API Gateway / caller timeout.
+- Implement graceful shutdown: wrap long-running work in a timeout-aware loop.
+- Check `context.getRemainingTimeInMillis()` before starting new work units.
+- Return a meaningful error response when approaching the timeout threshold.
+
+```typescript
+import { Context } from "aws-lambda";
+
+export const handler = async (event: any, context: Context) => {
+  const SAFETY_MARGIN_MS = 2000;
+
+  for (const item of event.items) {
+    if (context.getRemainingTimeInMillis() < SAFETY_MARGIN_MS) {
+      console.warn("Approaching timeout, stopping early", {
+        remaining: context.getRemainingTimeInMillis(),
+        processedCount: event.items.indexOf(item),
+      });
+      return { statusCode: 202, body: JSON.stringify({ message: "Partial processing" }) };
+    }
+    await processItem(item);
+  }
+
+  return { statusCode: 200, body: JSON.stringify({ message: "Complete" }) };
+};
+```
+
+## Use Structured Logging (JSON)
+
+- Always emit logs as JSON objects — never use plain `console.log("some string")`.
+- Include `requestId`, `functionName`, `correlationId`, and relevant business context in every log entry.
+- Use log levels consistently: `debug`, `info`, `warn`, `error`.
+- Use AWS Lambda Powertools for structured logging, tracing, and metrics.
+
+```typescript
+import { Logger } from "@aws-lambda-powertools/logger";
+
+const logger = new Logger({ serviceName: "order-service" });
+
+export const handler = async (event: any, context: any) => {
+  logger.addContext(context);
+  logger.info("Processing order", { orderId: event.orderId, itemCount: event.items.length });
+
+  try {
+    const result = await processOrder(event);
+    logger.info("Order processed successfully", { orderId: event.orderId });
+    return result;
+  } catch (error) {
+    logger.error("Order processing failed", { orderId: event.orderId, error });
+    throw error;
+  }
+};
+```
+
+## Use Lambda Powertools
+
+- Use `@aws-lambda-powertools/logger` for structured logging.
+- Use `@aws-lambda-powertools/tracer` for automatic X-Ray tracing and subsegment annotations.
+- Use `@aws-lambda-powertools/metrics` for publishing custom CloudWatch metrics.
+- Use `@aws-lambda-powertools/parameters` for cached SSM / Secrets Manager parameter retrieval.
+- Use the `middy` middleware pattern with Powertools for clean separation of concerns.
+
+```typescript
+import { Logger } from "@aws-lambda-powertools/logger";
+import { Tracer } from "@aws-lambda-powertools/tracer";
+import { Metrics, MetricUnit } from "@aws-lambda-powertools/metrics";
+import middy from "@middy/core";
+import { injectLambdaContext } from "@aws-lambda-powertools/logger/middleware";
+import { captureLambdaHandler } from "@aws-lambda-powertools/tracer/middleware";
+import { logMetrics } from "@aws-lambda-powertools/metrics/middleware";
+
+const logger = new Logger({ serviceName: "payment-service" });
+const tracer = new Tracer({ serviceName: "payment-service" });
+const metrics = new Metrics({ namespace: "PaymentService" });
+
+const lambdaHandler = async (event: any) => {
+  metrics.addMetric("PaymentProcessed", MetricUnit.Count, 1);
+  // handler logic
+};
+
+export const handler = middy(lambdaHandler)
+  .use(injectLambdaContext(logger))
+  .use(captureLambdaHandler(tracer))
+  .use(logMetrics(metrics));
+```
+
+## Set Proper Memory and Timeout
+
+- Memory directly controls CPU allocation — more memory means more CPU and faster execution.
+- Use AWS Lambda Power Tuning to find the optimal memory/cost balance.
+- Set timeout based on expected execution time plus a buffer — never use the 15-minute maximum unless required.
+- Start with 256 MB / 30 seconds for typical API handlers; adjust based on profiling.
+
+```typescript
+// CDK example
+const fn = new nodejs.NodejsFunction(this, "ApiHandler", {
+  memorySize: 512,                        // 512 MB — provides ~0.5 vCPU
+  timeout: cdk.Duration.seconds(30),      // 30s — appropriate for API handlers
+  runtime: lambda.Runtime.NODEJS_20_X,
+  architecture: lambda.Architecture.ARM_64, // Graviton — 20% cheaper
+});
+```
+
+## Use Dead Letter Queues
+
+- Always configure a DLQ for asynchronous invocations (SQS, SNS, EventBridge triggers).
+- Use an SQS DLQ or SNS topic as the failure destination.
+- Set `retryAttempts` to limit retries before messages go to the DLQ.
+- Monitor the DLQ with CloudWatch alarms — a growing DLQ indicates a problem.
+- Process DLQ messages with a separate Lambda function for investigation or replay.
+
+```typescript
+import * as sqs from "aws-cdk-lib/aws-sqs";
+
+const dlq = new sqs.Queue(this, "ProcessingDLQ", {
+  retentionPeriod: cdk.Duration.days(14),
+});
+
+const fn = new nodejs.NodejsFunction(this, "Processor", {
+  deadLetterQueue: dlq,
+  retryAttempts: 2,
+  // ...
+});
+
+// Alarm when DLQ has messages
+new cloudwatch.Alarm(this, "DLQAlarm", {
+  metric: dlq.metricApproximateNumberOfMessagesVisible(),
+  threshold: 1,
+  evaluationPeriods: 1,
+  alarmDescription: "Messages in DLQ — investigate failed processing",
+});
+```
+
+## Validate Input Events
+
+- Always validate the shape and content of incoming events before processing.
+- Use a schema validation library (Zod, io-ts, class-validator) for type-safe validation.
+- Return a 400-level error for malformed input instead of letting the function crash.
+- Validate event source mappings to ensure the function handles the expected event types.
+
+```typescript
+import { z } from "zod";
+
+const OrderEventSchema = z.object({
+  orderId: z.string().uuid(),
+  customerId: z.string().min(1),
+  items: z.array(z.object({
+    productId: z.string(),
+    quantity: z.number().int().positive(),
+  })).min(1),
+  total: z.number().positive(),
+});
+
+export const handler = async (event: any) => {
+  const parsed = OrderEventSchema.safeParse(JSON.parse(event.body ?? "{}"));
+
+  if (!parsed.success) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        message: "Invalid request",
+        errors: parsed.error.flatten().fieldErrors,
+      }),
+    };
+  }
+
+  const order = parsed.data;
+  // Process validated order...
+};
+```
+
+## Additional Best Practices
+
+- **Use Lambda function URLs** for simple HTTP endpoints that don't need API Gateway features.
+- **Enable X-Ray active tracing** to capture end-to-end latency and dependency maps.
+- **Use Lambda destinations** for async success/failure routing instead of DLQs when you need richer routing.
+- **Keep handler functions pure** — extract business logic into testable modules.
+- **Use `/tmp` sparingly** — it persists across warm invocations and has a 512 MB (configurable to 10 GB) limit.
+- **Bundle with esbuild** (via `NodejsFunction` in CDK) for fast builds and small packages.
+- **Pin dependency versions** in `package-lock.json` to ensure reproducible deploys.
+- **Never store state in global variables** — Lambda execution environments are not guaranteed to persist.
