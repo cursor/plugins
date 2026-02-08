@@ -1,4 +1,5 @@
 {
+  "$schema": "https://cursor.com/schemas/hooks.json",
   "hooks": [
     {
       "name": "validate-slack-bolt-listeners",
