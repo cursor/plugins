@@ -1,4 +1,4 @@
-# Setup Firestore Schema
+# Design Firestore Schema
 
 ## Description
 

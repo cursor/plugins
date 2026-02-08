@@ -1,6 +1,11 @@
 ---
 description: Firestore best practices for data modeling, queries, and performance
-globs: ["**/*.ts", "**/*.tsx", "**/*.js"]
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+alwaysApply: false
 ---
 
 # Firestore Best Practices
