@@ -1,0 +1,106 @@
+---
+description: Best practices for Prisma schema design, model definitions, relations, and database mapping
+globs: prisma/schema.prisma, **/*.prisma
+---
+
+# Prisma Schema Best Practices
+
+## Model Naming
+
+- Use **PascalCase** for model names (e.g., `User`, `BlogPost`, `OrderItem`).
+- Choose meaningful, domain-specific names that clearly describe the entity.
+- Avoid abbreviations unless they are universally understood (e.g., `URL`, `API`).
+
+## Primary Keys
+
+- Always define an `@id` field on every model.
+- Use `@default(cuid())` or `@default(uuid())` for string-based IDs:
+  ```prisma
+  model User {
+    id String @id @default(cuid())
+  }
+  ```
+- Use `@default(autoincrement())` only when integer IDs are explicitly required.
+
+## Timestamp Fields
+
+- **Always** add `createdAt` and `updatedAt` fields to every model:
+  ```prisma
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ```
+- These fields are essential for auditing, debugging, and data management.
+
+## Enums
+
+- Use enums for fields with a fixed set of values:
+  ```prisma
+  enum Role {
+    ADMIN
+    USER
+    MODERATOR
+  }
+  ```
+- Prefer enums over free-form strings to enforce data integrity at the schema level.
+
+## Relations
+
+- Define **explicit relation names** for clarity, especially when a model has multiple relations to the same target:
+  ```prisma
+  model Post {
+    author   User @relation("PostAuthor", fields: [authorId], references: [id])
+    authorId String
+    editor   User? @relation("PostEditor", fields: [editorId], references: [id])
+    editorId String?
+  }
+  ```
+- Always specify `fields` and `references` on the owning side of the relation.
+- Configure proper **cascade rules** using `onDelete` and `onUpdate`:
+  ```prisma
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  ```
+- Use `Cascade`, `SetNull`, `Restrict`, or `NoAction` intentionally based on your domain logic.
+
+## Indexes
+
+- Use `@@index` for fields that are frequently queried or filtered:
+  ```prisma
+  @@index([email])
+  @@index([status, createdAt])
+  ```
+- Add composite indexes for queries that filter on multiple columns together.
+- Use `@@unique` for compound unique constraints:
+  ```prisma
+  @@unique([tenantId, email])
+  ```
+
+## Database Mapping
+
+- Use `@map` on fields and `@@map` on models to follow database naming conventions (e.g., snake_case) while keeping Prisma models in PascalCase/camelCase:
+  ```prisma
+  model UserProfile {
+    firstName String @map("first_name")
+    lastName  String @map("last_name")
+
+    @@map("user_profiles")
+  }
+  ```
+
+## Native Type Annotations
+
+- Use `@db` native type annotations to control the exact database column type:
+  ```prisma
+  model Product {
+    price    Decimal  @db.Decimal(10, 2)
+    bio      String   @db.Text
+    metadata Json     @db.JsonB
+  }
+  ```
+- This ensures the generated migration matches your performance and storage requirements.
+
+## General Guidelines
+
+- Keep the schema file organized: group related models together.
+- Add comments to complex relations or business logic encoded in the schema.
+- Use `datasource` and `generator` blocks at the top of the schema file.
+- Enable `previewFeatures` only when needed and document why.

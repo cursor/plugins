@@ -1,0 +1,173 @@
+---
+description: Best practices for using Prisma Client in TypeScript and JavaScript applications
+globs: **/*.ts, **/*.js
+---
+
+# Prisma Client Best Practices
+
+## Singleton Pattern
+
+- **Always** use a singleton pattern for `PrismaClient` to avoid exhausting database connections:
+  ```typescript
+  // lib/prisma.ts
+  import { PrismaClient } from '@prisma/client';
+
+  const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+
+  export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+
+  if (process.env.NODE_ENV !== 'production') {
+    globalForPrisma.prisma = prisma;
+  }
+  ```
+- In serverless environments (AWS Lambda, Vercel), configure the connection pool size:
+  ```typescript
+  const prisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: `${process.env.DATABASE_URL}?connection_limit=1`,
+      },
+    },
+  });
+  ```
+
+## Select and Include
+
+- Use `select` to fetch only the fields you need — avoid over-fetching:
+  ```typescript
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: { id: true, name: true, email: true },
+  });
+  ```
+- Use `include` when you need related data, but be mindful of the depth:
+  ```typescript
+  const post = await prisma.post.findUnique({
+    where: { id },
+    include: { author: true, comments: { take: 10 } },
+  });
+  ```
+- Never use both `select` and `include` at the same level — they are mutually exclusive.
+
+## Transactions
+
+- Use **interactive transactions** for multi-step operations that must be atomic:
+  ```typescript
+  const result = await prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({ data: { name: 'Alice' } });
+    const account = await tx.account.create({
+      data: { userId: user.id, balance: 0 },
+    });
+    return { user, account };
+  });
+  ```
+- Use **batch transactions** for independent writes:
+  ```typescript
+  await prisma.$transaction([
+    prisma.post.create({ data: postData }),
+    prisma.log.create({ data: logData }),
+  ]);
+  ```
+- Set appropriate `timeout` and `maxWait` for long-running transactions.
+
+## Error Handling
+
+- Handle `PrismaClientKnownRequestError` with specific error codes:
+  ```typescript
+  import { Prisma } from '@prisma/client';
+
+  try {
+    await prisma.user.create({ data });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        // Unique constraint violation
+        throw new ConflictError('A user with this email already exists');
+      }
+      if (error.code === 'P2025') {
+        // Record not found
+        throw new NotFoundError('User not found');
+      }
+    }
+    throw error;
+  }
+  ```
+- Common error codes:
+  - `P2002` — Unique constraint failed
+  - `P2025` — Record not found
+  - `P2003` — Foreign key constraint failed
+  - `P2014` — Required relation violation
+
+## Query Patterns
+
+- Use `findUniqueOrThrow` or `findFirstOrThrow` when a missing record is an error:
+  ```typescript
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { id },
+  });
+  ```
+- **Never** use `queryRawUnsafe` — it is vulnerable to SQL injection.
+- Use parameterized raw queries when raw SQL is needed:
+  ```typescript
+  const result = await prisma.$queryRaw`
+    SELECT * FROM "User" WHERE email = ${email}
+  `;
+  ```
+
+## Pagination
+
+- Use **cursor-based pagination** for large datasets:
+  ```typescript
+  const page = await prisma.post.findMany({
+    take: 20,
+    skip: 1,
+    cursor: { id: lastPostId },
+    orderBy: { createdAt: 'desc' },
+  });
+  ```
+- Offset-based pagination (`skip`/`take` without cursor) is acceptable for small datasets but degrades with large offsets.
+
+## Batch Operations
+
+- Use `createMany` for inserting multiple records efficiently:
+  ```typescript
+  await prisma.user.createMany({
+    data: users,
+    skipDuplicates: true,
+  });
+  ```
+- Use `updateMany` and `deleteMany` for bulk mutations.
+
+## Connection Management
+
+- Configure connection pool size based on your environment:
+  ```typescript
+  const prisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: `${DATABASE_URL}?connection_limit=5&pool_timeout=10`,
+      },
+    },
+  });
+  ```
+- Call `prisma.$disconnect()` in graceful shutdown handlers.
+- In serverless environments, keep the connection pool small (1–5 connections).
+
+## Logging and Debugging
+
+- Enable query logging in development:
+  ```typescript
+  const prisma = new PrismaClient({
+    log: ['query', 'info', 'warn', 'error'],
+  });
+  ```
+- Use event-based logging for production monitoring:
+  ```typescript
+  const prisma = new PrismaClient({
+    log: [{ emit: 'event', level: 'query' }],
+  });
+
+  prisma.$on('query', (e) => {
+    console.log(`Query: ${e.query} — Duration: ${e.duration}ms`);
+  });
+  ```

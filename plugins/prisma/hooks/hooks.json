@@ -1,0 +1,44 @@
+{
+  "hooks": [
+    {
+      "event": "file-changed",
+      "match": ["prisma/schema.prisma", "**/*.prisma"],
+      "actions": [
+        {
+          "type": "run-command",
+          "command": "npx prisma generate",
+          "description": "Auto-generate Prisma Client after schema changes",
+          "showOutput": true
+        },
+        {
+          "type": "run-command",
+          "command": "npx prisma format",
+          "description": "Format Prisma schema file",
+          "showOutput": false
+        }
+      ]
+    },
+    {
+      "event": "file-changed",
+      "match": ["prisma/migrations/**/*.sql"],
+      "actions": [
+        {
+          "type": "notify",
+          "message": "New migration detected. Run 'npx prisma migrate dev' to apply it to your development database.",
+          "severity": "info"
+        }
+      ]
+    },
+    {
+      "event": "file-changed",
+      "match": ["prisma/seed.ts", "prisma/seed.js"],
+      "actions": [
+        {
+          "type": "notify",
+          "message": "Seed file changed. Run 'npx prisma db seed' to apply seed data.",
+          "severity": "info"
+        }
+      ]
+    }
+  ]
+}
