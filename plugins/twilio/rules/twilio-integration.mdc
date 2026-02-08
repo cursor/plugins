@@ -1,0 +1,309 @@
+---
+description: Best practices for Twilio communications integration — SDK usage, credential management, SMS/Voice/WhatsApp patterns, and error handling
+globs: **/*.ts, **/*.js
+---
+
+# Twilio Integration Best Practices
+
+## Credential Management
+
+- **Always use environment variables for Twilio credentials.** Never hardcode Account SID, Auth Token, or API keys in source code.
+
+```typescript
+// ✅ Correct — use environment variables
+import twilio from 'twilio';
+
+const client = twilio(
+  process.env.TWILIO_ACCOUNT_SID!,
+  process.env.TWILIO_AUTH_TOKEN!
+);
+
+// ❌ Incorrect — never hardcode credentials
+const client = twilio('AC1234567890abcdef', '0123456789abcdef');
+```
+
+- Use consistent environment variable names for Twilio configuration:
+  - `TWILIO_ACCOUNT_SID` — Account SID (starts with `AC`)
+  - `TWILIO_AUTH_TOKEN` — Auth Token
+  - `TWILIO_API_KEY_SID` — API Key SID (for API key auth)
+  - `TWILIO_API_KEY_SECRET` — API Key Secret
+  - `TWILIO_PHONE_NUMBER` — Default Twilio phone number (E.164 format)
+  - `TWILIO_MESSAGING_SERVICE_SID` — Messaging Service SID (starts with `MG`)
+  - `TWILIO_VERIFY_SERVICE_SID` — Verify Service SID (starts with `VA`)
+
+## Phone Number Formatting
+
+- **Always use E.164 format for phone numbers.** Twilio requires phone numbers in E.164 format (`+` followed by country code and number, no spaces or dashes).
+
+```typescript
+// ✅ Correct — E.164 format
+const to = '+14155551234';
+const from = '+15017122661';
+
+// ❌ Incorrect — never use local or formatted numbers
+const to = '(415) 555-1234';
+const to = '415-555-1234';
+const to = '4155551234';
+```
+
+- **Validate phone numbers with the Lookup API** before sending messages to avoid errors and wasted costs.
+
+```typescript
+async function validatePhoneNumber(phoneNumber: string): Promise<boolean> {
+  try {
+    const lookup = await client.lookups.v2
+      .phoneNumbers(phoneNumber)
+      .fetch({ fields: 'line_type_intelligence' });
+
+    console.log(`Number: ${lookup.phoneNumber}, Valid: ${lookup.valid}`);
+    return lookup.valid;
+  } catch (err) {
+    console.error(`Lookup failed for ${phoneNumber}:`, err);
+    return false;
+  }
+}
+```
+
+## Sending SMS Messages
+
+- **Use Messaging Services for scale** instead of sending from a single phone number. Messaging Services handle number pooling, sticky sender, and compliance automatically.
+
+```typescript
+// ✅ Recommended — use a Messaging Service for production
+const message = await client.messages.create({
+  body: 'Your order has shipped! Tracking: 1Z999AA10123456784',
+  messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID!,
+  to: '+14155551234',
+});
+
+// Acceptable for simple use cases — use a specific From number
+const message = await client.messages.create({
+  body: 'Your verification code is 123456',
+  from: process.env.TWILIO_PHONE_NUMBER!,
+  to: '+14155551234',
+});
+```
+
+- **Always include a status callback URL** to track message delivery in production.
+
+```typescript
+const message = await client.messages.create({
+  body: 'Your appointment is confirmed for 2pm tomorrow.',
+  messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID!,
+  to: '+14155551234',
+  statusCallback: 'https://yourapp.com/api/webhooks/twilio/message-status',
+});
+
+console.log(`Message SID: ${message.sid}, Status: ${message.status}`);
+```
+
+## WhatsApp Messaging
+
+- **Use the WhatsApp-prefixed number format** for WhatsApp messages. Prefix both `to` and `from` numbers with `whatsapp:`.
+
+```typescript
+// Send a WhatsApp message
+const message = await client.messages.create({
+  body: 'Your order #1234 has been confirmed!',
+  from: 'whatsapp:+14155238886', // Your Twilio WhatsApp-enabled number
+  to: 'whatsapp:+14155551234',
+});
+
+// Use pre-approved templates for outbound WhatsApp messages
+// Free-form messages are only allowed within the 24-hour session window
+```
+
+## Voice Calls and TwiML
+
+- **Use TwiML builders** for constructing voice and messaging responses. Never build TwiML XML strings manually.
+
+```typescript
+import { twiml } from 'twilio';
+
+// ✅ Correct — use the VoiceResponse builder
+const response = new twiml.VoiceResponse();
+response.say({ voice: 'alice', language: 'en-US' }, 'Hello! How can we help you today?');
+response.gather({
+  input: ['dtmf', 'speech'],
+  timeout: 5,
+  numDigits: 1,
+  action: '/api/twilio/handle-input',
+}).say('Press 1 for sales, 2 for support, or say your request.');
+response.say('We didn\'t receive any input. Goodbye!');
+response.hangup();
+
+// Returns valid TwiML XML
+console.log(response.toString());
+
+// ❌ Incorrect — never build TwiML as raw strings
+const xml = '<Response><Say>Hello</Say></Response>'; // fragile and error-prone
+```
+
+```typescript
+// MessagingResponse for SMS/WhatsApp webhooks
+const response = new twiml.MessagingResponse();
+response.message('Thanks for contacting us! We\'ll get back to you shortly.');
+```
+
+## Error Handling
+
+- **Handle Twilio errors properly** by checking error codes. Twilio errors include specific codes that indicate the failure reason.
+
+```typescript
+try {
+  const message = await client.messages.create({
+    body: 'Hello!',
+    from: process.env.TWILIO_PHONE_NUMBER!,
+    to: '+14155551234',
+  });
+  console.log(`Message sent: ${message.sid}`);
+} catch (err: any) {
+  // Twilio REST API errors have a `code` and `status` property
+  console.error(`Twilio error ${err.code}: ${err.message}`);
+
+  switch (err.code) {
+    case 21211: // Invalid 'To' phone number
+      console.error('The destination phone number is invalid.');
+      break;
+    case 21608: // Unverified phone number (trial accounts)
+      console.error('This number is not verified. Verify it in the Twilio console.');
+      break;
+    case 21610: // Message blocked (recipient opted out)
+      console.error('The recipient has opted out of messages.');
+      break;
+    case 21614: // 'To' number not a valid mobile number
+      console.error('The number is not a valid mobile number for SMS.');
+      break;
+    case 30004: // Message blocked
+      console.error('Message was blocked by the carrier.');
+      break;
+    case 30005: // Unknown destination handset
+      console.error('The destination handset is unknown or unreachable.');
+      break;
+    case 30006: // Landline or unreachable carrier
+      console.error('Cannot send SMS to this number (landline or unreachable).');
+      break;
+    case 30008: // Unknown error
+      console.error('An unknown delivery error occurred.');
+      break;
+    case 20429: // Too many requests (rate limit)
+      console.error('Rate limit exceeded. Implement backoff and retry.');
+      break;
+    default:
+      console.error(`Unhandled Twilio error code: ${err.code}`);
+  }
+}
+```
+
+## Rate Limiting and Retry Logic
+
+- **Respect Twilio's API rate limits.** Twilio enforces rate limits on API calls — typically 100 requests per second for messaging. Use exponential backoff for retries.
+
+```typescript
+async function sendMessageWithRetry(
+  to: string,
+  body: string,
+  maxRetries = 3
+): Promise<string> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const message = await client.messages.create({
+        body,
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID!,
+        to,
+      });
+      return message.sid;
+    } catch (err: any) {
+      // Only retry on rate limits (429) or server errors (5xx)
+      if (err.code === 20429 || (err.status >= 500 && err.status < 600)) {
+        if (attempt < maxRetries) {
+          const delay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
+          console.warn(`Retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`);
+          await new Promise((resolve) => setTimeout(resolve, delay));
+          continue;
+        }
+      }
+      throw err; // Non-retryable error or max retries exceeded
+    }
+  }
+  throw new Error('Max retries exceeded');
+}
+```
+
+## Delivery Status Callbacks
+
+- **Handle message delivery status callbacks** to track the full lifecycle of messages (queued → sent → delivered → failed).
+
+```typescript
+// Express handler for message status callbacks
+app.post('/api/webhooks/twilio/message-status', express.urlencoded({ extended: false }), (req, res) => {
+  const { MessageSid, MessageStatus, To, ErrorCode, ErrorMessage } = req.body;
+
+  console.log(JSON.stringify({
+    level: 'info',
+    source: 'twilio_status_callback',
+    messageSid: MessageSid,
+    status: MessageStatus,
+    to: To,
+    errorCode: ErrorCode || null,
+    errorMessage: ErrorMessage || null,
+  }));
+
+  // Update your database with the delivery status
+  // Statuses: queued, sent, delivered, undelivered, failed
+  if (MessageStatus === 'failed' || MessageStatus === 'undelivered') {
+    console.error(`Message ${MessageSid} failed: ${ErrorCode} — ${ErrorMessage}`);
+  }
+
+  res.sendStatus(200);
+});
+```
+
+## Making Voice Calls
+
+- **Use proper TwiML or TwiML Bin URLs** when initiating outbound calls.
+
+```typescript
+// Initiate an outbound voice call
+const call = await client.calls.create({
+  to: '+14155551234',
+  from: process.env.TWILIO_PHONE_NUMBER!,
+  url: 'https://yourapp.com/api/twilio/voice/outbound', // TwiML endpoint
+  statusCallback: 'https://yourapp.com/api/twilio/voice/status',
+  statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed'],
+  statusCallbackMethod: 'POST',
+  machineDetection: 'DetectMessageEnd', // Optional: detect answering machines
+});
+
+console.log(`Call SID: ${call.sid}`);
+```
+
+## Environment Variable Validation
+
+- **Validate required environment variables at startup** to fail fast if credentials are missing.
+
+```typescript
+function validateTwilioConfig() {
+  const required = [
+    'TWILIO_ACCOUNT_SID',
+    'TWILIO_AUTH_TOKEN',
+  ];
+
+  const missing = required.filter((key) => !process.env[key]);
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required Twilio environment variables: ${missing.join(', ')}. ` +
+      'See https://www.twilio.com/docs/usage/api for setup instructions.'
+    );
+  }
+
+  // Validate SID format
+  if (!process.env.TWILIO_ACCOUNT_SID!.startsWith('AC')) {
+    throw new Error(
+      'TWILIO_ACCOUNT_SID must start with "AC". ' +
+      'Find your Account SID at https://console.twilio.com'
+    );
+  }
+}
+```

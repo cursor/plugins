@@ -1,0 +1,351 @@
+---
+description: Best practices for handling Twilio webhooks — request signature validation, TwiML responses, status callbacks, and idempotent processing
+globs: **/webhook*.*,**/twilio*.*
+---
+
+# Twilio Webhook Handling Best Practices
+
+## Always Validate Request Signatures
+
+- **Every Twilio webhook endpoint must validate the request signature** to ensure the request originated from Twilio. Use the `twilio.webhook()` Express middleware or manual validation with `Twilio.validateRequest()`.
+
+```typescript
+import twilio from 'twilio';
+import express from 'express';
+
+const app = express();
+
+// ✅ Option 1 (Recommended) — Use the twilio.webhook() middleware
+// This automatically validates the X-Twilio-Signature header
+app.post(
+  '/api/webhooks/twilio/sms',
+  express.urlencoded({ extended: false }),
+  twilio.webhook({ authToken: process.env.TWILIO_AUTH_TOKEN }),
+  (req, res) => {
+    // Request is authenticated — process the incoming message
+    const { From, Body } = req.body;
+    console.log(`Message from ${From}: ${Body}`);
+
+    const twimlResponse = new twilio.twiml.MessagingResponse();
+    twimlResponse.message('Thanks for your message!');
+    res.type('text/xml').send(twimlResponse.toString());
+  }
+);
+```
+
+```typescript
+// ✅ Option 2 — Manual signature validation
+import { validateRequest } from 'twilio';
+
+function validateTwilioSignature(req: express.Request): boolean {
+  const signature = req.headers['x-twilio-signature'] as string;
+  const url = `${process.env.APP_URL}${req.originalUrl}`;
+  const params = req.body;
+
+  return validateRequest(
+    process.env.TWILIO_AUTH_TOKEN!,
+    signature,
+    url,
+    params
+  );
+}
+
+app.post('/api/webhooks/twilio/sms', express.urlencoded({ extended: false }), (req, res) => {
+  if (!validateTwilioSignature(req)) {
+    console.error('Invalid Twilio signature — rejecting request');
+    return res.status(403).send('Forbidden');
+  }
+
+  // Process the authenticated request
+  const response = new twilio.twiml.MessagingResponse();
+  response.message('Message received!');
+  res.type('text/xml').send(response.toString());
+});
+```
+
+```typescript
+// ❌ Incorrect — never process Twilio webhooks without signature validation
+app.post('/api/webhooks/twilio/sms', (req, res) => {
+  // UNSAFE: anyone can POST to this endpoint and trigger actions
+  processMessage(req.body.From, req.body.Body);
+});
+```
+
+## Always Respond with TwiML
+
+- **Twilio webhook endpoints must respond with valid TwiML** (or an empty `<Response/>` if no action is needed). Always use the TwiML builder classes instead of constructing XML strings.
+
+```typescript
+import twilio from 'twilio';
+
+// SMS/WhatsApp webhook — respond with MessagingResponse
+app.post('/api/webhooks/twilio/sms', (req, res) => {
+  const response = new twilio.twiml.MessagingResponse();
+  const incomingBody = req.body.Body?.toLowerCase() || '';
+
+  if (incomingBody.includes('help')) {
+    response.message('Available commands: HELP, STATUS, STOP');
+  } else if (incomingBody.includes('status')) {
+    response.message('All systems operational.');
+  } else {
+    response.message('Reply HELP for available commands.');
+  }
+
+  res.type('text/xml').send(response.toString());
+});
+
+// Voice webhook — respond with VoiceResponse
+app.post('/api/webhooks/twilio/voice', (req, res) => {
+  const response = new twilio.twiml.VoiceResponse();
+
+  response.say({ voice: 'Polly.Joanna' }, 'Welcome to Acme Support.');
+  const gather = response.gather({
+    numDigits: 1,
+    action: '/api/webhooks/twilio/voice/menu',
+    method: 'POST',
+  });
+  gather.say('Press 1 for sales. Press 2 for support.');
+
+  // If no input, repeat
+  response.redirect('/api/webhooks/twilio/voice');
+
+  res.type('text/xml').send(response.toString());
+});
+
+// Empty response when no reply is needed
+app.post('/api/webhooks/twilio/status', (req, res) => {
+  const response = new twilio.twiml.MessagingResponse();
+  // No messages added — returns empty <Response/>
+  res.type('text/xml').send(response.toString());
+});
+```
+
+## Respond Within 15 Seconds
+
+- **Twilio expects a response within 15 seconds** for webhooks. If your endpoint takes longer, Twilio will time out and may retry or return an error to the caller. Respond immediately and process asynchronously for any heavy work.
+
+```typescript
+// ✅ Correct — respond immediately, process async
+app.post('/api/webhooks/twilio/sms', express.urlencoded({ extended: false }), (req, res) => {
+  const { From, Body, MessageSid } = req.body;
+
+  // Send TwiML response immediately
+  const response = new twilio.twiml.MessagingResponse();
+  response.message('Got it! We\'re processing your request.');
+  res.type('text/xml').send(response.toString());
+
+  // Process asynchronously (use a job queue in production)
+  processIncomingMessage({ from: From, body: Body, sid: MessageSid })
+    .catch((err) => console.error(`Error processing message ${MessageSid}:`, err));
+});
+
+// ❌ Incorrect — long-running processing before responding
+app.post('/api/webhooks/twilio/sms', async (req, res) => {
+  await doSlowDatabaseQuery(req.body);    // This might take > 15s
+  await callExternalAPI(req.body);         // Adding more latency
+  const response = new twilio.twiml.MessagingResponse();
+  response.message('Done!');
+  res.type('text/xml').send(response.toString()); // Twilio may have already timed out
+});
+```
+
+## Handle Status Callbacks
+
+- **Implement status callback endpoints** for tracking message delivery and call progress. Twilio sends status updates as POST requests to your callback URLs.
+
+```typescript
+// Message delivery status callback
+app.post(
+  '/api/webhooks/twilio/message-status',
+  express.urlencoded({ extended: false }),
+  twilio.webhook({ authToken: process.env.TWILIO_AUTH_TOKEN }),
+  async (req, res) => {
+    const {
+      MessageSid,
+      MessageStatus,
+      To,
+      From,
+      ErrorCode,
+      ErrorMessage,
+    } = req.body;
+
+    // Log the status update
+    console.log(JSON.stringify({
+      level: MessageStatus === 'failed' ? 'error' : 'info',
+      source: 'twilio_message_status',
+      messageSid: MessageSid,
+      status: MessageStatus, // queued, sent, delivered, undelivered, failed
+      to: To,
+      from: From,
+      errorCode: ErrorCode || undefined,
+      errorMessage: ErrorMessage || undefined,
+    }));
+
+    // Update delivery status in your database
+    await db.message.update({
+      where: { twilioSid: MessageSid },
+      data: {
+        deliveryStatus: MessageStatus,
+        errorCode: ErrorCode || null,
+        updatedAt: new Date(),
+      },
+    });
+
+    res.sendStatus(200);
+  }
+);
+
+// Call status callback
+app.post(
+  '/api/webhooks/twilio/call-status',
+  express.urlencoded({ extended: false }),
+  twilio.webhook({ authToken: process.env.TWILIO_AUTH_TOKEN }),
+  async (req, res) => {
+    const {
+      CallSid,
+      CallStatus,
+      CallDuration,
+      To,
+      From,
+    } = req.body;
+
+    console.log(JSON.stringify({
+      level: 'info',
+      source: 'twilio_call_status',
+      callSid: CallSid,
+      status: CallStatus, // queued, ringing, in-progress, completed, busy, failed, no-answer
+      duration: CallDuration,
+      to: To,
+      from: From,
+    }));
+
+    await db.call.update({
+      where: { twilioSid: CallSid },
+      data: {
+        status: CallStatus,
+        duration: CallDuration ? parseInt(CallDuration, 10) : null,
+        updatedAt: new Date(),
+      },
+    });
+
+    res.sendStatus(200);
+  }
+);
+```
+
+## Implement Idempotent Processing
+
+- **Twilio may send the same webhook multiple times** (e.g., on retries after timeouts). Always deduplicate webhook requests using the message or call SID.
+
+```typescript
+async function processIncomingMessage(params: {
+  sid: string;
+  from: string;
+  body: string;
+}) {
+  // Check if this message was already processed
+  const existing = await db.incomingMessage.findUnique({
+    where: { twilioSid: params.sid },
+  });
+
+  if (existing) {
+    console.log(`Message ${params.sid} already processed, skipping`);
+    return;
+  }
+
+  // Process the message
+  await handleMessage(params.from, params.body);
+
+  // Record that we processed this message
+  await db.incomingMessage.create({
+    data: {
+      twilioSid: params.sid,
+      from: params.from,
+      body: params.body,
+      processedAt: new Date(),
+    },
+  });
+}
+```
+
+## URL Configuration for Different Environments
+
+- **Use full, publicly accessible URLs** for webhook endpoints. Twilio cannot reach `localhost`. For local development, use a tunneling tool like ngrok.
+
+```bash
+# Local development — use ngrok to expose your local server
+ngrok http 3000
+
+# Set the ngrok URL as your webhook in the Twilio console
+# https://abc123.ngrok.io/api/webhooks/twilio/sms
+```
+
+```typescript
+// Configure webhook URL based on environment
+function getWebhookBaseUrl(): string {
+  if (process.env.NODE_ENV === 'production') {
+    return process.env.APP_URL!; // https://yourapp.com
+  }
+  // In development, use ngrok or similar tunnel
+  return process.env.NGROK_URL || 'https://your-tunnel.ngrok.io';
+}
+```
+
+## Next.js Webhook Handlers
+
+```typescript
+// app/api/webhooks/twilio/sms/route.ts
+import twilio from 'twilio';
+import { validateRequest } from 'twilio';
+import { headers } from 'next/headers';
+
+export async function POST(req: Request) {
+  const body = await req.text();
+  const headersList = await headers();
+
+  // Parse the URL-encoded body
+  const params = Object.fromEntries(new URLSearchParams(body));
+
+  // Validate the request signature
+  const signature = headersList.get('x-twilio-signature') || '';
+  const url = `${process.env.APP_URL}/api/webhooks/twilio/sms`;
+  const isValid = validateRequest(
+    process.env.TWILIO_AUTH_TOKEN!,
+    signature,
+    url,
+    params
+  );
+
+  if (!isValid) {
+    return new Response('Invalid signature', { status: 403 });
+  }
+
+  // Build TwiML response
+  const response = new twilio.twiml.MessagingResponse();
+  response.message(`Received: ${params.Body}`);
+
+  return new Response(response.toString(), {
+    status: 200,
+    headers: { 'Content-Type': 'text/xml' },
+  });
+}
+```
+
+## Logging Webhook Events
+
+- **Log all webhook events** for debugging and audit purposes. Include the SID, event type, and relevant parameters.
+
+```typescript
+function logTwilioWebhook(type: string, params: Record<string, string>) {
+  console.log(JSON.stringify({
+    level: 'info',
+    source: 'twilio_webhook',
+    type,
+    messageSid: params.MessageSid || params.CallSid || undefined,
+    from: params.From,
+    to: params.To,
+    status: params.MessageStatus || params.CallStatus || undefined,
+    timestamp: new Date().toISOString(),
+  }));
+}
+```

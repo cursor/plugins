@@ -1,0 +1,10 @@
+{
+  "hooks": [
+    {
+      "event": "pre-commit",
+      "script": "./scripts/check-twilio-credentials.sh",
+      "description": "Prevents committing live Twilio credentials (Auth Tokens, API Key Secrets) to the repository. Account SIDs and test credentials are allowed.",
+      "enabled": true
+    }
+  ]
+}
