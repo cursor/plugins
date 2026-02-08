@@ -1,0 +1,55 @@
+{
+  "mcpServers": {
+    "aws-operations": {
+      "command": "npx",
+      "args": ["-y", "@aws-sdk/mcp-server"],
+      "description": "MCP server for AWS operations — interact with AWS services directly from Cursor",
+      "env": {
+        "AWS_PROFILE": "${AWS_PROFILE:-default}",
+        "AWS_REGION": "${AWS_REGION:-us-east-1}"
+      },
+      "tools": [
+        {
+          "name": "aws-s3-list-buckets",
+          "description": "List all S3 buckets in the account"
+        },
+        {
+          "name": "aws-s3-get-object",
+          "description": "Get an object from an S3 bucket"
+        },
+        {
+          "name": "aws-lambda-list-functions",
+          "description": "List all Lambda functions"
+        },
+        {
+          "name": "aws-lambda-invoke",
+          "description": "Invoke a Lambda function"
+        },
+        {
+          "name": "aws-dynamodb-list-tables",
+          "description": "List all DynamoDB tables"
+        },
+        {
+          "name": "aws-dynamodb-query",
+          "description": "Query items from a DynamoDB table"
+        },
+        {
+          "name": "aws-cloudformation-list-stacks",
+          "description": "List all CloudFormation stacks"
+        },
+        {
+          "name": "aws-cloudwatch-get-logs",
+          "description": "Get CloudWatch log events"
+        },
+        {
+          "name": "aws-iam-list-roles",
+          "description": "List IAM roles"
+        },
+        {
+          "name": "aws-ssm-get-parameter",
+          "description": "Get a parameter from SSM Parameter Store"
+        }
+      ]
+    }
+  }
+}

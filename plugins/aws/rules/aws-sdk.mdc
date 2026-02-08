@@ -1,0 +1,129 @@
+---
+description: AWS SDK v3 best practices for TypeScript and JavaScript projects
+globs: ["**/*.ts", "**/*.js"]
+---
+
+# AWS SDK v3 Best Practices
+
+## Modular Imports
+
+- Always use AWS SDK v3 with modular, per-service packages (e.g., `@aws-sdk/client-s3`, `@aws-sdk/client-dynamodb`).
+- Never use the monolithic `aws-sdk` v2 package in new projects.
+- Import only the commands and types you need to minimize bundle size.
+
+```typescript
+// ✅ Correct — SDK v3 modular import
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+
+// ❌ Wrong — SDK v2 monolithic import
+import AWS from "aws-sdk";
+```
+
+## Credential Providers
+
+- Never hardcode AWS access keys, secret keys, or session tokens in source code.
+- Use the default credential provider chain (`fromNodeProviderChain`) or environment-based providers.
+- Use `@aws-sdk/credential-providers` for explicit credential resolution when needed.
+- Prefer IAM roles (instance profiles, task roles, IRSA) over static credentials in all deployed environments.
+
+```typescript
+import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
+
+const client = new S3Client({
+  credentials: fromNodeProviderChain(),
+  region: "us-east-1",
+});
+```
+
+## Retries and Timeouts
+
+- Configure retry strategies explicitly using `maxAttempts` or a custom `retryStrategy`.
+- Set request timeouts via `requestHandler` options to avoid hung connections.
+- Use exponential backoff with jitter (the SDK default `STANDARD` retry mode provides this).
+
+```typescript
+const client = new S3Client({
+  maxAttempts: 3,
+  requestHandler: new NodeHttpHandler({
+    connectionTimeout: 5000,
+    requestTimeout: 10000,
+  }),
+});
+```
+
+## Middleware Stack
+
+- Use the AWS SDK middleware stack to add cross-cutting concerns (logging, tracing, metrics).
+- Register middleware at the appropriate step (`initialize`, `serialize`, `build`, `finalizeRequest`, `deserialize`).
+
+```typescript
+client.middlewareStack.add(
+  (next) => async (args) => {
+    console.log("Request:", args.input);
+    const result = await next(args);
+    console.log("Response:", result.output);
+    return result;
+  },
+  { step: "initialize", name: "loggingMiddleware" }
+);
+```
+
+## Error Handling
+
+- Handle service-specific errors by checking error names or using `instanceof` on typed exceptions.
+- Always log the request ID (`$metadata.requestId`) from error responses for AWS Support troubleshooting.
+- Distinguish between retryable and non-retryable errors.
+
+```typescript
+import { NoSuchKey } from "@aws-sdk/client-s3";
+
+try {
+  await client.send(new GetObjectCommand({ Bucket: "my-bucket", Key: "missing.txt" }));
+} catch (error) {
+  if (error instanceof NoSuchKey) {
+    console.error("Object not found");
+  } else {
+    console.error("Request ID:", error.$metadata?.requestId);
+    throw error;
+  }
+}
+```
+
+## Pagination
+
+- Use built-in pagination utilities (`paginateListObjects`, etc.) instead of manually managing tokens.
+- Prefer `for await...of` with paginators for clean, memory-efficient iteration.
+
+```typescript
+import { paginateListObjectsV2 } from "@aws-sdk/client-s3";
+
+const paginator = paginateListObjectsV2({ client }, { Bucket: "my-bucket" });
+for await (const page of paginator) {
+  for (const obj of page.Contents ?? []) {
+    console.log(obj.Key);
+  }
+}
+```
+
+## Region Configuration
+
+- Always configure an explicit region; do not rely on implicit resolution in production.
+- Use environment variables (`AWS_REGION`, `AWS_DEFAULT_REGION`) or config files for region selection.
+- Support multi-region deployments by parameterizing region in your infrastructure code.
+
+## Secrets and Configuration
+
+- Use AWS Systems Manager Parameter Store or AWS Secrets Manager for application configuration and secrets.
+- Never store secrets in environment variables baked into container images or source code.
+- Rotate secrets automatically using Secrets Manager rotation lambdas.
+
+## Debugging
+
+- Log the `requestId` from every failed AWS API call — it is essential for AWS Support cases.
+- Enable SDK-level logging during development with the `logger` client option.
+
+```typescript
+const client = new S3Client({
+  logger: console,
+});
+```
