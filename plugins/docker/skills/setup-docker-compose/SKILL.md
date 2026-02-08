@@ -2,95 +2,110 @@
 
 ## Description
 
-Set up a complete Docker Compose development environment with hot-reload, database services, networking, health checks, and production readiness.
+Generate a complete Docker Compose configuration for a multi-service development environment. Includes databases, caches, message queues, and development utilities — all properly configured with health checks, networking, and volume persistence.
 
 ## Trigger
 
-Use this skill when:
-- Setting up a local development environment with Docker
-- Adding database or cache services to a project
-- Creating a multi-service application stack
-- Configuring Docker Compose for development with hot-reload
+Use this skill when a user wants to:
+- Set up a local development environment with Docker Compose
+- Add services (databases, caches, queues) to their Docker stack
+- Create a multi-service architecture with Docker Compose
+- Configure a compose file for their project
 
-## Instructions
+## Inputs
 
-### Step 1: Identify Required Services
+1. **Application services** — The user's application(s) to run
+2. **Data stores** — Required databases (Postgres, MySQL, MongoDB, etc.)
+3. **Caches** — Required caching layers (Redis, Memcached, etc.)
+4. **Message queues** — Required brokers (RabbitMQ, Kafka, NATS, etc.)
+5. **Dev tools** — Optional development utilities (Adminer, Mailhog, etc.)
 
-Determine what services the application needs:
-- **Application server(s)**: Web API, frontend, workers
-- **Databases**: PostgreSQL, MySQL, MongoDB, etc.
-- **Caches**: Redis, Memcached
-- **Message queues**: RabbitMQ, Kafka, NATS
-- **Search**: Elasticsearch, Meilisearch
-- **Monitoring**: Prometheus, Grafana
-- **Email**: Mailhog, Mailpit
-- **Storage**: MinIO (S3-compatible)
+## Steps
 
-### Step 2: Create the Compose File
+### Step 1: Assess Requirements
 
-Use the following template structure:
+Scan the project to determine required services:
+
+| Dependency Indicator           | Service             | Default Image                      |
+|-------------------------------|---------------------|------------------------------------|
+| `pg`, `postgres`, `prisma`    | PostgreSQL          | `postgres:16.2-alpine`             |
+| `mysql`, `mysql2`             | MySQL               | `mysql:8.3`                        |
+| `mongodb`, `mongoose`         | MongoDB             | `mongo:7.0`                        |
+| `redis`, `ioredis`            | Redis               | `redis:7.2-alpine`                 |
+| `amqplib`, `rabbitmq`         | RabbitMQ            | `rabbitmq:3.13-management-alpine`  |
+| `kafkajs`, `kafka`            | Kafka               | `confluentinc/cp-kafka:7.6.0`      |
+| `elasticsearch`, `@elastic`   | Elasticsearch       | `elasticsearch:8.12.2`             |
+| `minio`, `s3`                 | MinIO (S3-compat)   | `minio/minio:latest`               |
+| `nats`                        | NATS                | `nats:2.10-alpine`                 |
+
+### Step 2: Generate Compose File
+
+#### Full-Stack Web Application (Node.js + Postgres + Redis)
 
 ```yaml
-# compose.yaml — Development environment
-# Usage: docker compose up -d
-
+# compose.yaml
 services:
-  # ─── Application ───────────────────────────────────────────
+  # Application
   app:
     build:
       context: .
       dockerfile: Dockerfile
-      target: dev  # Use dev stage for hot-reload
+      target: development
     ports:
       - "${APP_PORT:-3000}:3000"
-    volumes:
-      - .:/app             # Source code mount for hot-reload
-      - /app/node_modules  # Prevent overwriting container's node_modules
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/myapp_dev
-      - REDIS_URL=redis://cache:6379
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/app_dev
+      - REDIS_URL=redis://redis:6379
     env_file:
       - .env
+    volumes:
+      - ./src:/app/src
     depends_on:
       db:
         condition: service_healthy
-      cache:
+      redis:
         condition: service_healthy
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 15s
     networks:
-      - frontend
-      - backend
+      - app-network
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+        - action: rebuild
+          path: package.json
 
-  # ─── Database ──────────────────────────────────────────────
+  # PostgreSQL Database
   db:
-    image: postgres:16-alpine
+    image: postgres:16.2-alpine
     ports:
       - "${DB_PORT:-5432}:5432"
     environment:
-      POSTGRES_DB: myapp_dev
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-app_dev}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
     restart: unless-stopped
     networks:
-      - backend
+      - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
 
-  # ─── Cache ────────────────────────────────────────────────
-  cache:
+  # Redis Cache
+  redis:
     image: redis:7.2-alpine
     ports:
       - "${REDIS_PORT:-6379}:6379"
@@ -99,64 +114,236 @@ services:
       - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
+      interval: 10s
+      timeout: 5s
       retries: 5
     restart: unless-stopped
     networks:
-      - backend
+      - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
 
-  # ─── Monitoring (optional) ────────────────────────────────
-  prometheus:
-    image: prom/prometheus:v2.50.0
+  # Database Admin UI (development only)
+  adminer:
+    image: adminer:4.8.1
     ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus_data:/prometheus
-    profiles:
-      - monitoring
-    networks:
-      - backend
-
-  grafana:
-    image: grafana/grafana:10.3.1
-    ports:
-      - "3001:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    volumes:
-      - grafana_data:/var/lib/grafana
-    profiles:
-      - monitoring
+      - "${ADMINER_PORT:-8080}:8080"
     depends_on:
-      - prometheus
+      db:
+        condition: service_healthy
     networks:
-      - backend
-
-  # ─── Email (optional) ─────────────────────────────────────
-  mailpit:
-    image: axllent/mailpit:latest
-    ports:
-      - "8025:8025"  # Web UI
-      - "1025:1025"  # SMTP
+      - app-network
     profiles:
-      - debug
-    networks:
-      - backend
+      - dev
 
-# ─── Volumes ──────────────────────────────────────────────────
+  # Mail catcher (development only)
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - "${MAILHOG_SMTP_PORT:-1025}:1025"
+      - "${MAILHOG_UI_PORT:-8025}:8025"
+    networks:
+      - app-network
+    profiles:
+      - dev
+
 volumes:
   postgres_data:
     driver: local
   redis_data:
     driver: local
-  prometheus_data:
-    driver: local
-  grafana_data:
-    driver: local
 
-# ─── Networks ─────────────────────────────────────────────────
+networks:
+  app-network:
+    driver: bridge
+```
+
+#### Microservices Architecture
+
+```yaml
+# compose.yaml
+services:
+  # API Gateway
+  gateway:
+    build:
+      context: ./services/gateway
+      target: development
+    ports:
+      - "3000:3000"
+    environment:
+      - AUTH_SERVICE_URL=http://auth:3001
+      - USER_SERVICE_URL=http://users:3002
+      - ORDER_SERVICE_URL=http://orders:3003
+    depends_on:
+      auth:
+        condition: service_healthy
+      users:
+        condition: service_healthy
+      orders:
+        condition: service_healthy
+    networks:
+      - frontend
+      - backend
+    restart: unless-stopped
+
+  # Auth Service
+  auth:
+    build:
+      context: ./services/auth
+      target: development
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@auth-db:5432/auth
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      auth-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # User Service
+  users:
+    build:
+      context: ./services/users
+      target: development
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@users-db:5432/users
+      - NATS_URL=nats://nats:4222
+    depends_on:
+      users-db:
+        condition: service_healthy
+      nats:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3002/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # Order Service
+  orders:
+    build:
+      context: ./services/orders
+      target: development
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@orders-db:5432/orders
+      - NATS_URL=nats://nats:4222
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      orders-db:
+        condition: service_healthy
+      nats:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3003/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # Databases
+  auth-db:
+    image: postgres:16.2-alpine
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+    restart: unless-stopped
+
+  users-db:
+    image: postgres:16.2-alpine
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - users_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+    restart: unless-stopped
+
+  orders-db:
+    image: postgres:16.2-alpine
+    environment:
+      POSTGRES_DB: orders
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - orders_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # Shared Infrastructure
+  redis:
+    image: redis:7.2-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+    restart: unless-stopped
+
+  nats:
+    image: nats:2.10-alpine
+    ports:
+      - "8222:8222"  # Monitoring
+    command: "--js --sd /data"
+    volumes:
+      - nats_data:/data
+    networks:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  auth_db_data:
+  users_db_data:
+  orders_db_data:
+  redis_data:
+  nats_data:
+
 networks:
   frontend:
     driver: bridge
@@ -165,23 +352,9 @@ networks:
     internal: true
 ```
 
-### Step 3: Create Development Dockerfile Stage
+### Step 3: Generate Environment Template
 
-Add a `dev` target to the Dockerfile for hot-reload:
-
-```dockerfile
-# Development stage with hot-reload
-FROM base AS dev
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
-COPY . .
-CMD ["npm", "run", "dev"]
-```
-
-### Step 4: Create Environment Files
-
-Create a `.env.example` template:
+Create a `.env.example` file:
 
 ```env
 # Application
@@ -189,159 +362,56 @@ APP_PORT=3000
 NODE_ENV=development
 
 # Database
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=app_dev
 DB_PORT=5432
-DATABASE_URL=postgresql://postgres:postgres@db:5432/myapp_dev
 
 # Redis
 REDIS_PORT=6379
-REDIS_URL=redis://cache:6379
 
-# Secrets (override in .env.local)
-JWT_SECRET=dev-secret-change-me
-API_KEY=dev-api-key
+# Dev Tools
+ADMINER_PORT=8080
+MAILHOG_SMTP_PORT=1025
+MAILHOG_UI_PORT=8025
+
+# Secrets (change in production)
+JWT_SECRET=change-me-in-production
 ```
 
-### Step 5: Add Helper Scripts
+### Step 4: Generate Override File for Development
 
-Create a `Makefile` or shell scripts for common operations:
-
-```makefile
-.PHONY: up down restart logs clean
-
-up:                       ## Start all services
-	docker compose up -d
-
-up-all:                   ## Start all services including monitoring
-	docker compose --profile monitoring --profile debug up -d
-
-down:                     ## Stop all services
-	docker compose down
-
-restart:                  ## Restart all services
-	docker compose restart
-
-logs:                     ## Tail logs for all services
-	docker compose logs -f
-
-logs-app:                 ## Tail logs for the app only
-	docker compose logs -f app
-
-clean:                    ## Remove all containers, volumes, and images
-	docker compose down -v --rmi local
-
-db-shell:                 ## Open a psql shell
-	docker compose exec db psql -U postgres -d myapp_dev
-
-redis-cli:                ## Open a Redis CLI
-	docker compose exec cache redis-cli
-
-build:                    ## Rebuild all images
-	docker compose build --no-cache
-
-status:                   ## Show status of all services
-	docker compose ps
-```
-
-### Step 6: Configure Hot-Reload
-
-Ensure hot-reload works properly:
-
-- **Node.js**: Mount source code, exclude `node_modules` with anonymous volume
-- **Python**: Mount source code, use `--reload` flag with uvicorn/gunicorn
-- **Go**: Use `air` or `CompileDaemon` for live reloading
-- **Java**: Use Spring DevTools with `spring-boot-devtools`
-
-### Step 7: Production Compose Override
-
-Create a `compose.prod.yaml` for production overrides:
+Create `compose.override.yaml` for local development additions:
 
 ```yaml
-# compose.prod.yaml — Production overrides
-# Usage: docker compose -f compose.yaml -f compose.prod.yaml up -d
-
+# compose.override.yaml — automatically loaded in development
 services:
   app:
     build:
-      target: runtime  # Use production stage
-    volumes: []        # No source code mounting
+      target: development
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
     environment:
-      - NODE_ENV=production
-    restart: always
-    deploy:
-      resources:
-        limits:
-          cpus: "2.0"
-          memory: 1G
-        reservations:
-          cpus: "0.5"
-          memory: 256M
-      replicas: 2
-
-  db:
-    environment:
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-    secrets:
-      - db_password
-
-  cache:
-    command: redis-server --appendonly yes --requirepass $${REDIS_PASSWORD}
-
-secrets:
-  db_password:
-    file: ./secrets/db_password.txt
+      - DEBUG=true
+      - LOG_LEVEL=debug
+    command: ["npm", "run", "dev"]
 ```
 
-## Common Patterns
+### Step 5: Validate
 
-### Database Initialization
+After generating the Compose configuration:
 
-Mount SQL scripts into the database's init directory:
-
-```yaml
-volumes:
-  - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
-  - ./scripts/seed-data.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
-```
-
-### Waiting for Dependencies
-
-Use healthchecks with `depends_on` conditions:
-
-```yaml
-depends_on:
-  db:
-    condition: service_healthy
-  cache:
-    condition: service_started
-  migrations:
-    condition: service_completed_successfully
-```
-
-### Multi-App Stacks
-
-For monorepos or microservices, use multiple build contexts:
-
-```yaml
-services:
-  api:
-    build:
-      context: ./services/api
-      dockerfile: Dockerfile
-  web:
-    build:
-      context: ./services/web
-      dockerfile: Dockerfile
-  worker:
-    build:
-      context: ./services/worker
-      dockerfile: Dockerfile
-```
+1. Validate syntax: `docker compose config`
+2. Start services: `docker compose up -d`
+3. Check health: `docker compose ps` (all services should be "healthy")
+4. Verify connectivity between services: `docker compose exec app ping db`
+5. Check logs for errors: `docker compose logs --tail=50`
+6. Start with dev profile: `docker compose --profile dev up -d`
 
 ## Output
 
-The skill produces:
-- A complete `compose.yaml` for local development
-- A `compose.prod.yaml` for production overrides
-- A `.env.example` template
-- Helper scripts / Makefile for common operations
-- Properly configured networking, volumes, and healthchecks
+- `compose.yaml` — Main compose configuration
+- `compose.override.yaml` — Development overrides
+- `.env.example` — Environment variable template
+- Service-specific initialization scripts if needed

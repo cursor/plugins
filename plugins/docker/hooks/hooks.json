@@ -1,36 +1,86 @@
 {
   "hooks": [
     {
-      "name": "lint-dockerfile",
-      "description": "Lint Dockerfiles using Hadolint before committing",
+      "name": "dockerfile-lint",
+      "description": "Lint Dockerfiles using hadolint before committing",
       "event": "pre-commit",
-      "command": "bash ./scripts/lint-dockerfile.sh",
-      "filePattern": ["Dockerfile*", "*.dockerfile"],
+      "match": {
+        "files": ["Dockerfile*", "**/*.dockerfile", "**/Dockerfile*"]
+      },
+      "command": {
+        "run": "bash ./scripts/docker-lint.sh lint-dockerfile ${files}",
+        "timeout": 30000
+      },
+      "severity": "warning",
       "enabled": true
     },
     {
-      "name": "validate-compose",
-      "description": "Validate Docker Compose files before committing",
+      "name": "compose-validate",
+      "description": "Validate Docker Compose files for syntax and schema correctness",
       "event": "pre-commit",
-      "command": "docker compose config --quiet",
-      "filePattern": ["docker-compose*.yml", "docker-compose*.yaml", "compose*.yml", "compose*.yaml"],
+      "match": {
+        "files": [
+          "docker-compose*.yml",
+          "docker-compose*.yaml",
+          "compose*.yml",
+          "compose*.yaml"
+        ]
+      },
+      "command": {
+        "run": "bash ./scripts/docker-lint.sh lint-compose ${files}",
+        "timeout": 30000
+      },
+      "severity": "warning",
       "enabled": true
     },
     {
-      "name": "check-dockerignore",
-      "description": "Warn if .dockerignore is missing when Dockerfile exists",
+      "name": "dockerignore-check",
+      "description": "Verify .dockerignore exists when Dockerfiles are present",
       "event": "pre-commit",
-      "command": "bash -c 'if ls Dockerfile* 1>/dev/null 2>&1 && [ ! -f .dockerignore ]; then echo \"WARNING: .dockerignore is missing. Consider adding one to reduce build context size.\"; exit 1; fi'",
-      "filePattern": ["Dockerfile*"],
+      "match": {
+        "files": ["Dockerfile*", "**/*.dockerfile"]
+      },
+      "command": {
+        "run": "bash ./scripts/docker-lint.sh check-dockerignore",
+        "timeout": 10000
+      },
+      "severity": "info",
       "enabled": true
     },
     {
-      "name": "scan-dockerfile-secrets",
-      "description": "Check for hardcoded secrets in Dockerfiles",
+      "name": "no-latest-tag",
+      "description": "Check that no Docker images use the :latest tag",
       "event": "pre-commit",
-      "command": "bash -c 'if grep -rn -E \"(password|secret|api_key|token)\\s*=\\s*[^$]\" Dockerfile* 2>/dev/null; then echo \"ERROR: Possible hardcoded secrets found in Dockerfile.\"; exit 1; fi'",
-      "filePattern": ["Dockerfile*", "*.dockerfile"],
+      "match": {
+        "files": [
+          "Dockerfile*",
+          "**/*.dockerfile",
+          "docker-compose*.yml",
+          "docker-compose*.yaml",
+          "compose*.yml",
+          "compose*.yaml"
+        ]
+      },
+      "command": {
+        "run": "bash ./scripts/docker-lint.sh check-no-latest ${files}",
+        "timeout": 10000
+      },
+      "severity": "warning",
       "enabled": true
+    },
+    {
+      "name": "security-scan",
+      "description": "Run vulnerability scan on built Docker images",
+      "event": "post-build",
+      "match": {
+        "files": ["Dockerfile*", "**/*.dockerfile"]
+      },
+      "command": {
+        "run": "bash ./scripts/docker-lint.sh security-scan",
+        "timeout": 120000
+      },
+      "severity": "error",
+      "enabled": false
     }
   ]
 }

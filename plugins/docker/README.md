@@ -1,153 +1,129 @@
-# Docker Cursor Plugin
+# Docker Plugin for Cursor
 
-A comprehensive Cursor plugin for Docker development — helping you write better Dockerfiles, Docker Compose files, and follow container best practices.
+A comprehensive Cursor plugin for Docker development — write better Dockerfiles, Compose files, and containerize applications following production-grade best practices.
 
 ## Features
 
-| Feature | Description |
-|---------|-------------|
-| **Dockerfile Rules** | Best practices for multi-stage builds, layer optimization, security, and more |
-| **Compose Rules** | Guidelines for volumes, networks, healthchecks, and service configuration |
-| **Optimization Agent** | AI agent specialized in Docker image optimization and security hardening |
-| **Dockerfile Skill** | Language-specific Dockerfile templates (Node.js, Python, Go, Java, Rust) |
-| **Compose Skill** | Complete development environment setup with hot-reload and databases |
-| **Pre-commit Hooks** | Automated Dockerfile linting and Compose validation |
-| **MCP Integration** | Docker operations directly from Cursor via MCP server |
+- **Dockerfile Best Practices** — Automatic rules for multi-stage builds, layer optimization, security hardening, and image size reduction.
+- **Docker Compose Best Practices** — Rules for named volumes, health checks, networking, resource limits, and service dependencies.
+- **Docker Optimization Agent** — AI agent that analyzes your Docker setup and provides actionable optimization recommendations.
+- **Containerize App Skill** — Generate production-ready Dockerfiles for Node.js, Python, Go, Java, and Rust applications.
+- **Docker Compose Setup Skill** — Generate complete multi-service development environments with databases, caches, and queues.
+- **Lint Hooks** — Pre-commit hooks for Dockerfile linting (hadolint), Compose validation, and `:latest` tag detection.
+- **Docker MCP Server** — Manage containers, images, volumes, and networks directly from Cursor.
 
-## Project Structure
+## Directory Structure
 
 ```
 plugins/docker/
 ├── .cursor/
 │   └── plugin.json          # Plugin manifest
 ├── agents/
-│   └── docker-optimization-agent.md  # Optimization AI agent
-├── rules/
-│   ├── dockerfile-best-practices.mdc # Dockerfile rules
-│   └── docker-compose.mdc            # Compose rules
-├── skills/
-│   ├── create-dockerfile/
-│   │   └── SKILL.md          # Dockerfile creation skill
-│   └── setup-docker-compose/
-│       └── SKILL.md          # Compose setup skill
+│   └── docker-optimization-agent.md   # Optimization agent
+├── extensions/               # Future extensions
 ├── hooks/
-│   └── hooks.json            # Pre-commit hook definitions
+│   └── hooks.json           # Pre-commit lint hooks
+├── rules/
+│   ├── dockerfile.mdc       # Dockerfile best practices
+│   └── docker-compose.mdc   # Compose best practices
 ├── scripts/
-│   └── lint-dockerfile.sh    # Hadolint wrapper script
-├── extensions/               # Extension directory (reserved)
-├── mcp.json                  # MCP server configuration
-├── README.md                 # This file
-├── CHANGELOG.md              # Version history
-└── LICENSE                   # MIT License
-```
-
-## Rules
-
-### Dockerfile Best Practices (`rules/dockerfile-best-practices.mdc`)
-
-Automatically applied when editing `Dockerfile*`, `*.dockerfile`, or `.dockerignore` files:
-
-- Use multi-stage builds to minimize final image size
-- Pin base image versions with digests for reproducibility
-- Run containers as non-root users
-- Minimize layers and order instructions by change frequency
-- Use `.dockerignore` to reduce build context
-- Prefer `COPY` over `ADD`
-- Define `HEALTHCHECK` instructions
-- Clean up package manager caches in the same layer
-
-### Docker Compose Best Practices (`rules/docker-compose.mdc`)
-
-Automatically applied when editing `docker-compose*.yml`, `compose*.yml`, and related files:
-
-- Use named volumes for data persistence
-- Define networks explicitly with proper isolation
-- Set resource limits (CPU, memory)
-- Configure healthchecks and dependency conditions
-- Use environment files for secrets
-- Pin image versions
-- Use profiles for optional services
-
-## Agent
-
-### Docker Optimization Agent
-
-An AI agent that helps with:
-
-- **Image optimization**: Reduce image sizes, choose appropriate base images
-- **Build performance**: Layer caching strategies, BuildKit features
-- **Security hardening**: Non-root users, vulnerability scanning, secrets management
-
-## Skills
-
-### Create Dockerfile
-
-Generates production-ready Dockerfiles with:
-
-- Language-specific templates (Node.js, Python, Go, Java, Rust)
-- Multi-stage builds
-- Security hardening
-- Proper `.dockerignore` configuration
-
-### Setup Docker Compose
-
-Creates complete development environments with:
-
-- Hot-reload configuration
-- Database services (PostgreSQL, Redis)
-- Network isolation
-- Health checks and dependency management
-- Optional monitoring (Prometheus, Grafana)
-- Production override files
-
-## Hooks
-
-Pre-commit hooks that run automatically:
-
-| Hook | Description |
-|------|-------------|
-| `lint-dockerfile` | Runs Hadolint on modified Dockerfiles |
-| `validate-compose` | Validates Docker Compose file syntax |
-| `check-dockerignore` | Warns if `.dockerignore` is missing |
-| `scan-dockerfile-secrets` | Checks for hardcoded secrets |
-
-## MCP Server
-
-The plugin integrates with the Docker MCP server for direct container operations:
-
-- List, inspect, start, and stop containers
-- Build and manage images
-- Docker Compose lifecycle management
-- Execute commands inside running containers
-
-## Scripts
-
-### `scripts/lint-dockerfile.sh`
-
-A wrapper script for Hadolint that:
-
-- Auto-detects Hadolint installation (native or Docker)
-- Finds and lints all Dockerfiles in the project
-- Provides colored output with pass/fail status
-- Supports custom Hadolint versions via `HADOLINT_VERSION` env var
-
-```bash
-# Lint all Dockerfiles
-./scripts/lint-dockerfile.sh
-
-# Lint specific files
-./scripts/lint-dockerfile.sh Dockerfile Dockerfile.prod
+│   └── docker-lint.sh       # Lint and validation script
+├── skills/
+│   ├── containerize-app/
+│   │   └── SKILL.md         # Containerize an application
+│   └── setup-docker-compose/
+│       └── SKILL.md         # Set up Docker Compose
+├── mcp.json                 # MCP server configuration
+├── CHANGELOG.md
+├── LICENSE
+└── README.md
 ```
 
 ## Installation
 
-This plugin is automatically activated when working in a project that uses Docker. The rules are applied based on file glob patterns.
+This plugin is loaded automatically when placed in the `plugins/docker/` directory of a Cursor-enabled workspace.
 
-### Prerequisites
+## Rules
 
-- [Docker](https://docs.docker.com/get-docker/) installed and running
-- [Hadolint](https://github.com/hadolint/hadolint) (optional, for linting hooks)
+Rules are applied automatically when editing matching files:
+
+| Rule               | Globs                                                 | Description                          |
+|--------------------|-------------------------------------------------------|--------------------------------------|
+| `dockerfile.mdc`   | `Dockerfile*`, `**/*.dockerfile`, `**/Dockerfile*`   | Dockerfile writing best practices    |
+| `docker-compose.mdc` | `docker-compose*.yml`, `compose*.yml`, etc.        | Docker Compose best practices        |
+
+## Agent
+
+The **Docker Optimization Agent** (`agents/docker-optimization-agent.md`) specializes in:
+
+- Reducing Docker image sizes (base image selection, multi-stage builds, layer cleanup)
+- Improving build times (layer ordering, BuildKit cache mounts, CI/CD caching)
+- Security hardening (non-root users, secret management, vulnerability scanning)
+- Runtime performance (resource limits, signal handling, logging)
+
+## Skills
+
+### Containerize an Application
+
+Generates a production-ready, multi-stage Dockerfile for your project.
+
+**Supported languages:** Node.js, Python, Go, Java, Rust, Ruby, PHP
+
+**What you get:**
+- Multi-stage Dockerfile optimized for your language/framework
+- `.dockerignore` file
+- Health checks and security hardening
+- Build cache optimization
+
+### Set Up Docker Compose
+
+Generates a complete Docker Compose configuration for multi-service environments.
+
+**Supported services:** PostgreSQL, MySQL, MongoDB, Redis, RabbitMQ, Kafka, Elasticsearch, MinIO, NATS
+
+**What you get:**
+- `compose.yaml` with all required services
+- `compose.override.yaml` for development
+- `.env.example` template
+- Health checks, named volumes, and proper networking
+
+## Hooks
+
+Pre-commit hooks run automatically to catch issues early:
+
+| Hook                   | Event        | Description                                |
+|------------------------|--------------|--------------------------------------------|
+| `dockerfile-lint`      | pre-commit   | Lint Dockerfiles with hadolint             |
+| `compose-validate`     | pre-commit   | Validate Compose file syntax               |
+| `dockerignore-check`   | pre-commit   | Ensure .dockerignore exists                |
+| `no-latest-tag`        | pre-commit   | Detect `:latest` tag usage                 |
+| `security-scan`        | post-build   | Vulnerability scan (disabled by default)   |
+
+## Scripts
+
+The `scripts/docker-lint.sh` script provides the linting backend:
+
+```bash
+# Lint a Dockerfile
+./scripts/docker-lint.sh lint-dockerfile Dockerfile
+
+# Validate a Compose file
+./scripts/docker-lint.sh lint-compose compose.yaml
+
+# Check for .dockerignore
+./scripts/docker-lint.sh check-dockerignore
+
+# Check for :latest tags
+./scripts/docker-lint.sh check-no-latest Dockerfile compose.yaml
+
+# Run security scan on built images
+./scripts/docker-lint.sh security-scan
+```
+
+## MCP Server
+
+The plugin configures the [Docker MCP server](https://github.com/docker/docker-mcp) for direct container management from Cursor, providing tools to manage containers, images, volumes, and networks.
 
 ## License
 
-MIT License — see [LICENSE](./LICENSE) for details.
+MIT — see [LICENSE](./LICENSE).

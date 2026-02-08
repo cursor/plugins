@@ -10,185 +10,229 @@ alwaysApply: false
 
 # Docker Compose Best Practices
 
-## Use Named Volumes for Persistence
+## Version and File Structure
 
-- Always use named volumes instead of bind mounts for data that needs to persist across container restarts.
-- Define volumes in the top-level `volumes` section.
-- Use bind mounts only for development-time source code mounting.
+- Use Compose Specification (no `version` key needed for Docker Compose v2+).
+- Split configurations by environment using multiple compose files:
+  ```
+  compose.yaml           # Base services
+  compose.override.yaml  # Local development overrides (auto-loaded)
+  compose.prod.yaml      # Production overrides
+  compose.test.yaml      # Testing overrides
+  ```
+- Use `docker compose -f compose.yaml -f compose.prod.yaml up` to layer configurations.
 
-```yaml
-volumes:
-  postgres_data:
-    driver: local
-  redis_data:
-    driver: local
+## Image Versioning
 
-services:
-  db:
-    image: postgres:16-alpine
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-```
+- **Pin image versions** — never use `latest` in compose files:
+  ```yaml
+  services:
+    db:
+      image: postgres:16.2-alpine  # Good
+      # image: postgres:latest     # Bad
+  ```
+- For custom-built services, use explicit build contexts and targets:
+  ```yaml
+  services:
+    api:
+      build:
+        context: .
+        dockerfile: Dockerfile
+        target: production
+  ```
 
-## Define Networks Explicitly
+## Named Volumes for Persistence
 
-- Create and name networks explicitly rather than relying on the default network.
-- Use separate networks to isolate services that should not communicate directly.
-- Use `internal: true` for networks that should not have external access.
+- **Use named volumes** for any data that must persist across container restarts:
+  ```yaml
+  services:
+    db:
+      image: postgres:16.2-alpine
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
 
-```yaml
-networks:
-  frontend:
-    driver: bridge
-  backend:
-    driver: bridge
-    internal: true
+  volumes:
+    postgres_data:
+      driver: local
+  ```
+- Avoid bind mounts in production. Use them only for development hot-reloading:
+  ```yaml
+  services:
+    app:
+      volumes:
+        - ./src:/app/src  # Development only
+  ```
 
-services:
-  api:
-    networks:
-      - frontend
-      - backend
-  db:
-    networks:
-      - backend
-```
+## Resource Limits
 
-## Set Resource Limits
+- **Set memory and CPU limits** to prevent runaway containers:
+  ```yaml
+  services:
+    api:
+      deploy:
+        resources:
+          limits:
+            cpus: "1.0"
+            memory: 512M
+          reservations:
+            cpus: "0.25"
+            memory: 128M
+  ```
 
-- Always define memory and CPU limits to prevent a single container from consuming all host resources.
-- Set both `limits` and `reservations` for predictable resource allocation.
+## Health Checks
 
-```yaml
-services:
-  api:
-    deploy:
-      resources:
-        limits:
-          cpus: "1.0"
-          memory: 512M
-        reservations:
-          cpus: "0.25"
-          memory: 128M
-```
+- **Define health checks** for every service so dependent services can wait:
+  ```yaml
+  services:
+    db:
+      image: postgres:16.2-alpine
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+        start_period: 30s
+  ```
 
-## Use Healthchecks
+## Service Dependencies
 
-- Define healthchecks for every service to enable proper dependency management.
-- Use service-appropriate health check commands.
-- Configure sensible intervals, timeouts, and retries.
+- Use `depends_on` with `condition` to control startup order based on health:
+  ```yaml
+  services:
+    api:
+      depends_on:
+        db:
+          condition: service_healthy
+        redis:
+          condition: service_healthy
+  ```
+- Never rely on `depends_on` alone without health check conditions — it only guarantees container start, not readiness.
 
-```yaml
-services:
-  api:
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
-  db:
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-```
+## Environment Variables
 
-## Use Environment Files for Secrets
+- **Use `env_file`** to manage environment variables instead of inline `environment`:
+  ```yaml
+  services:
+    api:
+      env_file:
+        - .env
+        - .env.local
+  ```
+- Never commit `.env` files with secrets. Use `.env.example` as a template.
+- Use variable substitution for dynamic values:
+  ```yaml
+  services:
+    api:
+      image: myapp:${APP_VERSION:-latest}
+  ```
 
-- Never hardcode secrets or sensitive values in `docker-compose.yml`.
-- Use `.env` files or Docker secrets for sensitive configuration.
-- Reference environment files using `env_file` and add `.env` to `.gitignore`.
+## Networking
 
-```yaml
-services:
-  api:
-    env_file:
-      - .env
-      - .env.local
-```
+- **Define custom networks** for service isolation:
+  ```yaml
+  services:
+    api:
+      networks:
+        - frontend
+        - backend
+    db:
+      networks:
+        - backend
 
-## Pin Image Versions
+  networks:
+    frontend:
+      driver: bridge
+    backend:
+      driver: bridge
+      internal: true  # No external access
+  ```
+- Use `internal: true` for backend networks that should not have internet access.
+- Services on the same network can reach each other by service name (built-in DNS).
 
-- Always specify explicit image tags — never use `:latest` in production.
-- Use the most specific tag available (e.g., `postgres:16.2-alpine` not `postgres:16`).
-- Document why a specific version is pinned.
+## Profiles for Optional Services
 
-```yaml
-services:
-  db:
-    image: postgres:16.2-alpine
-  cache:
-    image: redis:7.2-alpine
-```
+- Use **profiles** to group optional services that are not needed in every environment:
+  ```yaml
+  services:
+    app:
+      image: myapp:1.0
+      # No profile — always starts
 
-## Use depends_on with Conditions
+    debug:
+      image: busybox
+      profiles:
+        - debug
 
-- Use `depends_on` with `condition` to wait for services to be healthy, not just started.
-- Combine with healthchecks for reliable startup ordering.
+    monitoring:
+      image: grafana/grafana:10.3.1
+      profiles:
+        - monitoring
 
-```yaml
-services:
-  api:
-    depends_on:
-      db:
-        condition: service_healthy
-      cache:
-        condition: service_healthy
-```
+    mailhog:
+      image: mailhog/mailhog:v1.0.1
+      profiles:
+        - dev
+  ```
+- Start optional services with `docker compose --profile debug up`.
 
-## Configure Restart Policies
+## Logging
 
-- Set appropriate restart policies for each service.
-- Use `unless-stopped` for production services.
-- Use `no` or `on-failure` for one-off tasks or development.
+- Configure log drivers and limits to prevent disk exhaustion:
+  ```yaml
+  services:
+    api:
+      logging:
+        driver: json-file
+        options:
+          max-size: "10m"
+          max-file: "3"
+  ```
 
-```yaml
-services:
-  api:
-    restart: unless-stopped
-  worker:
-    restart: on-failure:5
-  migration:
-    restart: "no"
-```
+## Restart Policies
 
-## Use Profiles for Optional Services
+- Set appropriate restart policies:
+  ```yaml
+  services:
+    api:
+      restart: unless-stopped  # Recommended for production
+    worker:
+      restart: on-failure
+  ```
 
-- Use profiles to group optional services (e.g., monitoring, debugging, testing).
-- This keeps the default `docker compose up` lightweight.
-- Activate profiles with `--profile` flag when needed.
+## Security
 
-```yaml
-services:
-  api:
-    # Always starts (no profile)
-    image: myapp:latest
+- Do not run containers as root. Use `user` directive:
+  ```yaml
+  services:
+    api:
+      user: "1000:1000"
+  ```
+- Mount secrets using Docker secrets or bind-mount read-only files:
+  ```yaml
+  secrets:
+    db_password:
+      file: ./secrets/db_password.txt
 
-  prometheus:
-    image: prom/prometheus:latest
-    profiles:
-      - monitoring
+  services:
+    db:
+      secrets:
+        - db_password
+  ```
+- Use `read_only: true` for containers that do not need to write to the filesystem.
+- Drop unnecessary Linux capabilities with `cap_drop: [ALL]` and add only what is needed.
 
-  grafana:
-    image: grafana/grafana:latest
-    profiles:
-      - monitoring
+## Development Workflow
 
-  mailhog:
-    image: mailhog/mailhog:latest
-    profiles:
-      - debug
-```
-
-## Additional Guidelines
-
-- Use `docker compose` (V2) instead of `docker-compose` (V1).
-- Set a `container_name` only when necessary — it prevents scaling.
-- Use `logging` configuration to control log output and rotation.
-- Prefer `build.context` and `build.dockerfile` over inline Dockerfile paths.
-- Use `init: true` to ensure proper signal handling with PID 1.
-- Set `stop_grace_period` for services that need time to shut down gracefully.
-- Use `tmpfs` mounts for ephemeral data that doesn't need persistence.
-- Group related services logically and add comments for clarity.
+- Use `watch` for file-sync based hot-reloading (Compose v2.22+):
+  ```yaml
+  services:
+    app:
+      develop:
+        watch:
+          - action: sync
+            path: ./src
+            target: /app/src
+          - action: rebuild
+            path: package.json
+  ```
+- Use `docker compose watch` for automatic syncing without bind mounts.
