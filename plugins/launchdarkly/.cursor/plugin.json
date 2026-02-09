@@ -1,7 +1,7 @@
 {
   "name": "launchdarkly",
   "version": "1.0.0",
-  "description": "Cursor plugin for LaunchDarkly \u2014 feature flags, experimentation, progressive rollouts, and targeting",
+  "description": "Cursor plugin for LaunchDarkly — feature flags, experimentation, progressive rollouts, and targeting",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -23,5 +23,6 @@
     "release-management"
   ],
   "skills": "./skills/",
-  "mcpServers": "./mcp.json"
+  "mcpServers": "./mcp.json",
+  "icon": "<svg role=\"img\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><title>LaunchDarkly</title><path d=\"M12.527.075a1.129 1.129 0 00-1.054 0L.206 6.15a.407.407 0 00-.206.36v10.998c0 .152.079.29.206.361l11.267 6.056a1.129 1.129 0 001.054 0l11.267-6.056a.418.418 0 00.206-.361V6.51a.418.418 0 00-.206-.361zm-.527 2.145l8.97 4.822L12 11.864 3.03 7.042zM2.4 8.47l8.7 4.674v8.903l-8.7-4.676zm11.1 13.577v-8.903l8.1-4.352v8.58z\"/></svg>"
 }
