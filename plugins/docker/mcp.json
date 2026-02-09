@@ -1,0 +1,16 @@
+{
+  "$schema": "https://cursor.com/schemas/mcp.json",
+  "mcpServers": {
+    "docker-mcp": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-v", "/var/run/docker.sock:/var/run/docker.sock:ro",
+        "mcp/docker:latest"
+      ],
+      "description": "Docker MCP server — manage containers, images, volumes, and networks via the Docker socket",
+      "env": {},
+      "enabled": true
+    }
+  }
+}

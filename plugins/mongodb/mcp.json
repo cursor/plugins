@@ -1,0 +1,20 @@
+{
+  "$schema": "https://cursor.com/schemas/mcp.json",
+  "mcpServers": {
+    "mongodb": {
+      "command": "npx",
+      "args": ["-y", "mongodb-mcp-server"],
+      "description": "MongoDB MCP server for database introspection, collection management, querying, and aggregation operations",
+      "env": {
+        "MDB_MCP_CONNECTION_STRING": "${env:MONGODB_URI}"
+      },
+      "capabilities": [
+        "collection-introspection",
+        "query-execution",
+        "aggregation-pipelines",
+        "index-management",
+        "database-health-check"
+      ]
+    }
+  }
+}
