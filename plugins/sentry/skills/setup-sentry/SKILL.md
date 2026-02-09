@@ -1,3 +1,8 @@
+---
+name: setup-sentry
+description: Framework-specific Sentry setup for Next.js, React, Node.js, and Python with source maps and releases
+---
+
 # Skill: Set Up Sentry
 
 Set up Sentry error monitoring and performance tracking in a project, with framework-specific guidance for Next.js, React, Node.js, and Python.

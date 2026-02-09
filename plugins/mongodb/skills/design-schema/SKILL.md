@@ -1,3 +1,8 @@
+---
+name: design-schema
+description: Document schema design, embedding vs referencing, index strategies, and aggregation pipelines for MongoDB
+---
+
 # Skill: Designing MongoDB Schemas and Indexes
 
 ## Description

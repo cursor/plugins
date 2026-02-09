@@ -1,3 +1,8 @@
+---
+name: setup-slash-commands
+description: Slash command handlers with subcommand routing, modals, and deferred responses
+---
+
 # Skill: Set Up Slash Commands
 
 ## When to Use

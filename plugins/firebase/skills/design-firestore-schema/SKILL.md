@@ -1,3 +1,8 @@
+---
+name: design-firestore-schema
+description: Data modeling patterns, subcollections, denormalization, and security rules for Firestore
+---
+
 # Design Firestore Schema
 
 ## Description

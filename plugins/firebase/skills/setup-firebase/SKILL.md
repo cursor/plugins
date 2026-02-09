@@ -1,3 +1,8 @@
+---
+name: setup-firebase
+description: Project initialization, SDK setup, emulator configuration, and deployment for Firebase
+---
+
 # Setup Firebase Project
 
 ## Description

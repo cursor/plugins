@@ -1,3 +1,8 @@
+---
+name: setup-sms
+description: Send and receive SMS/MMS with webhook handlers and delivery tracking via Twilio
+---
+
 # Setting Up SMS Messaging with Twilio
 
 ## When to Use

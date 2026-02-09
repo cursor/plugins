@@ -1,3 +1,8 @@
+---
+name: create-github-action
+description: Step-by-step guide for creating composite and JavaScript GitHub Actions
+---
+
 # Skill: Create a Custom GitHub Action
 
 ## When to Use

@@ -1,3 +1,8 @@
+---
+name: containerize-app
+description: Language-specific Dockerfiles for Node.js, Python, Go, Java, and Rust with multi-stage builds
+---
+
 # Skill: Containerize an Application
 
 ## Description

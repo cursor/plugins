@@ -1,3 +1,8 @@
+---
+name: setup-docker-compose
+description: Multi-service development environments with databases, caches, and queues
+---
+
 # Skill: Set Up Docker Compose
 
 ## Description

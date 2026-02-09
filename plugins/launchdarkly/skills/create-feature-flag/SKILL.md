@@ -1,3 +1,8 @@
+---
+name: create-feature-flag
+description: Flag lifecycle from creation through rollout, experimentation, and cleanup with LaunchDarkly
+---
+
 # Skill: Create and Manage Feature Flags
 
 ## Description

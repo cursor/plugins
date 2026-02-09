@@ -1,3 +1,8 @@
+---
+name: setup-verify
+description: Phone verification with Twilio Verify, multi-channel fallback, and error handling
+---
+
 # Setting Up Phone Verification with Twilio Verify
 
 ## When to Use

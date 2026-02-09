@@ -1,3 +1,8 @@
+---
+name: create-slack-bot
+description: End-to-end Slack bot setup with event listeners, interactive components, and deployment
+---
+
 # Skill: Create a Slack Bot
 
 ## When to Use

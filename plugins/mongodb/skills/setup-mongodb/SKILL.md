@@ -1,3 +1,8 @@
+---
+name: setup-mongodb
+description: Connect Node.js/TypeScript to MongoDB with native driver and Mongoose, including Docker Compose setup
+---
+
 # Skill: Setting Up MongoDB with Node.js
 
 ## Description

@@ -1,3 +1,8 @@
+---
+name: setup-ci-pipeline
+description: CI/CD pipeline patterns for Node.js, Python, Docker, and cloud deployments
+---
+
 # Skill: Set Up a CI/CD Pipeline with GitHub Actions
 
 ## When to Use

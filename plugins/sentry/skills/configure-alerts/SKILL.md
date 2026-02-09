@@ -1,3 +1,8 @@
+---
+name: configure-alerts
+description: Issue alerts, metric alerts, uptime monitors, and cron monitors for Sentry
+---
+
 # Skill: Configure Sentry Alerts
 
 Configure Sentry alerts to get notified about errors, performance degradations, and uptime issues. This skill covers issue alerts, metric alerts, and uptime monitors.

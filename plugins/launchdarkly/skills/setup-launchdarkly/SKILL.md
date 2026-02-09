@@ -1,3 +1,8 @@
+---
+name: setup-launchdarkly
+description: SDK integration, client initialization, context setup, React provider, and testing for LaunchDarkly
+---
+
 # Skill: Set Up LaunchDarkly
 
 ## Description
