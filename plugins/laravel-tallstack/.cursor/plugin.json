@@ -1,0 +1,28 @@
+{
+  "name": "laravel-tallstack",
+  "version": "1.0.0",
+  "description": "Laravel TALL Stack (Tailwind, Alpine.js, Livewire, Laravel) with DaisyUI rules by Ismael Fi (cursor.directory)",
+  "author": {
+    "name": "Ismael Fi",
+    "url": "https://cursor.directory/tallstack-cursor-rules"
+  },
+  "homepage": "https://cursor.directory/tallstack-cursor-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "laravel",
+    "php",
+    "livewire",
+    "alpine",
+    "tailwind",
+    "daisyui"
+  ],
+  "category": "backend",
+  "tags": [
+    "laravel",
+    "tailwindcss",
+    "livewire",
+    "alpinejs"
+  ],
+  "rules": "./rules/"
+}

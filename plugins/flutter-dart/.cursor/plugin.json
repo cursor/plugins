@@ -1,0 +1,27 @@
+{
+  "name": "flutter-dart",
+  "version": "1.0.0",
+  "description": "Flutter and Dart clean architecture development rules by Sercan Yusuf (cursor.directory)",
+  "author": {
+    "name": "Sercan Yusuf",
+    "url": "https://cursor.directory/flutter-cursor-rules"
+  },
+  "homepage": "https://cursor.directory/flutter-cursor-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "flutter",
+    "dart",
+    "riverpod",
+    "freezed",
+    "mobile"
+  ],
+  "category": "mobile",
+  "tags": [
+    "Riverpod",
+    "Freezed",
+    "AutoRoute",
+    "GetIt"
+  ],
+  "rules": "./rules/"
+}

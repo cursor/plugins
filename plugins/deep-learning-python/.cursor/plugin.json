@@ -1,0 +1,27 @@
+{
+  "name": "deep-learning-python",
+  "version": "1.0.0",
+  "description": "Deep learning, transformers, and diffusion model development rules by Yu Changqian (cursor.directory)",
+  "author": {
+    "name": "Yu Changqian",
+    "url": "https://cursor.directory/deep-learning-developer-python-cursor-rules"
+  },
+  "homepage": "https://cursor.directory/deep-learning-developer-python-cursor-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "python",
+    "pytorch",
+    "deep-learning",
+    "transformers",
+    "diffusion"
+  ],
+  "category": "ml",
+  "tags": [
+    "python",
+    "pytorch",
+    "deep-learning",
+    "transformers"
+  ],
+  "rules": "./rules/"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "django-python",
+  "version": "1.0.0",
+  "description": "Django and scalable Python web application development rules by Caio Barbieri (cursor.directory)",
+  "author": {
+    "name": "Caio Barbieri",
+    "url": "https://cursor.directory/django-python-cursor-rules"
+  },
+  "homepage": "https://cursor.directory/django-python-cursor-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "python",
+    "django",
+    "orm",
+    "web"
+  ],
+  "category": "backend",
+  "tags": [
+    "django",
+    "python"
+  ],
+  "rules": "./rules/"
+}

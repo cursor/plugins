@@ -1,0 +1,24 @@
+{
+  "name": "playwright-testing",
+  "version": "1.0.0",
+  "description": "Playwright end-to-end testing and QA automation rules by Douglas Urrea Ocampo (cursor.directory)",
+  "author": {
+    "name": "Douglas Urrea Ocampo",
+    "url": "https://cursor.directory/playwright-cursor-rules"
+  },
+  "homepage": "https://cursor.directory/playwright-cursor-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "playwright",
+    "testing",
+    "e2e",
+    "automation",
+    "qa"
+  ],
+  "category": "testing",
+  "tags": [
+    "playwright"
+  ],
+  "rules": "./rules/"
+}

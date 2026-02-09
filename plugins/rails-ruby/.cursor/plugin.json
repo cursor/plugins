@@ -1,0 +1,28 @@
+{
+  "name": "rails-ruby",
+  "version": "1.0.0",
+  "description": "Ruby on Rails, PostgreSQL, Hotwire, and Tailwind development rules by Theo Vararu (cursor.directory)",
+  "author": {
+    "name": "Theo Vararu",
+    "url": "https://cursor.directory/rails-ruby-cursor-rules"
+  },
+  "homepage": "https://cursor.directory/rails-ruby-cursor-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "ruby",
+    "rails",
+    "hotwire",
+    "turbo",
+    "stimulus",
+    "tailwind"
+  ],
+  "category": "backend",
+  "tags": [
+    "rails",
+    "ruby",
+    "hotwire",
+    "tailwind"
+  ],
+  "rules": "./rules/"
+}
