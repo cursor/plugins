@@ -1,0 +1,36 @@
+{
+  "$schema": "https://cursor.com/schemas/mcp.json",
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "MCP server providing access to the GitHub API for repository management, issues, pull requests, code search, and more",
+      "capabilities": [
+        "search_repositories — Search for GitHub repositories",
+        "get_repository — Get details about a specific repository",
+        "list_issues — List and filter issues in a repository",
+        "create_issue — Create a new issue",
+        "get_issue — Get details of a specific issue",
+        "update_issue — Update an existing issue",
+        "list_pull_requests — List and filter pull requests",
+        "get_pull_request — Get details of a specific pull request",
+        "create_pull_request — Create a new pull request",
+        "merge_pull_request — Merge a pull request",
+        "list_commits — List commits in a repository",
+        "get_file_contents — Read file contents from a repository",
+        "create_or_update_file — Create or update a file in a repository",
+        "search_code — Search for code across repositories",
+        "list_branches — List branches in a repository",
+        "create_branch — Create a new branch",
+        "list_workflow_runs — List GitHub Actions workflow runs",
+        "get_workflow_run — Get details of a workflow run"
+      ]
+    }
+  }
+}

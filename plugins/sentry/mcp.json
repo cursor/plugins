@@ -1,0 +1,54 @@
+{
+  "$schema": "https://cursor.com/schemas/mcp.json",
+  "mcpServers": {
+    "sentry": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@sentry/mcp-server@latest"
+      ],
+      "env": {
+        "SENTRY_AUTH_TOKEN": "${SENTRY_AUTH_TOKEN}",
+        "SENTRY_ORG": "${SENTRY_ORG}",
+        "SENTRY_PROJECT": "${SENTRY_PROJECT}"
+      },
+      "description": "Sentry MCP server — exposes Sentry issues, events, releases, and performance data to AI agents.",
+      "capabilities": {
+        "tools": [
+          {
+            "name": "list_issues",
+            "description": "List recent unresolved issues for the project, with optional query filters."
+          },
+          {
+            "name": "get_issue",
+            "description": "Get detailed information about a specific Sentry issue, including events, tags, and assignee."
+          },
+          {
+            "name": "get_event",
+            "description": "Retrieve a specific error event with full stack trace, breadcrumbs, and context."
+          },
+          {
+            "name": "list_releases",
+            "description": "List releases for the project with deploy and commit information."
+          },
+          {
+            "name": "search_events",
+            "description": "Search for events matching a Sentry query string."
+          },
+          {
+            "name": "resolve_issue",
+            "description": "Resolve or unresolve a Sentry issue."
+          },
+          {
+            "name": "assign_issue",
+            "description": "Assign a Sentry issue to a user or team."
+          },
+          {
+            "name": "get_performance_summary",
+            "description": "Get performance summary for transactions — p50, p95, throughput, failure rate."
+          }
+        ]
+      }
+    }
+  }
+}

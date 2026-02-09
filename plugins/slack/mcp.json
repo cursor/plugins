@@ -1,0 +1,28 @@
+{
+  "$schema": "https://cursor.com/schemas/mcp.json",
+  "mcpServers": {
+    "slack": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic/mcp-server-slack"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}"
+      },
+      "description": "MCP server providing access to the Slack API for messaging, channel management, user lookup, and workspace operations",
+      "capabilities": [
+        "list_channels — List public and private channels in the workspace",
+        "post_message — Post a message to a channel or DM",
+        "reply_to_thread — Reply to a specific message thread",
+        "add_reaction — Add an emoji reaction to a message",
+        "get_channel_history — Retrieve recent messages from a channel",
+        "get_thread_replies — Get all replies in a message thread",
+        "get_users — List users in the workspace",
+        "get_user_profile — Get detailed profile info for a user",
+        "search_messages — Search for messages across the workspace"
+      ]
+    }
+  }
+}

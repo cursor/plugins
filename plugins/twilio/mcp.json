@@ -1,0 +1,14 @@
+{
+  "$schema": "https://cursor.com/schemas/mcp.json",
+  "mcpServers": {
+    "twilio": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/twilio-mcp-server", "--account-sid=${TWILIO_ACCOUNT_SID}", "--auth-token=${TWILIO_AUTH_TOKEN}"],
+      "description": "Twilio MCP server — interact with Twilio APIs directly from Cursor. Supports sending SMS, managing phone numbers, configuring Messaging Services, checking message logs, and more.",
+      "env": {
+        "TWILIO_ACCOUNT_SID": "${TWILIO_ACCOUNT_SID}",
+        "TWILIO_AUTH_TOKEN": "${TWILIO_AUTH_TOKEN}"
+      }
+    }
+  }
+}

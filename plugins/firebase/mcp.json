@@ -1,0 +1,14 @@
+{
+  "$schema": "https://cursor.com/schemas/mcp.json",
+  "mcpServers": {
+    "firebase": {
+      "command": "npx",
+      "args": ["-y", "firebase-mcp-server"],
+      "description": "Firebase MCP server for Firestore, Auth, and Cloud Functions management",
+      "env": {
+        "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/service-account-key.json",
+        "FIREBASE_PROJECT_ID": "${config:firebase.projectId}"
+      }
+    }
+  }
+}

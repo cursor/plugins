@@ -1,0 +1,29 @@
+{
+  "name": "twilio",
+  "version": "1.0.0",
+  "description": "Cursor plugin for Twilio — SMS, Voice, WhatsApp, Verify, and communications APIs",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/service-plugin-generation",
+  "repository": "https://github.com/cursor/service-plugin-generation",
+  "license": "MIT",
+  "keywords": [
+    "twilio",
+    "sms",
+    "voice",
+    "whatsapp",
+    "communications",
+    "verify"
+  ],
+  "category": "saas",
+  "tags": [
+    "communications",
+    "sms",
+    "voice"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json",
+  "icon": "<svg role=\"img\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><title>Twilio</title><path d=\"M12 0C5.381 0 0 5.381 0 12s5.381 12 12 12 12-5.381 12-12S18.619 0 12 0zm0 20.25c-4.556 0-8.25-3.694-8.25-8.25S7.444 3.75 12 3.75s8.25 3.694 8.25 8.25-3.694 8.25-8.25 8.25zm3.075-11.325a1.725 1.725 0 110 3.45 1.725 1.725 0 010-3.45zm0 4.2a1.725 1.725 0 110 3.45 1.725 1.725 0 010-3.45zm-4.2-4.2a1.725 1.725 0 110 3.45 1.725 1.725 0 010-3.45zm0 4.2a1.725 1.725 0 110 3.45 1.725 1.725 0 010-3.45z\"/></svg>"
+}
