@@ -1,0 +1,137 @@
+{
+  "name": "cursor-plugins",
+  "owner": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "metadata": {
+    "description": "Official Cursor plugin marketplace — developer tools, framework rules, MCP integrations, and agent skills"
+  },
+  "plugins": [
+    {
+      "name": "deep-learning-python",
+      "source": "deep-learning-python",
+      "description": "Deep learning, transformers, and diffusion model development rules by Yu Changqian (cursor.directory)"
+    },
+    {
+      "name": "django-python",
+      "source": "django-python",
+      "description": "Django and scalable Python web application development rules by Caio Barbieri (cursor.directory)"
+    },
+    {
+      "name": "docker",
+      "source": "docker",
+      "description": "Cursor plugin for Docker — Dockerfiles, Compose, multi-stage builds, and container best practices"
+    },
+    {
+      "name": "elixir-phoenix",
+      "source": "elixir-phoenix",
+      "description": "Elixir, Phoenix, LiveView, and Tailwind development rules by Ilyich Vismara (cursor.directory)"
+    },
+    {
+      "name": "fastapi-python",
+      "source": "fastapi-python",
+      "description": "FastAPI and scalable Python API development rules by Caio Barbieri (cursor.directory)"
+    },
+    {
+      "name": "firebase",
+      "source": "firebase",
+      "description": "Cursor plugin for Firebase — Firestore, Authentication, Cloud Functions, Hosting, and Storage"
+    },
+    {
+      "name": "flutter-dart",
+      "source": "flutter-dart",
+      "description": "Flutter and Dart clean architecture development rules by Sercan Yusuf (cursor.directory)"
+    },
+    {
+      "name": "frontend-developer",
+      "source": "frontend-developer",
+      "description": "Expert React, Next.js, TypeScript, and Tailwind CSS development rules by Mohammadali Karimi (cursor.directory)"
+    },
+    {
+      "name": "github",
+      "source": "github",
+      "description": "Cursor plugin for GitHub — Actions, API, CLI, Pull Requests, and repository management"
+    },
+    {
+      "name": "go-api-development",
+      "source": "go-api-development",
+      "description": "Go API development with standard library (1.22+) rules by Marvin Kaunda (cursor.directory)"
+    },
+    {
+      "name": "laravel-tallstack",
+      "source": "laravel-tallstack",
+      "description": "Laravel TALL Stack (Tailwind, Alpine.js, Livewire, Laravel) with DaisyUI rules by Ismael Fi (cursor.directory)"
+    },
+    {
+      "name": "launchdarkly",
+      "source": "launchdarkly",
+      "description": "Cursor plugin for LaunchDarkly — feature flags, experimentation, progressive rollouts, and targeting"
+    },
+    {
+      "name": "mongodb",
+      "source": "mongodb",
+      "description": "Cursor plugin for MongoDB — schema design, queries, aggregation, indexes, and Mongoose ODM"
+    },
+    {
+      "name": "nextjs-react-typescript",
+      "source": "nextjs-react-typescript",
+      "description": "Next.js App Router, React, Shadcn UI, and Tailwind development rules by Pontus Abrahamsson (cursor.directory)"
+    },
+    {
+      "name": "playwright-testing",
+      "source": "playwright-testing",
+      "description": "Playwright end-to-end testing and QA automation rules by Douglas Urrea Ocampo (cursor.directory)"
+    },
+    {
+      "name": "rails-ruby",
+      "source": "rails-ruby",
+      "description": "Ruby on Rails, PostgreSQL, Hotwire, and Tailwind development rules by Theo Vararu (cursor.directory)"
+    },
+    {
+      "name": "rust-async",
+      "source": "rust-async",
+      "description": "Rust async programming and concurrent systems development rules by Sheng-Yan, Zhang (cursor.directory)"
+    },
+    {
+      "name": "sentry",
+      "source": "sentry",
+      "description": "Cursor plugin for Sentry — error monitoring, performance tracking, session replay, and alerting"
+    },
+    {
+      "name": "slack",
+      "source": "slack",
+      "description": "Cursor plugin for Slack — Bolt framework, Block Kit, Events API, and Slack app development"
+    },
+    {
+      "name": "solidity-web3",
+      "source": "solidity-web3",
+      "description": "Solidity smart contract security and development best practices by Alfredo Bonilla (cursor.directory)"
+    },
+    {
+      "name": "sveltekit-development",
+      "source": "sveltekit-development",
+      "description": "Svelte 5 and SvelteKit modern web development guide by MMBytes (cursor.directory)"
+    },
+    {
+      "name": "swiftui-ios",
+      "source": "swiftui-ios",
+      "description": "SwiftUI and Swift iOS/macOS development rules by Josh Pigford (cursor.directory)"
+    },
+    {
+      "name": "terraform-iac",
+      "source": "terraform-iac",
+      "description": "Terraform and cloud Infrastructure as Code best practices by Abdeldjalil Sichaib (cursor.directory)"
+    },
+    {
+      "name": "twilio",
+      "source": "twilio",
+      "description": "Cursor plugin for Twilio — SMS, Voice, WhatsApp, Verify, and communications APIs"
+    },
+    {
+      "name": "unity-gamedev",
+      "source": "unity-gamedev",
+      "description": "C# Unity game development and design patterns rules by Pontus Abrahamsson (cursor.directory)"
+    }
+  ]
+}
