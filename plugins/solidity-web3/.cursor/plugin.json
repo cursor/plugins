@@ -1,0 +1,24 @@
+{
+  "name": "solidity-web3",
+  "version": "1.0.0",
+  "description": "Solidity smart contract security and development best practices by Alfredo Bonilla (cursor.directory)",
+  "author": {
+    "name": "Alfredo Bonilla",
+    "url": "https://cursor.directory/solidity-development-best-practices"
+  },
+  "homepage": "https://cursor.directory/solidity-development-best-practices",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "smart-contracts",
+    "web3",
+    "openzeppelin"
+  ],
+  "category": "blockchain",
+  "tags": [
+    "OpenZeppelin"
+  ],
+  "rules": "./rules/"
+}

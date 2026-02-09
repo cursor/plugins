@@ -1,0 +1,27 @@
+{
+  "name": "go-api-development",
+  "version": "1.0.0",
+  "description": "Go API development with standard library (1.22+) rules by Marvin Kaunda (cursor.directory)",
+  "author": {
+    "name": "Marvin Kaunda",
+    "url": "https://cursor.directory/go-api-standard-library-1-22"
+  },
+  "homepage": "https://cursor.directory/go-api-standard-library-1-22",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "go",
+    "golang",
+    "api",
+    "net/http",
+    "stdlib"
+  ],
+  "category": "backend",
+  "tags": [
+    "go",
+    "golang",
+    "api",
+    "net/http"
+  ],
+  "rules": "./rules/"
+}

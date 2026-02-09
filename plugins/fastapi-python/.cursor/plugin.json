@@ -1,0 +1,27 @@
+{
+  "name": "fastapi-python",
+  "version": "1.0.0",
+  "description": "FastAPI and scalable Python API development rules by Caio Barbieri (cursor.directory)",
+  "author": {
+    "name": "Caio Barbieri",
+    "url": "https://cursor.directory/fastapi-python-cursor-rules"
+  },
+  "homepage": "https://cursor.directory/fastapi-python-cursor-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "python",
+    "fastapi",
+    "api",
+    "pydantic",
+    "async"
+  ],
+  "category": "backend",
+  "tags": [
+    "python",
+    "fastapi",
+    "api",
+    "pydantic"
+  ],
+  "rules": "./rules/"
+}

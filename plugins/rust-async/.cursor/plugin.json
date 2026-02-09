@@ -1,0 +1,27 @@
+{
+  "name": "rust-async",
+  "version": "1.0.0",
+  "description": "Rust async programming and concurrent systems development rules by Sheng-Yan, Zhang (cursor.directory)",
+  "author": {
+    "name": "Sheng-Yan, Zhang",
+    "url": "https://cursor.directory/rust-async-development-rules"
+  },
+  "homepage": "https://cursor.directory/rust-async-development-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "rust",
+    "async",
+    "tokio",
+    "concurrency",
+    "systems"
+  ],
+  "category": "systems",
+  "tags": [
+    "Rust",
+    "tokio",
+    "anyhow",
+    "serde"
+  ],
+  "rules": "./rules/"
+}

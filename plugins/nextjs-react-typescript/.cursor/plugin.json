@@ -1,0 +1,28 @@
+{
+  "name": "nextjs-react-typescript",
+  "version": "1.0.0",
+  "description": "Next.js App Router, React, Shadcn UI, and Tailwind development rules by Pontus Abrahamsson (cursor.directory)",
+  "author": {
+    "name": "Pontus Abrahamsson",
+    "url": "https://cursor.directory/nextjs-react-typescript-cursor-rules"
+  },
+  "homepage": "https://cursor.directory/nextjs-react-typescript-cursor-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "nextjs",
+    "react",
+    "typescript",
+    "shadcn",
+    "radix",
+    "tailwind"
+  ],
+  "category": "frontend",
+  "tags": [
+    "shadcn",
+    "radix",
+    "tailwind",
+    "nuqs"
+  ],
+  "rules": "./rules/"
+}

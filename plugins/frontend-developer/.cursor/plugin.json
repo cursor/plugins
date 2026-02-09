@@ -1,0 +1,27 @@
+{
+  "name": "frontend-developer",
+  "version": "1.0.0",
+  "description": "Expert React, Next.js, TypeScript, and Tailwind CSS development rules by Mohammadali Karimi (cursor.directory)",
+  "author": {
+    "name": "Mohammadali Karimi",
+    "url": "https://cursor.directory/front-end-cursor-rules"
+  },
+  "homepage": "https://cursor.directory/front-end-cursor-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "nextjs",
+    "typescript",
+    "tailwindcss",
+    "shadcn",
+    "radix"
+  ],
+  "category": "frontend",
+  "tags": [
+    "Tailwind CSS",
+    "Shadcn UI",
+    "Radix UI"
+  ],
+  "rules": "./rules/"
+}

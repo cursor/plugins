@@ -1,0 +1,27 @@
+{
+  "name": "swiftui-ios",
+  "version": "1.0.0",
+  "description": "SwiftUI and Swift iOS/macOS development rules by Josh Pigford (cursor.directory)",
+  "author": {
+    "name": "Josh Pigford",
+    "url": "https://cursor.directory/swiftui-swift-cursor-rules"
+  },
+  "homepage": "https://cursor.directory/swiftui-swift-cursor-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "swift",
+    "swiftui",
+    "ios",
+    "macos",
+    "apple"
+  ],
+  "category": "mobile",
+  "tags": [
+    "swift",
+    "swiftui",
+    "ios",
+    "macos"
+  ],
+  "rules": "./rules/"
+}

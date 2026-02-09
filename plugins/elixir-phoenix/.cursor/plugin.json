@@ -1,0 +1,27 @@
+{
+  "name": "elixir-phoenix",
+  "version": "1.0.0",
+  "description": "Elixir, Phoenix, LiveView, and Tailwind development rules by Ilyich Vismara (cursor.directory)",
+  "author": {
+    "name": "Ilyich Vismara",
+    "url": "https://cursor.directory/elixir-phoenix-cursor-rules"
+  },
+  "homepage": "https://cursor.directory/elixir-phoenix-cursor-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "elixir",
+    "phoenix",
+    "liveview",
+    "ecto",
+    "tailwind"
+  ],
+  "category": "backend",
+  "tags": [
+    "phoenix",
+    "elixir",
+    "ecto",
+    "live_view"
+  ],
+  "rules": "./rules/"
+}

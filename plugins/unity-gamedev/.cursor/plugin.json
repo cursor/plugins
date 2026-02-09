@@ -1,0 +1,26 @@
+{
+  "name": "unity-gamedev",
+  "version": "1.0.0",
+  "description": "C# Unity game development and design patterns rules by Pontus Abrahamsson (cursor.directory)",
+  "author": {
+    "name": "Pontus Abrahamsson",
+    "url": "https://cursor.directory/c-unity-game-development-cursor-rules"
+  },
+  "homepage": "https://cursor.directory/c-unity-game-development-cursor-rules",
+  "repository": "https://github.com/pontusab/cursor.directory",
+  "license": "MIT",
+  "keywords": [
+    "unity",
+    "csharp",
+    "gamedev",
+    "game-development"
+  ],
+  "category": "gamedev",
+  "tags": [
+    "unity",
+    "csharp",
+    "gamedev",
+    "game-development"
+  ],
+  "rules": "./rules/"
+}
