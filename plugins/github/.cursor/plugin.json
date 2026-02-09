@@ -1,7 +1,7 @@
 {
   "name": "github",
   "version": "1.0.0",
-  "description": "Cursor plugin for GitHub — Actions, API, CLI, Pull Requests, and repository management",
+  "description": "Cursor plugin for GitHub \u2014 Actions, API, CLI, Pull Requests, and repository management",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -9,13 +9,20 @@
   "homepage": "https://github.com/cursor/service-plugin-generation",
   "repository": "https://github.com/cursor/service-plugin-generation",
   "license": "MIT",
-  "keywords": ["github", "git", "actions", "ci-cd", "pull-requests", "api"],
+  "keywords": [
+    "github",
+    "git",
+    "actions",
+    "ci-cd",
+    "pull-requests",
+    "api"
+  ],
   "category": "developer-tools",
-  "tags": ["version-control", "ci-cd", "collaboration"],
-  "agents": "./agents/",
+  "tags": [
+    "version-control",
+    "ci-cd",
+    "collaboration"
+  ],
   "skills": "./skills/",
-  "rules": "./rules/",
-  "hooks": "./hooks/hooks.json",
-  "mcpServers": "./mcp.json",
-  "extensions": "./extensions/"
+  "mcpServers": "./mcp.json"
 }

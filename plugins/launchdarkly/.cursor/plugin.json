@@ -1,18 +1,27 @@
 {
   "name": "launchdarkly",
   "version": "1.0.0",
-  "description": "Cursor plugin for LaunchDarkly — feature flags, experimentation, progressive rollouts, and targeting",
-  "author": { "name": "Cursor", "email": "plugins@cursor.com" },
+  "description": "Cursor plugin for LaunchDarkly \u2014 feature flags, experimentation, progressive rollouts, and targeting",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
   "homepage": "https://github.com/cursor/service-plugin-generation",
   "repository": "https://github.com/cursor/service-plugin-generation",
   "license": "MIT",
-  "keywords": ["launchdarkly", "feature-flags", "experimentation", "rollouts", "targeting"],
+  "keywords": [
+    "launchdarkly",
+    "feature-flags",
+    "experimentation",
+    "rollouts",
+    "targeting"
+  ],
   "category": "developer-tools",
-  "tags": ["feature-flags", "experimentation", "release-management"],
-  "agents": "./agents/",
+  "tags": [
+    "feature-flags",
+    "experimentation",
+    "release-management"
+  ],
   "skills": "./skills/",
-  "rules": "./rules/",
-  "hooks": "./hooks/hooks.json",
-  "mcpServers": "./mcp.json",
-  "extensions": "./extensions/"
+  "mcpServers": "./mcp.json"
 }

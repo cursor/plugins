@@ -1,7 +1,7 @@
 {
   "name": "slack",
   "version": "1.0.0",
-  "description": "Cursor plugin for Slack — Bolt framework, Block Kit, Events API, and Slack app development",
+  "description": "Cursor plugin for Slack \u2014 Bolt framework, Block Kit, Events API, and Slack app development",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -9,13 +9,19 @@
   "homepage": "https://github.com/cursor/service-plugin-generation",
   "repository": "https://github.com/cursor/service-plugin-generation",
   "license": "MIT",
-  "keywords": ["slack", "bolt", "block-kit", "chatbot", "integrations"],
+  "keywords": [
+    "slack",
+    "bolt",
+    "block-kit",
+    "chatbot",
+    "integrations"
+  ],
   "category": "saas",
-  "tags": ["messaging", "chatbot", "collaboration"],
-  "agents": "./agents/",
+  "tags": [
+    "messaging",
+    "chatbot",
+    "collaboration"
+  ],
   "skills": "./skills/",
-  "rules": "./rules/",
-  "hooks": "./hooks/hooks.json",
-  "mcpServers": "./mcp.json",
-  "extensions": "./extensions/"
+  "mcpServers": "./mcp.json"
 }

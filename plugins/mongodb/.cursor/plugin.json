@@ -1,18 +1,27 @@
 {
   "name": "mongodb",
   "version": "1.0.0",
-  "description": "Cursor plugin for MongoDB — schema design, queries, aggregation, indexes, and Mongoose ODM",
-  "author": { "name": "Cursor", "email": "plugins@cursor.com" },
+  "description": "Cursor plugin for MongoDB \u2014 schema design, queries, aggregation, indexes, and Mongoose ODM",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
   "homepage": "https://github.com/cursor/service-plugin-generation",
   "repository": "https://github.com/cursor/service-plugin-generation",
   "license": "MIT",
-  "keywords": ["mongodb", "mongoose", "nosql", "database", "aggregation"],
+  "keywords": [
+    "mongodb",
+    "mongoose",
+    "nosql",
+    "database",
+    "aggregation"
+  ],
   "category": "backend",
-  "tags": ["database", "nosql", "odm"],
-  "agents": "./agents/",
+  "tags": [
+    "database",
+    "nosql",
+    "odm"
+  ],
   "skills": "./skills/",
-  "rules": "./rules/",
-  "hooks": "./hooks/hooks.json",
-  "mcpServers": "./mcp.json",
-  "extensions": "./extensions/"
+  "mcpServers": "./mcp.json"
 }
