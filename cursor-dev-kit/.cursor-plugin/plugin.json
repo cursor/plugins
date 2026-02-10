@@ -1,0 +1,29 @@
+{
+  "name": "cursor-dev-kit",
+  "version": "1.0.0",
+  "description": "Cursor Dev Kit — internal-style workflows used by Cursor developers for CI, code review, shipping, and testing",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "cursor-dev-kit",
+    "ci",
+    "code-review",
+    "shipping",
+    "testing"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "internal-workflows",
+    "quality",
+    "delivery"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/",
+  "agents": "./agents/",
+  "rules": "./rules/"
+}

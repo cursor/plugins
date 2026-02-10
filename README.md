@@ -14,23 +14,19 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | [MongoDB](mongodb/) | Backend | Schema design, queries, aggregation, indexes, and Mongoose |
 | [Twilio](twilio/) | SaaS | SMS, Voice, WhatsApp, Verify, and communications APIs |
 | [Slack](slack/) | SaaS | Bolt framework, Block Kit, Events API, and app development |
-| [Next.js React TypeScript](nextjs-react-typescript/) | Frontend | Next.js App Router, React, Shadcn UI, and Tailwind rules |
-| [Frontend Developer](frontend-developer/) | Frontend | React, Next.js, TypeScript, and Tailwind CSS development rules |
-| [SvelteKit](sveltekit-development/) | Frontend | Svelte 5 and SvelteKit modern web development guide |
-| [Flutter Dart](flutter-dart/) | Mobile | Flutter and Dart clean architecture development rules |
-| [SwiftUI iOS](swiftui-ios/) | Mobile | SwiftUI and Swift iOS/macOS development rules |
-| [FastAPI Python](fastapi-python/) | Backend | FastAPI and scalable Python API development rules |
-| [Django Python](django-python/) | Backend | Django and scalable Python web application rules |
-| [Rails Ruby](rails-ruby/) | Backend | Ruby on Rails, PostgreSQL, Hotwire, and Tailwind rules |
-| [Elixir Phoenix](elixir-phoenix/) | Backend | Elixir, Phoenix, LiveView, and Tailwind development rules |
-| [Laravel TALL Stack](laravel-tallstack/) | Backend | Laravel TALL Stack (Tailwind, Alpine.js, Livewire) with DaisyUI |
-| [Go API Development](go-api-development/) | Backend | Go API development with standard library (1.22+) rules |
-| [Rust Async](rust-async/) | Systems | Rust async programming and concurrent systems rules |
-| [Playwright Testing](playwright-testing/) | Testing | Playwright end-to-end testing and QA automation rules |
-| [Unity GameDev](unity-gamedev/) | GameDev | C# Unity game development and design patterns rules |
-| [Deep Learning Python](deep-learning-python/) | ML | Deep learning, transformers, and diffusion model rules |
-| [Terraform IaC](terraform-iac/) | DevOps | Terraform and cloud Infrastructure as Code best practices |
-| [Solidity Web3](solidity-web3/) | Blockchain | Solidity smart contract security and development rules |
+| [Frontend](frontend/) | Developer Tools | React, TypeScript, accessibility, and performance workflows |
+| [Design](design/) | Utilities | UX specs, design systems, handoff, and iteration workflows |
+| [Data Science](data-science/) | Utilities | Analysis, modeling, experimentation, and reporting workflows |
+| [iOS](ios/) | Developer Tools | Swift, SwiftUI, architecture, and testing workflows |
+| [Android](android/) | Developer Tools | Kotlin, Jetpack Compose, architecture, and testing workflows |
+| [Planning](planning/) | Utilities | Scope, milestones, risk management, and execution planning |
+| [Code Review](code-review/) | Developer Tools | Correctness, security, regression checks, and actionable feedback |
+| [Web Browser](web-browser/) | Developer Tools | DevTools-driven debugging, network traces, and repro workflows |
+| [Teaching](teaching/) | Utilities | Concept explanations, exercises, and understanding checks |
+| [Documentation](documentation/) | Utilities | READMEs, API docs, architecture notes, and changelog writing |
+| [Presentation PPTX](presentation-pptx/) | Utilities | Narrative design, slide outlines, and PPTX-ready content |
+| [Learning](learning/) | Utilities | Skill maps, practice plans, and feedback loops |
+| [Cursor Dev Kit](cursor-dev-kit/) | Developer Tools | Internal-style workflows for CI, code review, shipping, and testing |
 
 ## Repository Structure
 

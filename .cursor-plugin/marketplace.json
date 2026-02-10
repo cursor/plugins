@@ -5,133 +5,73 @@
     "email": "plugins@cursor.com"
   },
   "metadata": {
-    "description": "Official Cursor plugin marketplace — developer tools, framework rules, MCP integrations, and agent skills"
+    "description": "Official Cursor plugin marketplace \u2014 developer tools, framework rules, MCP integrations, and agent skills"
   },
   "plugins": [
     {
-      "name": "deep-learning-python",
-      "source": "deep-learning-python",
-      "description": "Deep learning, transformers, and diffusion model development rules by Yu Changqian (cursor.directory)"
+      "name": "frontend",
+      "source": "frontend",
+      "description": "Cursor plugin for frontend engineering workflows \u2014 React, TypeScript, accessibility, and performance"
     },
     {
-      "name": "django-python",
-      "source": "django-python",
-      "description": "Django and scalable Python web application development rules by Caio Barbieri (cursor.directory)"
+      "name": "design",
+      "source": "design",
+      "description": "Cursor plugin for product design workflows \u2014 UX specs, design systems, handoff, and iteration"
     },
     {
-      "name": "docker",
-      "source": "docker",
-      "description": "Cursor plugin for Docker — Dockerfiles, Compose, multi-stage builds, and container best practices"
+      "name": "data-science",
+      "source": "data-science",
+      "description": "Cursor plugin for data science workflows \u2014 analysis, modeling, experimentation, and reporting"
     },
     {
-      "name": "elixir-phoenix",
-      "source": "elixir-phoenix",
-      "description": "Elixir, Phoenix, LiveView, and Tailwind development rules by Ilyich Vismara (cursor.directory)"
+      "name": "ios",
+      "source": "ios",
+      "description": "Cursor plugin for iOS development \u2014 Swift, SwiftUI, architecture, and testing"
     },
     {
-      "name": "fastapi-python",
-      "source": "fastapi-python",
-      "description": "FastAPI and scalable Python API development rules by Caio Barbieri (cursor.directory)"
+      "name": "android",
+      "source": "android",
+      "description": "Cursor plugin for Android development \u2014 Kotlin, Jetpack Compose, architecture, and testing"
     },
     {
-      "name": "firebase",
-      "source": "firebase",
-      "description": "Cursor plugin for Firebase — Firestore, Authentication, Cloud Functions, Hosting, and Storage"
+      "name": "planning",
+      "source": "planning",
+      "description": "Cursor plugin for software planning \u2014 scope, milestones, risk management, and execution plans"
     },
     {
-      "name": "flutter-dart",
-      "source": "flutter-dart",
-      "description": "Flutter and Dart clean architecture development rules by Sercan Yusuf (cursor.directory)"
+      "name": "code-review",
+      "source": "code-review",
+      "description": "Cursor plugin for code review workflows \u2014 correctness, security, regressions, and actionable feedback"
     },
     {
-      "name": "frontend-developer",
-      "source": "frontend-developer",
-      "description": "Expert React, Next.js, TypeScript, and Tailwind CSS development rules by Mohammadali Karimi (cursor.directory)"
+      "name": "web-browser",
+      "source": "web-browser",
+      "description": "Cursor plugin for browser debugging workflows \u2014 DevTools, network traces, and reproducible bug reports"
     },
     {
-      "name": "github",
-      "source": "github",
-      "description": "Cursor plugin for GitHub — Actions, API, CLI, Pull Requests, and repository management"
+      "name": "teaching",
+      "source": "teaching",
+      "description": "Cursor plugin for teaching workflows \u2014 explain concepts, scaffold exercises, and assess understanding"
     },
     {
-      "name": "go-api-development",
-      "source": "go-api-development",
-      "description": "Go API development with standard library (1.22+) rules by Marvin Kaunda (cursor.directory)"
+      "name": "documentation",
+      "source": "documentation",
+      "description": "Cursor plugin for technical documentation workflows \u2014 READMEs, API docs, architecture notes, and changelogs"
     },
     {
-      "name": "laravel-tallstack",
-      "source": "laravel-tallstack",
-      "description": "Laravel TALL Stack (Tailwind, Alpine.js, Livewire, Laravel) with DaisyUI rules by Ismael Fi (cursor.directory)"
+      "name": "presentation-pptx",
+      "source": "presentation-pptx",
+      "description": "Cursor plugin for presentation authoring \u2014 narrative design, slide outlines, and PPTX-ready content"
     },
     {
-      "name": "launchdarkly",
-      "source": "launchdarkly",
-      "description": "Cursor plugin for LaunchDarkly — feature flags, experimentation, progressive rollouts, and targeting"
+      "name": "learning",
+      "source": "learning",
+      "description": "Cursor plugin for learning workflows \u2014 skill mapping, practice plans, and feedback loops"
     },
     {
-      "name": "mongodb",
-      "source": "mongodb",
-      "description": "Cursor plugin for MongoDB — schema design, queries, aggregation, indexes, and Mongoose ODM"
-    },
-    {
-      "name": "nextjs-react-typescript",
-      "source": "nextjs-react-typescript",
-      "description": "Next.js App Router, React, Shadcn UI, and Tailwind development rules by Pontus Abrahamsson (cursor.directory)"
-    },
-    {
-      "name": "playwright-testing",
-      "source": "playwright-testing",
-      "description": "Playwright end-to-end testing and QA automation rules by Douglas Urrea Ocampo (cursor.directory)"
-    },
-    {
-      "name": "rails-ruby",
-      "source": "rails-ruby",
-      "description": "Ruby on Rails, PostgreSQL, Hotwire, and Tailwind development rules by Theo Vararu (cursor.directory)"
-    },
-    {
-      "name": "rust-async",
-      "source": "rust-async",
-      "description": "Rust async programming and concurrent systems development rules by Sheng-Yan, Zhang (cursor.directory)"
-    },
-    {
-      "name": "sentry",
-      "source": "sentry",
-      "description": "Cursor plugin for Sentry — error monitoring, performance tracking, session replay, and alerting"
-    },
-    {
-      "name": "slack",
-      "source": "slack",
-      "description": "Cursor plugin for Slack — Bolt framework, Block Kit, Events API, and Slack app development"
-    },
-    {
-      "name": "solidity-web3",
-      "source": "solidity-web3",
-      "description": "Solidity smart contract security and development best practices by Alfredo Bonilla (cursor.directory)"
-    },
-    {
-      "name": "sveltekit-development",
-      "source": "sveltekit-development",
-      "description": "Svelte 5 and SvelteKit modern web development guide by MMBytes (cursor.directory)"
-    },
-    {
-      "name": "swiftui-ios",
-      "source": "swiftui-ios",
-      "description": "SwiftUI and Swift iOS/macOS development rules by Josh Pigford (cursor.directory)"
-    },
-    {
-      "name": "terraform-iac",
-      "source": "terraform-iac",
-      "description": "Terraform and cloud Infrastructure as Code best practices by Abdeldjalil Sichaib (cursor.directory)"
-    },
-    {
-      "name": "twilio",
-      "source": "twilio",
-      "description": "Cursor plugin for Twilio — SMS, Voice, WhatsApp, Verify, and communications APIs"
-    },
-    {
-      "name": "unity-gamedev",
-      "source": "unity-gamedev",
-      "description": "C# Unity game development and design patterns rules by Pontus Abrahamsson (cursor.directory)"
+      "name": "cursor-dev-kit",
+      "source": "cursor-dev-kit",
+      "description": "Cursor Dev Kit \u2014 internal-style workflows used by Cursor developers for CI, code review, shipping, and testing"
     }
   ]
 }
