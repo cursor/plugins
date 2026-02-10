@@ -32,6 +32,28 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | [Terraform IaC](terraform-iac/) | DevOps | Terraform and cloud Infrastructure as Code best practices |
 | [Solidity Web3](solidity-web3/) | Blockchain | Solidity smart contract security and development rules |
 
+## Utilities
+
+The `utils/` directory contains shared utilities for working with plugin data:
+
+**Plugin Display Names** (`utils/pluginDisplayName.ts`)
+
+When displaying plugin names in the UI (tiles/cards), use `getPluginDisplayName()` to get the proper display name:
+- If `displayName` is set in plugin.json, use it
+- Otherwise, convert the kebab-case name to title case (e.g., `hex-mcp` → `Hex Mcp`)
+
+For the `/add-plugin` command, use `getPluginCommandName()` to always get the original kebab-case name.
+
+```typescript
+import { getPluginDisplayName, getPluginCommandName } from '@cursor/plugins/utils';
+
+// For UI display (tiles, cards, etc.)
+const displayName = getPluginDisplayName(plugin); // 'Hex Mcp' or custom displayName
+
+// For commands like /add-plugin
+const commandName = getPluginCommandName(plugin); // 'hex-mcp'
+```
+
 ## Repository Structure
 
 This is a multi-plugin marketplace repository. The root `.cursor-plugin/marketplace.json` lists all plugins, and each plugin has its own manifest:
@@ -40,6 +62,10 @@ This is a multi-plugin marketplace repository. The root `.cursor-plugin/marketpl
 plugins/
 ├── .cursor-plugin/
 │   └── marketplace.json       # Marketplace manifest (lists all plugins)
+├── utils/                     # Shared utilities
+│   ├── index.ts               # Main exports
+│   ├── pluginDisplayName.ts   # Display name utilities
+│   └── pluginDisplayName.test.ts
 ├── plugin-name/
 │   ├── .cursor-plugin/
 │   │   └── plugin.json        # Per-plugin manifest
