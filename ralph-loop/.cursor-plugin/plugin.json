@@ -1,0 +1,29 @@
+{
+  "name": "ralph-loop",
+  "displayName": "Ralph Loop",
+  "version": "1.0.0",
+  "description": "Continuous self-referential AI loops for iterative development, implementing the Ralph Wiggum technique. Run the agent in a while-true loop with the same prompt until task completion.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "ralph",
+    "loop",
+    "iteration",
+    "self-referential",
+    "automation",
+    "iterative-development"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "automation",
+    "iteration",
+    "agent-loop"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json"
+}
