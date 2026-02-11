@@ -1,0 +1,22 @@
+{
+  "name": "kubit",
+  "displayName": "Kubit",
+  "version": "1.0.0",
+  "description": "Analytics platform with natural language queries.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "kubit",
+    "analytics",
+    "natural-language"
+  ],
+  "category": "analytics",
+  "tags": [
+    "analytics"
+  ]
+}

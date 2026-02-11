@@ -1,0 +1,21 @@
+{
+  "name": "configcat",
+  "displayName": "ConfigCat",
+  "version": "1.0.0",
+  "description": "Feature flag management for teams.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "configcat",
+    "feature-flags"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "feature-flags"
+  ]
+}

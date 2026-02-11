@@ -1,0 +1,24 @@
+{
+  "name": "graphite",
+  "displayName": "Graphite",
+  "version": "1.0.0",
+  "description": "Create and manage stacked PRs.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "graphite",
+    "pull-requests",
+    "stacked-prs",
+    "git"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "git",
+    "pull-requests"
+  ]
+}

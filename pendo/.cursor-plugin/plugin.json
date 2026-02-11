@@ -1,0 +1,24 @@
+{
+  "name": "pendo",
+  "displayName": "Pendo",
+  "version": "1.0.0",
+  "description": "Product analytics and user behavior insights.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "pendo",
+    "analytics",
+    "product",
+    "user-behavior"
+  ],
+  "category": "analytics",
+  "tags": [
+    "analytics",
+    "product"
+  ]
+}

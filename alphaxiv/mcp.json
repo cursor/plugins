@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "alphaxiv": {
+      "url": "https://api.alphaxiv.org/mcp/v1"
+    }
+  }
+}

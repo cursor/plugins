@@ -1,0 +1,25 @@
+{
+  "name": "sap-mdk",
+  "displayName": "SAP Mobile Development Kit",
+  "version": "1.0.0",
+  "description": "SAP Mobile Development Kit tools and templates.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "sap",
+    "mobile",
+    "mdk",
+    "enterprise"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "sap",
+    "enterprise",
+    "mobile"
+  ]
+}

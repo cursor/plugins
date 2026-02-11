@@ -1,0 +1,23 @@
+{
+  "name": "codescene",
+  "displayName": "CodeScene",
+  "version": "1.0.0",
+  "description": "Code health insights and technical debt analysis.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "codescene",
+    "code-health",
+    "technical-debt"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "quality",
+    "technical-debt"
+  ]
+}

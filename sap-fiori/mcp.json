@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "sap-fiori": {
+      "command": "npx",
+      "args": [
+        "--yes",
+        "@sap-ux/fiori-mcp-server@latest",
+        "fiori-mcp"
+      ]
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "searchapi": {
+      "url": "https://www.searchapi.io/mcp?token=${SEARCHAPI_TOKEN}"
+    }
+  }
+}

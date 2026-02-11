@@ -1,0 +1,24 @@
+{
+  "name": "elasticsearch",
+  "displayName": "Elasticsearch",
+  "version": "1.0.0",
+  "description": "Query logs and data from the ELK stack.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "elasticsearch",
+    "elk",
+    "logging",
+    "search"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "logging",
+    "search"
+  ]
+}

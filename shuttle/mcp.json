@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "shuttle": {
+      "command": "shuttle",
+      "args": [
+        "mcp",
+        "start"
+      ]
+    }
+  }
+}

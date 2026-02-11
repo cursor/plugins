@@ -1,0 +1,24 @@
+{
+  "name": "duckdb",
+  "displayName": "DuckDB",
+  "version": "1.0.0",
+  "description": "In-process SQL OLAP database for local analytics.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "duckdb",
+    "sql",
+    "analytics",
+    "olap"
+  ],
+  "category": "data",
+  "tags": [
+    "database",
+    "analytics"
+  ]
+}

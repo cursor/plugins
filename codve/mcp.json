@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "codve": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@codve/mcp-server"
+      ]
+    }
+  }
+}

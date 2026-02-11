@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "testdino": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "testdino-mcp"
+      ]
+    }
+  }
+}

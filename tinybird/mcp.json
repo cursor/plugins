@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "tinybird": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://cloud.tinybird.co/mcp?token=${TB_TOKEN}"
+      ],
+      "env": {
+        "TB_TOKEN": ""
+      }
+    }
+  }
+}

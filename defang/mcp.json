@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "defang": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "defang",
+        "mcp",
+        "serve",
+        "--client=cursor"
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "uno-platform",
+  "displayName": "Uno Platform",
+  "version": "1.0.0",
+  "description": "Cross-platform .NET application development.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "uno",
+    "dotnet",
+    "cross-platform",
+    "mobile"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "dotnet",
+    "cross-platform"
+  ]
+}

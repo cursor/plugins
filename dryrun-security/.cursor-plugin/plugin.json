@@ -1,0 +1,24 @@
+{
+  "name": "dryrun-security",
+  "displayName": "DryRun Security",
+  "version": "1.0.0",
+  "description": "Security analysis insights and trends.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "dryrun",
+    "security",
+    "analysis",
+    "insights"
+  ],
+  "category": "security",
+  "tags": [
+    "security",
+    "analysis"
+  ]
+}

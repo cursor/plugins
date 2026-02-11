@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "vantage": {
+      "url": "https://mcp.vantage.sh/mcp"
+    }
+  }
+}

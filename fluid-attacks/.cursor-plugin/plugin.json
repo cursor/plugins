@@ -1,0 +1,24 @@
+{
+  "name": "fluid-attacks",
+  "displayName": "Fluid Attacks",
+  "version": "1.0.0",
+  "description": "Security vulnerability scanning and analysis.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "fluid-attacks",
+    "security",
+    "vulnerability",
+    "scanning"
+  ],
+  "category": "security",
+  "tags": [
+    "security",
+    "scanning"
+  ]
+}

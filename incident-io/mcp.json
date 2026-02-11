@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "incident-io": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@incident-io/mcp"
+      ]
+    }
+  }
+}

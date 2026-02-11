@@ -1,0 +1,24 @@
+{
+  "name": "browser-use",
+  "displayName": "Browser Use",
+  "version": "1.0.0",
+  "description": "The Browser Use MCP server provides Cursor agents access to browser-use documentation. This gives AI assistants deep context about the browser-use library when helping you write code.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "browser-use",
+    "browser",
+    "automation",
+    "documentation"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "browser",
+    "automation"
+  ]
+}

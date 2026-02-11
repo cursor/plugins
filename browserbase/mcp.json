@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "browserbase": {
+      "command": "npx",
+      "args": [
+        "@browserbasehq/mcp"
+      ]
+    }
+  }
+}

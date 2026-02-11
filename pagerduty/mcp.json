@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "pagerduty": {
+      "command": "uvx",
+      "args": [
+        "pagerduty-mcp",
+        "--enable-write-tools"
+      ]
+    }
+  }
+}

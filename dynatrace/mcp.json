@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "dynatrace": {
+      "url": "https://${DYNATRACE_ENV_ID}.apps.dynatrace.com/platform-reserved/mcp-gateway/v0.1/servers/dynatrace-mcp/mcp"
+    }
+  }
+}

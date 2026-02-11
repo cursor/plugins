@@ -1,0 +1,24 @@
+{
+  "name": "scout-apm",
+  "displayName": "Scout APM",
+  "version": "1.0.0",
+  "description": "Application performance monitoring and insights.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "scout",
+    "apm",
+    "performance",
+    "monitoring"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "apm",
+    "monitoring"
+  ]
+}

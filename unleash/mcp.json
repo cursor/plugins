@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "unleash": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@unleash/mcp@latest"
+      ]
+    }
+  }
+}

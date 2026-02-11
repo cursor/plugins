@@ -1,0 +1,24 @@
+{
+  "name": "webvizio",
+  "displayName": "Webvizio",
+  "version": "1.0.0",
+  "description": "Bug feedback with screenshots and browser logs.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "webvizio",
+    "bug-tracking",
+    "feedback",
+    "screenshots"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "bug-tracking",
+    "feedback"
+  ]
+}

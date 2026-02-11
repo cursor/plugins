@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "sidemail": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@sidemail/mcp"
+      ]
+    }
+  }
+}

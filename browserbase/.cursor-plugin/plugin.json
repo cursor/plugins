@@ -1,0 +1,24 @@
+{
+  "name": "browserbase",
+  "displayName": "Browserbase",
+  "version": "1.0.0",
+  "description": "Headless browser sessions for agents.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "browserbase",
+    "browser",
+    "headless",
+    "automation"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "browser",
+    "automation"
+  ]
+}

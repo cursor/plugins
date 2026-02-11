@@ -1,0 +1,24 @@
+{
+  "name": "dynatrace",
+  "displayName": "Dynatrace",
+  "version": "1.0.0",
+  "description": "Enterprise observability platform for real-time monitoring and AI-powered insights.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "dynatrace",
+    "observability",
+    "monitoring",
+    "apm"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "observability",
+    "monitoring"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "databend",
+  "displayName": "Databend",
+  "version": "1.0.0",
+  "description": "AI-native cloud data warehouse analytics.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "databend",
+    "data-warehouse",
+    "analytics"
+  ],
+  "category": "data",
+  "tags": [
+    "data-warehouse",
+    "analytics"
+  ]
+}

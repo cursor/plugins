@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "octopus-deploy": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@octopusdeploy/mcp-server"
+      ]
+    }
+  }
+}

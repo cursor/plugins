@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "luciq": {
+      "url": "https://api.instabug.com/api/mcp"
+    }
+  }
+}

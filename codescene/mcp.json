@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "codescene": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "CS_ACCESS_TOKEN",
+        "codescene/codescene-mcp"
+      ],
+      "env": {
+        "CS_ACCESS_TOKEN": ""
+      }
+    }
+  }
+}

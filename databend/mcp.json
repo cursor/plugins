@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "databend": {
+      "command": "uv",
+      "args": [
+        "tool",
+        "run",
+        "mcp-databend"
+      ]
+    }
+  }
+}

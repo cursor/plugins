@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "duckdb": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-motherduck",
+        "--db-path",
+        ":memory:"
+      ]
+    }
+  }
+}

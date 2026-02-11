@@ -1,0 +1,23 @@
+{
+  "name": "ref",
+  "displayName": "Ref",
+  "version": "1.0.0",
+  "description": "Token-efficient documentation search.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "ref",
+    "documentation",
+    "search"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "documentation",
+    "search"
+  ]
+}

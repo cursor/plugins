@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "pendo": {
+      "url": "https://app.pendo.io/mcp/v0/shttp"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "heroku",
+  "displayName": "Heroku",
+  "version": "1.0.0",
+  "description": "Manage Heroku apps and resources.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "heroku",
+    "deployment",
+    "hosting",
+    "paas"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "deployment",
+    "hosting"
+  ]
+}

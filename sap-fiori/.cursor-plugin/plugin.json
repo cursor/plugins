@@ -1,0 +1,25 @@
+{
+  "name": "sap-fiori",
+  "displayName": "SAP Fiori",
+  "version": "1.0.0",
+  "description": "SAP Fiori UI elements and application development.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "sap",
+    "fiori",
+    "ui",
+    "enterprise"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "sap",
+    "enterprise",
+    "ui"
+  ]
+}

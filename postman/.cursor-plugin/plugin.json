@@ -1,0 +1,24 @@
+{
+  "name": "postman",
+  "displayName": "Postman",
+  "version": "1.0.0",
+  "description": "API collaboration and testing.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "postman",
+    "api",
+    "testing",
+    "collaboration"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "api",
+    "testing"
+  ]
+}

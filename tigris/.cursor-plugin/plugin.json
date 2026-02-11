@@ -1,0 +1,23 @@
+{
+  "name": "tigris",
+  "displayName": "Tigris",
+  "version": "1.0.0",
+  "description": "S3-compatible object storage management.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "tigris",
+    "storage",
+    "s3",
+    "object-storage"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "storage"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "motherduck": {
+      "url": "https://api.motherduck.com/mcp"
+    }
+  }
+}

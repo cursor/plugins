@@ -1,0 +1,24 @@
+{
+  "name": "builder-io",
+  "displayName": "Builder.io",
+  "version": "1.0.0",
+  "description": "Headless CMS content management.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "builder-io",
+    "cms",
+    "headless-cms",
+    "content"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "cms",
+    "content"
+  ]
+}

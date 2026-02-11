@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "airwallex": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@airwallex/developer-mcp@latest"
+      ]
+    }
+  }
+}

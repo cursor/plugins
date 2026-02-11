@@ -1,0 +1,24 @@
+{
+  "name": "playwright",
+  "displayName": "Playwright",
+  "version": "1.0.0",
+  "description": "End-to-end browser testing.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "playwright",
+    "testing",
+    "browser",
+    "e2e"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "testing",
+    "browser"
+  ]
+}

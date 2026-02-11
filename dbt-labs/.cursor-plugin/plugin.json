@@ -1,0 +1,24 @@
+{
+  "name": "dbt-labs",
+  "displayName": "dbt Labs",
+  "version": "1.0.0",
+  "description": "dbt CLI, Semantic Layer, and Discovery API.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "dbt",
+    "data",
+    "analytics",
+    "sql"
+  ],
+  "category": "data",
+  "tags": [
+    "data",
+    "analytics"
+  ]
+}

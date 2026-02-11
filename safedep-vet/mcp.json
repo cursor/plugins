@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "safedep-vet": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "ghcr.io/safedep/vet:latest",
+        "-s",
+        "server",
+        "mcp"
+      ]
+    }
+  }
+}

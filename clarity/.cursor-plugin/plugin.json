@@ -1,0 +1,24 @@
+{
+  "name": "clarity",
+  "displayName": "Clarity",
+  "version": "1.0.0",
+  "description": "Microsoft user behavior analytics.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "clarity",
+    "microsoft",
+    "analytics",
+    "user-behavior"
+  ],
+  "category": "analytics",
+  "tags": [
+    "analytics",
+    "user-behavior"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "sap-ui5": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@ui5/mcp-server@latest"
+      ]
+    }
+  }
+}

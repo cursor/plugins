@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "coralogix": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "${CORALOGIX_MCP_ENDPOINT}",
+        "--header",
+        "Authorization:${CORALOGIX_API_KEY}"
+      ],
+      "env": {
+        "CORALOGIX_MCP_ENDPOINT": "",
+        "CORALOGIX_API_KEY": ""
+      }
+    }
+  }
+}

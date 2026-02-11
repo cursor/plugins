@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "glean": {
+      "url": "https://${GLEAN_INSTANCE}-be.glean.com/mcp/${GLEAN_SERVER_NAME}"
+    }
+  }
+}

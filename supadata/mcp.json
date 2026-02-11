@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "supadata": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supadata/mcp"
+      ]
+    }
+  }
+}

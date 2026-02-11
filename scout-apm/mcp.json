@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "scout-apm": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--env",
+        "SCOUT_API_KEY",
+        "scoutapp/scout-mcp-local"
+      ],
+      "env": {
+        "SCOUT_API_KEY": ""
+      }
+    }
+  }
+}

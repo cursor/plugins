@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "aws-documentation": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ]
+    }
+  }
+}

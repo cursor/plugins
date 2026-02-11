@@ -1,0 +1,24 @@
+{
+  "name": "shadcn",
+  "displayName": "shadcn/ui",
+  "version": "1.0.0",
+  "description": "Use the shadcn/ui MCP server to browse, search, and install components from registries.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "shadcn",
+    "ui",
+    "components",
+    "react"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "ui",
+    "components"
+  ]
+}

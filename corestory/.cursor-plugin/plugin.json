@@ -1,0 +1,24 @@
+{
+  "name": "corestory",
+  "displayName": "CoreStory",
+  "version": "1.0.0",
+  "description": "Access PRDs, technical specs, and project context.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "corestory",
+    "prds",
+    "specs",
+    "project-context"
+  ],
+  "category": "productivity",
+  "tags": [
+    "project-management",
+    "specs"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "vault",
+  "displayName": "Vault",
+  "version": "1.0.0",
+  "description": "Store and manage secrets.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "vault",
+    "secrets",
+    "security",
+    "hashicorp"
+  ],
+  "category": "security",
+  "tags": [
+    "secrets",
+    "security"
+  ]
+}

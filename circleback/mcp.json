@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "circleback": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://app.circleback.ai/api/mcp"
+      ]
+    }
+  }
+}

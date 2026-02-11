@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "configcat": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@configcat/mcp-server"
+      ]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "growthbook": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@growthbook/mcp@latest"
+      ]
+    }
+  }
+}

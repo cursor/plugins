@@ -1,0 +1,24 @@
+{
+  "name": "plaid",
+  "displayName": "Plaid",
+  "version": "1.0.0",
+  "description": "Access financial account data.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "plaid",
+    "finance",
+    "banking",
+    "accounts"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "finance",
+    "banking"
+  ]
+}

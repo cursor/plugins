@@ -1,0 +1,24 @@
+{
+  "name": "coralogix",
+  "displayName": "Coralogix",
+  "version": "1.0.0",
+  "description": "Observability platform for logs, metrics, and traces.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "coralogix",
+    "observability",
+    "logs",
+    "metrics"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "observability",
+    "logs"
+  ]
+}

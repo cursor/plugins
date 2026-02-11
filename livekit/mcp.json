@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "livekit": {
+      "url": "https://docs.livekit.io/mcp"
+    }
+  }
+}

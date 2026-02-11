@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "fluid-attacks": {
+      "url": "https://app.fluidattacks.com/mcp/messages/"
+    }
+  }
+}

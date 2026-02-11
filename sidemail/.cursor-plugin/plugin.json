@@ -1,0 +1,22 @@
+{
+  "name": "sidemail",
+  "displayName": "Sidemail",
+  "version": "1.0.0",
+  "description": "Send transactional emails and manage email workflows.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "sidemail",
+    "email",
+    "transactional"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "email"
+  ]
+}

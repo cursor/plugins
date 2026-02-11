@@ -1,0 +1,23 @@
+{
+  "name": "airwallex",
+  "displayName": "Airwallex",
+  "version": "1.0.0",
+  "description": "Tools to search Airwallex docs and interact with the Airwallex sandbox environment while integrating with Airwallex APIs.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "airwallex",
+    "payments",
+    "fintech"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "payments",
+    "fintech"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "codve",
+  "displayName": "Codve",
+  "version": "1.0.0",
+  "description": "Logic-based code verification with confidence scores.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "codve",
+    "verification",
+    "code-quality"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "verification",
+    "quality"
+  ]
+}

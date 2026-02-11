@@ -1,0 +1,24 @@
+{
+  "name": "arize-ax",
+  "displayName": "Arize AX",
+  "version": "1.0.0",
+  "description": "LLM tracing and instrumentation guidance.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "arize",
+    "llm",
+    "tracing",
+    "observability"
+  ],
+  "category": "ai",
+  "tags": [
+    "llm",
+    "tracing"
+  ]
+}

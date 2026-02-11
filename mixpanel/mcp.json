@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "mixpanel": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.mixpanel.com/mcp",
+        "--allow-http"
+      ]
+    }
+  }
+}

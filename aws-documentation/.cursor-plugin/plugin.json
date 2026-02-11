@@ -1,0 +1,23 @@
+{
+  "name": "aws-documentation",
+  "displayName": "AWS Documentation",
+  "version": "1.0.0",
+  "description": "Access AWS documentation, search, and get recommendations.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "aws",
+    "documentation",
+    "cloud"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "aws",
+    "documentation"
+  ]
+}

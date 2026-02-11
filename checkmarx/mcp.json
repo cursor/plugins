@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "checkmarx": {
+      "url": "https://${CHECKMARX_TENANT}/api/security-mcp/mcp"
+    }
+  }
+}

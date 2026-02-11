@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "dbt-labs": {
+      "command": "uvx",
+      "args": [
+        "dbt-mcp"
+      ]
+    }
+  }
+}

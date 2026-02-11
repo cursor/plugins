@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "select-star": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote@latest",
+        "https://mcp.production.selectstar.com/mcp",
+        "--header",
+        "Authorization:${SELECT_STAR_TOKEN}"
+      ],
+      "env": {
+        "SELECT_STAR_TOKEN": ""
+      }
+    }
+  }
+}

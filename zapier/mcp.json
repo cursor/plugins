@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "zapier": {
+      "url": "https://mcp.zapier.com/api/mcp/s/${ZAPIER_MCP_SECRET}/mcp"
+    }
+  }
+}

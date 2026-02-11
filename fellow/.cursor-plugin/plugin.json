@@ -1,0 +1,24 @@
+{
+  "name": "fellow",
+  "displayName": "Fellow",
+  "version": "1.0.0",
+  "description": "AI meeting notes, transcripts, and action items.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "fellow",
+    "meetings",
+    "notes",
+    "transcripts"
+  ],
+  "category": "productivity",
+  "tags": [
+    "meetings",
+    "notes"
+  ]
+}

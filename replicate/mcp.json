@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "replicate": {
+      "url": "https://mcp.replicate.com/sse"
+    }
+  }
+}

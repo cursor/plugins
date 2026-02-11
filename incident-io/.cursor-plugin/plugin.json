@@ -1,0 +1,24 @@
+{
+  "name": "incident-io",
+  "displayName": "incident.io",
+  "version": "1.0.0",
+  "description": "Incident management and alerting.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "incident-io",
+    "incidents",
+    "alerting",
+    "on-call"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "incidents",
+    "alerting"
+  ]
+}

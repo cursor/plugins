@@ -1,0 +1,24 @@
+{
+  "name": "sonarqube",
+  "displayName": "SonarQube",
+  "version": "1.0.0",
+  "description": "Analyze code with SonarQube.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "sonarqube",
+    "code-quality",
+    "analysis",
+    "sonarsource"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "quality",
+    "analysis"
+  ]
+}

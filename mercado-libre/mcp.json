@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "mercado-libre": {
+      "url": "https://mcp.mercadolibre.com/mcp"
+    }
+  }
+}

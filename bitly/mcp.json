@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "bitly": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://api-ssl.bitly.com/v4/mcp",
+        "--header",
+        "Authorization: Bearer ${BITLY_AUTH_TOKEN}"
+      ],
+      "env": {
+        "BITLY_AUTH_TOKEN": ""
+      }
+    }
+  }
+}

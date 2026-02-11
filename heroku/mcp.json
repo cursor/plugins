@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "heroku": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@heroku/mcp-server"
+      ]
+    }
+  }
+}

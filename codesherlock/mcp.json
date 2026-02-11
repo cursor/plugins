@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "codesherlock": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@codesherlock/codesherlock-mcp-server"
+      ]
+    }
+  }
+}

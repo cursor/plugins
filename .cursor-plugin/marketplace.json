@@ -67,6 +67,696 @@
       "name": "create-plugin",
       "source": "create-plugin",
       "description": "Meta plugin for creating Cursor plugins with manifest scaffolding, component templates, and submission checks"
+    },
+    {
+      "name": "github",
+      "source": "github",
+      "description": "Version control and collaborative development platform."
+    },
+    {
+      "name": "figma",
+      "source": "figma",
+      "description": "Design and collaboration platform for teams."
+    },
+    {
+      "name": "context7",
+      "source": "context7",
+      "description": "Up-to-date code documentation."
+    },
+    {
+      "name": "playwright",
+      "source": "playwright",
+      "description": "End-to-end browser testing."
+    },
+    {
+      "name": "shadcn",
+      "source": "shadcn",
+      "description": "Use the shadcn/ui MCP server to browse, search, and install components from registries."
+    },
+    {
+      "name": "salesforce-dx",
+      "source": "salesforce-dx",
+      "description": "Interact with Salesforce orgs, manage metadata, data, and development workflows."
+    },
+    {
+      "name": "vercel",
+      "source": "vercel",
+      "description": "Manage projects and deployments on Vercel."
+    },
+    {
+      "name": "gitlab",
+      "source": "gitlab",
+      "description": "DevSecOps platform for code, CI/CD, and security."
+    },
+    {
+      "name": "posthog",
+      "source": "posthog",
+      "description": "Analytics, error tracking, and feature flags."
+    },
+    {
+      "name": "netlify",
+      "source": "netlify",
+      "description": "Build and deploy web projects."
+    },
+    {
+      "name": "heroku",
+      "source": "heroku",
+      "description": "Manage Heroku apps and resources."
+    },
+    {
+      "name": "postman",
+      "source": "postman",
+      "description": "API collaboration and testing."
+    },
+    {
+      "name": "sap-cap",
+      "source": "sap-cap",
+      "description": "SAP Cloud Application Programming Model development."
+    },
+    {
+      "name": "sap-fiori",
+      "source": "sap-fiori",
+      "description": "SAP Fiori UI elements and application development."
+    },
+    {
+      "name": "sap-mdk",
+      "source": "sap-mdk",
+      "description": "SAP Mobile Development Kit tools and templates."
+    },
+    {
+      "name": "sap-ui5",
+      "source": "sap-ui5",
+      "description": "OpenUI5 and SAPUI5 web application development."
+    },
+    {
+      "name": "mongodb",
+      "source": "mongodb",
+      "description": "Manage MongoDB data and deployments."
+    },
+    {
+      "name": "dbt-labs",
+      "source": "dbt-labs",
+      "description": "dbt CLI, Semantic Layer, and Discovery API."
+    },
+    {
+      "name": "atlassian",
+      "source": "atlassian",
+      "description": "Project management and collaboration tools including Jira and Confluence."
+    },
+    {
+      "name": "duckdb",
+      "source": "duckdb",
+      "description": "In-process SQL OLAP database for local analytics."
+    },
+    {
+      "name": "braintrust",
+      "source": "braintrust",
+      "description": "Access to the documentation, experiments, and logs in Braintrust."
+    },
+    {
+      "name": "browserbase",
+      "source": "browserbase",
+      "description": "Headless browser sessions for agents."
+    },
+    {
+      "name": "chrome-devtools",
+      "source": "chrome-devtools",
+      "description": "Debug web pages directly in Chrome with DevTools debugging capabilities and performance insights."
+    },
+    {
+      "name": "clickup",
+      "source": "clickup",
+      "description": "Project management and collaboration for teams & agents."
+    },
+    {
+      "name": "shopify",
+      "source": "shopify",
+      "description": "Shopify app development tools."
+    },
+    {
+      "name": "snyk",
+      "source": "snyk",
+      "description": "Vulnerability scanning of your codebase."
+    },
+    {
+      "name": "hugging-face",
+      "source": "hugging-face",
+      "description": "Access the Hugging Face Hub and Gradio MCP Servers."
+    },
+    {
+      "name": "wix",
+      "source": "wix",
+      "description": "Build and manage Wix sites."
+    },
+    {
+      "name": "semgrep",
+      "source": "semgrep",
+      "description": "Scan code for security vulnerabilities."
+    },
+    {
+      "name": "launchdarkly",
+      "source": "launchdarkly",
+      "description": "Feature flags as a service."
+    },
+    {
+      "name": "statsig",
+      "source": "statsig",
+      "description": "Feature flags and experimentation platform."
+    },
+    {
+      "name": "endor-labs",
+      "source": "endor-labs",
+      "description": "Security risk insights for code."
+    },
+    {
+      "name": "instantdb",
+      "source": "instantdb",
+      "description": "Query and manage InstantDB."
+    },
+    {
+      "name": "tinybird",
+      "source": "tinybird",
+      "description": "Real-time analytics APIs."
+    },
+    {
+      "name": "neon",
+      "source": "neon",
+      "description": "Manage Neon Postgres."
+    },
+    {
+      "name": "socket",
+      "source": "socket",
+      "description": "Analyze and secure dependencies."
+    },
+    {
+      "name": "pipedream",
+      "source": "pipedream",
+      "description": "Connect to APIs and workflows."
+    },
+    {
+      "name": "auth0",
+      "source": "auth0",
+      "description": "Manage Auth0 resources."
+    },
+    {
+      "name": "honeycomb",
+      "source": "honeycomb",
+      "description": "Query observability data and SLOs."
+    },
+    {
+      "name": "pagerduty",
+      "source": "pagerduty",
+      "description": "Manage incidents and alerts."
+    },
+    {
+      "name": "graphite",
+      "source": "graphite",
+      "description": "Create and manage stacked PRs."
+    },
+    {
+      "name": "railway",
+      "source": "railway",
+      "description": "Deploy apps, databases, and services."
+    },
+    {
+      "name": "replicate",
+      "source": "replicate",
+      "description": "Search, discover, compare, and run AI models with a cloud API."
+    },
+    {
+      "name": "aws-documentation",
+      "source": "aws-documentation",
+      "description": "Access AWS documentation, search, and get recommendations."
+    },
+    {
+      "name": "select-star",
+      "source": "select-star",
+      "description": "Data catalog, lineage, and context."
+    },
+    {
+      "name": "sonarqube",
+      "source": "sonarqube",
+      "description": "Analyze code with SonarQube."
+    },
+    {
+      "name": "ms-learn-docs",
+      "source": "ms-learn-docs",
+      "description": "Search Microsoft docs."
+    },
+    {
+      "name": "paypal",
+      "source": "paypal",
+      "description": "Payment APIs."
+    },
+    {
+      "name": "plaid",
+      "source": "plaid",
+      "description": "Access financial account data."
+    },
+    {
+      "name": "firecrawl",
+      "source": "firecrawl",
+      "description": "The web crawling, scraping, and search API for AI."
+    },
+    {
+      "name": "corridor",
+      "source": "corridor",
+      "description": "Proactively enforce security guardrails to reduce vulnerabilities."
+    },
+    {
+      "name": "astro",
+      "source": "astro",
+      "description": "This server provides up-to-date access to the official Astro documentation."
+    },
+    {
+      "name": "mercado-pago",
+      "source": "mercado-pago",
+      "description": "Access Mercado Pago docs."
+    },
+    {
+      "name": "mercado-libre",
+      "source": "mercado-libre",
+      "description": "Access Mercado Libre docs."
+    },
+    {
+      "name": "apify",
+      "source": "apify",
+      "description": "Extract data from any website with thousands of scrapers, crawlers, and automations."
+    },
+    {
+      "name": "render",
+      "source": "render",
+      "description": "Manage your Render services."
+    },
+    {
+      "name": "azure-devops",
+      "source": "azure-devops",
+      "description": "Interact with Azure DevOps work items, pull requests, builds, and releases."
+    },
+    {
+      "name": "webflow",
+      "source": "webflow",
+      "description": "Webflow's MCP server enhances an agent's understanding of your Webflow projects. It's built on Webflow's APIs, exposing them as tools your AI agent can use to create elements, styles, and variables on the canvas, as well as manage collections, custom code, assets, and other site data."
+    },
+    {
+      "name": "terraform",
+      "source": "terraform",
+      "description": "Generate and automate Terraform workflows."
+    },
+    {
+      "name": "vault",
+      "source": "vault",
+      "description": "Store and manage secrets."
+    },
+    {
+      "name": "browser-use",
+      "source": "browser-use",
+      "description": "The Browser Use MCP server provides Cursor agents access to browser-use documentation. This gives AI assistants deep context about the browser-use library when helping you write code."
+    },
+    {
+      "name": "sanity",
+      "source": "sanity",
+      "description": "Create, query, and manage Sanity content, releases, datasets, and schemas."
+    },
+    {
+      "name": "airwallex",
+      "source": "airwallex",
+      "description": "Tools to search Airwallex docs and interact with the Airwallex sandbox environment while integrating with Airwallex APIs."
+    },
+    {
+      "name": "dynatrace",
+      "source": "dynatrace",
+      "description": "Enterprise observability platform for real-time monitoring and AI-powered insights."
+    },
+    {
+      "name": "arcade",
+      "source": "arcade",
+      "description": "Create and manage MCP gateways connecting 100+ integrations."
+    },
+    {
+      "name": "embrace",
+      "source": "embrace",
+      "description": "Mobile app performance monitoring and crash analytics."
+    },
+    {
+      "name": "codesherlock",
+      "source": "codesherlock",
+      "description": "AI code analysis for security, quality, and compliance checks."
+    },
+    {
+      "name": "kyomi",
+      "source": "kyomi",
+      "description": "Query data warehouses with natural language and institutional knowledge."
+    },
+    {
+      "name": "pendo",
+      "source": "pendo",
+      "description": "Product analytics and user behavior insights."
+    },
+    {
+      "name": "searchapi",
+      "source": "searchapi",
+      "description": "Real-time search engine API for AI applications."
+    },
+    {
+      "name": "defang",
+      "source": "defang",
+      "description": "Deploy apps to AWS, GCP, and DigitalOcean from Docker Compose."
+    },
+    {
+      "name": "wordpress",
+      "source": "wordpress",
+      "description": "Manage WordPress.com sites, posts, and content."
+    },
+    {
+      "name": "luciq",
+      "source": "luciq",
+      "description": "Query crash reports and observability data from your IDE."
+    },
+    {
+      "name": "alphaxiv",
+      "source": "alphaxiv",
+      "description": "Search ML research papers and analyze PDFs."
+    },
+    {
+      "name": "codve",
+      "source": "codve",
+      "description": "Logic-based code verification with confidence scores."
+    },
+    {
+      "name": "arize-ax",
+      "source": "arize-ax",
+      "description": "LLM tracing and instrumentation guidance."
+    },
+    {
+      "name": "motherduck",
+      "source": "motherduck",
+      "description": "Query and explore MotherDuck cloud databases."
+    },
+    {
+      "name": "glean",
+      "source": "glean",
+      "description": "Enterprise knowledge search and context."
+    },
+    {
+      "name": "incident-io",
+      "source": "incident-io",
+      "description": "Incident management and alerting."
+    },
+    {
+      "name": "firebase",
+      "source": "firebase",
+      "description": "Manage Firebase projects, Auth, Firestore, and more."
+    },
+    {
+      "name": "aikido-security",
+      "source": "aikido-security",
+      "description": "Security scanning in your AI coding workflow."
+    },
+    {
+      "name": "mixpanel",
+      "source": "mixpanel",
+      "description": "Product analytics through natural language queries."
+    },
+    {
+      "name": "windsor-ai",
+      "source": "windsor-ai",
+      "description": "Query analytics data across marketing platforms."
+    },
+    {
+      "name": "circleback",
+      "source": "circleback",
+      "description": "Search meeting notes and transcripts for dev context."
+    },
+    {
+      "name": "tauri",
+      "source": "tauri",
+      "description": "Build and debug Tauri desktop/mobile apps with screenshots and DOM state."
+    },
+    {
+      "name": "vantage",
+      "source": "vantage",
+      "description": "Cloud cost management and FinOps insights."
+    },
+    {
+      "name": "sidemail",
+      "source": "sidemail",
+      "description": "Send transactional emails and manage email workflows."
+    },
+    {
+      "name": "databend",
+      "source": "databend",
+      "description": "AI-native cloud data warehouse analytics."
+    },
+    {
+      "name": "kubit",
+      "source": "kubit",
+      "description": "Analytics platform with natural language queries."
+    },
+    {
+      "name": "codescene",
+      "source": "codescene",
+      "description": "Code health insights and technical debt analysis."
+    },
+    {
+      "name": "vale",
+      "source": "vale",
+      "description": "Style and grammar linting for documentation."
+    },
+    {
+      "name": "fluid-attacks",
+      "source": "fluid-attacks",
+      "description": "Security vulnerability scanning and analysis."
+    },
+    {
+      "name": "clarity",
+      "source": "clarity",
+      "description": "Microsoft user behavior analytics."
+    },
+    {
+      "name": "you-com",
+      "source": "you-com",
+      "description": "AI-powered web search and research."
+    },
+    {
+      "name": "testdino",
+      "source": "testdino",
+      "description": "Connect AI tools to testing platform."
+    },
+    {
+      "name": "kernel",
+      "source": "kernel",
+      "description": "Fast infrastructure for agents to access the internet."
+    },
+    {
+      "name": "angular",
+      "source": "angular",
+      "description": "Angular framework documentation and examples."
+    },
+    {
+      "name": "uno-platform",
+      "source": "uno-platform",
+      "description": "Cross-platform .NET application development."
+    },
+    {
+      "name": "dbhub",
+      "source": "dbhub",
+      "description": "Universal database connector for MySQL, PostgreSQL, SQL Server."
+    },
+    {
+      "name": "corestory",
+      "source": "corestory",
+      "description": "Access PRDs, technical specs, and project context."
+    },
+    {
+      "name": "ref",
+      "source": "ref",
+      "description": "Token-efficient documentation search."
+    },
+    {
+      "name": "perplexity",
+      "source": "perplexity",
+      "description": "AI-powered web search and research."
+    },
+    {
+      "name": "checkmarx",
+      "source": "checkmarx",
+      "description": "Application security testing and vulnerability scanning."
+    },
+    {
+      "name": "safedep-vet",
+      "source": "safedep-vet",
+      "description": "Vet open source packages for security issues."
+    },
+    {
+      "name": "elasticsearch",
+      "source": "elasticsearch",
+      "description": "Query logs and data from the ELK stack."
+    },
+    {
+      "name": "unleash",
+      "source": "unleash",
+      "description": "Open source feature flags management."
+    },
+    {
+      "name": "tigris",
+      "source": "tigris",
+      "description": "S3-compatible object storage management."
+    },
+    {
+      "name": "devrev",
+      "source": "devrev",
+      "description": "Work item management for development teams."
+    },
+    {
+      "name": "mux",
+      "source": "mux",
+      "description": "Video platform for uploads, streaming, and analytics."
+    },
+    {
+      "name": "stack-overflow",
+      "source": "stack-overflow",
+      "description": "Access trusted technical Q&A from Stack Overflow."
+    },
+    {
+      "name": "fellow",
+      "source": "fellow",
+      "description": "AI meeting notes, transcripts, and action items."
+    },
+    {
+      "name": "livekit",
+      "source": "livekit",
+      "description": "Real-time communication documentation and examples."
+    },
+    {
+      "name": "growthbook",
+      "source": "growthbook",
+      "description": "Feature flags and A/B testing platform."
+    },
+    {
+      "name": "octopus-deploy",
+      "source": "octopus-deploy",
+      "description": "Manage deployments, releases, and runbooks."
+    },
+    {
+      "name": "builder-io",
+      "source": "builder-io",
+      "description": "Headless CMS content management."
+    },
+    {
+      "name": "devexpress",
+      "source": "devexpress",
+      "description": "DevExpress component library documentation."
+    },
+    {
+      "name": "cloudinary",
+      "source": "cloudinary",
+      "description": "Media asset management and transformation."
+    },
+    {
+      "name": "shuttle",
+      "source": "shuttle",
+      "description": "Deploy Rust applications to the cloud."
+    },
+    {
+      "name": "configcat",
+      "source": "configcat",
+      "description": "Feature flag management for teams."
+    },
+    {
+      "name": "coralogix",
+      "source": "coralogix",
+      "description": "Observability platform for logs, metrics, and traces."
+    },
+    {
+      "name": "svelte",
+      "source": "svelte",
+      "description": "Svelte framework documentation and guidance."
+    },
+    {
+      "name": "scout-apm",
+      "source": "scout-apm",
+      "description": "Application performance monitoring and insights."
+    },
+    {
+      "name": "axiom",
+      "source": "axiom",
+      "description": "Log analytics, monitoring, and APL queries."
+    },
+    {
+      "name": "customer-io",
+      "source": "customer-io",
+      "description": "Manage segments, users, and marketing automation."
+    },
+    {
+      "name": "bitly",
+      "source": "bitly",
+      "description": "URL shortening and link management."
+    },
+    {
+      "name": "devopness",
+      "source": "devopness",
+      "description": "DevOps automation for cloud infrastructure."
+    },
+    {
+      "name": "jam",
+      "source": "jam",
+      "description": "Screen recorder with auto context for debugging."
+    },
+    {
+      "name": "webvizio",
+      "source": "webvizio",
+      "description": "Bug feedback with screenshots and browser logs."
+    },
+    {
+      "name": "supadata",
+      "source": "supadata",
+      "description": "Video and web scraping for AI applications."
+    },
+    {
+      "name": "bitrise",
+      "source": "bitrise",
+      "description": "Mobile CI/CD and build management."
+    },
+    {
+      "name": "harness",
+      "source": "harness",
+      "description": "CI/CD and software delivery platform."
+    },
+    {
+      "name": "dryrun-security",
+      "source": "dryrun-security",
+      "description": "Security analysis insights and trends."
+    },
+    {
+      "name": "ox-security",
+      "source": "ox-security",
+      "description": "Security platform for AI agent integration."
+    },
+    {
+      "name": "zapier",
+      "source": "zapier",
+      "description": "Automate workflows with 30,000+ actions across 8,000+ apps. Build once, orchestrate everywhere."
+    },
+    {
+      "name": "okahu",
+      "source": "okahu",
+      "description": "Access to traces and debug your AI agent apps."
+    },
+    {
+      "name": "scalekit",
+      "source": "scalekit",
+      "description": "Auth stack for AI applications. Manage environments and connections."
+    },
+    {
+      "name": "chakra-ui",
+      "source": "chakra-ui",
+      "description": "Access Chakra UI component library, design tokens, and migration guidance."
+    },
+    {
+      "name": "alpha-vantage",
+      "source": "alpha-vantage",
+      "description": "Financial data API for stocks, forex, crypto, and economic indicators."
     }
   ]
 }

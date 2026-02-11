@@ -1,0 +1,24 @@
+{
+  "name": "vale",
+  "displayName": "Vale",
+  "version": "1.0.0",
+  "description": "Style and grammar linting for documentation.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "vale",
+    "linting",
+    "documentation",
+    "grammar"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "documentation",
+    "linting"
+  ]
+}

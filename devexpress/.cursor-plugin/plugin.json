@@ -1,0 +1,24 @@
+{
+  "name": "devexpress",
+  "displayName": "DevExpress",
+  "version": "1.0.0",
+  "description": "DevExpress component library documentation.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "devexpress",
+    "components",
+    "ui",
+    "documentation"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "components",
+    "ui"
+  ]
+}

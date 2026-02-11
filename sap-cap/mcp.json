@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "sap-cap": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@cap-js/mcp-server"
+      ]
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "dryrun-security": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://insights-mcp.dryrun.security/insights/mcp",
+        "--transport",
+        "http-only"
+      ]
+    }
+  }
+}

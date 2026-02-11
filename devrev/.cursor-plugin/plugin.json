@@ -1,0 +1,22 @@
+{
+  "name": "devrev",
+  "displayName": "DevRev",
+  "version": "1.0.0",
+  "description": "Work item management for development teams.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "devrev",
+    "work-items",
+    "project-management"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "project-management"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "sap-cap",
+  "displayName": "SAP CAP",
+  "version": "1.0.0",
+  "description": "SAP Cloud Application Programming Model development.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "sap",
+    "cap",
+    "cloud",
+    "enterprise"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "sap",
+    "enterprise"
+  ]
+}

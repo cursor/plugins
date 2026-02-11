@@ -1,0 +1,24 @@
+{
+  "name": "endor-labs",
+  "displayName": "Endor Labs",
+  "version": "1.0.0",
+  "description": "Security risk insights for code.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "endor-labs",
+    "security",
+    "risk",
+    "dependencies"
+  ],
+  "category": "security",
+  "tags": [
+    "security",
+    "risk"
+  ]
+}

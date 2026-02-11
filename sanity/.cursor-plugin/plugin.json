@@ -1,0 +1,24 @@
+{
+  "name": "sanity",
+  "displayName": "Sanity",
+  "version": "1.0.0",
+  "description": "Create, query, and manage Sanity content, releases, datasets, and schemas.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "sanity",
+    "cms",
+    "content",
+    "headless-cms"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "cms",
+    "content"
+  ]
+}

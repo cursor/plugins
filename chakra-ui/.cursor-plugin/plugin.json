@@ -1,0 +1,24 @@
+{
+  "name": "chakra-ui",
+  "displayName": "Chakra UI",
+  "version": "1.0.0",
+  "description": "Access Chakra UI component library, design tokens, and migration guidance.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "chakra-ui",
+    "components",
+    "react",
+    "design-system"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "ui",
+    "components"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "luciq",
+  "displayName": "Luciq",
+  "version": "1.0.0",
+  "description": "Query crash reports and observability data from your IDE.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "luciq",
+    "crash-reports",
+    "observability",
+    "instabug"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "debugging",
+    "observability"
+  ]
+}

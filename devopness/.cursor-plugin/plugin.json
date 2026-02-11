@@ -1,0 +1,24 @@
+{
+  "name": "devopness",
+  "displayName": "Devopness",
+  "version": "1.0.0",
+  "description": "DevOps automation for cloud infrastructure.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "devopness",
+    "devops",
+    "infrastructure",
+    "automation"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "devops",
+    "infrastructure"
+  ]
+}

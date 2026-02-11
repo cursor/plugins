@@ -1,0 +1,24 @@
+{
+  "name": "neon",
+  "displayName": "Neon",
+  "version": "1.0.0",
+  "description": "Manage Neon Postgres.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "neon",
+    "postgres",
+    "database",
+    "serverless"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "database",
+    "postgres"
+  ]
+}

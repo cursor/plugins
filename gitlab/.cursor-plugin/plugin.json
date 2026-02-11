@@ -1,0 +1,24 @@
+{
+  "name": "gitlab",
+  "displayName": "GitLab",
+  "version": "1.0.0",
+  "description": "DevSecOps platform for code, CI/CD, and security.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "gitlab",
+    "git",
+    "ci-cd",
+    "devsecops"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "vcs",
+    "ci-cd"
+  ]
+}

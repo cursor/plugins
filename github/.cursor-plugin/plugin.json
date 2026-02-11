@@ -1,0 +1,24 @@
+{
+  "name": "github",
+  "displayName": "GitHub",
+  "version": "1.0.0",
+  "description": "Version control and collaborative development platform.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "github",
+    "git",
+    "version-control",
+    "pull-requests"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "vcs",
+    "collaboration"
+  ]
+}

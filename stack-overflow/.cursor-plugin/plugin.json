@@ -1,0 +1,23 @@
+{
+  "name": "stack-overflow",
+  "displayName": "Stack Overflow",
+  "version": "1.0.0",
+  "description": "Access trusted technical Q&A from Stack Overflow.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "stack-overflow",
+    "qa",
+    "knowledge"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "qa",
+    "knowledge"
+  ]
+}
