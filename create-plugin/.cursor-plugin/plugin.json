@@ -24,6 +24,5 @@
   ],
   "skills": "./skills/",
   "rules": "./rules/",
-  "agents": "./agents/",
-  "commands": "./commands/"
+  "agents": "./agents/"
 }
