@@ -2,6 +2,10 @@
 
 Browser debugging: DevTools, network traces, and reproducible bug reports.
 
+## Requirements
+
+This plugin requires MCP browser tools (`browser_navigate`, `browser_snapshot`, `browser_network_requests`, etc.). These are included automatically in the Cursor desktop app. If you're using Cursor outside the desktop app, you'll need to install a browser MCP server separately.
+
 ## Installation
 
 ```bash

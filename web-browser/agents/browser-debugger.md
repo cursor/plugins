@@ -6,7 +6,7 @@ model: fast
 
 # Browser debugger
 
-Browser debugging specialist using MCP browser tools for navigation, snapshots, and network traces.
+Browser debugging specialist using MCP browser tools for navigation, snapshots, and network traces. Requires MCP browser tools (included in the Cursor desktop app, or install a browser MCP server separately).
 
 ## Trigger
 
