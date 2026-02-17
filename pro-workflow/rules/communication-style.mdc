@@ -1,0 +1,6 @@
+---
+description: Concise responses, action-oriented, no over-engineering
+alwaysApply: true
+---
+
+Be concise. Action over explanation. Do not add features or refactoring beyond what was asked. The right amount of complexity is the minimum needed for the current task.

@@ -72,6 +72,11 @@
       "name": "ralph-loop",
       "source": "ralph-loop",
       "description": "Iterative self-referential AI loops using the Ralph Wiggum technique."
+    },
+    {
+      "name": "pro-workflow",
+      "source": "pro-workflow",
+      "description": "Battle-tested AI coding workflows with self-correcting memory, quality gates, and the 80/20 ratio."
     }
   ]
 }

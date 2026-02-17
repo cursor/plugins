@@ -1,0 +1,6 @@
+---
+description: Manage context efficiently - read before edit, plan before multi-file changes
+alwaysApply: true
+---
+
+Always read a file before editing it. Use plan mode for changes touching more than 3 files or requiring architecture decisions. Compact context at task boundaries. Keep tools under 80 total.

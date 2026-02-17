@@ -19,6 +19,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | [Cursor Team Kit](cursor-team-kit/) | Developer Tools | Internal-style workflows for CI, code review, shipping, and testing |
 | [Create Plugin](create-plugin/) | Developer Tools | Meta workflows for creating Cursor plugins with scaffolding and submission checks |
 | [Ralph Loop](ralph-loop/) | Developer Tools | Iterative self-referential AI loops using the Ralph Wiggum technique |
+| [Pro Workflow](pro-workflow/) | Developer Tools | Self-correcting memory, quality gates, parallel worktrees, and the 80/20 ratio |
 
 ## Repository structure
 

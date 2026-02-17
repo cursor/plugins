@@ -1,0 +1,31 @@
+{
+  "name": "pro-workflow",
+  "displayName": "Pro Workflow",
+  "version": "1.0.0",
+  "description": "Battle-tested AI coding workflows from power users. Self-correcting memory, parallel worktrees, wrap-up rituals, quality gates, and the 80/20 AI coding ratio.",
+  "author": {
+    "name": "Rohit Ghumare",
+    "email": "ghumare64@gmail.com"
+  },
+  "homepage": "https://github.com/rohitg00/pro-workflow",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "pro-workflow",
+    "self-correction",
+    "quality-gates",
+    "worktrees",
+    "learning",
+    "code-review"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "productivity",
+    "workflows",
+    "best-practices"
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "rules": "./rules/"
+}

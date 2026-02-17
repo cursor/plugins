@@ -1,0 +1,7 @@
+---
+description: Remove debug statements before committing
+globs: "**/*.{ts,tsx,js,jsx,py,go,rs}"
+alwaysApply: false
+---
+
+Remove all debug statements before committing: `console.log`, `debugger`, `print()`, `breakpoint()`, `dbg!()`. Legitimate logging frameworks are fine.

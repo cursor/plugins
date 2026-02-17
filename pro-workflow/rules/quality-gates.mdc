@@ -1,0 +1,6 @@
+---
+description: Enforce quality checks before commits - lint, typecheck, and test affected code
+alwaysApply: true
+---
+
+Run lint and typecheck before every commit. Test affected code paths. No `console.log` or `debugger` statements in production code. No hardcoded secrets, API keys, or credentials in source files.

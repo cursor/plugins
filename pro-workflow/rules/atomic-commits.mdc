@@ -1,0 +1,6 @@
+---
+description: Git best practices - atomic commits, descriptive messages, feature branches
+alwaysApply: true
+---
+
+Make atomic commits with conventional format: `<type>(<scope>): <summary>`. Always work on feature branches. Stage specific files by name, never `git add -A`.
