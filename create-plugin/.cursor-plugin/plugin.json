@@ -10,6 +10,7 @@
   "homepage": "https://github.com/cursor/plugins",
   "repository": "https://github.com/cursor/plugins",
   "license": "MIT",
+  "logo": "assets/avatar.png",
   "keywords": [
     "create-plugin",
     "cursor-plugin",
