@@ -42,7 +42,3 @@ Battle-tested AI coding workflows from power users. Self-correcting memory, para
 | `self-correction` | Capture mistakes as compounding learnings |
 | `no-debug-statements` | Remove console.log, debugger, print before committing |
 | `communication-style` | Concise, action-oriented, no over-engineering |
-
-## License
-
-MIT
