@@ -2,7 +2,7 @@
   "name": "web-browser",
   "displayName": "Web Browser",
   "version": "1.0.0",
-  "description": "Browser debugging with DevTools, network traces, and repro steps.",
+  "description": "Browser debugging with DevTools, network traces, and repro steps. Provides structured workflows for network analysis, performance profiling, and capturing reproducible bug reports.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

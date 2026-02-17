@@ -2,7 +2,7 @@
   "name": "documentation",
   "displayName": "Documentation",
   "version": "1.0.0",
-  "description": "READMEs, API docs, architecture notes, and changelogs.",
+  "description": "READMEs, API docs, architecture notes, and changelogs. Drafts, refreshes, and audits technical documentation against the current state of the codebase.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

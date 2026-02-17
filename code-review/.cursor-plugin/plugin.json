@@ -2,7 +2,7 @@
   "name": "code-review",
   "displayName": "Code Review",
   "version": "1.0.0",
-  "description": "Code review for correctness, security, and regressions.",
+  "description": "Code review for correctness, security, and regressions. Provides risk-focused review workflows, a dedicated security reviewer agent, and test gap analysis with prioritized findings.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

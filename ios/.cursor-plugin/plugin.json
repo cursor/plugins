@@ -2,7 +2,7 @@
   "name": "ios",
   "displayName": "iOS",
   "version": "1.0.0",
-  "description": "iOS development with Swift and SwiftUI.",
+  "description": "iOS development with Swift and SwiftUI. Covers feature implementation with architecture and state management guidance, plus debugging across UI, lifecycle, and networking layers.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

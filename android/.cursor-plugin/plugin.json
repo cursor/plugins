@@ -2,7 +2,7 @@
   "name": "android",
   "displayName": "Android",
   "version": "1.0.0",
-  "description": "Android development with Kotlin and Jetpack Compose.",
+  "description": "Android development with Kotlin and Jetpack Compose. Covers feature implementation with unidirectional data flow and Compose best practices, plus debugging across UI, state, and data layers.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

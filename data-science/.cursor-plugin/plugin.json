@@ -2,7 +2,7 @@
   "name": "data-science",
   "displayName": "Data Science",
   "version": "1.0.0",
-  "description": "Exploratory analysis, validation, and decision-ready reporting.",
+  "description": "Exploratory analysis, validation, and decision-ready reporting. Walks through question framing, notebook-based analysis with quality gates, result validation, and stakeholder readout drafting.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

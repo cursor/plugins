@@ -2,7 +2,7 @@
   "name": "create-plugin",
   "displayName": "Create Plugin",
   "version": "1.0.0",
-  "description": "Scaffold and validate new Cursor plugins.",
+  "description": "Scaffold and validate new Cursor plugins. Handles directory setup, manifest generation, and pre-submission quality checks for the marketplace.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

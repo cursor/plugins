@@ -2,7 +2,7 @@
   "name": "frontend",
   "displayName": "Frontend",
   "version": "1.0.0",
-  "description": "Frontend development with React, TypeScript, accessibility, and performance.",
+  "description": "Frontend development with React, TypeScript, accessibility, and performance. Covers feature implementation, bug triage, and shipping with enforced rules for a11y compliance and runtime performance.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

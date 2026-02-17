@@ -2,7 +2,7 @@
   "name": "design",
   "displayName": "Design",
   "version": "1.0.0",
-  "description": "UX specs, design systems, and developer handoff.",
+  "description": "UX specs, design systems, and developer handoff. Translates product requirements into design specs with handoff checklists, and reviews solutions for usability and implementation readiness.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

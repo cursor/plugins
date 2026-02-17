@@ -2,7 +2,7 @@
   "name": "planning",
   "displayName": "Planning",
   "version": "1.0.0",
-  "description": "Scoping, milestones, risk management, and execution plans.",
+  "description": "Scoping, milestones, risk management, and execution plans. Breaks down goals into sequenced, dependency-aware milestones and stress-tests plans for hidden assumptions and delivery risk.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
