@@ -36,7 +36,7 @@
     {
       "name": "aether",
       "source": "aether",
-      "description": "Query your Unity game's runtime state, events, and analytics directly from Cursor. Run npx aether-init first."
+      "description": "AI co-debugging for Unity. One-click install—your AI can see your game."
     }
   ]
 }

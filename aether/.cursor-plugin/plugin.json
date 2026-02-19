@@ -2,7 +2,7 @@
   "name": "aether",
   "displayName": "Aether",
   "version": "0.4.9",
-  "description": "Query your Unity game's runtime state, events, and analytics directly from Cursor.",
+  "description": "AI co-debugging for Unity. One-click install—your AI can see your game.",
   "author": {
     "name": "Finexma",
     "email": "support@getaether.dev"

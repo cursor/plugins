@@ -6,35 +6,27 @@ Aether bridges your Unity game to Cursor, giving the AI complete context: live s
 
 ---
 
-## Prerequisites
+## Install
 
-- **Unity** 2021.3 LTS or newer
-- **Node.js** 18+ (for `npx`)
-- **Cursor** IDE with MCP support
+```bash
+/add-plugin aether
+```
 
-Aether also requires the **Aether Bridge** and **Unity SDK** to be installed. Run this **once** from your Unity project root:
+That's it. The bridge auto-downloads on first use.
+
+**First time in a Unity project?** Run this once from your project root:
 
 ```bash
 npx aether-init
 ```
 
-From your Unity project root. This will:
-
-1. Download the Aether Bridge binary for your OS
-2. Install the Unity SDK via UPM (adds to `Packages/manifest.json`)
-3. Write `.cursor/mcp.json` so Cursor connects automatically
-
-Then **reload Cursor** (Ctrl+Shift+P → "Reload Window") and enter Play Mode in Unity.
-
-> **Without this step**, the Aether tools will not be available. The plugin's MCP launcher (`scripts/start-mcp.js`) looks for the bridge at `~/.aether/bin/`; `aether-init` downloads it there.
+Then reload Cursor (Ctrl+Shift+P → Reload Window), enter Play mode, and ask your AI: *"What's the state of my game?"*
 
 ---
 
-## Installation
+## Requirements
 
-```bash
-/add-plugin aether
-```
+Unity 2021.3+, Node.js 18+, Cursor with MCP
 
 ---
 
@@ -68,7 +60,7 @@ See [Aether docs](https://docs.getaether.dev) for the full tool list.
 
 ## Manual Setup
 
-If you prefer to configure by hand, see [getaether.dev](https://getaether.dev) for download links and manual MCP configuration.
+Technical users or non-Cursor setups: see [getaether.dev](https://getaether.dev) for download links and manual MCP configuration.
 
 ---
 

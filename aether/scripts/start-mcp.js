@@ -2,11 +2,11 @@
 
 /**
  * Aether MCP launcher — OS-agnostic.
- * Locates the bridge at ~/.aether/bin (from npx aether-init) and spawns it with --stdio.
- * If the bridge is missing, exits with a clear message.
+ * Locates the bridge at ~/.aether/bin. If missing, auto-downloads via npx aether-init --bridge-only.
+ * Then spawns the bridge with --stdio.
  */
 
-const { spawn } = require("child_process");
+const { spawn, execSync } = require("child_process");
 const { existsSync } = require("fs");
 const { homedir, platform, arch } = require("os");
 const { join } = require("path");
@@ -20,7 +20,6 @@ function detectPlatform() {
   throw new Error(`Unsupported platform: ${os}/${cpu}`);
 }
 
-// Binary names must match those produced by npx aether-init (~/.aether/bin/).
 function getBinaryName(plat) {
   return `aether-bridge-${plat.os}-${plat.arch}${plat.ext}`;
 }
@@ -31,10 +30,21 @@ const binaryName = getBinaryName(plat);
 const bridgePath = join(binDir, binaryName);
 
 if (!existsSync(bridgePath)) {
-  console.error(
-    "[Aether] Bridge not found. Run from your Unity project root:\n  npx aether-init\nThen reload Cursor (Ctrl+Shift+P → Reload Window)."
-  );
-  process.exit(1);
+  try {
+    execSync("npx aether-init@latest --bridge-only", {
+      stdio: "ignore",
+      env: { ...process.env, npm_config_yes: "true" },
+    });
+  } catch (e) {
+    console.error(
+      "[Aether] Bridge not found and auto-download failed. Run manually from your Unity project root:\n  npx aether-init\nThen reload Cursor (Ctrl+Shift+P → Reload Window)."
+    );
+    process.exit(1);
+  }
+  if (!existsSync(bridgePath)) {
+    console.error("[Aether] Bridge download completed but binary not found. Try: npx aether-init");
+    process.exit(1);
+  }
 }
 
 const child = spawn(bridgePath, ["--stdio"], {
