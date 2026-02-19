@@ -1,6 +1,6 @@
 {
-  "name": "learning",
-  "displayName": "Learning",
+  "name": "teaching",
+  "displayName": "Teaching",
   "version": "1.0.0",
   "description": "Skill mapping, practice plans, and learning retrospectives. Builds personalized roadmaps with milestones and practice checkpoints, and runs periodic reviews to adjust based on progress.",
   "author": {
@@ -12,7 +12,7 @@
   "license": "MIT",
   "logo": "assets/avatar.png",
   "keywords": [
-    "learning",
+    "teaching",
     "study-plan",
     "practice",
     "feedback",
@@ -20,7 +20,7 @@
   ],
   "category": "utilities",
   "tags": [
-    "learning",
+    "teaching",
     "education",
     "practice"
   ],

@@ -1,11 +1,11 @@
-# Learning plugin
+# Teaching plugin
 
-Learning workflows: skill mapping, practice plans, and feedback loops.
+Teaching workflows: skill mapping, practice plans, and feedback loops.
 
 ## Installation
 
 ```bash
-/add-plugin learning
+/add-plugin teaching
 ```
 
 ## Components
