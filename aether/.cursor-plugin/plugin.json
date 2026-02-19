@@ -1,0 +1,33 @@
+{
+  "name": "aether",
+  "displayName": "Aether",
+  "version": "0.4.9",
+  "description": "Query your Unity game's runtime state, events, and analytics directly from Cursor.",
+  "author": {
+    "name": "Finexma",
+    "email": "support@getaether.dev"
+  },
+  "homepage": "https://getaether.dev",
+  "repository": "https://github.com/finexma-dev/aether",
+  "license": "MIT",
+  "logo": "assets/avatar.png",
+  "keywords": [
+    "aether",
+    "unity",
+    "debugging",
+    "mcp",
+    "game-dev",
+    "gtml",
+    "live-inspector",
+    "replay"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "unity",
+    "game-development",
+    "debugging",
+    "mcp",
+    "ai-assistant"
+  ],
+  "skills": "./skills/"
+}

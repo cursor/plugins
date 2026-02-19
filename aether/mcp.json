@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "aether": {
+      "command": "node",
+      "args": ["scripts/start-mcp.js"],
+      "env": {}
+    }
+  }
+}
