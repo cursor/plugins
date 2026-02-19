@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "hooks": {
+    "stop": [
+      {
+        "command": "bun run ./hooks/continuous-learning-stop.ts --trial"
+      }
+    ]
+  }
+}

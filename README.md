@@ -6,16 +6,8 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 
 | Plugin | Category | Description |
 |:-------|:---------|:------------|
-| [Frontend](frontend/) | Developer Tools | React, TypeScript, accessibility, and performance workflows |
-| [Design](design/) | Utilities | UX specs, design systems, handoff, and iteration workflows |
-| [Data Science](data-science/) | Utilities | Analysis, modeling, experimentation, and reporting workflows |
-| [iOS](ios/) | Developer Tools | Swift, SwiftUI, architecture, and testing workflows |
-| [Android](android/) | Developer Tools | Kotlin, Jetpack Compose, architecture, and testing workflows |
-| [Planning](planning/) | Utilities | Scope, milestones, risk management, and execution planning |
-| [Code Review](code-review/) | Developer Tools | Correctness, security, regression checks, and actionable feedback |
-| [Web Browser](web-browser/) | Developer Tools | DevTools-driven debugging, network traces, and repro workflows |
-| [Documentation](documentation/) | Utilities | READMEs, API docs, architecture notes, and changelog writing |
 | [Learning](learning/) | Utilities | Skill maps, practice plans, and feedback loops |
+| [Continuous Learning](continuous-learning/) | Developer Tools | Incremental transcript-driven AGENTS.md memory updates with high-signal bullet points |
 | [Cursor Team Kit](cursor-team-kit/) | Developer Tools | Internal-style workflows for CI, code review, shipping, and testing |
 | [Create Plugin](create-plugin/) | Developer Tools | Meta workflows for creating Cursor plugins with scaffolding and submission checks |
 | [Ralph Loop](ralph-loop/) | Developer Tools | Iterative self-referential AI loops using the Ralph Wiggum technique |

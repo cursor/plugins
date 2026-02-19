@@ -1,0 +1,29 @@
+{
+  "name": "continuous-learning",
+  "displayName": "Continuous Learning",
+  "version": "1.0.0",
+  "description": "Incrementally learns durable user preferences and workspace facts from transcript changes and keeps AGENTS.md up to date with plain bullet points.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/avatar.png",
+  "keywords": [
+    "continuous-learning",
+    "agent-memory",
+    "transcripts",
+    "hooks",
+    "incremental"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "automation",
+    "memory",
+    "transcripts"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json"
+}

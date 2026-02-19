@@ -9,54 +9,14 @@
   },
   "plugins": [
     {
-      "name": "frontend",
-      "source": "frontend",
-      "description": "Frontend development with React, TypeScript, accessibility, and performance."
-    },
-    {
-      "name": "design",
-      "source": "design",
-      "description": "UX specs, design systems, and developer handoff."
-    },
-    {
-      "name": "data-science",
-      "source": "data-science",
-      "description": "Exploratory analysis, validation, and decision-ready reporting."
-    },
-    {
-      "name": "ios",
-      "source": "ios",
-      "description": "iOS development with Swift and SwiftUI."
-    },
-    {
-      "name": "android",
-      "source": "android",
-      "description": "Android development with Kotlin and Jetpack Compose."
-    },
-    {
-      "name": "planning",
-      "source": "planning",
-      "description": "Scoping, milestones, risk management, and execution plans."
-    },
-    {
-      "name": "code-review",
-      "source": "code-review",
-      "description": "Code review for correctness, security, and regressions."
-    },
-    {
-      "name": "web-browser",
-      "source": "web-browser",
-      "description": "Browser debugging with DevTools, network traces, and repro steps."
-    },
-    {
-      "name": "documentation",
-      "source": "documentation",
-      "description": "READMEs, API docs, architecture notes, and changelogs."
-    },
-    {
       "name": "learning",
       "source": "learning",
       "description": "Skill mapping, practice plans, and learning retrospectives."
+    },
+    {
+      "name": "continuous-learning",
+      "source": "continuous-learning",
+      "description": "Incremental transcript-driven memory updates for AGENTS.md using high-signal bullet points only."
     },
     {
       "name": "cursor-team-kit",
