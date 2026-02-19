@@ -9,8 +9,8 @@
   },
   "plugins": [
     {
-      "name": "learning",
-      "source": "learning",
+      "name": "teaching",
+      "source": "teaching",
       "description": "Skill mapping, practice plans, and learning retrospectives."
     },
     {
