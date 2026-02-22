@@ -1,0 +1,16 @@
+---
+description: Manter contratos de dados consistentes e versionáveis durante alterações de schema.
+alwaysApply: false
+globs: ["**/*.contract.yml", "**/schema.yml", "**/sources.yml", "**/*_contract*.json", "**/*_contract*.yaml"]
+---
+
+# Data contract standards
+
+Ao criar ou editar contratos de dados:
+
+1. Use formato YAML para contratos (legível, diff-friendly).
+2. Inclua `version`, `table`, `columns` com `name`, `type`, `nullable`.
+3. Prefira tipos padronizados (bigint, string, timestamp, decimal).
+4. Marque inferências vs definições explícitas quando relevante.
+5. Mantenha contratos versionados com o código (evitar repositório separado sem link).
+6. Considere impacto downstream antes de mudanças breaking; use `show-lineage-impact` quando em dúvida.
