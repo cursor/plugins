@@ -24,6 +24,11 @@
       "description": "Internal team workflows used by Cursor developers for CI, code review, and shipping."
     },
     {
+      "name": "cursor-pm",
+      "source": "cursor-pm",
+      "description": "Product management MCP bundle for Granola, Gong, Notion, and Slack."
+    },
+    {
       "name": "create-plugin",
       "source": "create-plugin",
       "description": "Scaffold and validate new Cursor plugins."

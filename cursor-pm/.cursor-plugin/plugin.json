@@ -1,0 +1,29 @@
+{
+  "name": "cursor-pm",
+  "displayName": "Cursor PM",
+  "version": "1.0.0",
+  "description": "Product management MCP bundle for Granola, Gong, Notion, and Slack.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "cursor-pm",
+    "product-management",
+    "mcp",
+    "granola",
+    "gong",
+    "notion",
+    "slack"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "mcp",
+    "product-management",
+    "productivity"
+  ],
+  "mcpServers": "./mcp.json"
+}
