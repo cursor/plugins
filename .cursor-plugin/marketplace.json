@@ -32,6 +32,11 @@
       "name": "ralph-loop",
       "source": "ralph-loop",
       "description": "Iterative self-referential AI loops using the Ralph Wiggum technique."
+    },
+    {
+      "name": "excalidraw",
+      "source": "excalidraw",
+      "description": "Create and iterate Excalidraw diagrams from architecture, flow, and product requirements."
     }
   ]
 }
