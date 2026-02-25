@@ -12,3 +12,4 @@ When creating or editing Cursor plugins:
 3. Match declared component paths to real files and folders.
 4. Include YAML frontmatter for rules, skills, agents, and commands with required metadata.
 5. Keep plugin scope focused and document installation and usage in `README.md`.
+6. Save new plugins to `~/.cursor/plugins/local/<plugin-name>/` by default so they are immediately available to Cursor. Only use a different location when the user explicitly requests it.

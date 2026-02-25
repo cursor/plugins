@@ -17,7 +17,7 @@ Use when planning a new plugin or refactoring an existing plugin's structure.
 
 1. Clarify plugin goal, users, and expected outcomes.
 2. Recommend component mix (`rules`, `skills`, `agents`, `commands`, `hooks`, `mcpServers`) based on need.
-3. Propose directory layout and manifest shape.
+3. Propose directory layout and manifest shape. The default output location for new plugins is `~/.cursor/plugins/local/<plugin-name>/`.
 4. Flag potential discoverability or metadata issues early.
 5. Return a concrete implementation checklist.
 
