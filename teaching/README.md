@@ -4,9 +4,8 @@ Teaching workflows: skill mapping, practice plans, and feedback loops.
 
 ## Installation
 
-```bash
-/add-plugin teaching
-```
+- Deeplink: [`/plugin/add?id=teaching`](/plugin/add?id=teaching)
+- Slash command: `/add-plugin teaching`
 
 ## Components
 

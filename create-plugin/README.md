@@ -4,9 +4,8 @@ Meta workflows for creating Cursor plugins that are marketplace-ready.
 
 ## Installation
 
-```bash
-/add-plugin create-plugin
-```
+- Deeplink: [`/plugin/add?id=create-plugin`](/plugin/add?id=create-plugin)
+- Slash command: `/add-plugin create-plugin`
 
 ## Components
 

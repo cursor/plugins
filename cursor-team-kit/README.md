@@ -4,9 +4,8 @@ Internal-style workflows for CI, code review, shipping, and test reliability.
 
 ## Installation
 
-```bash
-/add-plugin cursor-team-kit
-```
+- Deeplink: [`/plugin/add?id=cursor-team-kit`](/plugin/add?id=cursor-team-kit)
+- Slash command: `/add-plugin cursor-team-kit`
 
 ## Components
 

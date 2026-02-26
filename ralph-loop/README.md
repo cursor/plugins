@@ -8,9 +8,8 @@ Two hooks drive the loop. An `afterAgentResponse` hook watches each response for
 
 ## Installation
 
-```
-/add-plugin ralph-loop
-```
+- Deeplink: [`/plugin/add?id=ralph-loop`](/plugin/add?id=ralph-loop)
+- Slash command: `/add-plugin ralph-loop`
 
 ## Quick start
 

@@ -15,9 +15,8 @@ It is designed to avoid noisy rewrites by:
 
 ## Installation
 
-```bash
-/add-plugin continual-learning
-```
+- Deeplink: [`/plugin/add?id=continual-learning`](/plugin/add?id=continual-learning)
+- Slash command: `/add-plugin continual-learning`
 
 ## How it works
 
