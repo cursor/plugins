@@ -1,0 +1,29 @@
+{
+  "name": "cursor-pm",
+  "displayName": "Cursor PM",
+  "version": "1.0.0",
+  "description": "Project management MCP server for Cursor. Provides tools for managing tasks, tracking project status, and creating issues directly from the editor.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/avatar.png",
+  "keywords": [
+    "cursor-pm",
+    "project-management",
+    "tasks",
+    "issues",
+    "mcp"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "project-management",
+    "tasks",
+    "productivity"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}
