@@ -1,0 +1,28 @@
+{
+  "name": "excalidraw",
+  "displayName": "Excalidraw",
+  "version": "1.0.0",
+  "description": "Create and iterate Excalidraw diagrams from architecture, flow, and product requirements.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "excalidraw",
+    "diagram",
+    "whiteboard",
+    "architecture",
+    "flowchart"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "visualization",
+    "diagramming",
+    "planning"
+  ],
+  "skills": "./skills/",
+  "rules": "./rules/"
+}
