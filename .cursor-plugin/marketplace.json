@@ -32,6 +32,11 @@
       "name": "ralph-loop",
       "source": "ralph-loop",
       "description": "Iterative self-referential AI loops using the Ralph Wiggum technique."
+    },
+    {
+      "name": "orion",
+      "source": "orion",
+      "description": "Data contracts, lineage, and quality. Discover contracts from SQL/dbt/pandas/PySpark, detect breaking changes in diffs, suggest data tests, and visualize upstream/downstream impact."
     }
   ]
 }

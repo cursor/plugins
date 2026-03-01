@@ -1,0 +1,33 @@
+{
+  "name": "orion",
+  "displayName": "Orion",
+  "version": "1.0.0",
+  "description": "Data contracts, lineage, and quality. Discover contracts from SQL/dbt/pandas/PySpark, detect breaking changes in diffs, suggest data tests, and visualize upstream/downstream impact.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/avatar.png",
+  "keywords": [
+    "orion",
+    "data-contracts",
+    "data-lineage",
+    "dbt",
+    "data-quality",
+    "schema"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "data-architecture",
+    "data-science",
+    "contracts",
+    "lineage",
+    "quality"
+  ],
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "agents": "./agents/"
+}
