@@ -3,7 +3,7 @@
   "hooks": {
     "stop": [
       {
-        "command": "bun run ./hooks/continual-learning-stop.ts --trial"
+        "command": "bun run ${CLAUDE_PLUGIN_ROOT}/hooks/continual-learning-stop.ts --trial"
       }
     ]
   }
