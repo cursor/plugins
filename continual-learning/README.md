@@ -6,6 +6,7 @@ The plugin combines:
 
 - A `stop` hook that decides when to trigger learning.
 - A `continual-learning` skill that mines only high-signal transcript deltas.
+- An `agents-memory-updater` subagent that owns the `AGENTS.md` merge/write step.
 
 It is designed to avoid noisy rewrites by:
 
@@ -22,6 +23,8 @@ It is designed to avoid noisy rewrites by:
 ## How it works
 
 On eligible `stop` events, the hook may emit a `followup_message` that asks the agent to run the `continual-learning` skill.
+
+The skill is marked `disable-model-invocation: true`, so it will not be auto-selected during normal model invocation. When it does run, it delegates the final `AGENTS.md` merge/write work to the `agents-memory-updater` subagent.
 
 The hook keeps local runtime state in:
 
@@ -56,7 +59,7 @@ Trial mode defaults (enabled in this plugin hook config):
 
 ## Output format in AGENTS.md
 
-The skill writes only:
+The memory updater writes only:
 
 - `## Learned User Preferences`
 - `## Learned Workspace Facts`
