@@ -11,6 +11,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | [Cursor Team Kit](cursor-team-kit/) | Developer Tools | Internal-style workflows for CI, code review, shipping, and testing |
 | [Create Plugin](create-plugin/) | Developer Tools | Meta workflows for creating Cursor plugins with scaffolding and submission checks |
 | [Ralph Loop](ralph-loop/) | Developer Tools | Iterative self-referential AI loops using the Ralph Wiggum technique |
+| [Orion](orion/) | Developer Tools | Data contracts, lineage, and quality. Discover contracts from SQL/dbt/pandas/PySpark, detect breaking changes, suggest data tests |
 
 ## Repository structure
 
