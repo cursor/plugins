@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "cursor-pm": {
+      "command": "npx",
+      "args": ["-y", "@cursor/pm-mcp@latest"],
+      "env": {
+        "PM_DATA_DIR": "${workspaceFolder}/.cursor/pm"
+      }
+    }
+  }
+}

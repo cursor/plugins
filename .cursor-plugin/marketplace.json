@@ -32,6 +32,11 @@
       "name": "ralph-loop",
       "source": "ralph-loop",
       "description": "Iterative self-referential AI loops using the Ralph Wiggum technique."
+    },
+    {
+      "name": "cursor-pm",
+      "source": "cursor-pm",
+      "description": "Project management MCP server for managing tasks, tracking project status, and creating issues from within Cursor."
     }
   ]
 }
