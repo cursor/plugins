@@ -1,0 +1,15 @@
+---
+description: Keep `.excalidraw` documents valid, readable, and safe to iteratively edit.
+alwaysApply: true
+globs: ["**/*.excalidraw"]
+---
+
+# Excalidraw file integrity
+
+When creating or editing `.excalidraw` files:
+
+1. Always output valid JSON with the expected top-level scene shape (`type`, `version`, `source`, `elements`, `appState`, `files`).
+2. Preserve existing element IDs for untouched elements to keep diffs reviewable and connectors stable.
+3. Avoid large rewrites for small requests; prefer minimal, targeted modifications.
+4. Keep labels concise and scene layout readable (reasonable spacing, limited overlap).
+5. Do not include markdown code fences or extra prose inside `.excalidraw` files.
