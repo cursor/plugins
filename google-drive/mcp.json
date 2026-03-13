@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "google-drive": {
+      "command": "gws",
+      "args": [
+        "mcp",
+        "-s",
+        "drive,chat",
+        "-w",
+        "-e"
+      ]
+    }
+  }
+}

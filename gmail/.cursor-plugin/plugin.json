@@ -1,0 +1,30 @@
+{
+  "name": "gmail",
+  "displayName": "Gmail",
+  "version": "1.0.0",
+  "description": "Daily inbox triage workflows for Gmail with optional follow-up scheduling in Calendar.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/avatar.png",
+  "keywords": [
+    "google-workspace",
+    "gmail",
+    "triage",
+    "calendar",
+    "operations"
+  ],
+  "category": "productivity",
+  "tags": [
+    "gmail",
+    "triage",
+    "email-ops"
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "mcpServers": "./mcp.json"
+}

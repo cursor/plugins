@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "google-calendar": {
+      "command": "gws",
+      "args": [
+        "mcp",
+        "-s",
+        "calendar,drive,gmail",
+        "-w",
+        "-e"
+      ]
+    }
+  }
+}
