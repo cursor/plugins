@@ -1,0 +1,37 @@
+{
+  "$schema": "https://cursor.com/schemas/mcp.json",
+  "mcpServers": {
+    "granola": {
+      "url": "https://mcp.granola.ai/",
+      "description": "Granola MCP server for meeting notes and transcripts"
+    },
+    "gong": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "gong-mcp"
+      ],
+      "env": {
+        "GONG_ACCESS_KEY": "${GONG_ACCESS_KEY}",
+        "GONG_ACCESS_SECRET": "${GONG_ACCESS_SECRET}"
+      },
+      "description": "Gong MCP server for call recordings and transcript workflows"
+    },
+    "notion": {
+      "url": "https://mcp.notion.com/mcp",
+      "description": "Notion hosted MCP server for pages, databases, and docs"
+    },
+    "slack": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic/mcp-server-slack"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}"
+      },
+      "description": "Slack MCP server for channel, message, and thread operations"
+    }
+  }
+}

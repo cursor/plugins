@@ -9,6 +9,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | [Teaching](teaching/) | Utilities | Skill maps, practice plans, and feedback loops |
 | [Continual Learning](continual-learning/) | Developer Tools | Incremental transcript-driven AGENTS.md memory updates with high-signal bullet points |
 | [Cursor Team Kit](cursor-team-kit/) | Developer Tools | Internal-style workflows for CI, code review, shipping, and testing |
+| [Cursor PM](cursor-pm/) | Developer Tools | Product management MCP bundle for Granola, Gong, Notion, and Slack |
 | [Create Plugin](create-plugin/) | Developer Tools | Meta workflows for creating Cursor plugins with scaffolding and submission checks |
 | [Ralph Loop](ralph-loop/) | Developer Tools | Iterative self-referential AI loops using the Ralph Wiggum technique |
 
