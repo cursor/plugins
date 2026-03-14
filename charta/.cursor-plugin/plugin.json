@@ -1,0 +1,31 @@
+{
+  "name": "charta",
+  "displayName": "Charta — Chart Generator",
+  "version": "1.0.0",
+  "description": "Generate presentation-ready charts (waterfall, Mekko, bar, scatter, and 12 more types) as SVG or PNG directly from Cursor. One tool call — no setup, no libraries.",
+  "author": {
+    "name": "Charta",
+    "email": "hello@getcharta.ai"
+  },
+  "homepage": "https://getcharta.ai/developers",
+  "repository": "https://github.com/mortenator/charta-mcp",
+  "license": "MIT",
+  "logo": "assets/avatar.svg",
+  "keywords": [
+    "charts",
+    "visualization",
+    "waterfall",
+    "mekko",
+    "svg",
+    "presentation",
+    "google-slides"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "charts",
+    "data-visualization",
+    "svg",
+    "mcp"
+  ],
+  "mcp": "./mcp.json"
+}
