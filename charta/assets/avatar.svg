@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="14" fill="#0a0a0c"/>
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="100%" r="60%">
+      <stop offset="0%" stop-color="#9281F7" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#9281F7" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="white" stop-opacity="0"/>
+      <stop offset="50%" stop-color="white" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="bar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#CBC2FF"/>
+      <stop offset="100%" stop-color="#9281F7"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#glow)"/>
+  <rect x="8" y="1" width="48" height="1.5" rx="0.75" fill="url(#shine)"/>
+  <!-- Bar chart: 4 bars ascending then step-down -->
+  <rect x="9"  y="38" width="9" height="18" rx="3" fill="url(#bar)" opacity="0.9"/>
+  <rect x="21" y="28" width="9" height="28" rx="3" fill="url(#bar)" opacity="0.92"/>
+  <rect x="33" y="15" width="9" height="41" rx="3" fill="url(#bar)"/>
+  <rect x="46" y="28" width="9" height="28" rx="3" fill="url(#bar)" opacity="0.65"/>
+</svg>

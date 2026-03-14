@@ -32,6 +32,11 @@
       "name": "ralph-loop",
       "source": "ralph-loop",
       "description": "Iterative self-referential AI loops using the Ralph Wiggum technique."
+    },
+    {
+      "name": "charta",
+      "source": "charta",
+      "description": "Generate presentation-ready charts (waterfall, Mekko, bar, scatter, and 12 more) as SVG or PNG with one tool call."
     }
   ]
 }

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "charta": {
+      "command": "npx",
+      "args": ["-y", "@charta/mcp"]
+    }
+  }
+}
