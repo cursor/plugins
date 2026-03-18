@@ -1,0 +1,94 @@
+{
+  "name": "createos-mcp",
+  "displayName": "CreateOS MCP",
+  "version": "1.0.0",
+  "description": "Deploy and manage full-stack applications from your editor. 85+ MCP tools for GitHub repos, Docker containers, AI agents, and more with environments, domains, security scanning, analytics, and a template marketplace.",
+  "author": {
+    "name": "NodeOps",
+    "email": "naman@nodeops.xyz"
+  },{
+  "name": "createos-mcp",
+  "displayName": "CreateOS MCP",
+  "version": "1.0.0",
+  "description": "Deploy and manage full-stack applications from your editor. 85+ MCP tools for GitHub repos, Docker containers, AI agents, and more with environments, domains, security scanning, analytics, and a template marketplace.",
+  "author": {
+    "name": "NodeOps",
+    "email": "naman@nodeops.network"
+  },
+  "publisher": "NodeOps",
+  "homepage": "https://createos.nodeops.network",
+  "repository": "https://github.com/NodeOps-app/createos-mcp",
+  "license": "MIT",
+  "keywords": [
+    "deployment",
+    "hosting",
+    "cloud",
+    "docker",
+    "github",
+    "devops",
+    "infrastructure",
+    "mcp",
+    "createos",
+    "nodeops",
+    "ai-agents",
+    "databases",
+    "security",
+    "domains",
+    "environments",
+    "analytics"
+  ],
+  "category": "cloud-infrastructure",
+  "tags": [
+    "deployment",
+    "cloud",
+    "mcp-server",
+    "devops",
+    "ai-agents"
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "rules": "./rules/",
+  "mcpServers": {
+    "createos-mcp": {
+      "url": "https://api-createos.nodeops.network/mcp"
+    }
+  }
+}  "publisher": "NodeOps",
+  "homepage": "https://createos.nodeops.network",
+  "repository": "https://github.com/NodeOps-app/createos-mcp",
+  "license": "MIT",
+  "keywords": [
+    "deployment",
+    "hosting",
+    "cloud",
+    "docker",
+    "github",
+    "devops",
+    "infrastructure",
+    "mcp",
+    "createos",
+    "nodeops",
+    "ai-agents",
+    "databases",
+    "security",
+    "domains",
+    "environments",
+    "analytics"
+  ],
+  "category": "cloud-infrastructure",
+  "tags": [
+    "deployment",
+    "cloud",
+    "mcp-server",
+    "devops",
+    "ai-agents"
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "rules": "./rules/",
+  "mcpServers": {
+    "createos-mcp": {
+      "url": "https://api-createos.nodeops.network/mcp"
+    }
+  }
+}
