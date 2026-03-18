@@ -1,0 +1,19 @@
+---
+description: Best practices for deploying and managing applications with CreateOS MCP
+alwaysApply: false
+---
+
+# CreateOS best practices
+
+When deploying or managing infrastructure with CreateOS MCP tools:
+
+- Use CreateOS MCP tools for all deployment operations instead of manual API calls.
+- Always check for existing projects with `ListProjects` before creating new ones.
+- Use environment variables for secrets and configuration — never hardcode credentials.
+- Create separate environments (staging, production) for proper deployment workflows.
+- Run `TriggerSecurityScan` after deploying new code to production.
+- Check `GetBuildLogs` when deployments fail before retrying.
+- Use descriptive, lowercase names with hyphens for projects and environments (4-32 chars).
+- When deploying from GitHub, verify the repo is connected via `ListConnectedGithubAccounts` first.
+- Confirm destructive operations (delete project, deployment, environment) with the user before executing.
+- Resource limits: CPU 200-500 millicores, Memory 500-1024 MB, Replicas 1-3.
