@@ -22,13 +22,14 @@ It is designed to avoid noisy rewrites by:
 
 ## How it works
 
-On eligible `stop` events, the hook may emit a `followup_message` that asks the agent to run the `continual-learning` skill.
+On eligible `stop` events, the hook prefers launching the `agent` CLI in print mode when `agent` is available on `PATH`. If the CLI is unavailable or cannot be started, the hook falls back to emitting a `followup_message` that asks the current session to run the `continual-learning` skill.
 
 The skill is marked `disable-model-invocation: true`, so it will not be auto-selected during normal model invocation. When it does run, it delegates the full memory update flow to `agents-memory-updater`.
 
 The hook keeps local runtime state in:
 
 - `.cursor/hooks/state/continual-learning.json` (cadence state)
+- `.cursor/hooks/state/continual-learning-agent.log` (best-effort `agent` CLI output when launched from the hook)
 
 The updater uses an incremental transcript index at:
 

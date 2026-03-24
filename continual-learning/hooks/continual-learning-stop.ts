@@ -1,13 +1,23 @@
 /// <reference types="bun-types-no-globals/lib/index.d.ts" />
 
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import {
+  closeSync,
+  existsSync,
+  mkdirSync,
+  openSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
+import { spawn, spawnSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { stdin } from "bun";
 
-const STATE_PATH = resolve(".cursor/hooks/state/continual-learning.json");
-const INCREMENTAL_INDEX_PATH = resolve(
-  ".cursor/hooks/state/continual-learning-index.json"
-);
+const PROJECT_DIR = resolve(process.env.CURSOR_PROJECT_DIR ?? ".");
+const STATE_DIR = resolve(PROJECT_DIR, ".cursor/hooks/state");
+const STATE_PATH = resolve(STATE_DIR, "continual-learning.json");
+const INCREMENTAL_INDEX_PATH = resolve(STATE_DIR, "continual-learning-index.json");
+const AGENT_LOG_PATH = resolve(STATE_DIR, "continual-learning-agent.log");
 const DEFAULT_MIN_TURNS = 10;
 const DEFAULT_MIN_MINUTES = 120;
 const TRIAL_DEFAULT_MIN_TURNS = 3;
@@ -138,6 +148,50 @@ function shouldCountTurn(input: StopHookInput): boolean {
   return input.status === "completed" && input.loop_count === 0;
 }
 
+function canSpawnAgentCli(): boolean {
+  const result = spawnSync("agent", ["--version"], {
+    stdio: "ignore",
+    cwd: PROJECT_DIR,
+    env: process.env,
+  });
+  return result.error === undefined;
+}
+
+function triggerAgentCli(): boolean {
+  if (!canSpawnAgentCli()) {
+    return false;
+  }
+
+  let logFd: number | null = null;
+
+  try {
+    if (!existsSync(STATE_DIR)) {
+      mkdirSync(STATE_DIR, { recursive: true });
+    }
+
+    logFd = openSync(AGENT_LOG_PATH, "a");
+    const child = spawn(
+      "agent",
+      ["-p", "--force", "--workspace", PROJECT_DIR, "--", FOLLOWUP_MESSAGE],
+      {
+        cwd: PROJECT_DIR,
+        detached: true,
+        stdio: ["ignore", logFd, logFd],
+        env: process.env,
+      }
+    );
+    child.unref();
+    return true;
+  } catch (error) {
+    console.error("[continual-learning-stop] failed to spawn agent CLI", error);
+    return false;
+  } finally {
+    if (logFd !== null) {
+      closeSync(logFd);
+    }
+  }
+}
+
 async function parseHookInput<T>(): Promise<T> {
   const text = await stdin.text();
   return JSON.parse(text) as T;
@@ -223,6 +277,11 @@ async function main(): Promise<number> {
       state.turnsSinceLastRun = 0;
       state.lastTranscriptMtimeMs = transcriptMtimeMs;
       saveState(state);
+
+      if (triggerAgentCli()) {
+        console.log(JSON.stringify({}));
+        return 0;
+      }
 
       console.log(
         JSON.stringify({
