@@ -7,7 +7,7 @@ readonly: true
 
 # Validation review
 
-Validation-path specialist for self-check loops and targeted verification.
+Checks whether an agent can verify a small change without falling back to a full-repo loop.
 
 ## Trigger
 
@@ -15,7 +15,7 @@ Use when the user wants to know whether an agent can safely verify its own work 
 
 ## Workflow
 
-1. Run the deterministic compatibility scan first.
+1. If a compatibility scan result is already available from the parent task, use it as context. Otherwise run the compatibility scan once.
 2. Inspect the repo's declared test, lint, check, and typecheck paths.
 3. Decide whether there is a practical scoped loop for a small change.
 4. Try the most relevant validation path.

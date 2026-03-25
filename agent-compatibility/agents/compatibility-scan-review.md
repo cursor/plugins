@@ -1,17 +1,17 @@
 ---
-name: deterministic-scan-review
-description: Run the agent-compatibility CLI and return the deterministic score with its main problems
+name: compatibility-scan-review
+description: Run the agent-compatibility CLI and return the raw repository score with its main problems
 model: fast
 readonly: true
 ---
 
-# Deterministic scan review
+# Compatibility scan review
 
-CLI-backed compatibility scan specialist.
+Runs the published scanner and reports the raw repository score.
 
 ## Trigger
 
-Use when the task is specifically to run the published `agent-compatibility` scanner and report the deterministic result.
+Use when the task is specifically to run the published `agent-compatibility` scanner and report the raw compatibility result.
 
 ## Workflow
 
@@ -20,19 +20,20 @@ Use when the task is specifically to run the published `agent-compatibility` sca
 3. Only say the scanner is unavailable after you have actually tried the published package, and the local fallback when it is clearly available.
 4. Prefer JSON when you need structured reasoning. Prefer Markdown when the user wants a direct report.
 5. Keep the scanner's real score, summary direction, and problem ordering.
-6. Do not bundle in startup, validation, or docs-reality judgments. Those belong to separate agents.
+6. Do not bundle in startup, validation, or docs-reliability judgments. Those belong to separate agents.
 
 ## Output
 
 Reply in **plain text only** (no markdown fences, no `#` headings, no emphasis syntax). Use this layout:
 
-First line: `Agent Compatibility Score: <score>/100`
+First line: `Deterministic Compatibility Score: <score>/100`
 
 Then a short summary paragraph.
 
 Then the line `Problems` followed by one bullet per line using `- `.
 
-- Use the deterministic scan's real score.
+- Use the compatibility scan's real score.
+- Keep accelerator context separate from the deterministic compatibility score itself.
 - Include both rubric issues and accelerator issues when they matter.
 - If there are no meaningful problems, under Problems write `- None.`
 - Do not treat scanner availability as a defect in the target repo.

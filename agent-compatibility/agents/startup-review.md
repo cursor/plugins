@@ -7,7 +7,7 @@ readonly: true
 
 # Startup review
 
-Startup-path specialist for repository bootstrap and first-run success.
+Tries the cold-start path and reports how much work it takes to get the repo running.
 
 ## Trigger
 
@@ -15,7 +15,7 @@ Use when the user wants to know whether a repo is actually easy to start, not ju
 
 ## Workflow
 
-1. Run the deterministic compatibility scan first.
+1. If a compatibility scan result is already available from the parent task, use it as context. Otherwise run the compatibility scan once.
 2. Read the obvious startup surfaces: `README`, scripts, toolchain files, env examples, and workflow docs.
 3. Pick the most likely bootstrap path and startup command.
 4. Try to reach first success inside a fixed time budget.

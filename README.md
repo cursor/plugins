@@ -9,7 +9,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `continual-learning` | [Continual Learning](continual-learning/) | Cursor | Developer Tools | Incremental transcript-driven memory updates for AGENTS.md using high-signal bullet points only. |
 | `cursor-team-kit` | [Cursor Team Kit](cursor-team-kit/) | Cursor | Developer Tools | Internal team workflows used by Cursor developers for CI, code review, and shipping. |
 | `create-plugin` | [Create Plugin](create-plugin/) | Cursor | Developer Tools | Scaffold and validate new Cursor plugins. |
-| `agent-compatibility` | [Agent Compatibility](agent-compatibility/) | Cursor | Developer Tools | Compatibility scans and agent-native workflow audits for repository setup, startup paths, and validation loops. |
+| `agent-compatibility` | [Agent Compatibility](agent-compatibility/) | Cursor | Developer Tools | CLI-backed repo compatibility scans plus Cursor agents that audit startup, validation, and docs against reality. |
 
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 

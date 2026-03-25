@@ -36,7 +36,7 @@
     {
       "name": "agent-compatibility",
       "source": "agent-compatibility",
-      "description": "Compatibility scans and agent-native workflow audits for repository setup, startup paths, and validation loops."
+      "description": "CLI-backed repo compatibility scans plus Cursor agents that audit startup, validation, and docs against reality."
     }
   ]
 }
