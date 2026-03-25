@@ -1,0 +1,28 @@
+{
+  "name": "agent-compatibility",
+  "displayName": "Agent Compatibility",
+  "version": "0.1.0",
+  "description": "Compatibility scans and agent-native repo audits built around the agent-compatibility CLI.",
+  "author": {
+    "name": "Eric Zakariasson"
+  },
+  "publisher": "Eric Zakariasson",
+  "logo": "assets/avatar.png",
+  "license": "ISC",
+  "keywords": [
+    "agents",
+    "compatibility",
+    "repo-audit",
+    "startup",
+    "validation"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "agents",
+    "compatibility",
+    "quality",
+    "workflow"
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/"
+}
