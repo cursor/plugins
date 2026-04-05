@@ -1,0 +1,30 @@
+{
+  "name": "cursor-rules-pack",
+  "displayName": "Cursor Rules Pack",
+  "version": "1.0.0",
+  "description": "50 production-tested Cursor Rules for TypeScript/Next.js, Prisma, Stripe, Supabase, and more. Includes rules for error handling, state management, security, and AI behavior \u2014 with before/after code examples.",
+  "author": {
+    "name": "OliviaCraft",
+    "email": "oliviacraftlat@gmail.com"
+  },
+  "homepage": "https://github.com/oliviacraft/cursor-rules-pack-sample",
+  "repository": "https://github.com/oliviacraft/cursor-rules-pack-sample",
+  "license": "MIT",
+  "keywords": [
+    "cursor-rules",
+    "typescript",
+    "nextjs",
+    "prisma",
+    "production",
+    "best-practices"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "rules",
+    "typescript",
+    "nextjs",
+    "security",
+    "error-handling"
+  ],
+  "rules": "./rules/"
+}

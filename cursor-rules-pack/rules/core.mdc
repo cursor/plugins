@@ -1,0 +1,22 @@
+---
+description: Core production rules — apply to all TypeScript projects
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: true
+---
+
+# Core Production Rules
+
+## Dependency Discipline
+Before suggesting a new npm package: (1) state what it does in one sentence, (2) confirm it's actively maintained (last publish < 6 months), (3) check if < 30 lines replaces it. Never add a dependency for a task under 20 lines of code.
+
+## Explicit Error Handling
+Always wrap async operations in try/catch. Never swallow errors silently. Log errors with context: `logger.error('[FunctionName] description', { error, context })`. Always provide user-facing error states in UI components.
+
+## Comments Policy
+Write self-documenting code first. Add comments only for: (1) non-obvious business logic — explain WHY not WHAT, (2) workarounds with issue links, (3) complex algorithms. Never comment what the code clearly does.
+
+## Naming Conventions
+PascalCase for components/types, camelCase for functions/variables, SCREAMING_SNAKE_CASE for constants, kebab-case for file names. Booleans start with `is`, `has`, `can`, or `should`. Be descriptive: `getUserByEmail` not `getUser`.
+
+## File Size Discipline
+Keep files under 200 lines. If a file grows beyond that, proactively suggest how to split it. Co-locate related files: keep a component's types, hooks, and utilities in the same folder.

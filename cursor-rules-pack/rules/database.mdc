@@ -1,0 +1,21 @@
+---
+description: Database and backend rules — Prisma, API routes, webhooks
+globs: ["**/*.ts", "app/api/**/*", "lib/**/*"]
+alwaysApply: false
+---
+
+# Database & Backend Rules
+
+## Database Query Safety
+Never return full database records to the client — always use `select` to specify exactly which fields are needed. This prevents exposing password hashes, reset tokens, and sensitive fields.
+
+For queries that could return more than 50 rows, always add pagination (take/skip or cursor-based).
+
+## API Route Security
+Every API route must: (1) authenticate first — return 401 if no session, (2) validate body with Zod — return 400 with field errors if invalid, (3) authorize the action — verify the user can perform this operation, (4) return typed responses `{ data }` on success, `{ error }` on failure, (5) use correct HTTP status codes — never return 200 for errors.
+
+## Webhook Security
+Verify the signature in the first 3 lines of the handler — reject immediately if invalid. Respond with HTTP 200 within 5 seconds — offload processing to a background job. Implement idempotency using the event ID.
+
+## Prisma Best Practices
+Use transactions (db.$transaction) for operations that write to multiple tables. Every model needs: id (cuid default), createdAt, updatedAt. Add @@index for every foreign key and every WHERE clause field.

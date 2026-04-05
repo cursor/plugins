@@ -1,0 +1,24 @@
+---
+description: Next.js App Router rules — server components, state, data fetching
+globs: ["**/*.tsx", "app/**/*"]
+alwaysApply: false
+---
+
+# Next.js App Router Rules
+
+## Server Components First
+Default to server components. Add "use client" only when required by: event handlers, useState, useEffect, browser-only APIs. Always explain your choice when adding "use client". Use Server Actions for mutations.
+
+## State Management Hierarchy
+- URL state → filters, pagination, search (useSearchParams)
+- React state → UI-only, ephemeral (useState)
+- Zustand → cross-component app state
+- React Query → all server state
+
+Never use Zustand to cache server data. Never reach for Redux.
+
+## Parallel Data Fetching
+Identify and parallelize independent fetches. Never await sequentially when operations are independent — use Promise.all. When making a sequential await, add a comment explaining the dependency that forces it.
+
+## Loading & Error States
+Every async operation needs three states: loading, error, success. Use skeleton components (not spinners) for content loading. Error boundaries must show actionable messages — "Something went wrong" is not acceptable.
