@@ -42,6 +42,11 @@
       "name": "cli-for-agent",
       "source": "cli-for-agent",
       "description": "Patterns for designing CLIs that coding agents can run reliably: flags, help with examples, pipelines, errors, idempotency, dry-run."
+    },
+    {
+      "name": "chartlibrary-mcp",
+      "source": "chartlibrary-mcp",
+      "description": "Historical chart pattern search engine: 24M+ embeddings, 15K+ symbols, 10 years. 19 MCP tools for pattern search, market intelligence, and trading signals."
     }
   ]
 }

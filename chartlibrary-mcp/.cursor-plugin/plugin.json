@@ -1,0 +1,30 @@
+{
+  "name": "chartlibrary-mcp",
+  "displayName": "Chart Library MCP",
+  "version": "1.1.0",
+  "description": "Historical chart pattern search engine for AI agents. 24M+ embeddings across 15K+ symbols and 10 years of data. Search by ticker+date or screenshot, get similar historical patterns with forward returns.",
+  "author": {
+    "name": "Graham McCain",
+    "email": "grahammccain@users.noreply.github.com"
+  },
+  "homepage": "https://chartlibrary.io",
+  "repository": "https://github.com/grahammccain/chart-library-mcp",
+  "license": "MIT",
+  "keywords": [
+    "finance",
+    "stocks",
+    "chart-patterns",
+    "market-data",
+    "trading",
+    "embeddings",
+    "historical-data"
+  ],
+  "category": "data-analytics",
+  "tags": [
+    "finance",
+    "market-intelligence",
+    "mcp",
+    "data-analytics"
+  ],
+  "mcp": "./mcp.json"
+}

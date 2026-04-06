@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "chartlibrary": {
+      "command": "uvx",
+      "args": ["chartlibrary-mcp"],
+      "env": {
+        "CHART_LIBRARY_API_KEY": ""
+      }
+    }
+  }
+}
