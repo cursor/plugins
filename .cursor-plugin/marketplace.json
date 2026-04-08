@@ -11,37 +11,42 @@
     {
       "name": "teaching",
       "source": "teaching",
-      "description": "Skill mapping, practice plans, and learning retrospectives."
+      "description": "USER LEVEL: You get a structured path with checkpoints and retros—less thrashing, clearer progress signals on what to drill next. PROJECT LEVEL: Onboarding and mentorship scale because skill goals and practice cadence are explicit instead of tribal knowledge. Builds skill maps, practice plans, and learning retrospectives with milestones so improvement is deliberate instead of random prompt attempts. BEST SUITED FOR: • Developers leveling up on a new language, stack, or framework • Mentors needing repeatable lesson and practice scaffolding • Teams capturing how they teach internal tools and APIs"
     },
     {
       "name": "continual-learning",
       "source": "continual-learning",
-      "description": "Learns from your transcripts: promote stable preferences and workspace facts into AGENTS.md as plain bullets so every session starts aligned with how you work."
+      "description": "USER LEVEL: You stop repeating the same stylistic rules, name choices, and workflow quirks every Monday—the assistant remembers what actually stuck. PROJECT LEVEL: Shared agent guidance reflects how the team works today, not a stale template from the repo’s first commit. Mines transcripts for durable preferences and facts, then appends concise bullets to AGENTS.md so future sessions start aligned. BEST SUITED FOR: • Long-lived monorepos with evolving conventions • Teams heavy on Cursor and shared AGENTS.md guidance • Projects where small decisions deserve persistent agent memory"
     },
     {
       "name": "cursor-team-kit",
       "source": "cursor-team-kit",
-      "description": "Cursor’s internal shipping playbook as skills—triage CI, fix failures, open and refresh PRs, resolve merge conflicts, run smoke and compile checks, clean noisy diffs, and summarize what landed."
+      "description": "USER LEVEL: You inherit battle-tested habits from Cursor engineers when CI breaks, reviews stall, or diffs need tightening before merge. PROJECT LEVEL: Teams converge on repeatable PR and CI hygiene instead of inventing bespoke runbooks per repo. Cursor’s internal shipping playbook as skills—CI triage and fixes, PR flow, conflicts, smoke and compiler checks, cleanup passes, and summaries. BEST SUITED FOR: • Repositories with active GitHub Actions or similar CI • Maintainers juggling multiple PRs and flaky checks • Groups adopting structured review and ship discipline"
     },
     {
       "name": "create-plugin",
       "source": "create-plugin",
-      "description": "Scaffold marketplace-ready Cursor plugins—folder layout, manifests, optional skills and MCP—and run quality checks before you publish."
+      "description": "USER LEVEL: You create a valid plugin skeleton without memorizing manifest edge cases or marketplace wiring. PROJECT LEVEL: Internal extensions and partner plugins stay consistent, cutting review churn from broken metadata. Scaffolds marketplace-ready Cursor plugins—folder layout, manifest, optional skills and MCP—and runs quality checks before publish. BEST SUITED FOR: • Teams packaging MCP servers with skills and rules • Authors preparing Cursor marketplace submissions • Platform groups standardizing plugin templates"
     },
     {
       "name": "ralph-loop",
       "source": "ralph-loop",
-      "description": "Iterative self-referential AI loops using the Ralph Wiggum technique."
+      "description": "USER LEVEL: You offload grindy fix-test cycles while keeping guardrails (hooks) that prevent infinite thrash. PROJECT LEVEL: Deterministic refactors or test stabilizations finish without micromanaging every intermediate step. Runs an agent loop on a focused task—repeat the same prompt with hook-driven stop conditions until the work converges. BEST SUITED FOR: • Large mechanical refactors with clear completion checks • Flaky test stabilization and iterative repro cycles • Tasks where partial progress compounds across attempts"
     },
     {
       "name": "agent-compatibility",
       "source": "agent-compatibility",
-      "description": "CLI-backed audits of repo reality—verify install scripts, CI, and docs match what actually runs so agents (and humans) get a trustworthy quick start."
+      "description": "USER LEVEL: You avoid losing an afternoon to outdated README steps agents obediently follow into failure. PROJECT LEVEL: Onboarding and automation keep pace when toolchains rotate—docs and CI claims get verified, not assumed. CLI-backed audits that compare install scripts, CI, and docs with what actually runs so agents and humans share a truthful quick start. BEST SUITED FOR: • Complex local setups with many prerequisites • Fast-moving repos where docs drift from reality • Organizations onboarding coding agents broadly"
     },
     {
       "name": "cli-for-agent",
       "source": "cli-for-agent",
-      "description": "CLI design patterns for automation: non-interactive flags, layered --help with examples, stdin pipelines, clear errors, idempotency, and dry-run so agents never stall on prompts."
+      "description": "USER LEVEL: You design or review CLI UX that agents can drive without surprise prompts or missing non-interactive paths. PROJECT LEVEL: Internal tools and release CLIs become reliable citizens in CI and agent workflows instead of brittle shells. Patterns for CLIs built for automation—flags, layered help with examples, stdin, actionable errors, idempotency, dry-run. BEST SUITED FOR: • Products exposing developer CLIs • Platform teams wrapping tooling for autonomous runners • Repos where scripts are part of the contract with agents"
+    },
+    {
+      "name": "appwrite",
+      "source": "appwrite",
+      "description": "USER LEVEL: You describe outcomes in plain language (collections, users, functions) and the assistant uses your project’s API key against the real endpoint—less tab switching and fewer stale examples. PROJECT LEVEL: Schemas, permissions, and Functions stay aligned with production because the agent operates on the same Appwrite project your app uses, with reviews still gated by your key scopes. Connects Cursor to your live Appwrite project through the official Appwrite API MCP server and skills so agents read and change real backend resources—not guesses from docs alone. BEST SUITED FOR: • Web and mobile apps built on Appwrite Auth, Databases, and Storage • Teams managing collections, indexes, and Cloud Functions in Appwrite • Self-hosted or Appwrite Cloud projects needing agent-driven operations"
     }
   ]
 }

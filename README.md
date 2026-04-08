@@ -4,15 +4,30 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 
 ## Plugins
 
-| `name` | Plugin | Author | Category | `description` (from marketplace) |
-|:-------|:-------|:-------|:---------|:-------------------------------------|
-| `continual-learning` | [Continual Learning](continual-learning/) | Cursor | Developer Tools | Learns from your transcripts: promote stable preferences and workspace facts into AGENTS.md as plain bullets so every session starts aligned with how you work. |
-| `cursor-team-kit` | [Cursor Team Kit](cursor-team-kit/) | Cursor | Developer Tools | Cursor’s internal shipping playbook as skills—triage CI, fix failures, open and refresh PRs, resolve merge conflicts, run smoke and compile checks, clean noisy diffs, and summarize what landed. |
-| `create-plugin` | [Create Plugin](create-plugin/) | Cursor | Developer Tools | Scaffold marketplace-ready Cursor plugins—folder layout, manifests, optional skills and MCP—and run quality checks before you publish. |
-| `agent-compatibility` | [Agent Compatibility](agent-compatibility/) | Cursor | Developer Tools | CLI-backed audits of repo reality—verify install scripts, CI, and docs match what actually runs so agents (and humans) get a trustworthy quick start. |
-| `cli-for-agent` | [CLI for Agents](cli-for-agent/) | Cursor | Developer Tools | CLI design patterns for automation: non-interactive flags, layered --help with examples, stdin pipelines, clear errors, idempotency, and dry-run so agents never stall on prompts. |
+| `name` | Plugin | Author | Category | Notes |
+|:-------|:-------|:-------|:---------|:------|
+| `appwrite` | [Appwrite](appwrite/) | Appwrite | Developer Tools | Appwrite API MCP (`uvx mcp-server-appwrite`) + skills; configure `.mcp.json` / Cursor MCP env. |
+| `continual-learning` | [Continual Learning](continual-learning/) | Cursor | Developer Tools | Transcript-driven updates to AGENTS.md. |
+| `cursor-team-kit` | [Cursor Team Kit](cursor-team-kit/) | Cursor | Developer Tools | CI, PR, and shipping skills. |
+| `create-plugin` | [Create Plugin](create-plugin/) | Cursor | Developer Tools | Plugin scaffolding and checks. |
+| `ralph-loop` | [Ralph Loop](ralph-loop/) | Cursor | Developer Tools | Iterative agent loops with hooks. |
+| `teaching` | [Teaching](teaching/) | Cursor | Utilities | Skill maps, practice plans, retrospectives. |
+| `agent-compatibility` | [Agent Compatibility](agent-compatibility/) | Cursor | Developer Tools | Audits docs/CI vs runnable reality. |
+| `cli-for-agent` | [CLI for Agents](cli-for-agent/) | Cursor | Developer Tools | CLI design patterns for automation. |
 
-Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
+Marketplace copy is **composed** from structured `marketplaceDetail` in each `.cursor-plugin/plugin.json` (`USER LEVEL`, `PROJECT LEVEL`, overview line, `BEST SUITED FOR` bullets) so the Cursor detail view (`marketplace-editor__description`) stays a single paragraph **without duplicated “integrate with your projects” phrasing**—edit the YAML-like fields, then run `npm run compose`.
+
+### After Cursor refreshes plugin cache
+
+Cursor may overwrite `~/.cursor/plugins/cache/cursor-public/**` when it re-downloads packages. To re-apply manifests from this repo:
+
+```bash
+npm run after-cursor-update
+```
+
+That runs `compose` then `sync-cache`. Optionally install a git hook: `powershell -ExecutionPolicy Bypass -File scripts/install-git-post-merge-hook.ps1` (runs the same after `git pull`).
+
+Author values match each plugin’s `plugin.json` `author.name` where listed (Cursor lists `plugins@cursor.com` in Cursor-authored manifests).
 
 ## Repository structure
 

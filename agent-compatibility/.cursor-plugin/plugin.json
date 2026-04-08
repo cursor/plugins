@@ -1,32 +1,42 @@
 {
-    "name":  "agent-compatibility",
-    "displayName":  "Agent Compatibility",
-    "version":  "1.0.0",
-    "description":  "CLI-backed audits of repo reality—verify install scripts, CI, and docs match what actually runs so agents (and humans) get a trustworthy quick start.",
-    "author":  {
-                   "name":  "Cursor",
-                   "email":  "plugins@cursor.com"
-               },
-    "homepage":  "https://github.com/cursor/plugins/tree/main/agent-compatibility",
-    "repository":  "https://github.com/cursor/plugins",
-    "license":  "MIT",
-    "logo":  "assets/avatar.png",
-    "keywords":  [
-                     "agent-compatibility",
-                     "agents",
-                     "compatibility",
-                     "cursor-plugin",
-                     "repo-audit",
-                     "startup",
-                     "validation"
-                 ],
-    "category":  "developer-tools",
-    "tags":  [
-                 "agents",
-                 "compatibility",
-                 "quality",
-                 "workflow"
-             ],
-    "skills":  "./skills/",
-    "agents":  "./agents/"
+  "name": "agent-compatibility",
+  "displayName": "Agent Compatibility",
+  "version": "1.0.0",
+  "description": "USER LEVEL: You avoid losing an afternoon to outdated README steps agents obediently follow into failure. PROJECT LEVEL: Onboarding and automation keep pace when toolchains rotate—docs and CI claims get verified, not assumed. CLI-backed audits that compare install scripts, CI, and docs with what actually runs so agents and humans share a truthful quick start. BEST SUITED FOR: • Complex local setups with many prerequisites • Fast-moving repos where docs drift from reality • Organizations onboarding coding agents broadly",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins/tree/main/agent-compatibility",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/avatar.png",
+  "keywords": [
+    "agent-compatibility",
+    "agents",
+    "compatibility",
+    "cursor-plugin",
+    "repo-audit",
+    "startup",
+    "validation"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "agents",
+    "compatibility",
+    "quality",
+    "workflow"
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "marketplaceDetail": {
+    "summary": "CLI-backed audits that compare install scripts, CI, and docs with what actually runs so agents and humans share a truthful quick start.",
+    "userLevel": "You avoid losing an afternoon to outdated README steps agents obediently follow into failure.",
+    "projectLevel": "Onboarding and automation keep pace when toolchains rotate—docs and CI claims get verified, not assumed.",
+    "bestSuitedFor": [
+      "Complex local setups with many prerequisites",
+      "Fast-moving repos where docs drift from reality",
+      "Organizations onboarding coding agents broadly"
+    ]
+  }
 }

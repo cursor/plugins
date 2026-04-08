@@ -2,7 +2,7 @@
   "name": "teaching",
   "displayName": "Teaching",
   "version": "1.0.0",
-  "description": "Skill mapping, practice plans, and learning retrospectives. Builds personalized roadmaps with milestones and practice checkpoints, and runs periodic reviews to adjust based on progress.",
+  "description": "USER LEVEL: You get a structured path with checkpoints and retros—less thrashing, clearer progress signals on what to drill next. PROJECT LEVEL: Onboarding and mentorship scale because skill goals and practice cadence are explicit instead of tribal knowledge. Builds skill maps, practice plans, and learning retrospectives with milestones so improvement is deliberate instead of random prompt attempts. BEST SUITED FOR: • Developers leveling up on a new language, stack, or framework • Mentors needing repeatable lesson and practice scaffolding • Teams capturing how they teach internal tools and APIs",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -24,5 +24,15 @@
     "education",
     "practice"
   ],
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "marketplaceDetail": {
+    "summary": "Builds skill maps, practice plans, and learning retrospectives with milestones so improvement is deliberate instead of random prompt attempts.",
+    "userLevel": "You get a structured path with checkpoints and retros—less thrashing, clearer progress signals on what to drill next.",
+    "projectLevel": "Onboarding and mentorship scale because skill goals and practice cadence are explicit instead of tribal knowledge.",
+    "bestSuitedFor": [
+      "Developers leveling up on a new language, stack, or framework",
+      "Mentors needing repeatable lesson and practice scaffolding",
+      "Teams capturing how they teach internal tools and APIs"
+    ]
+  }
 }

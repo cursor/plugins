@@ -1,0 +1,41 @@
+{
+  "name": "appwrite",
+  "displayName": "Appwrite",
+  "version": "1.0.0",
+  "description": "USER LEVEL: You describe outcomes in plain language (collections, users, functions) and the assistant uses your project’s API key against the real endpoint—less tab switching and fewer stale examples. PROJECT LEVEL: Schemas, permissions, and Functions stay aligned with production because the agent operates on the same Appwrite project your app uses, with reviews still gated by your key scopes. Connects Cursor to your live Appwrite project through the official Appwrite API MCP server and skills so agents read and change real backend resources—not guesses from docs alone. BEST SUITED FOR: • Web and mobile apps built on Appwrite Auth, Databases, and Storage • Teams managing collections, indexes, and Cloud Functions in Appwrite • Self-hosted or Appwrite Cloud projects needing agent-driven operations",
+  "author": {
+    "name": "Appwrite",
+    "email": "team@appwrite.io"
+  },
+  "homepage": "https://appwrite.io",
+  "repository": "https://github.com/appwrite/appwrite",
+  "license": "MIT",
+  "keywords": [
+    "appwrite",
+    "baas",
+    "backend",
+    "mcp",
+    "database",
+    "auth",
+    "functions"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "backend",
+    "cloud",
+    "api",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": ".mcp.json",
+  "marketplaceDetail": {
+    "summary": "Connects Cursor to your live Appwrite project through the official Appwrite API MCP server and skills so agents read and change real backend resources—not guesses from docs alone.",
+    "userLevel": "You describe outcomes in plain language (collections, users, functions) and the assistant uses your project’s API key against the real endpoint—less tab switching and fewer stale examples.",
+    "projectLevel": "Schemas, permissions, and Functions stay aligned with production because the agent operates on the same Appwrite project your app uses, with reviews still gated by your key scopes.",
+    "bestSuitedFor": [
+      "Web and mobile apps built on Appwrite Auth, Databases, and Storage",
+      "Teams managing collections, indexes, and Cloud Functions in Appwrite",
+      "Self-hosted or Appwrite Cloud projects needing agent-driven operations"
+    ]
+  }
+}

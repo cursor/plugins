@@ -1,29 +1,39 @@
 {
-    "name":  "create-plugin",
-    "displayName":  "Create Plugin",
-    "version":  "1.0.0",
-    "description":  "Scaffold marketplace-ready Cursor plugins—folder layout, manifests, optional skills and MCP—and run quality checks before you publish.",
-    "author":  {
-                   "name":  "Cursor",
-                   "email":  "plugins@cursor.com"
-               },
-    "homepage":  "https://github.com/cursor/plugins",
-    "repository":  "https://github.com/cursor/plugins",
-    "license":  "MIT",
-    "logo":  "assets/avatar.png",
-    "keywords":  [
-                     "create-plugin",
-                     "cursor-plugin",
-                     "marketplace",
-                     "plugin-authoring"
-                 ],
-    "category":  "developer-tools",
-    "tags":  [
-                 "meta",
-                 "authoring",
-                 "templates"
-             ],
-    "skills":  "./skills/",
-    "rules":  "./rules/",
-    "agents":  "./agents/"
+  "name": "create-plugin",
+  "displayName": "Create Plugin",
+  "version": "1.0.0",
+  "description": "USER LEVEL: You create a valid plugin skeleton without memorizing manifest edge cases or marketplace wiring. PROJECT LEVEL: Internal extensions and partner plugins stay consistent, cutting review churn from broken metadata. Scaffolds marketplace-ready Cursor plugins—folder layout, manifest, optional skills and MCP—and runs quality checks before publish. BEST SUITED FOR: • Teams packaging MCP servers with skills and rules • Authors preparing Cursor marketplace submissions • Platform groups standardizing plugin templates",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/avatar.png",
+  "keywords": [
+    "create-plugin",
+    "cursor-plugin",
+    "marketplace",
+    "plugin-authoring"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "meta",
+    "authoring",
+    "templates"
+  ],
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "agents": "./agents/",
+  "marketplaceDetail": {
+    "summary": "Scaffolds marketplace-ready Cursor plugins—folder layout, manifest, optional skills and MCP—and runs quality checks before publish.",
+    "userLevel": "You create a valid plugin skeleton without memorizing manifest edge cases or marketplace wiring.",
+    "projectLevel": "Internal extensions and partner plugins stay consistent, cutting review churn from broken metadata.",
+    "bestSuitedFor": [
+      "Teams packaging MCP servers with skills and rules",
+      "Authors preparing Cursor marketplace submissions",
+      "Platform groups standardizing plugin templates"
+    ]
+  }
 }

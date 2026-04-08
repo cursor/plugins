@@ -2,7 +2,7 @@
   "name": "ralph-loop",
   "displayName": "Ralph Loop",
   "version": "1.0.0",
-  "description": "Continuous self-referential AI loops for iterative development, implementing the Ralph Wiggum technique. Run the agent in a while-true loop with the same prompt until task completion.",
+  "description": "USER LEVEL: You offload grindy fix-test cycles while keeping guardrails (hooks) that prevent infinite thrash. PROJECT LEVEL: Deterministic refactors or test stabilizations finish without micromanaging every intermediate step. Runs an agent loop on a focused task—repeat the same prompt with hook-driven stop conditions until the work converges. BEST SUITED FOR: • Large mechanical refactors with clear completion checks • Flaky test stabilization and iterative repro cycles • Tasks where partial progress compounds across attempts",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -26,5 +26,15 @@
     "agent-loop"
   ],
   "skills": "./skills/",
-  "hooks": "./hooks/hooks.json"
+  "hooks": "./hooks/hooks.json",
+  "marketplaceDetail": {
+    "summary": "Runs an agent loop on a focused task—repeat the same prompt with hook-driven stop conditions until the work converges.",
+    "userLevel": "You offload grindy fix-test cycles while keeping guardrails (hooks) that prevent infinite thrash.",
+    "projectLevel": "Deterministic refactors or test stabilizations finish without micromanaging every intermediate step.",
+    "bestSuitedFor": [
+      "Large mechanical refactors with clear completion checks",
+      "Flaky test stabilization and iterative repro cycles",
+      "Tasks where partial progress compounds across attempts"
+    ]
+  }
 }

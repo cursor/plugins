@@ -1,0 +1,14 @@
+{
+  "name": "cursor-plugins-upstream",
+  "private": true,
+  "scripts": {
+    "validate": "node scripts/validate-plugins.mjs",
+    "compose": "node scripts/compose-marketplace-descriptions.mjs",
+    "sync-cache": "node scripts/sync-plugin-cache.mjs",
+    "after-cursor-update": "node scripts/run-after-cursor-update.mjs"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  }
+}
