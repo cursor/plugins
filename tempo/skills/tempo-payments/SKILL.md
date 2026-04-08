@@ -14,6 +14,10 @@ description: Integrate Tempo stablecoin payments (send/accept), TransferWithMemo
 - Sponsor user fees: `https://docs.tempo.xyz/guide/payments/sponsor-user-fees/`
 - Pay fees in any stablecoin: `https://docs.tempo.xyz/guide/payments/pay-fees-in-any-stablecoin/`
 
+## Tempo Wallet (agent setup)
+
+- Tempo Wallet skill: `https://tempo.xyz/SKILL.md`
+
 ## MPP (Machine Payments Protocol)
 
 If what you’re building is **paid API access** (HTTP `402` flows) rather than “send a transfer to an address”, use Tempo’s MPP docs:
