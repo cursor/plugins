@@ -1,0 +1,20 @@
+{
+  "name": "tempo",
+  "version": "0.1.0",
+  "description": "Tempo payments integration helpers: skills for sending/accepting stablecoin payments, fee sponsorship, and reconciliation memos.",
+  "author": {
+    "name": "Cursor Community"
+  },
+  "license": "MIT",
+  "keywords": [
+    "tempo",
+    "payments",
+    "stablecoin",
+    "tip-20",
+    "memos",
+    "fee-sponsorship",
+    "typescript",
+    "node"
+  ]
+}
+
