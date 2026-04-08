@@ -1,30 +1,30 @@
 {
-  "name": "cursor-team-kit",
-  "displayName": "Cursor Team Kit",
-  "version": "1.0.0",
-  "description": "Internal workflows used by Cursor developers for CI, code review, and shipping. Covers the full dev loop: CI monitoring and fixing, PR creation, merge conflicts, smoke tests, compiler checks, code cleanup, and work summaries.",
-  "author": {
-    "name": "Cursor",
-    "email": "plugins@cursor.com"
-  },
-  "homepage": "https://github.com/cursor/plugins",
-  "repository": "https://github.com/cursor/plugins",
-  "license": "MIT",
-  "logo": "assets/avatar.png",
-  "keywords": [
-    "cursor-team-kit",
-    "ci",
-    "code-review",
-    "shipping",
-    "testing"
-  ],
-  "category": "developer-tools",
-  "tags": [
-    "internal-workflows",
-    "quality",
-    "delivery"
-  ],
-  "skills": "./skills/",
-  "agents": "./agents/",
-  "rules": "./rules/"
+    "name":  "cursor-team-kit",
+    "displayName":  "Cursor Team Kit",
+    "version":  "1.0.0",
+    "description":  "Cursor’s internal shipping playbook as skills—triage CI, fix failures, open and refresh PRs, resolve merge conflicts, run smoke and compile checks, clean noisy diffs, and summarize what landed.",
+    "author":  {
+                   "name":  "Cursor",
+                   "email":  "plugins@cursor.com"
+               },
+    "homepage":  "https://github.com/cursor/plugins",
+    "repository":  "https://github.com/cursor/plugins",
+    "license":  "MIT",
+    "logo":  "assets/avatar.png",
+    "keywords":  [
+                     "cursor-team-kit",
+                     "ci",
+                     "code-review",
+                     "shipping",
+                     "testing"
+                 ],
+    "category":  "developer-tools",
+    "tags":  [
+                 "internal-workflows",
+                 "quality",
+                 "delivery"
+             ],
+    "skills":  "./skills/",
+    "agents":  "./agents/",
+    "rules":  "./rules/"
 }

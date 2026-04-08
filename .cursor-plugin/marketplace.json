@@ -16,17 +16,17 @@
     {
       "name": "continual-learning",
       "source": "continual-learning",
-      "description": "Incremental transcript-driven memory updates for AGENTS.md using high-signal bullet points only."
+      "description": "Learns from your transcripts: promote stable preferences and workspace facts into AGENTS.md as plain bullets so every session starts aligned with how you work."
     },
     {
       "name": "cursor-team-kit",
       "source": "cursor-team-kit",
-      "description": "Internal team workflows used by Cursor developers for CI, code review, and shipping."
+      "description": "Cursor’s internal shipping playbook as skills—triage CI, fix failures, open and refresh PRs, resolve merge conflicts, run smoke and compile checks, clean noisy diffs, and summarize what landed."
     },
     {
       "name": "create-plugin",
       "source": "create-plugin",
-      "description": "Scaffold and validate new Cursor plugins."
+      "description": "Scaffold marketplace-ready Cursor plugins—folder layout, manifests, optional skills and MCP—and run quality checks before you publish."
     },
     {
       "name": "ralph-loop",
@@ -36,12 +36,12 @@
     {
       "name": "agent-compatibility",
       "source": "agent-compatibility",
-      "description": "CLI-backed repo compatibility scans plus Cursor agents that audit startup, validation, and docs against reality."
+      "description": "CLI-backed audits of repo reality—verify install scripts, CI, and docs match what actually runs so agents (and humans) get a trustworthy quick start."
     },
     {
       "name": "cli-for-agent",
       "source": "cli-for-agent",
-      "description": "Patterns for designing CLIs that coding agents can run reliably: flags, help with examples, pipelines, errors, idempotency, dry-run."
+      "description": "CLI design patterns for automation: non-interactive flags, layered --help with examples, stdin pipelines, clear errors, idempotency, and dry-run so agents never stall on prompts."
     }
   ]
 }

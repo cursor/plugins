@@ -1,5 +1,22 @@
 # Agent Compatibility
 
+<!-- cursor-plugin-enhancements:begin -->
+
+## Who this is for
+
+### For you (user level)
+You trust the README again: the assistant checks whether install, test, and lint commands in docs match what the repo really does.
+
+### For your projects (project level)
+Open-source and inner-source projects reduce onboarding friction and agent failure modes when “quick start” drift silently breaks.
+
+### Best suited for
+- Polyglot or fast-moving repos where docs fall behind scripts
+- Projects onboarding agents as first-class “users” of the repo
+- Maintainers preparing for external contributors or marketplace plugins
+
+<!-- cursor-plugin-enhancements:end -->
+
 Cursor plugin for checking how well a repo holds up under agent workflows. It pairs the published `agent-compatibility` CLI with focused reviews for startup, validation, and docs reliability.
 
 By default, the full pass returns one overall score and one short list of the highest-leverage fixes. If the user wants the full breakdown, the agents can expose the component scores and the reasoning behind them.

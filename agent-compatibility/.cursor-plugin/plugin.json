@@ -1,32 +1,32 @@
 {
-  "name": "agent-compatibility",
-  "displayName": "Agent Compatibility",
-  "version": "1.0.0",
-  "description": "CLI-backed repo compatibility scans plus Cursor agents that audit startup, validation, and docs against reality.",
-  "author": {
-    "name": "Cursor",
-    "email": "plugins@cursor.com"
-  },
-  "homepage": "https://github.com/cursor/plugins/tree/main/agent-compatibility",
-  "repository": "https://github.com/cursor/plugins",
-  "license": "MIT",
-  "logo": "assets/avatar.png",
-  "keywords": [
-    "agent-compatibility",
-    "agents",
-    "compatibility",
-    "cursor-plugin",
-    "repo-audit",
-    "startup",
-    "validation"
-  ],
-  "category": "developer-tools",
-  "tags": [
-    "agents",
-    "compatibility",
-    "quality",
-    "workflow"
-  ],
-  "skills": "./skills/",
-  "agents": "./agents/"
+    "name":  "agent-compatibility",
+    "displayName":  "Agent Compatibility",
+    "version":  "1.0.0",
+    "description":  "CLI-backed audits of repo reality—verify install scripts, CI, and docs match what actually runs so agents (and humans) get a trustworthy quick start.",
+    "author":  {
+                   "name":  "Cursor",
+                   "email":  "plugins@cursor.com"
+               },
+    "homepage":  "https://github.com/cursor/plugins/tree/main/agent-compatibility",
+    "repository":  "https://github.com/cursor/plugins",
+    "license":  "MIT",
+    "logo":  "assets/avatar.png",
+    "keywords":  [
+                     "agent-compatibility",
+                     "agents",
+                     "compatibility",
+                     "cursor-plugin",
+                     "repo-audit",
+                     "startup",
+                     "validation"
+                 ],
+    "category":  "developer-tools",
+    "tags":  [
+                 "agents",
+                 "compatibility",
+                 "quality",
+                 "workflow"
+             ],
+    "skills":  "./skills/",
+    "agents":  "./agents/"
 }

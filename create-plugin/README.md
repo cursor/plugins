@@ -1,5 +1,22 @@
 # Create plugin
 
+<!-- cursor-plugin-enhancements:begin -->
+
+## Who this is for
+
+### For you (user level)
+You go from idea to valid plugin layout quickly—manifests, skills folders, MCP stubs—without rereading the whole spec every time.
+
+### For your projects (project level)
+Platform and DX teams can standardize internal plugins (skills, rules, MCP) with the same structure Cursor expects in the marketplace.
+
+### Best suited for
+- Authors publishing or dogfooding Cursor plugins
+- Companies packaging internal tools as repeatable agent surfaces
+- Anyone avoiding hand-rolled broken manifests
+
+<!-- cursor-plugin-enhancements:end -->
+
 Meta workflows for creating Cursor plugins that are marketplace-ready.
 
 ## Installation

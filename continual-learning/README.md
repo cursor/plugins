@@ -1,5 +1,22 @@
 # Continual Learning
 
+<!-- cursor-plugin-enhancements:begin -->
+
+## Who this is for
+
+### For you (user level)
+You stop re-explaining the same editor prefs, branch strategy, or naming quirks—the durable bits accumulate in AGENTS.md without bloating it with noise.
+
+### For your projects (project level)
+Teams share a living AGENTS.md that reflects how this codebase is actually worked on, improving both human and agent onboarding over time.
+
+### Best suited for
+- Long-running projects with recurring conventions worth memorializing
+- Solo devs who want the assistant to “remember” stable preferences safely
+- Repos that already use or want a lightweight AGENTS.md contract
+
+<!-- cursor-plugin-enhancements:end -->
+
 Automatically and incrementally keeps `AGENTS.md` up to date from transcript changes.
 
 The plugin combines:

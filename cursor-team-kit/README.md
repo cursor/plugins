@@ -1,5 +1,22 @@
 # Cursor Team Kit plugin
 
+<!-- cursor-plugin-enhancements:begin -->
+
+## Who this is for
+
+### For you (user level)
+You borrow Cursor’s own muscle memory for “CI red → fix → green → ship,” including conflict resolution and PR hygiene, without inventing your own checklist each time.
+
+### For your projects (project level)
+Teams that live in GitHub PRs and Actions get repeatable playbooks for loop-on-CI, smoke tests, and merge-ready diffs—especially valuable under time pressure.
+
+### Best suited for
+- Repositories with active GitHub Actions (or similar CI)
+- Contributors who want opinionated, battle-tested shipping skills
+- Maintainers drowning in flaky checks and noisy AI-generated diffs
+
+<!-- cursor-plugin-enhancements:end -->
+
 Internal-style workflows for CI, code review, shipping, and test reliability.
 
 ## Installation
