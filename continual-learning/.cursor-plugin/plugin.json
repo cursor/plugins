@@ -2,7 +2,7 @@
   "name": "continual-learning",
   "displayName": "Continual Learning",
   "version": "1.0.0",
-  "description": "Incrementally learns durable user preferences and workspace facts from transcript changes and keeps AGENTS.md up to date with plain bullet points.",
+  "description": "USER LEVEL: You stop repeating the same stylistic rules, name choices, and workflow quirks every Monday—the assistant remembers what actually stuck. PROJECT LEVEL: Shared agent guidance reflects how the team works today, not a stale template from the repo’s first commit. Mines transcripts for durable preferences and facts, then appends concise bullets to AGENTS.md so future sessions start aligned. BEST SUITED FOR: • Long-lived monorepos with evolving conventions • Teams heavy on Cursor and shared AGENTS.md guidance • Projects where small decisions deserve persistent agent memory",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -26,5 +26,15 @@
   ],
   "agents": "./agents/",
   "skills": "./skills/",
-  "hooks": "./hooks/hooks.json"
+  "hooks": "./hooks/hooks.json",
+  "marketplaceDetail": {
+    "summary": "Mines transcripts for durable preferences and facts, then appends concise bullets to AGENTS.md so future sessions start aligned.",
+    "userLevel": "You stop repeating the same stylistic rules, name choices, and workflow quirks every Monday—the assistant remembers what actually stuck.",
+    "projectLevel": "Shared agent guidance reflects how the team works today, not a stale template from the repo’s first commit.",
+    "bestSuitedFor": [
+      "Long-lived monorepos with evolving conventions",
+      "Teams heavy on Cursor and shared AGENTS.md guidance",
+      "Projects where small decisions deserve persistent agent memory"
+    ]
+  }
 }

@@ -2,7 +2,7 @@
   "name": "agent-compatibility",
   "displayName": "Agent Compatibility",
   "version": "1.0.0",
-  "description": "CLI-backed repo compatibility scans plus Cursor agents that audit startup, validation, and docs against reality.",
+  "description": "USER LEVEL: You avoid losing an afternoon to outdated README steps agents obediently follow into failure. PROJECT LEVEL: Onboarding and automation keep pace when toolchains rotate—docs and CI claims get verified, not assumed. CLI-backed audits that compare install scripts, CI, and docs with what actually runs so agents and humans share a truthful quick start. BEST SUITED FOR: • Complex local setups with many prerequisites • Fast-moving repos where docs drift from reality • Organizations onboarding coding agents broadly",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -28,5 +28,15 @@
     "workflow"
   ],
   "skills": "./skills/",
-  "agents": "./agents/"
+  "agents": "./agents/",
+  "marketplaceDetail": {
+    "summary": "CLI-backed audits that compare install scripts, CI, and docs with what actually runs so agents and humans share a truthful quick start.",
+    "userLevel": "You avoid losing an afternoon to outdated README steps agents obediently follow into failure.",
+    "projectLevel": "Onboarding and automation keep pace when toolchains rotate—docs and CI claims get verified, not assumed.",
+    "bestSuitedFor": [
+      "Complex local setups with many prerequisites",
+      "Fast-moving repos where docs drift from reality",
+      "Organizations onboarding coding agents broadly"
+    ]
+  }
 }

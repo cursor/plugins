@@ -2,7 +2,7 @@
   "name": "cursor-team-kit",
   "displayName": "Cursor Team Kit",
   "version": "1.0.0",
-  "description": "Internal workflows used by Cursor developers for CI, code review, and shipping. Covers the full dev loop: CI monitoring and fixing, PR creation, merge conflicts, smoke tests, compiler checks, code cleanup, and work summaries.",
+  "description": "USER LEVEL: You inherit battle-tested habits from Cursor engineers when CI breaks, reviews stall, or diffs need tightening before merge. PROJECT LEVEL: Teams converge on repeatable PR and CI hygiene instead of inventing bespoke runbooks per repo. Cursor’s internal shipping playbook as skills—CI triage and fixes, PR flow, conflicts, smoke and compiler checks, cleanup passes, and summaries. BEST SUITED FOR: • Repositories with active GitHub Actions or similar CI • Maintainers juggling multiple PRs and flaky checks • Groups adopting structured review and ship discipline",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -26,5 +26,15 @@
   ],
   "skills": "./skills/",
   "agents": "./agents/",
-  "rules": "./rules/"
+  "rules": "./rules/",
+  "marketplaceDetail": {
+    "summary": "Cursor’s internal shipping playbook as skills—CI triage and fixes, PR flow, conflicts, smoke and compiler checks, cleanup passes, and summaries.",
+    "userLevel": "You inherit battle-tested habits from Cursor engineers when CI breaks, reviews stall, or diffs need tightening before merge.",
+    "projectLevel": "Teams converge on repeatable PR and CI hygiene instead of inventing bespoke runbooks per repo.",
+    "bestSuitedFor": [
+      "Repositories with active GitHub Actions or similar CI",
+      "Maintainers juggling multiple PRs and flaky checks",
+      "Groups adopting structured review and ship discipline"
+    ]
+  }
 }

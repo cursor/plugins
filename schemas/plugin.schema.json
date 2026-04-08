@@ -92,6 +92,32 @@
     "mcpServers": {
       "$ref": "#/$defs/mcpServers",
       "description": "MCP server configuration — a path, an inline config object, or an array of either."
+    },
+    "marketplaceDetail": {
+      "type": "object",
+      "description": "Structured marketplace copy maintained in-repo; compose into description for the Cursor marketplace UI.",
+      "additionalProperties": false,
+      "required": ["summary", "userLevel", "projectLevel", "bestSuitedFor"],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "One-sentence lead shown in composed marketplace description."
+        },
+        "userLevel": {
+          "type": "string",
+          "description": "How this helps you as an individual (person-level, not repo-wide)."
+        },
+        "projectLevel": {
+          "type": "string",
+          "description": "How this helps your codebase, team, or delivery pipeline."
+        },
+        "bestSuitedFor": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "Kinds of projects or workflows where this plugin shines."
+        }
+      }
     }
   },
   "$defs": {

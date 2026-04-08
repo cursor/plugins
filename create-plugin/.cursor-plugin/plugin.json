@@ -2,7 +2,7 @@
   "name": "create-plugin",
   "displayName": "Create Plugin",
   "version": "1.0.0",
-  "description": "Scaffold and validate new Cursor plugins. Handles directory setup, manifest generation, and pre-submission quality checks for the marketplace.",
+  "description": "USER LEVEL: You create a valid plugin skeleton without memorizing manifest edge cases or marketplace wiring. PROJECT LEVEL: Internal extensions and partner plugins stay consistent, cutting review churn from broken metadata. Scaffolds marketplace-ready Cursor plugins—folder layout, manifest, optional skills and MCP—and runs quality checks before publish. BEST SUITED FOR: • Teams packaging MCP servers with skills and rules • Authors preparing Cursor marketplace submissions • Platform groups standardizing plugin templates",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -25,5 +25,15 @@
   ],
   "skills": "./skills/",
   "rules": "./rules/",
-  "agents": "./agents/"
+  "agents": "./agents/",
+  "marketplaceDetail": {
+    "summary": "Scaffolds marketplace-ready Cursor plugins—folder layout, manifest, optional skills and MCP—and runs quality checks before publish.",
+    "userLevel": "You create a valid plugin skeleton without memorizing manifest edge cases or marketplace wiring.",
+    "projectLevel": "Internal extensions and partner plugins stay consistent, cutting review churn from broken metadata.",
+    "bestSuitedFor": [
+      "Teams packaging MCP servers with skills and rules",
+      "Authors preparing Cursor marketplace submissions",
+      "Platform groups standardizing plugin templates"
+    ]
+  }
 }

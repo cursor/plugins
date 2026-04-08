@@ -2,7 +2,7 @@
   "name": "cli-for-agent",
   "displayName": "CLI for Agents",
   "version": "1.0.0",
-  "description": "Patterns for designing CLIs that coding agents can run reliably: non-interactive flags, layered help with examples, pipelines, actionable errors, idempotency, and dry-run.",
+  "description": "USER LEVEL: You design or review CLI UX that agents can drive without surprise prompts or missing non-interactive paths. PROJECT LEVEL: Internal tools and release CLIs become reliable citizens in CI and agent workflows instead of brittle shells. Patterns for CLIs built for automation—flags, layered help with examples, stdin, actionable errors, idempotency, dry-run. BEST SUITED FOR: • Products exposing developer CLIs • Platform teams wrapping tooling for autonomous runners • Repos where scripts are part of the contract with agents",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -26,5 +26,15 @@
     "automation",
     "developer-tools"
   ],
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "marketplaceDetail": {
+    "summary": "Patterns for CLIs built for automation—flags, layered help with examples, stdin, actionable errors, idempotency, dry-run.",
+    "userLevel": "You design or review CLI UX that agents can drive without surprise prompts or missing non-interactive paths.",
+    "projectLevel": "Internal tools and release CLIs become reliable citizens in CI and agent workflows instead of brittle shells.",
+    "bestSuitedFor": [
+      "Products exposing developer CLIs",
+      "Platform teams wrapping tooling for autonomous runners",
+      "Repos where scripts are part of the contract with agents"
+    ]
+  }
 }
