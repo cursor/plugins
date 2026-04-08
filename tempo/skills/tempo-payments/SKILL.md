@@ -14,6 +14,16 @@ description: Integrate Tempo stablecoin payments (send/accept), TransferWithMemo
 - Sponsor user fees: `https://docs.tempo.xyz/guide/payments/sponsor-user-fees/`
 - Pay fees in any stablecoin: `https://docs.tempo.xyz/guide/payments/pay-fees-in-any-stablecoin/`
 
+## MPP (Machine Payments Protocol)
+
+If what you’re building is **paid API access** (HTTP `402` flows) rather than “send a transfer to an address”, use Tempo’s MPP docs:
+
+- Tempo MPP overview: `https://docs.tempo.xyz/guide/machine-payments/`
+
+If you’re exposing a paid **MCP tool/server**, the MPP MCP transport spec is here:
+
+- MPP MCP transport: `https://mpp.dev/protocol/transports/mcp`
+
 ## What to build in a “payments” section
 
 ### Payment intent (server)
