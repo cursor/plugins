@@ -1,0 +1,40 @@
+{
+  "name": "sverklo",
+  "displayName": "Sverklo Code Intelligence",
+  "version": "0.7.2",
+  "description": "Local-first code intelligence MCP — hybrid search, impact analysis, diff-aware PR review, persistent memory, cluster detection, and wiki generation. 22 tools, MIT licensed.",
+  "author": {
+    "name": "Sverklo",
+    "email": "hello@sverklo.com"
+  },
+  "homepage": "https://sverklo.com",
+  "repository": "https://github.com/sverklo/sverklo",
+  "license": "MIT",
+  "logo": "assets/avatar.svg",
+  "keywords": [
+    "cursor-plugin",
+    "mcp",
+    "code-intelligence",
+    "code-search",
+    "semantic-search",
+    "impact-analysis",
+    "pagerank",
+    "memory",
+    "local-first"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "code-search",
+    "code-review",
+    "refactoring",
+    "memory",
+    "mcp-server"
+  ],
+  "skills": "./skills/",
+  "mcp": {
+    "sverklo": {
+      "command": "sverklo",
+      "args": ["."]
+    }
+  }
+}

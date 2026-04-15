@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <rect width="400" height="400" rx="40" fill="#0E0D0B"/>
+  <text x="200" y="220" font-family="JetBrains Mono, monospace" font-size="100" font-weight="700" fill="#EDE7D9" text-anchor="middle" dominant-baseline="central" letter-spacing="-3">sv</text>
+  <rect x="275" y="140" width="10" height="45" fill="#E85A2A"/>
+  <text x="200" y="310" font-family="JetBrains Mono, monospace" font-size="24" font-weight="500" fill="#A39886" text-anchor="middle">sverklo</text>
+</svg>
