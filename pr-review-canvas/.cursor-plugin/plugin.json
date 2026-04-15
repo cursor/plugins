@@ -1,0 +1,30 @@
+{
+  "name": "pr-review-canvas",
+  "displayName": "PR Review Canvas",
+  "version": "0.1.0",
+  "description": "Render PR diffs as interactive Cursor Canvases organized for reviewer comprehension — groups changes by importance, separates boilerplate from core logic, and highlights tricky or unexpected code.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins/tree/main/pr-review-canvas",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/avatar.svg",
+  "keywords": [
+    "cursor-plugin",
+    "canvas",
+    "pr-review",
+    "code-review",
+    "diff",
+    "pull-request"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "canvas",
+    "code-review",
+    "pull-request",
+    "workflow"
+  ],
+  "skills": "./skills/"
+}
