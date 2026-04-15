@@ -18,7 +18,9 @@ Read `~/.cursor/skills-cursor/canvas/SKILL.md` first. It contains the generation
 
 ## Gather the diff
 
-Accept any of: a local branch/ref (`git diff`), a GitHub PR URL or number (`gh pr diff`), or a Graphite stack link (`gt` CLI or `gh`). Collect every file's path, additions, deletions, and hunks.
+Expect a GitHub PR link (a full URL like `https://github.com/<owner>/<repo>/pull/<n>`, or an equivalent `gh`-resolvable reference). Use `gh pr diff <pr>` to collect every file's path, additions, deletions, and hunks.
+
+**If the user didn't provide a PR link, stop and ask.** Do not guess at the current branch, infer from recent history, or fall back to a local `git diff`. Ask the user which diff they want to review — a specific PR URL or number — and wait for their reply before continuing.
 
 ## Group changes for comprehension
 
