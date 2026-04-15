@@ -1,0 +1,1331 @@
+{
+  "version": 1,
+  "generatedAt": "2026-03-25",
+  "description": "Mock team-level plugin settings file for marketplace plugins that likely need custom setup beyond generic install toggles.",
+  "decisionRule": "A plugin is marked as requiring custom settings when team setup likely needs one or more of teamwide authentication, workspace or tenant binding, region or environment selection, scoped write permissions, secret injection, or runtime controls beyond generic enablement.",
+  "genericModalDefaults": {
+    "accessPermissions": "view",
+    "preferredModel": "gpt-5.4-high-fast",
+    "teamSettings": {
+      "enabled": false,
+      "region": "global",
+      "teamwideAuthentication": {
+        "mode": "none",
+        "connectionStatus": "not_configured"
+      }
+    }
+  },
+  "profiles": {
+    "collaborationWorkspace": {
+      "customSettingsLevel": "definite",
+      "usedBy": [
+        "atlassian",
+        "gitlab",
+        "glean",
+        "launchdarkly",
+        "linear",
+        "monday.com",
+        "plain",
+        "slack",
+        "zapier"
+      ],
+      "requiredFields": [
+        "teamSettings.teamwideAuthentication",
+        "teamSettings.workspaceId",
+        "teamSettings.defaultTeamIds",
+        "teamSettings.allowedReadActions",
+        "teamSettings.allowedWriteActions",
+        "teamSettings.approvalPolicy"
+      ],
+      "mockSettings": {
+        "accessPermissions": "edit",
+        "preferredModel": "gpt-5.4-high-fast",
+        "teamSettings": {
+          "enabled": true,
+          "region": "eu-north-1",
+          "teamwideAuthentication": {
+            "mode": "oauth",
+            "connectionStatus": "connected",
+            "connectionRef": "acme-shared-oauth"
+          },
+          "workspaceId": "acme-main",
+          "defaultTeamIds": [
+            "ENG",
+            "PLATFORM"
+          ],
+          "allowedReadActions": [
+            "search",
+            "read",
+            "list"
+          ],
+          "allowedWriteActions": [
+            "comment",
+            "create_issue",
+            "update_issue"
+          ],
+          "approvalPolicy": {
+            "requireApprovalFor": [
+              "close_issue",
+              "change_priority",
+              "send_message"
+            ]
+          }
+        }
+      }
+    },
+    "designAndContentWorkspace": {
+      "customSettingsLevel": "definite",
+      "usedBy": [
+        "box",
+        "figma",
+        "miro",
+        "notion-workspace",
+        "sanity",
+        "tldraw",
+        "webflow",
+        "wix"
+      ],
+      "requiredFields": [
+        "teamSettings.teamwideAuthentication",
+        "teamSettings.workspaceId",
+        "teamSettings.defaultContentScopes",
+        "teamSettings.publishPolicy",
+        "teamSettings.allowedWriteActions"
+      ],
+      "mockSettings": {
+        "accessPermissions": "edit",
+        "preferredModel": "gpt-5.4-high-fast",
+        "teamSettings": {
+          "enabled": true,
+          "region": "us-east-1",
+          "teamwideAuthentication": {
+            "mode": "oauth",
+            "connectionStatus": "connected",
+            "connectionRef": "acme-design-oauth"
+          },
+          "workspaceId": "acme-design",
+          "defaultContentScopes": [
+            "design-system",
+            "marketing-site",
+            "product-docs"
+          ],
+          "allowedWriteActions": [
+            "create_draft",
+            "update_draft",
+            "comment"
+          ],
+          "publishPolicy": {
+            "allowPublish": false,
+            "approvalRequiredFor": [
+              "publish",
+              "delete_asset"
+            ]
+          }
+        }
+      }
+    },
+    "observabilityAndIncidentResponse": {
+      "customSettingsLevel": "definite",
+      "usedBy": [
+        "cisco-thousandeyes",
+        "datadog",
+        "grafana-assistant",
+        "pagerduty",
+        "sentry"
+      ],
+      "requiredFields": [
+        "teamSettings.teamwideAuthentication",
+        "teamSettings.siteOrOrg",
+        "teamSettings.defaultServices",
+        "teamSettings.defaultEnvironments",
+        "teamSettings.allowedWriteActions",
+        "teamSettings.incidentPolicy"
+      ],
+      "mockSettings": {
+        "accessPermissions": "edit",
+        "preferredModel": "gpt-5.4-high-fast",
+        "teamSettings": {
+          "enabled": true,
+          "region": "eu-west-1",
+          "teamwideAuthentication": {
+            "mode": "apiKey",
+            "connectionStatus": "connected",
+            "secretRef": "vault://observability/shared-token"
+          },
+          "siteOrOrg": "acme-observability",
+          "defaultServices": [
+            "api",
+            "worker",
+            "web"
+          ],
+          "defaultEnvironments": [
+            "staging",
+            "prod"
+          ],
+          "allowedWriteActions": [
+            "comment_on_incident",
+            "create_dashboard"
+          ],
+          "incidentPolicy": {
+            "allowAck": false,
+            "allowResolve": false,
+            "notifyChannel": "#incident-triage"
+          }
+        }
+      }
+    },
+    "infrastructureAndDeployments": {
+      "customSettingsLevel": "definite",
+      "usedBy": [
+        "browserstack",
+        "clerk",
+        "cloudflare",
+        "convex",
+        "deploy-on-aws",
+        "jfrog",
+        "meta-quest-agentic-tools",
+        "neon-postgres",
+        "planetscale",
+        "render",
+        "vercel"
+      ],
+      "requiredFields": [
+        "teamSettings.teamwideAuthentication",
+        "teamSettings.accountId",
+        "teamSettings.defaultProjectIds",
+        "teamSettings.defaultEnvironments",
+        "teamSettings.allowedRegions",
+        "teamSettings.deployPolicy"
+      ],
+      "mockSettings": {
+        "accessPermissions": "admin",
+        "preferredModel": "gpt-5.4-high-fast",
+        "teamSettings": {
+          "enabled": true,
+          "region": "us-east-1",
+          "teamwideAuthentication": {
+            "mode": "serviceAccount",
+            "connectionStatus": "connected",
+            "secretRef": "vault://infra/deploy-bot"
+          },
+          "accountId": "acme-platform",
+          "defaultProjectIds": [
+            "web-app",
+            "backend-api"
+          ],
+          "defaultEnvironments": [
+            "dev",
+            "staging"
+          ],
+          "allowedRegions": [
+            "us-east-1",
+            "eu-west-1"
+          ],
+          "deployPolicy": {
+            "allowProduction": false,
+            "requireApprovalFor": [
+              "deploy_prod",
+              "rotate_secret",
+              "delete_resource"
+            ]
+          }
+        }
+      }
+    },
+    "databaseAndAnalytics": {
+      "customSettingsLevel": "definite",
+      "usedBy": [
+        "amplitude",
+        "azure-cosmosdb",
+        "braintrust",
+        "clickhouse-cursor-plugin",
+        "databricks-skills",
+        "hex",
+        "huggingface-skills",
+        "langfuse",
+        "omni-analytics",
+        "pendo-analytics",
+        "posthog",
+        "postman",
+        "prisma",
+        "snowflake-cursor-plugin",
+        "supabase"
+      ],
+      "requiredFields": [
+        "teamSettings.teamwideAuthentication",
+        "teamSettings.accountOrWorkspaceId",
+        "teamSettings.defaultDatasets",
+        "teamSettings.defaultEnvironments",
+        "teamSettings.querySafetyMode",
+        "teamSettings.maxQueryCost"
+      ],
+      "mockSettings": {
+        "accessPermissions": "view",
+        "preferredModel": "gpt-5.4-high-fast",
+        "teamSettings": {
+          "enabled": true,
+          "region": "us-east-1",
+          "teamwideAuthentication": {
+            "mode": "apiKey",
+            "connectionStatus": "connected",
+            "secretRef": "vault://data/shared-token"
+          },
+          "accountOrWorkspaceId": "acme-data",
+          "defaultDatasets": [
+            "analytics_prod",
+            "product_events"
+          ],
+          "defaultEnvironments": [
+            "staging"
+          ],
+          "querySafetyMode": "read_only_by_default",
+          "maxQueryCost": "medium",
+          "writebackPolicy": {
+            "allowSchemaChanges": false,
+            "allowDataMutation": false
+          }
+        }
+      }
+    },
+    "developerDatabasesAndAPIPlatforms": {
+      "customSettingsLevel": "definite",
+      "usedBy": [
+        "browserbase-functions",
+        "clerk",
+        "databricks-skills",
+        "neon-postgres",
+        "planetscale",
+        "postman",
+        "prisma",
+        "supabase"
+      ],
+      "requiredFields": [
+        "teamSettings.teamwideAuthentication",
+        "teamSettings.defaultProjectIds",
+        "teamSettings.defaultDatabaseOrApiScope",
+        "teamSettings.environmentBindings",
+        "teamSettings.writePolicy"
+      ],
+      "mockSettings": {
+        "accessPermissions": "edit",
+        "preferredModel": "gpt-5.4-high-fast",
+        "teamSettings": {
+          "enabled": true,
+          "region": "us-west-2",
+          "teamwideAuthentication": {
+            "mode": "serviceAccount",
+            "connectionStatus": "connected",
+            "secretRef": "vault://platform/devtools-bot"
+          },
+          "defaultProjectIds": [
+            "app-core",
+            "growth-api"
+          ],
+          "defaultDatabaseOrApiScope": "staging",
+          "environmentBindings": {
+            "development": "dev",
+            "preview": "staging"
+          },
+          "writePolicy": {
+            "allowBranchChanges": true,
+            "allowProductionWrites": false
+          }
+        }
+      }
+    },
+    "securityAndSecrets": {
+      "customSettingsLevel": "definite",
+      "usedBy": [
+        "1password",
+        "endorlabs",
+        "semgrep-plugin",
+        "snyk-secure-development"
+      ],
+      "requiredFields": [
+        "teamSettings.teamwideAuthentication",
+        "teamSettings.orgId",
+        "teamSettings.scanScope",
+        "teamSettings.secretAccessPolicy",
+        "teamSettings.remediationPolicy"
+      ],
+      "mockSettings": {
+        "accessPermissions": "admin",
+        "preferredModel": "gpt-5.4-high-fast",
+        "teamSettings": {
+          "enabled": true,
+          "region": "global",
+          "teamwideAuthentication": {
+            "mode": "serviceAccount",
+            "connectionStatus": "connected",
+            "secretRef": "vault://security/scanner-bot"
+          },
+          "orgId": "acme-security",
+          "scanScope": [
+            "current_repo",
+            "dependencies"
+          ],
+          "secretAccessPolicy": {
+            "allowReadSecrets": false,
+            "allowReferenceSecrets": true
+          },
+          "remediationPolicy": {
+            "allowOpenPRs": true,
+            "allowAutoMerge": false
+          }
+        }
+      }
+    },
+    "paymentsAndFinancialSystems": {
+      "customSettingsLevel": "definite",
+      "usedBy": [
+        "circle",
+        "etoro",
+        "phantom-connect",
+        "stripe"
+      ],
+      "requiredFields": [
+        "teamSettings.teamwideAuthentication",
+        "teamSettings.accountId",
+        "teamSettings.mode",
+        "teamSettings.allowedWriteActions",
+        "teamSettings.approvalPolicy",
+        "teamSettings.auditRetentionDays"
+      ],
+      "mockSettings": {
+        "accessPermissions": "admin",
+        "preferredModel": "gpt-5.4-high-fast",
+        "teamSettings": {
+          "enabled": true,
+          "region": "us-east-1",
+          "teamwideAuthentication": {
+            "mode": "apiKey",
+            "connectionStatus": "connected",
+            "secretRef": "vault://finance/shared-token"
+          },
+          "accountId": "acme-sandbox",
+          "mode": "sandbox",
+          "allowedWriteActions": [
+            "create_test_resource",
+            "generate_checkout_link"
+          ],
+          "approvalPolicy": {
+            "requireApprovalFor": [
+              "production_charge",
+              "wallet_transfer",
+              "trade_execution"
+            ]
+          },
+          "auditRetentionDays": 365
+        }
+      }
+    },
+    "researchAndWebAutomation": {
+      "customSettingsLevel": "definite",
+      "usedBy": [
+        "browse",
+        "context7-plugin",
+        "firecrawl",
+        "parallel",
+        "tavily"
+      ],
+      "requiredFields": [
+        "teamSettings.teamwideAuthentication",
+        "teamSettings.allowedDomains",
+        "teamSettings.maxCrawlDepth",
+        "teamSettings.capturePolicy",
+        "teamSettings.rateLimitTier"
+      ],
+      "mockSettings": {
+        "accessPermissions": "edit",
+        "preferredModel": "gpt-5.4-high-fast",
+        "teamSettings": {
+          "enabled": true,
+          "region": "global",
+          "teamwideAuthentication": {
+            "mode": "apiKey",
+            "connectionStatus": "connected",
+            "secretRef": "vault://research/crawler-token"
+          },
+          "allowedDomains": [
+            "docs.acme.dev",
+            "developer.vendor.com"
+          ],
+          "maxCrawlDepth": 3,
+          "capturePolicy": {
+            "allowScreenshots": true,
+            "allowAuthenticatedBrowsing": false
+          },
+          "rateLimitTier": "standard"
+        }
+      }
+    },
+    "pluginRuntimeAndAutomation": {
+      "customSettingsLevel": "likely",
+      "usedBy": [
+        "compound-engineering",
+        "firetiger",
+        "runlayer"
+      ],
+      "requiredFields": [
+        "teamSettings.teamwideAuthentication",
+        "teamSettings.allowedRuntimeFeatures",
+        "teamSettings.allowedToolClasses",
+        "teamSettings.auditPolicy"
+      ],
+      "mockSettings": {
+        "accessPermissions": "admin",
+        "preferredModel": "gpt-5.4-high-fast",
+        "teamSettings": {
+          "enabled": true,
+          "region": "global",
+          "teamwideAuthentication": {
+            "mode": "oauth",
+            "connectionStatus": "connected",
+            "connectionRef": "acme-runtime-oauth"
+          },
+          "allowedRuntimeFeatures": [
+            "mcp",
+            "skills",
+            "commands"
+          ],
+          "allowedToolClasses": [
+            "read",
+            "write_repo",
+            "open_pr"
+          ],
+          "auditPolicy": {
+            "logAllMutations": true,
+            "retainDays": 90
+          }
+        }
+      }
+    },
+    "minimalGenericOnly": {
+      "customSettingsLevel": "minimal",
+      "usedBy": [
+        "continual-learning",
+        "create-plugin",
+        "cursor-team-kit",
+        "elastic-docs",
+        "redis-development",
+        "superpowers",
+        "svelte"
+      ],
+      "requiredFields": [],
+      "mockSettings": {
+        "accessPermissions": "view",
+        "preferredModel": "gpt-5.4-high-fast",
+        "teamSettings": {
+          "enabled": true,
+          "region": "global",
+          "teamwideAuthentication": {
+            "mode": "none",
+            "connectionStatus": "not_required"
+          }
+        }
+      }
+    }
+  },
+  "pluginDecisions": {
+    "1password": {
+      "displayName": "1Password",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "securityAndSecrets",
+      "reasons": [
+        "teamwide_auth",
+        "secret_access_policy",
+        "org_scope"
+      ]
+    },
+    "amplitude": {
+      "displayName": "Amplitude",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "databaseAndAnalytics",
+      "reasons": [
+        "workspace_binding",
+        "analytics_data_scope",
+        "query_cost_controls"
+      ]
+    },
+    "atlassian": {
+      "displayName": "Atlassian",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "collaborationWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "team_scope",
+        "ticket_write_actions"
+      ]
+    },
+    "azure-cosmosdb": {
+      "displayName": "Azure Cosmos DB",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "databaseAndAnalytics",
+      "reasons": [
+        "database_account_binding",
+        "credential_injection",
+        "query_scope"
+      ]
+    },
+    "box": {
+      "displayName": "Box",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "designAndContentWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "content_scope",
+        "write_permissions"
+      ]
+    },
+    "braintrust": {
+      "displayName": "Braintrust",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "databaseAndAnalytics",
+      "reasons": [
+        "workspace_binding",
+        "credential_injection",
+        "project_scope"
+      ]
+    },
+    "browse": {
+      "displayName": "Browserbase Browse",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "researchAndWebAutomation",
+      "reasons": [
+        "credential_injection",
+        "domain_allowlist",
+        "automation_limits"
+      ]
+    },
+    "browserstack": {
+      "displayName": "Browserstack",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "infrastructureAndDeployments",
+      "reasons": [
+        "account_binding",
+        "environment_scope",
+        "runtime_limits"
+      ]
+    },
+    "circle": {
+      "displayName": "Circle",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "paymentsAndFinancialSystems",
+      "reasons": [
+        "financial_account_binding",
+        "sandbox_vs_production",
+        "mutating_action_approval"
+      ]
+    },
+    "cisco-thousandeyes": {
+      "displayName": "Cisco ThousandEyes",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "observabilityAndIncidentResponse",
+      "reasons": [
+        "org_binding",
+        "network_visibility_scope",
+        "credential_injection"
+      ]
+    },
+    "clerk": {
+      "displayName": "Clerk",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "infrastructureAndDeployments",
+      "reasons": [
+        "instance_binding",
+        "environment_scope",
+        "secret_injection"
+      ]
+    },
+    "clickhouse-cursor-plugin": {
+      "displayName": "ClickHouse",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "databaseAndAnalytics",
+      "reasons": [
+        "database_binding",
+        "query_scope",
+        "credential_injection"
+      ]
+    },
+    "cloudflare": {
+      "displayName": "Cloudflare",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "infrastructureAndDeployments",
+      "reasons": [
+        "account_binding",
+        "region_and_zone_scope",
+        "deploy_permissions"
+      ]
+    },
+    "compound-engineering": {
+      "displayName": "Compound Engineering",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "likely",
+      "profile": "pluginRuntimeAndAutomation",
+      "reasons": [
+        "runtime_permissions",
+        "tooling_scope",
+        "automation_controls"
+      ]
+    },
+    "context7-plugin": {
+      "displayName": "Context7",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "researchAndWebAutomation",
+      "reasons": [
+        "api_or_runtime_binding",
+        "domain_scope",
+        "request_limits"
+      ]
+    },
+    "continual-learning": {
+      "displayName": "Continual Learning",
+      "requiresCustomSettings": false,
+      "customSettingsLevel": "minimal",
+      "profile": "minimalGenericOnly",
+      "reasons": [
+        "local_workflow_only"
+      ]
+    },
+    "convex": {
+      "displayName": "Convex",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "infrastructureAndDeployments",
+      "reasons": [
+        "project_binding",
+        "environment_scope",
+        "deploy_permissions"
+      ]
+    },
+    "create-plugin": {
+      "displayName": "Create Plugin",
+      "requiresCustomSettings": false,
+      "customSettingsLevel": "minimal",
+      "profile": "minimalGenericOnly",
+      "reasons": [
+        "local_workflow_only"
+      ]
+    },
+    "cursor-team-kit": {
+      "displayName": "Cursor Team Kit",
+      "requiresCustomSettings": false,
+      "customSettingsLevel": "minimal",
+      "profile": "minimalGenericOnly",
+      "reasons": [
+        "local_workflow_only"
+      ]
+    },
+    "databricks-skills": {
+      "displayName": "Databricks",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "databaseAndAnalytics",
+      "reasons": [
+        "workspace_binding",
+        "catalog_scope",
+        "credential_injection"
+      ]
+    },
+    "datadog": {
+      "displayName": "Datadog",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "observabilityAndIncidentResponse",
+      "reasons": [
+        "site_selection",
+        "service_scope",
+        "incident_permissions"
+      ]
+    },
+    "deploy-on-aws": {
+      "displayName": "AWS",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "infrastructureAndDeployments",
+      "reasons": [
+        "account_binding",
+        "region_selection",
+        "deploy_permissions"
+      ]
+    },
+    "elastic-docs": {
+      "displayName": "elastic-docs",
+      "requiresCustomSettings": false,
+      "customSettingsLevel": "minimal",
+      "profile": "minimalGenericOnly",
+      "reasons": [
+        "likely_docs_only"
+      ]
+    },
+    "endorlabs": {
+      "displayName": "Endor Labs",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "securityAndSecrets",
+      "reasons": [
+        "org_binding",
+        "scanner_credentials",
+        "remediation_policy"
+      ]
+    },
+    "etoro": {
+      "displayName": "eToro",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "paymentsAndFinancialSystems",
+      "reasons": [
+        "financial_account_binding",
+        "sandbox_vs_production",
+        "mutating_action_approval"
+      ]
+    },
+    "figma": {
+      "displayName": "Figma",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "designAndContentWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "file_scope",
+        "content_write_permissions"
+      ]
+    },
+    "firecrawl": {
+      "displayName": "Firecrawl",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "researchAndWebAutomation",
+      "reasons": [
+        "api_credentials",
+        "domain_allowlist",
+        "crawl_limits"
+      ]
+    },
+    "firetiger": {
+      "displayName": "Firetiger",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "likely",
+      "profile": "pluginRuntimeAndAutomation",
+      "reasons": [
+        "runtime_permissions",
+        "tooling_scope",
+        "automation_controls"
+      ]
+    },
+    "browserbase-functions": {
+      "displayName": "Browserbase Functions",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "developerDatabasesAndAPIPlatforms",
+      "reasons": [
+        "account_binding",
+        "environment_scope",
+        "write_permissions"
+      ]
+    },
+    "gitlab": {
+      "displayName": "GitLab",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "collaborationWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "repo_scope",
+        "merge_request_write_actions"
+      ]
+    },
+    "glean": {
+      "displayName": "Glean",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "collaborationWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "search_scope",
+        "identity_mapping"
+      ]
+    },
+    "grafana-assistant": {
+      "displayName": "Grafana Labs",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "observabilityAndIncidentResponse",
+      "reasons": [
+        "org_binding",
+        "dashboard_scope",
+        "credential_injection"
+      ]
+    },
+    "hex": {
+      "displayName": "Hex",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "databaseAndAnalytics",
+      "reasons": [
+        "workspace_binding",
+        "project_scope",
+        "credential_injection"
+      ]
+    },
+    "huggingface-skills": {
+      "displayName": "Hugging Face",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "databaseAndAnalytics",
+      "reasons": [
+        "token_management",
+        "resource_scope",
+        "cost_controls"
+      ]
+    },
+    "jfrog": {
+      "displayName": "JFrog",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "infrastructureAndDeployments",
+      "reasons": [
+        "org_binding",
+        "artifact_scope",
+        "write_permissions"
+      ]
+    },
+    "langfuse": {
+      "displayName": "Langfuse",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "databaseAndAnalytics",
+      "reasons": [
+        "project_binding",
+        "credential_injection",
+        "data_scope"
+      ]
+    },
+    "launchdarkly": {
+      "displayName": "LaunchDarkly",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "collaborationWorkspace",
+      "reasons": [
+        "project_binding",
+        "environment_scope",
+        "flag_write_permissions"
+      ]
+    },
+    "linear": {
+      "displayName": "Linear",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "collaborationWorkspace",
+      "reasons": [
+        "teamwide_auth",
+        "workspace_binding",
+        "issue_write_actions"
+      ]
+    },
+    "meta-quest-agentic-tools": {
+      "displayName": "Meta Reality Labs",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "infrastructureAndDeployments",
+      "reasons": [
+        "device_or_org_binding",
+        "runtime_scope",
+        "credential_injection"
+      ]
+    },
+    "miro": {
+      "displayName": "Miro",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "designAndContentWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "board_scope",
+        "content_write_permissions"
+      ]
+    },
+    "monday.com": {
+      "displayName": "Monday.com",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "collaborationWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "board_scope",
+        "write_permissions"
+      ]
+    },
+    "neon-postgres": {
+      "displayName": "Neon Postgres",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "infrastructureAndDeployments",
+      "reasons": [
+        "account_binding",
+        "database_branch_scope",
+        "credential_injection"
+      ]
+    },
+    "notion-workspace": {
+      "displayName": "Notion",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "designAndContentWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "page_scope",
+        "write_permissions"
+      ]
+    },
+    "omni-analytics": {
+      "displayName": "Omni",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "databaseAndAnalytics",
+      "reasons": [
+        "workspace_binding",
+        "model_scope",
+        "credential_injection"
+      ]
+    },
+    "pagerduty": {
+      "displayName": "PagerDuty",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "observabilityAndIncidentResponse",
+      "reasons": [
+        "account_binding",
+        "service_scope",
+        "incident_write_permissions"
+      ]
+    },
+    "parallel": {
+      "displayName": "Parallel",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "researchAndWebAutomation",
+      "reasons": [
+        "api_credentials",
+        "crawl_or_search_limits",
+        "domain_scope"
+      ]
+    },
+    "pendo-analytics": {
+      "displayName": "Pendo",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "databaseAndAnalytics",
+      "reasons": [
+        "workspace_binding",
+        "analytics_scope",
+        "credential_injection"
+      ]
+    },
+    "phantom-connect": {
+      "displayName": "Phantom Connect",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "paymentsAndFinancialSystems",
+      "reasons": [
+        "wallet_binding",
+        "sandbox_vs_production",
+        "mutating_action_approval"
+      ]
+    },
+    "plain": {
+      "displayName": "Plain",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "collaborationWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "support_queue_scope",
+        "write_permissions"
+      ]
+    },
+    "planetscale": {
+      "displayName": "PlanetScale",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "infrastructureAndDeployments",
+      "reasons": [
+        "org_binding",
+        "database_scope",
+        "credential_injection"
+      ]
+    },
+    "posthog": {
+      "displayName": "PostHog",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "databaseAndAnalytics",
+      "reasons": [
+        "project_binding",
+        "analytics_scope",
+        "writeback_controls"
+      ]
+    },
+    "postman": {
+      "displayName": "Postman",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "developerDatabasesAndAPIPlatforms",
+      "reasons": [
+        "workspace_binding",
+        "api_scope",
+        "write_permissions"
+      ]
+    },
+    "prisma": {
+      "displayName": "Prisma",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "developerDatabasesAndAPIPlatforms",
+      "reasons": [
+        "database_binding",
+        "environment_scope",
+        "migration_permissions"
+      ]
+    },
+    "redis-development": {
+      "displayName": "Redis",
+      "requiresCustomSettings": false,
+      "customSettingsLevel": "minimal",
+      "profile": "minimalGenericOnly",
+      "reasons": [
+        "likely_guidance_only"
+      ]
+    },
+    "render": {
+      "displayName": "Render",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "infrastructureAndDeployments",
+      "reasons": [
+        "account_binding",
+        "environment_scope",
+        "deploy_permissions"
+      ]
+    },
+    "runlayer": {
+      "displayName": "Runlayer",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "likely",
+      "profile": "pluginRuntimeAndAutomation",
+      "reasons": [
+        "runtime_permissions",
+        "secret_protection_policies",
+        "audit_controls"
+      ]
+    },
+    "sanity": {
+      "displayName": "Sanity",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "designAndContentWorkspace",
+      "reasons": [
+        "dataset_binding",
+        "content_scope",
+        "publish_permissions"
+      ]
+    },
+    "semgrep-plugin": {
+      "displayName": "Semgrep",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "securityAndSecrets",
+      "reasons": [
+        "org_binding",
+        "scan_scope",
+        "remediation_policy"
+      ]
+    },
+    "sentry": {
+      "displayName": "Sentry",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "observabilityAndIncidentResponse",
+      "reasons": [
+        "org_binding",
+        "project_scope",
+        "incident_write_permissions"
+      ]
+    },
+    "slack": {
+      "displayName": "Slack",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "collaborationWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "channel_allowlist",
+        "send_message_permissions"
+      ]
+    },
+    "snowflake-cursor-plugin": {
+      "displayName": "Snowflake",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "databaseAndAnalytics",
+      "reasons": [
+        "account_binding",
+        "warehouse_scope",
+        "query_cost_controls"
+      ]
+    },
+    "snyk-secure-development": {
+      "displayName": "Snyk",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "securityAndSecrets",
+      "reasons": [
+        "org_binding",
+        "scan_scope",
+        "remediation_policy"
+      ]
+    },
+    "stripe": {
+      "displayName": "Stripe",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "paymentsAndFinancialSystems",
+      "reasons": [
+        "account_binding",
+        "sandbox_vs_production",
+        "financial_write_permissions"
+      ]
+    },
+    "supabase": {
+      "displayName": "Supabase",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "developerDatabasesAndAPIPlatforms",
+      "reasons": [
+        "project_binding",
+        "database_scope",
+        "environment_permissions"
+      ]
+    },
+    "superpowers": {
+      "displayName": "Superpowers",
+      "requiresCustomSettings": false,
+      "customSettingsLevel": "minimal",
+      "profile": "minimalGenericOnly",
+      "reasons": [
+        "local_workflow_only"
+      ]
+    },
+    "svelte": {
+      "displayName": "Svelte",
+      "requiresCustomSettings": false,
+      "customSettingsLevel": "minimal",
+      "profile": "minimalGenericOnly",
+      "reasons": [
+        "framework_guidance_only"
+      ]
+    },
+    "tavily": {
+      "displayName": "Tavily",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "researchAndWebAutomation",
+      "reasons": [
+        "api_credentials",
+        "domain_scope",
+        "usage_limits"
+      ]
+    },
+    "tldraw": {
+      "displayName": "tldraw",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "designAndContentWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "file_scope",
+        "write_permissions"
+      ]
+    },
+    "vercel": {
+      "displayName": "Vercel",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "infrastructureAndDeployments",
+      "reasons": [
+        "team_binding",
+        "project_scope",
+        "deploy_permissions"
+      ]
+    },
+    "webflow": {
+      "displayName": "Webflow",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "designAndContentWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "site_scope",
+        "publish_permissions"
+      ]
+    },
+    "wix": {
+      "displayName": "Wix",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "designAndContentWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "site_scope",
+        "publish_permissions"
+      ]
+    },
+    "zapier": {
+      "displayName": "Zapier",
+      "requiresCustomSettings": true,
+      "customSettingsLevel": "definite",
+      "profile": "collaborationWorkspace",
+      "reasons": [
+        "workspace_binding",
+        "action_scope",
+        "automation_permissions"
+      ]
+    }
+  },
+  "unclassifiedNeedsManualReview": [
+    {
+      "plugin": "browserbase-functions",
+      "reason": "May fit either developer platform or research automation depending on the implementation details."
+    },
+    {
+      "plugin": "databricks-skills",
+      "reason": "Listed as skills-only on the marketplace page, but likely still needs workspace and auth settings."
+    },
+    {
+      "plugin": "elastic-docs",
+      "reason": "Likely docs-only, but can be promoted to custom settings if the MCP needs org-specific endpoints."
+    },
+    {
+      "plugin": "langfuse",
+      "reason": "Grouped under analytics because it usually needs project keys and environment binding."
+    },
+    {
+      "plugin": "meta-quest-agentic-tools",
+      "reason": "Exact setup may depend on whether device bridge credentials and lab infrastructure are centrally managed."
+    }
+  ]
+}

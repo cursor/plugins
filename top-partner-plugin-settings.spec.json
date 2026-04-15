@@ -1,0 +1,601 @@
+{
+  "version": 1,
+  "generatedAt": "2026-03-25",
+  "description": "Focused product spec and mock persisted config for the most team-relevant marketplace partners: Datadog, Linear, AWS, Stripe, Figma, and Notion.",
+  "goals": [
+    "Define which settings should be surfaced in a team plugin setup modal for top partners.",
+    "Separate centrally managed team policy from per-user connection state.",
+    "Use one shared JSON structure with plugin-specific sections only where needed."
+  ],
+  "designPrinciples": [
+    "Prefer a shared config envelope across plugins.",
+    "Only use team-managed authentication for plugins that naturally map to shared service credentials or IAM role assumptions.",
+    "Prefer user-level OAuth for SaaS tools where actions should be attributable to an individual user.",
+    "Keep scope and write permissions explicit.",
+    "Model UI fields that are likely to appear in a setup modal separately from persisted auth secrets."
+  ],
+  "authModelPolicy": {
+    "sharedTeamAuthPreferred": [
+      {
+        "plugin": "datadog",
+        "reason": "Teams often want a shared service account or scoped API/app key pair, plus a single Datadog site/region and read-vs-write policy."
+      },
+      {
+        "plugin": "deploy-on-aws",
+        "reason": "AWS setup is naturally team-managed via IAM roles, named profiles, environment restrictions, and deploy guardrails."
+      }
+    ],
+    "userOAuthPreferred": [
+      {
+        "plugin": "linear",
+        "reason": "Issue/project actions should be attributable to the connected user, while the team controls allowed project/team scopes."
+      },
+      {
+        "plugin": "stripe",
+        "reason": "Stripe officially supports OAuth MCP sessions and separates access by sandbox/live mode; user attribution is important for sensitive actions."
+      },
+      {
+        "plugin": "figma",
+        "reason": "Design actions are usually tied to an individual designer or engineer account; team setup should mainly constrain team/project/file scope."
+      },
+      {
+        "plugin": "notion-workspace",
+        "reason": "Workspace access and page/database actions are best tied to each user's Notion permissions, with team defaults for allowed spaces and writable databases."
+      }
+    ]
+  },
+  "sharedConfigShape": {
+    "fields": {
+      "pluginId": "Marketplace plugin slug",
+      "displayName": "Human-readable plugin name",
+      "enabled": "Whether the plugin is enabled for the team",
+      "installation": {
+        "required": "Whether installation is required or optional",
+        "scope": "Where the plugin is expected to run: user, project, or both"
+      },
+      "access": {
+        "defaultPermissionTier": "Default permission UI selection: view, edit, or admin",
+        "allowWrite": "Whether writes are generally allowed",
+        "allowSensitiveWrite": "Whether high-risk writes are allowed at all"
+      },
+      "auth": {
+        "mode": "shared_service_account, iam_role, or user_oauth",
+        "teamConnectionRequired": "Whether admin must set up a team-level connection before use",
+        "userConnectionAllowed": "Whether users can connect their own accounts",
+        "credentialRef": "Reference to centrally stored secret or role config when applicable"
+      },
+      "scope": {
+        "regionOrSite": "Vendor-specific site/region selection if required",
+        "workspaceId": "Top-level workspace/account/team identifier where applicable",
+        "allowedScopes": "Plugin-specific allowlist, such as projects, teams, files, pages, or environments"
+      },
+      "guardrails": {
+        "approvalRequiredFor": "Mutating actions requiring explicit approval",
+        "blockedActions": "Actions disallowed entirely",
+        "auditMode": "Required auditing level"
+      },
+      "ui": {
+        "setupFields": "Fields that the setup modal should actually render"
+      }
+    }
+  },
+  "plugins": {
+    "datadog": {
+      "pluginId": "datadog",
+      "displayName": "Datadog",
+      "enabled": true,
+      "installation": {
+        "required": true,
+        "scope": "both"
+      },
+      "access": {
+        "defaultPermissionTier": "view",
+        "allowWrite": false,
+        "allowSensitiveWrite": false
+      },
+      "auth": {
+        "mode": "shared_service_account",
+        "teamConnectionRequired": true,
+        "userConnectionAllowed": true,
+        "credentialRef": "vault://observability/datadog-service-account",
+        "connectionDetails": {
+          "supportedMethods": [
+            "oauth",
+            "api_key_and_application_key"
+          ],
+          "preferredMethod": "api_key_and_application_key",
+          "notes": [
+            "Use a scoped Datadog service account for shared team setup when central control is desired.",
+            "User OAuth can remain supported for individual access, but the team policy should still define site and write capability."
+          ]
+        }
+      },
+      "scope": {
+        "regionOrSite": "app.datadoghq.eu",
+        "workspaceId": "acme-observability",
+        "allowedScopes": {
+          "toolsets": [
+            "core",
+            "visualizations"
+          ],
+          "services": [
+            "web",
+            "api",
+            "worker"
+          ],
+          "environments": [
+            "staging",
+            "prod"
+          ]
+        }
+      },
+      "guardrails": {
+        "approvalRequiredFor": [
+          "create_monitor",
+          "mute_monitor",
+          "incident_write"
+        ],
+        "blockedActions": [
+          "org_settings_write"
+        ],
+        "auditMode": "all_mutations"
+      },
+      "ui": {
+        "setupFields": [
+          "enabled",
+          "defaultPermissionTier",
+          "datadogSite",
+          "teamwideAuthenticationMethod",
+          "sharedCredentialConnection",
+          "allowedServices",
+          "allowedEnvironments",
+          "allowWrite",
+          "approvalPolicy"
+        ]
+      }
+    },
+    "linear": {
+      "pluginId": "linear",
+      "displayName": "Linear",
+      "enabled": true,
+      "installation": {
+        "required": true,
+        "scope": "user"
+      },
+      "access": {
+        "defaultPermissionTier": "edit",
+        "allowWrite": true,
+        "allowSensitiveWrite": false
+      },
+      "auth": {
+        "mode": "user_oauth",
+        "teamConnectionRequired": false,
+        "userConnectionAllowed": true,
+        "credentialRef": null,
+        "connectionDetails": {
+          "supportedMethods": [
+            "oauth",
+            "personal_api_key"
+          ],
+          "preferredMethod": "oauth",
+          "notes": [
+            "User-level OAuth is preferred so issue creation and updates are attributable to the connected user.",
+            "The team setup modal should not ask admins for a shared token by default."
+          ]
+        }
+      },
+      "scope": {
+        "regionOrSite": null,
+        "workspaceId": "acme-linear",
+        "allowedScopes": {
+          "teams": [
+            "ENG",
+            "PLATFORM"
+          ],
+          "projects": [
+            "Core Platform",
+            "Developer Experience"
+          ],
+          "allowedWriteActions": [
+            "create_issue",
+            "comment_issue",
+            "update_issue"
+          ]
+        }
+      },
+      "guardrails": {
+        "approvalRequiredFor": [
+          "close_issue",
+          "change_priority",
+          "change_workflow_state_outside_allowed_states"
+        ],
+        "blockedActions": [
+          "delete_project"
+        ],
+        "auditMode": "all_mutations"
+      },
+      "ui": {
+        "setupFields": [
+          "enabled",
+          "defaultPermissionTier",
+          "allowedTeams",
+          "allowedProjects",
+          "allowedWorkflowStates",
+          "allowWrite",
+          "approvalPolicy",
+          "requireUserOAuth"
+        ]
+      }
+    },
+    "deploy-on-aws": {
+      "pluginId": "deploy-on-aws",
+      "displayName": "AWS",
+      "enabled": true,
+      "installation": {
+        "required": true,
+        "scope": "both"
+      },
+      "access": {
+        "defaultPermissionTier": "admin",
+        "allowWrite": true,
+        "allowSensitiveWrite": false
+      },
+      "auth": {
+        "mode": "iam_role",
+        "teamConnectionRequired": true,
+        "userConnectionAllowed": false,
+        "credentialRef": "aws://role/acme-cursor-deploy-role",
+        "connectionDetails": {
+          "supportedMethods": [
+            "iam_role",
+            "aws_profile",
+            "environment_credentials"
+          ],
+          "preferredMethod": "iam_role",
+          "notes": [
+            "Use a centrally managed IAM role or role chain rather than personal AWS credentials.",
+            "The setup should collect account, role, region allowlist, and environment restrictions."
+          ]
+        }
+      },
+      "scope": {
+        "regionOrSite": "us-east-1",
+        "workspaceId": "123456789012",
+        "allowedScopes": {
+          "accounts": [
+            "123456789012"
+          ],
+          "regions": [
+            "us-east-1",
+            "eu-west-1"
+          ],
+          "environments": [
+            "dev",
+            "staging"
+          ],
+          "deploymentTargets": [
+            "ecs",
+            "lambda",
+            "s3_cloudfront"
+          ]
+        }
+      },
+      "guardrails": {
+        "approvalRequiredFor": [
+          "deploy_prod",
+          "create_or_update_iam",
+          "delete_infrastructure",
+          "rotate_secret"
+        ],
+        "blockedActions": [
+          "deploy_to_unlisted_account",
+          "deploy_to_unlisted_region"
+        ],
+        "auditMode": "all_mutations"
+      },
+      "ui": {
+        "setupFields": [
+          "enabled",
+          "defaultPermissionTier",
+          "awsAccountId",
+          "iamRoleArnOrName",
+          "allowedRegions",
+          "allowedEnvironments",
+          "deploymentTargets",
+          "allowWrite",
+          "allowProductionDeploys",
+          "approvalPolicy"
+        ]
+      }
+    },
+    "stripe": {
+      "pluginId": "stripe",
+      "displayName": "Stripe",
+      "enabled": true,
+      "installation": {
+        "required": false,
+        "scope": "user"
+      },
+      "access": {
+        "defaultPermissionTier": "view",
+        "allowWrite": false,
+        "allowSensitiveWrite": false
+      },
+      "auth": {
+        "mode": "user_oauth",
+        "teamConnectionRequired": false,
+        "userConnectionAllowed": true,
+        "credentialRef": null,
+        "connectionDetails": {
+          "supportedMethods": [
+            "oauth",
+            "restricted_api_key"
+          ],
+          "preferredMethod": "oauth",
+          "notes": [
+            "Stripe documents OAuth as the preferred connection mechanism for MCP clients.",
+            "The team policy should still specify whether sandbox-only access is required and which mutating actions are blocked."
+          ]
+        }
+      },
+      "scope": {
+        "regionOrSite": null,
+        "workspaceId": "acme-stripe",
+        "allowedScopes": {
+          "mode": "sandbox",
+          "allowedWriteActions": [
+            "create_customer",
+            "create_product",
+            "create_price",
+            "create_payment_link"
+          ],
+          "blockedWriteActions": [
+            "create_refund",
+            "cancel_subscription",
+            "production_charge"
+          ]
+        }
+      },
+      "guardrails": {
+        "approvalRequiredFor": [
+          "live_mode_write",
+          "refund",
+          "subscription_cancel"
+        ],
+        "blockedActions": [
+          "live_mode_write"
+        ],
+        "auditMode": "all_mutations"
+      },
+      "ui": {
+        "setupFields": [
+          "enabled",
+          "defaultPermissionTier",
+          "mode",
+          "allowedWriteActions",
+          "blockedWriteActions",
+          "requireUserOAuth",
+          "approvalPolicy"
+        ]
+      }
+    },
+    "figma": {
+      "pluginId": "figma",
+      "displayName": "Figma",
+      "enabled": true,
+      "installation": {
+        "required": false,
+        "scope": "user"
+      },
+      "access": {
+        "defaultPermissionTier": "edit",
+        "allowWrite": true,
+        "allowSensitiveWrite": false
+      },
+      "auth": {
+        "mode": "user_oauth",
+        "teamConnectionRequired": false,
+        "userConnectionAllowed": true,
+        "credentialRef": null,
+        "connectionDetails": {
+          "supportedMethods": [
+            "oauth"
+          ],
+          "preferredMethod": "oauth",
+          "notes": [
+            "Figma likely needs user-level OAuth because file and comment actions map naturally to a user's Figma identity.",
+            "The team setup should constrain which team, projects, and files are expected defaults."
+          ]
+        }
+      },
+      "scope": {
+        "regionOrSite": null,
+        "workspaceId": "acme-design-team",
+        "allowedScopes": {
+          "projects": [
+            "Design System",
+            "Product UI"
+          ],
+          "files": [
+            "UI Kit",
+            "App Shell"
+          ],
+          "allowedWriteActions": [
+            "create_file",
+            "create_comment",
+            "update_design_draft"
+          ]
+        }
+      },
+      "guardrails": {
+        "approvalRequiredFor": [
+          "modify_shared_library",
+          "publish_design_changes"
+        ],
+        "blockedActions": [
+          "delete_file"
+        ],
+        "auditMode": "all_mutations"
+      },
+      "ui": {
+        "setupFields": [
+          "enabled",
+          "defaultPermissionTier",
+          "allowedProjects",
+          "defaultFiles",
+          "allowWrite",
+          "requireUserOAuth",
+          "approvalPolicy"
+        ]
+      }
+    },
+    "notion-workspace": {
+      "pluginId": "notion-workspace",
+      "displayName": "Notion",
+      "enabled": true,
+      "installation": {
+        "required": false,
+        "scope": "user"
+      },
+      "access": {
+        "defaultPermissionTier": "edit",
+        "allowWrite": true,
+        "allowSensitiveWrite": false
+      },
+      "auth": {
+        "mode": "user_oauth",
+        "teamConnectionRequired": false,
+        "userConnectionAllowed": true,
+        "credentialRef": null,
+        "connectionDetails": {
+          "supportedMethods": [
+            "oauth"
+          ],
+          "preferredMethod": "oauth",
+          "notes": [
+            "Notion workspace access is best aligned to each user's existing page and database permissions.",
+            "Team setup should mainly define the spaces, databases, and write patterns considered safe defaults."
+          ]
+        }
+      },
+      "scope": {
+        "regionOrSite": null,
+        "workspaceId": "acme-notion",
+        "allowedScopes": {
+          "parentPages": [
+            "Engineering",
+            "Product Specs"
+          ],
+          "databases": [
+            "Tasks",
+            "RFCs"
+          ],
+          "allowedWriteActions": [
+            "create_page",
+            "create_task",
+            "create_database_row",
+            "update_page"
+          ]
+        }
+      },
+      "guardrails": {
+        "approvalRequiredFor": [
+          "write_to_unlisted_database",
+          "bulk_update"
+        ],
+        "blockedActions": [
+          "delete_page",
+          "delete_database"
+        ],
+        "auditMode": "all_mutations"
+      },
+      "ui": {
+        "setupFields": [
+          "enabled",
+          "defaultPermissionTier",
+          "allowedParentPages",
+          "allowedDatabases",
+          "allowWrite",
+          "requireUserOAuth",
+          "approvalPolicy"
+        ]
+      }
+    }
+  },
+  "recommendedSetupModalSpec": {
+    "commonFields": [
+      {
+        "id": "enabled",
+        "label": "Enable for team",
+        "type": "boolean"
+      },
+      {
+        "id": "defaultPermissionTier",
+        "label": "Access permissions",
+        "type": "enum",
+        "options": [
+          "view",
+          "edit",
+          "admin"
+        ]
+      },
+      {
+        "id": "preferredModel",
+        "label": "Preferred model",
+        "type": "enum",
+        "options": [
+          "gpt-5.4-high-fast"
+        ]
+      }
+    ],
+    "pluginSpecificFields": {
+      "datadog": [
+        "datadogSite",
+        "teamwideAuthenticationMethod",
+        "sharedCredentialConnection",
+        "allowedServices",
+        "allowedEnvironments",
+        "allowWrite",
+        "approvalPolicy"
+      ],
+      "linear": [
+        "allowedTeams",
+        "allowedProjects",
+        "allowedWorkflowStates",
+        "allowWrite",
+        "requireUserOAuth",
+        "approvalPolicy"
+      ],
+      "deploy-on-aws": [
+        "awsAccountId",
+        "iamRoleArnOrName",
+        "allowedRegions",
+        "allowedEnvironments",
+        "deploymentTargets",
+        "allowProductionDeploys",
+        "approvalPolicy"
+      ],
+      "stripe": [
+        "mode",
+        "allowedWriteActions",
+        "blockedWriteActions",
+        "requireUserOAuth",
+        "approvalPolicy"
+      ],
+      "figma": [
+        "allowedProjects",
+        "defaultFiles",
+        "allowWrite",
+        "requireUserOAuth",
+        "approvalPolicy"
+      ],
+      "notion-workspace": [
+        "allowedParentPages",
+        "allowedDatabases",
+        "allowWrite",
+        "requireUserOAuth",
+        "approvalPolicy"
+      ]
+    }
+  }
+}
