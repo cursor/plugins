@@ -1,0 +1,7 @@
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" role="img" aria-label="PR Review Canvas">
+  <rect x="2.25" y="3.25" width="19.5" height="17.5" rx="2.25" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <rect x="5.25" y="6.75" width="9.5" height="2" rx="0.6"/>
+  <rect x="5.25" y="11" width="13.5" height="2" rx="0.6" opacity="0.55"/>
+  <rect x="5.25" y="15.25" width="7.5" height="2" rx="0.6" opacity="0.3"/>
+  <circle cx="17.75" cy="7.75" r="2.25"/>
+</svg>

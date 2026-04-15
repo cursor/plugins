@@ -1,0 +1,9 @@
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" role="img" aria-label="Docs Canvas">
+  <rect x="2.25" y="3.25" width="19.5" height="17.5" rx="2.25" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="6" cy="8" r="1.1"/>
+  <circle cx="6" cy="12" r="1.1"/>
+  <circle cx="6" cy="16" r="1.1"/>
+  <rect x="9.5" y="7.1" width="10" height="1.8" rx="0.5"/>
+  <rect x="9.5" y="11.1" width="8.5" height="1.8" rx="0.5" opacity="0.65"/>
+  <rect x="9.5" y="15.1" width="10" height="1.8" rx="0.5" opacity="0.4"/>
+</svg>
