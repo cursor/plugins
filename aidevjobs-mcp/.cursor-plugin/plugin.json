@@ -1,0 +1,37 @@
+{
+  "name": "aidevjobs-mcp",
+  "displayName": "AI Dev Jobs",
+  "version": "1.2.0",
+  "description": "Search curated AI/ML engineering jobs. Filter by skill, salary, workplace, and level. 5,400+ roles from 280+ companies.",
+  "author": {
+    "name": "United Ideas",
+    "email": "unitedideas@gmail.com"
+  },
+  "publisher": "United Ideas",
+  "homepage": "https://aidevboard.com",
+  "repository": "https://github.com/unitedideas/aidevboard-mcp",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "jobs",
+    "ai-jobs",
+    "ml-jobs",
+    "career",
+    "hiring",
+    "engineering",
+    "job-search"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "mcp-server",
+    "jobs",
+    "ai-ml",
+    "career"
+  ],
+  "skills": "./skills/",
+  "mcpServers": {
+    "aidevjobs": {
+      "url": "https://aidevboard.com/mcp"
+    }
+  }
+}

@@ -52,6 +52,16 @@
       "name": "docs-canvas",
       "source": "docs-canvas",
       "description": "Render documentation — architecture notes, API references, runbooks, and codebase walkthroughs — as a navigable Cursor Canvas with sections, table of contents, diagrams, and cross-references."
+    },
+    {
+      "name": "nothumansearch-mcp",
+      "source": "nothumansearch-mcp",
+      "description": "Search engine for AI agents. Find websites and APIs ranked by agentic readiness score (0-100). 8,600+ indexed sites with MCP, OpenAPI, and llms.txt detection."
+    },
+    {
+      "name": "aidevjobs-mcp",
+      "source": "aidevjobs-mcp",
+      "description": "Search curated AI/ML engineering jobs. Filter by skill, salary, workplace, and level. 5,400+ roles from 280+ companies."
     }
   ]
 }
