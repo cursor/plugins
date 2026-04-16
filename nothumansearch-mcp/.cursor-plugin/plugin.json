@@ -1,0 +1,37 @@
+{
+  "name": "nothumansearch-mcp",
+  "displayName": "Not Human Search",
+  "version": "1.4.0",
+  "description": "Search engine for AI agents. Find websites and APIs ranked by agentic readiness score (0-100). 8,600+ indexed sites with MCP, OpenAPI, and llms.txt detection.",
+  "author": {
+    "name": "United Ideas",
+    "email": "unitedideas@gmail.com"
+  },
+  "publisher": "United Ideas",
+  "homepage": "https://nothumansearch.ai",
+  "repository": "https://github.com/unitedideas/nothumansearch",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "ai-agents",
+    "search-engine",
+    "agentic",
+    "llms-txt",
+    "openapi",
+    "api-discovery",
+    "agent-tools"
+  ],
+  "category": "ai-tools",
+  "tags": [
+    "mcp-server",
+    "ai-agents",
+    "search",
+    "api-discovery"
+  ],
+  "skills": "./skills/",
+  "mcpServers": {
+    "nothumansearch": {
+      "url": "https://nothumansearch.ai/mcp"
+    }
+  }
+}
