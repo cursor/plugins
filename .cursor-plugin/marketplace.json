@@ -52,6 +52,11 @@
       "name": "docs-canvas",
       "source": "docs-canvas",
       "description": "Render documentation — architecture notes, API references, runbooks, and codebase walkthroughs — as a navigable Cursor Canvas with sections, table of contents, diagrams, and cross-references."
+    },
+    {
+      "name": "mem-forever",
+      "source": "mem-forever",
+      "description": "Persistent memory across sessions and tools. Auto-generates a portable profile from conversation, saves decisions and lessons to .ilang/, applies preferences in every future session."
     }
   ]
 }
