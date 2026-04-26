@@ -1,0 +1,28 @@
+{
+  "name": "mem-forever",
+  "displayName": "Mem-Forever",
+  "version": "1.0.0",
+  "description": "Persistent memory across sessions and tools. Auto-generates a portable profile from conversation, saves decisions and lessons to .ilang/, applies preferences in every future session. Works across Cursor, Claude Code, Codex, Copilot, and Gemini.",
+  "author": {
+    "name": "I-Lang Protocol",
+    "email": "hello@ilang.ai"
+  },
+  "homepage": "https://github.com/ilang-ai/Mem-Forever",
+  "repository": "https://github.com/ilang-ai/Mem-Forever",
+  "license": "MIT",
+  "keywords": [
+    "memory",
+    "persistence",
+    "cross-session",
+    "cross-tool",
+    "portable-profile",
+    "i-lang"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "memory",
+    "productivity",
+    "automation"
+  ],
+  "skills": "./skills/"
+}
