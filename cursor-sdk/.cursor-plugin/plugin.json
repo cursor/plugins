@@ -1,0 +1,32 @@
+{
+  "name": "cursor-sdk",
+  "displayName": "Cursor SDK",
+  "version": "1.0.0",
+  "description": "Build apps, scripts, CI pipelines, and automations on top of the Cursor TypeScript SDK (@cursor/sdk) — runtime selection, auth, streaming, MCP, error handling, and ready-to-extend integration patterns.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins/tree/main/cursor-sdk",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "cursor-sdk",
+    "cursor",
+    "sdk",
+    "typescript",
+    "agents",
+    "automation",
+    "ci",
+    "mcp",
+    "streaming"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "sdk",
+    "agents",
+    "automation",
+    "developer-tools"
+  ],
+  "skills": "./skills/"
+}
