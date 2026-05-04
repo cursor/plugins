@@ -1,0 +1,598 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cursor/orchestrate/plan.schema.json",
+  "title": "orchestrate plan.json",
+  "description": "Input to scripts/orchestrate.ts: planner-authored JSON consumed by the loop script.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional editor validation schema path."
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1,
+      "description": "User goal, verbatim at every planner depth. Agent-facing full context."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One-line orientation for the human reading the Slack run thread. Kickoff falls back to a truncated `goal` when unset."
+    },
+    "dispatcher": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Kickoff bot username (`<firstName>'s bot`). Resolved by the dispatcher CLI from --dispatcher-name or Slack lookupByEmail; planners don't author it."
+        }
+      },
+      "required": [
+        "firstName"
+      ],
+      "additionalProperties": false,
+      "description": "Who launched this run. Set by the dispatcher CLI."
+    },
+    "rootSlug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Kebab-case ASCII slug used in branch names."
+    },
+    "baseBranch": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Default startingRef for tasks that don't specify their own."
+    },
+    "prBase": {
+      "type": "string",
+      "minLength": 1,
+      "description": "PR base for tasks with openPR (defaults to baseBranch)."
+    },
+    "repoUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "GitHub URL of the repo cloud agents should operate on."
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Planner-level acceptance checklist."
+    },
+    "syncStateToGit": {
+      "type": "boolean",
+      "default": true,
+      "description": "Commit and push plan/state/handoffs on status transitions."
+    },
+    "slackChannel": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Slack channel id for run visibility. Set from --slack-channel or SLACK_CHANNEL_ID by kickoff or the first root run."
+    },
+    "slackKickoffRef": {
+      "type": "object",
+      "properties": {
+        "channel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ts": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "channel",
+        "ts"
+      ],
+      "additionalProperties": false,
+      "description": "Root Slack message for the run thread. Set by the script after the first kickoff post; planners do not author it."
+    },
+    "andonStateRef": {
+      "type": "string",
+      "description": "Git ref whose state.json carries the root-polled Andon state."
+    },
+    "andonStatePath": {
+      "type": "string",
+      "description": "Repo-relative path to the root state.json carrying Andon state."
+    },
+    "selfAgentId": {
+      "type": "string",
+      "description": "This planner's cloud agent id."
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$",
+                "description": "Kebab-case ASCII. Used in branch and agent-title."
+              },
+              "scopedGoal": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Outcome for this task; write it as the only steering signal."
+              },
+              "brief": {
+                "type": "string",
+                "description": "Markdown spec inlined into the spawn prompt."
+              },
+              "pathsAllowed": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Glob patterns the task may touch."
+              },
+              "pathsForbidden": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Glob patterns owned by siblings."
+              },
+              "acceptance": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Per-task acceptance checklist."
+              },
+              "verify": {
+                "type": "string",
+                "description": "Optional markdown verification plan."
+              },
+              "startingRef": {
+                "type": "string",
+                "description": "Branch the spawned cloud agent clones from."
+              },
+              "dependsOn": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9-]+$"
+                },
+                "description": "Task names to wait on before spawning."
+              },
+              "model": {
+                "type": "string",
+                "description": "Model id for the spawned cloud agent."
+              },
+              "maxAttempts": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Max logical spawn attempts."
+              },
+              "openPR": {
+                "type": "boolean",
+                "description": "Open a PR when the task completes."
+              },
+              "measurements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Identifier matched against the worker's `## Measurements` block, e.g. `LOC(packages/ui/src/Settings.tsx)` or `bundle size`. Must match the line prefix verbatim."
+                    },
+                    "command": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Shell command executed under `bash -c` in a fresh checkout of the worker's branch."
+                    },
+                    "parser": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "const": "wc-l"
+                            }
+                          },
+                          "required": [
+                            "kind"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "const": "regex"
+                            },
+                            "pattern": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "JavaScript regex applied to stdout. Capture group 1 is the value; if the regex has no capture group, the full match is used."
+                            },
+                            "flags": {
+                              "type": "string",
+                              "pattern": "^[gimsuy]*$",
+                              "description": "RegExp flags (default: empty)."
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "pattern"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ],
+                      "description": "How to extract a value from the command's stdout. Defaults to `wc-l` (count non-empty lines)."
+                    },
+                    "toleranceFraction": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1,
+                      "description": "Fractional drift tolerated for numeric comparisons (e.g. 0.10 = 10%). Defaults to 0.10. String values must match exactly."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "command"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Quantitative checks the script re-runs against the worker's branch after handoff to catch drift between the worker's `## Measurements` self-report and the actual artifact."
+              },
+              "slackTs": {
+                "type": "string",
+                "description": "Slack thread message ts for this task, set by the script."
+              },
+              "type": {
+                "type": "string",
+                "const": "worker"
+              },
+              "verifies": {
+                "not": {}
+              }
+            },
+            "required": [
+              "name",
+              "scopedGoal",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$",
+                "description": "Kebab-case ASCII. Used in branch and agent-title."
+              },
+              "scopedGoal": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Outcome for this task; write it as the only steering signal."
+              },
+              "brief": {
+                "type": "string",
+                "description": "Markdown spec inlined into the spawn prompt."
+              },
+              "pathsAllowed": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Glob patterns the task may touch."
+              },
+              "pathsForbidden": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Glob patterns owned by siblings."
+              },
+              "acceptance": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Per-task acceptance checklist."
+              },
+              "verify": {
+                "type": "string",
+                "description": "Optional markdown verification plan."
+              },
+              "startingRef": {
+                "type": "string",
+                "description": "Branch the spawned cloud agent clones from."
+              },
+              "dependsOn": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9-]+$"
+                },
+                "description": "Task names to wait on before spawning."
+              },
+              "model": {
+                "type": "string",
+                "description": "Model id for the spawned cloud agent."
+              },
+              "maxAttempts": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Max logical spawn attempts."
+              },
+              "openPR": {
+                "type": "boolean",
+                "description": "Open a PR when the task completes."
+              },
+              "measurements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Identifier matched against the worker's `## Measurements` block, e.g. `LOC(packages/ui/src/Settings.tsx)` or `bundle size`. Must match the line prefix verbatim."
+                    },
+                    "command": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Shell command executed under `bash -c` in a fresh checkout of the worker's branch."
+                    },
+                    "parser": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "const": "wc-l"
+                            }
+                          },
+                          "required": [
+                            "kind"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "const": "regex"
+                            },
+                            "pattern": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "JavaScript regex applied to stdout. Capture group 1 is the value; if the regex has no capture group, the full match is used."
+                            },
+                            "flags": {
+                              "type": "string",
+                              "pattern": "^[gimsuy]*$",
+                              "description": "RegExp flags (default: empty)."
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "pattern"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ],
+                      "description": "How to extract a value from the command's stdout. Defaults to `wc-l` (count non-empty lines)."
+                    },
+                    "toleranceFraction": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1,
+                      "description": "Fractional drift tolerated for numeric comparisons (e.g. 0.10 = 10%). Defaults to 0.10. String values must match exactly."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "command"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Quantitative checks the script re-runs against the worker's branch after handoff to catch drift between the worker's `## Measurements` self-report and the actual artifact."
+              },
+              "slackTs": {
+                "type": "string",
+                "description": "Slack thread message ts for this task, set by the script."
+              },
+              "type": {
+                "type": "string",
+                "const": "subplanner"
+              },
+              "verifies": {
+                "not": {}
+              }
+            },
+            "required": [
+              "name",
+              "scopedGoal",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$",
+                "description": "Kebab-case ASCII. Used in branch and agent-title."
+              },
+              "scopedGoal": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Outcome for this task; write it as the only steering signal."
+              },
+              "brief": {
+                "type": "string",
+                "description": "Markdown spec inlined into the spawn prompt."
+              },
+              "pathsAllowed": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Glob patterns the task may touch."
+              },
+              "pathsForbidden": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Glob patterns owned by siblings."
+              },
+              "acceptance": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Per-task acceptance checklist."
+              },
+              "verify": {
+                "type": "string",
+                "description": "Optional markdown verification plan."
+              },
+              "startingRef": {
+                "type": "string",
+                "description": "Branch the spawned cloud agent clones from."
+              },
+              "dependsOn": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9-]+$"
+                },
+                "description": "Task names to wait on before spawning."
+              },
+              "model": {
+                "type": "string",
+                "description": "Model id for the spawned cloud agent."
+              },
+              "maxAttempts": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Max logical spawn attempts."
+              },
+              "openPR": {
+                "type": "boolean",
+                "description": "Open a PR when the task completes."
+              },
+              "measurements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Identifier matched against the worker's `## Measurements` block, e.g. `LOC(packages/ui/src/Settings.tsx)` or `bundle size`. Must match the line prefix verbatim."
+                    },
+                    "command": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Shell command executed under `bash -c` in a fresh checkout of the worker's branch."
+                    },
+                    "parser": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "const": "wc-l"
+                            }
+                          },
+                          "required": [
+                            "kind"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "const": "regex"
+                            },
+                            "pattern": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "JavaScript regex applied to stdout. Capture group 1 is the value; if the regex has no capture group, the full match is used."
+                            },
+                            "flags": {
+                              "type": "string",
+                              "pattern": "^[gimsuy]*$",
+                              "description": "RegExp flags (default: empty)."
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "pattern"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ],
+                      "description": "How to extract a value from the command's stdout. Defaults to `wc-l` (count non-empty lines)."
+                    },
+                    "toleranceFraction": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1,
+                      "description": "Fractional drift tolerated for numeric comparisons (e.g. 0.10 = 10%). Defaults to 0.10. String values must match exactly."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "command"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Quantitative checks the script re-runs against the worker's branch after handoff to catch drift between the worker's `## Measurements` self-report and the actual artifact."
+              },
+              "slackTs": {
+                "type": "string",
+                "description": "Slack thread message ts for this task, set by the script."
+              },
+              "type": {
+                "type": "string",
+                "const": "verifier"
+              },
+              "verifies": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$",
+                "description": "Name of the task this verifier checks."
+              }
+            },
+            "required": [
+              "name",
+              "scopedGoal",
+              "type",
+              "verifies"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "description": "Planner-authored task definitions."
+    }
+  },
+  "required": [
+    "goal",
+    "rootSlug",
+    "baseBranch",
+    "repoUrl"
+  ],
+  "additionalProperties": false
+}

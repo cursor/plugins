@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+
+# Runtime artifacts written by the orchestrate CLI in the user's workspace
+# and by `bun test` when fixtures don't override cwd.
+bc-*/
+state.json
+plan.json
+handoffs/
+comment-retry-queue.json

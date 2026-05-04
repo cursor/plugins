@@ -1,0 +1,297 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cursor/orchestrate/state.schema.json",
+  "title": "orchestrate state.json",
+  "description": "Written by scripts/orchestrate.ts. Live task rows; read-only unless you must edit by hand to unstick state.",
+  "type": "object",
+  "properties": {
+    "rootSlug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "worker",
+              "subplanner",
+              "verifier"
+            ]
+          },
+          "branch": {
+            "type": "string"
+          },
+          "startingRef": {
+            "type": "string"
+          },
+          "dependsOn": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
+            }
+          },
+          "agentId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
+          },
+          "runId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
+          },
+          "parentAgentId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "Planner agent id that spawned this row."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "running",
+              "handed-off",
+              "error",
+              "cancelled",
+              "pruned"
+            ],
+            "description": "pending -> running -> handed-off; error on hard failure; cancelled by operator; pruned if removed from plan.json."
+          },
+          "resultStatus": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "The cloud run's RunResult.status."
+          },
+          "handoffPath": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "Relative path to the collected handoff markdown."
+          },
+          "startedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "finishedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "lastUpdate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
+          },
+          "adHoc": {
+            "type": "boolean",
+            "description": "True if this task was added outside plan.json."
+          },
+          "attempts": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Count of logical spawn attempts."
+          },
+          "slackTs": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "Slack task message ts."
+          },
+          "slackRendered": {
+            "type": "object",
+            "properties": {
+              "emoji": {
+                "type": "string"
+              },
+              "summary": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "emoji",
+              "summary"
+            ],
+            "additionalProperties": false,
+            "description": "Last rendered Slack status tuple for no-op update guards."
+          },
+          "prNumber": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Pull request number opened by this task, when known."
+          },
+          "failureMode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "cap-hit",
+                  "oom",
+                  "tool-error",
+                  "network-drop",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Parsed terminal failure class for Slack and triage."
+          },
+          "verification": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "live-ui-verified",
+                  "unit-test-verified",
+                  "type-check-only",
+                  "verifier-blocked",
+                  "verifier-failed",
+                  "not-verified"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Verification quality claimed for this task's deliverable. Parsed from the handoff body's `## Verification` line on handoff (verifiers set this for their target's deliverable; workers and subplanners may self-report). Null until set."
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "branch",
+          "startingRef",
+          "dependsOn",
+          "status"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "attention": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "at",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "andon": {
+      "type": "object",
+      "properties": {
+        "raisedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "raisedBy": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "cleared": {
+          "type": "boolean"
+        },
+        "clearedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "clearedBy": {
+          "type": "string"
+        },
+        "clearNote": {
+          "type": "string"
+        },
+        "lastCheckedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "lastCheckedAt"
+      ],
+      "additionalProperties": false,
+      "description": "Current state of the Andon cord."
+    }
+  },
+  "required": [
+    "rootSlug",
+    "tasks",
+    "attention"
+  ],
+  "additionalProperties": false
+}
