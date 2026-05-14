@@ -1,0 +1,34 @@
+{
+  "name": "buywhere",
+  "displayName": "BuyWhere — Product Search & Price Comparison",
+  "version": "1.0.0",
+  "description": "Search 1.5M+ products across Shopee, Lazada, Amazon, Walmart, FairPrice, Carousell, and 20+ Southeast Asia and US e-commerce platforms. Compare prices, discover deals, and find best prices directly from Cursor.",
+  "author": {
+    "name": "BuyWhere",
+    "email": "hello@buywhere.ai"
+  },
+  "homepage": "https://github.com/BuyWhere/buywhere",
+  "repository": "https://github.com/BuyWhere/buywhere",
+  "license": "MIT",
+  "keywords": [
+    "shopping",
+    "price-comparison",
+    "ecommerce",
+    "southeast-asia",
+    "product-search",
+    "deals",
+    "mcp",
+    "singapore",
+    "lazada",
+    "shopee",
+    "amazon"
+  ],
+  "category": "productivity",
+  "tags": [
+    "shopping",
+    "ecommerce",
+    "price-comparison",
+    "mcp-server"
+  ],
+  "skills": "./skills/"
+}
