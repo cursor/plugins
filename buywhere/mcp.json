@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "buywhere": {
+      "url": "https://api.buywhere.ai/mcp"
+    }
+  }
+}
