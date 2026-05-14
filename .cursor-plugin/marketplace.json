@@ -46,22 +46,27 @@
     {
       "name": "pr-review-canvas",
       "source": "pr-review-canvas",
-      "description": "Render PR diffs as interactive Cursor Canvases organized for reviewer comprehension — groups changes by importance, separates boilerplate from core logic, and highlights tricky or unexpected code."
+      "description": "Render PR diffs as interactive Cursor Canvases organized for reviewer comprehension \u2014 groups changes by importance, separates boilerplate from core logic, and highlights tricky or unexpected code."
     },
     {
       "name": "docs-canvas",
       "source": "docs-canvas",
-      "description": "Render documentation — architecture notes, API references, runbooks, and codebase walkthroughs — as a navigable Cursor Canvas with sections, table of contents, diagrams, and cross-references."
+      "description": "Render documentation \u2014 architecture notes, API references, runbooks, and codebase walkthroughs \u2014 as a navigable Cursor Canvas with sections, table of contents, diagrams, and cross-references."
     },
     {
       "name": "cursor-sdk",
       "source": "cursor-sdk",
-      "description": "Build apps, scripts, CI pipelines, and automations on top of the Cursor TypeScript SDK (@cursor/sdk) — runtime selection, auth, streaming, MCP, error handling, and ready-to-extend integration patterns."
+      "description": "Build apps, scripts, CI pipelines, and automations on top of the Cursor TypeScript SDK (@cursor/sdk) \u2014 runtime selection, auth, streaming, MCP, error handling, and ready-to-extend integration patterns."
     },
     {
       "name": "orchestrate",
       "source": "orchestrate",
       "description": "Fan large tasks out across parallel Cursor cloud agents with planners, workers, verifiers, and structured handoffs."
+    },
+    {
+      "name": "buywhere",
+      "source": "buywhere",
+      "description": "Search 1.5M+ products across Shopee, Lazada, Amazon, Walmart, and 20+ platforms. Compare prices and find deals from Cursor."
     }
   ]
 }
