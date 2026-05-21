@@ -31,12 +31,14 @@ Internal-style workflows for CI, code review, shipping, and test reliability. Th
 | `fix-merge-conflicts` | Resolve merge conflicts, validate build/tests, and summarize decisions |
 | `deslop` | Remove AI-generated code slop and clean up code style |
 | `workflow-from-chats` | Extract durable working preferences from chats into skills, rules, or docs |
+| `thermo-nuclear-code-quality-review` | Run an unusually strict maintainability review (code-judo, 1k-line rule, spaghetti, boundaries) |
 
 ### Agents
 
 | Agent | Description |
 |:------|:------------|
 | `ci-watcher` | Monitor GitHub Actions runs and return concise pass/fail summaries |
+| `thermo-nuclear-code-quality-review` | Task subagent that runs the thermo-nuclear code quality rubric against a diff |
 
 ### Rules
 
