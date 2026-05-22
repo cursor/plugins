@@ -6,6 +6,19 @@ import { dirname, join } from 'node:path';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
 
+const SENSITIVE_PAYLOAD_KEYS = new Set([
+  'api_key',
+  'apiKey',
+  'authorization',
+  'cookie',
+  'password',
+  'storage_state',
+  'storageState',
+  'token',
+  'transcript_path',
+  'transcriptPath',
+]);
+
 export function parseArgs(argv) {
   const args = {};
   for (const arg of argv) {
@@ -46,6 +59,12 @@ export function parseJsonRecord(value) {
   }
 }
 
+export function visiblePayloadKeys(payload) {
+  return Object.keys(payload)
+    .filter((key) => !SENSITIVE_PAYLOAD_KEYS.has(key))
+    .slice(0, 40);
+}
+
 export function buildWorkGraphHookRecord({
   args,
   payload,
@@ -83,12 +102,14 @@ export function buildWorkGraphHookRecord({
       args.cwd,
       cwd
     ),
-    transcript_path: pickString(payload.transcript_path, payload.transcriptPath),
     timestamp,
     summary: {
       tool_name: toolName,
       prompt_chars: prompt ? prompt.length : undefined,
-      payload_keys: Object.keys(payload).slice(0, 40),
+      payload_keys: visiblePayloadKeys(payload),
+      transcript_path_present: Boolean(
+        pickString(payload.transcript_path, payload.transcriptPath)
+      ),
     },
   };
 }
@@ -104,6 +125,10 @@ export function appendWorkGraphHookRecord(record, outbox) {
   } catch {
     return false;
   }
+}
+
+export function exitCodeForResult(result) {
+  return result?.work_graph_spooled ? 0 : 1;
 }
 
 export async function main({
@@ -138,19 +163,25 @@ export async function main({
     timestamp,
   });
 
+  const workGraphSpooled = appendWorkGraphHookRecord(record, outbox);
+
   return {
-    ok: true,
-    work_graph_spooled: appendWorkGraphHookRecord(record, outbox),
+    ok: workGraphSpooled,
+    work_graph_spooled: workGraphSpooled,
   };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   readStdin()
     .then((stdinText) => main({ stdinText }))
-    .then(() => {
-      process.exit(0);
+    .then((result) => {
+      if (!result.work_graph_spooled) {
+        process.stderr.write('OrgX Cursor hook failed to spool Work Graph event.\n');
+      }
+      process.exit(exitCodeForResult(result));
     })
-    .catch(() => {
-      process.exit(0);
+    .catch((error) => {
+      process.stderr.write(`OrgX Cursor hook failed: ${error.message}\n`);
+      process.exit(1);
     });
 }

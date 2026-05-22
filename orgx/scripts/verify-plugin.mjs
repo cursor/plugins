@@ -58,11 +58,24 @@ for (const [eventName, scriptName] of [
 }
 
 const hookScript = readFileSync(resolve('scripts/hooks/record-work-graph-event.mjs'), 'utf8');
+const installScript = readFileSync(resolve('scripts/install-local.mjs'), 'utf8');
 if (!hookScript.includes('orgx_cursor_plugin_runtime_hook')) {
   throw new Error('record-work-graph-event.mjs must emit orgx_cursor_plugin_runtime_hook records');
 }
 if (!hookScript.includes('ORGX_WIZARD_HOOK_OUTBOX')) {
   throw new Error('record-work-graph-event.mjs must support ORGX_WIZARD_HOOK_OUTBOX');
+}
+if (hookScript.includes('transcript_path:')) {
+  throw new Error('record-work-graph-event.mjs must not persist raw transcript paths');
+}
+if (!hookScript.includes('exitCodeForResult')) {
+  throw new Error('record-work-graph-event.mjs must expose hook failure exit handling');
+}
+if (!installScript.includes("fileURLToPath(import.meta.url)")) {
+  throw new Error('install-local.mjs must resolve plugin root with fileURLToPath');
+}
+if (!installScript.includes("resolve(localPluginsDir, 'orgx')")) {
+  throw new Error('install-local.mjs must install under the orgx plugin name');
 }
 
 console.log('Plugin manifest, MCP config, and hooks look valid.');

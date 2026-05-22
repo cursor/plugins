@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { main, readStdin } from './record-work-graph-event.mjs';
+import { exitCodeForResult, main, readStdin } from './record-work-graph-event.mjs';
 
 readStdin()
   .then((stdinText) =>
@@ -9,5 +9,8 @@ readStdin()
       stdinText,
     })
   )
-  .then(() => process.exit(0))
-  .catch(() => process.exit(0));
+  .then((result) => process.exit(exitCodeForResult(result)))
+  .catch((error) => {
+    process.stderr.write(`OrgX Cursor post-tool-use-failure hook failed: ${error.message}\n`);
+    process.exit(1);
+  });

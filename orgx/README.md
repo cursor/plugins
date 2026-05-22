@@ -19,7 +19,7 @@ This repo contains the plugin artifact needed for Cursor Marketplace submission 
 1. Run `npm run verify`
 2. Run `npm run install:local`
 3. Restart Cursor or run `Developer: Reload Window`
-4. Confirm the plugin loads from `~/.cursor/plugins/local/cursor-plugin`
+4. Confirm the plugin loads from `~/.cursor/plugins/local/orgx`
 
 ## Hook behavior
 
