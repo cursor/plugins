@@ -1,0 +1,35 @@
+{
+  "name": "orgx",
+  "displayName": "OrgX",
+  "description": "OrgX execution control plane for Cursor with bootstrap, resumable workstreams, proof, decisions, Work Graph hooks, and specialist agents.",
+  "version": "0.1.1",
+  "author": {
+    "name": "OrgX Team",
+    "email": "reviewers@useorgx.com"
+  },
+  "homepage": "https://useorgx.com",
+  "repository": "https://github.com/useorgx/cursor-plugin",
+  "license": "MIT",
+  "category": "productivity",
+  "tags": [
+    "mcp",
+    "agent-orchestration",
+    "workstreams",
+    "proof",
+    "developer-tools"
+  ],
+  "keywords": [
+    "orgx",
+    "cursor",
+    "mcp",
+    "workflow",
+    "agents"
+  ],
+  "logo": "assets/logo.svg",
+  "rules": "rules",
+  "skills": "skills",
+  "agents": "agents",
+  "commands": "commands",
+  "hooks": "hooks/hooks.json",
+  "mcpServers": ".mcp.json"
+}

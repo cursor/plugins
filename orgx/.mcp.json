@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "orgx": {
+      "type": "http",
+      "url": "https://mcp.useorgx.com/mcp"
+    }
+  }
+}

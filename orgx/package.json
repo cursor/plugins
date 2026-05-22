@@ -1,0 +1,33 @@
+{
+  "name": "@useorgx/cursor-plugin",
+  "version": "0.1.1",
+  "description": "OrgX plugin for Cursor with MCP, rules, skills, passive Work Graph hooks, commands, and specialist agents.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "verify": "node ./scripts/verify-plugin.mjs",
+    "install:local": "node ./scripts/install-local.mjs",
+    "check": "npm run verify"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "cursor",
+    "cursor-plugin",
+    "orgx",
+    "mcp",
+    "agent-orchestration",
+    "workflow"
+  ],
+  "author": "OrgX Team <team@useorgx.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/useorgx/cursor-plugin.git"
+  },
+  "homepage": "https://github.com/useorgx/cursor-plugin",
+  "bugs": {
+    "url": "https://github.com/useorgx/cursor-plugin/issues"
+  }
+}

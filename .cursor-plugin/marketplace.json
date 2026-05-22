@@ -62,6 +62,11 @@
       "name": "orchestrate",
       "source": "orchestrate",
       "description": "Fan large tasks out across parallel Cursor cloud agents with planners, workers, verifiers, and structured handoffs."
+    },
+    {
+      "name": "orgx",
+      "source": "orgx",
+      "description": "OrgX execution control plane for Cursor with MCP, rules, skills, hooks, commands, and specialist agents."
     }
   ]
 }

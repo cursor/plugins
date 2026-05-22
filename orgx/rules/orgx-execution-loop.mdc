@@ -1,0 +1,12 @@
+---
+description: OrgX-native execution loop for Cursor.
+alwaysApply: true
+---
+
+# OrgX Execution Loop
+
+- Treat OrgX as the execution control plane, not as a passive notes store.
+- Prefer starting from OrgX bootstrap context, resumable workstreams, and proof status before inventing new scope.
+- If work is blocked by missing context or a real decision, surface it explicitly instead of guessing.
+- Close the loop with proof, artifacts, and verification steps whenever work is ready for review.
+- Keep repo-local overrides in `.cursor/orgx/` additive to the default OrgX bundle.

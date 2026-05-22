@@ -1,0 +1,29 @@
+{
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "node ./scripts/hooks/session-start.mjs"
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": "node ./scripts/hooks/post-tool-use.mjs"
+      }
+    ],
+    "postToolUseFailure": [
+      {
+        "command": "node ./scripts/hooks/post-tool-use-failure.mjs"
+      }
+    ],
+    "subagentStart": [
+      {
+        "command": "node ./scripts/hooks/subagent-start.mjs"
+      }
+    ],
+    "subagentStop": [
+      {
+        "command": "node ./scripts/hooks/subagent-stop.mjs"
+      }
+    ]
+  }
+}
