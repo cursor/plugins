@@ -143,9 +143,9 @@ function buildFollowupMessage(
 ): string {
   const workspaceLine = targets.workspaceFile
     ? targets.workspaceFileBlocked
-      ? `Workspace memory file (\`${targets.workspaceFile}\`) is BLOCKED: ${targets.workspaceFileBlockReason} Do not write workspace facts to disk; mention the block in the summary instead.`
+      ? `Workspace memory file (\`${targets.workspaceFile}\`) is BLOCKED: ${targets.workspaceFileBlockReason} Do not write to that file; route any workspace facts to the user memory file under \`## Learned Workspace Facts (local)\` instead, and mention the block in the summary.`
       : `Workspace memory file (shared, may be committed): \`${targets.workspaceFile}\`. Write only durable, team-relevant workspace facts here.`
-    : "No workspace memory file is configured. Do NOT write to any file inside the workspace; keep all learnings in the user memory file.";
+    : "No workspace memory file is configured. Do not write to any file inside the workspace; route any workspace facts to the user memory file under `## Learned Workspace Facts (local)` instead.";
 
   return [
     "Run the `continual-learning` skill now. Use the `agents-memory-updater` subagent for the full memory update flow.",
