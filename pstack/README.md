@@ -54,6 +54,7 @@ the rest are useful when you want to specifically invoke them:
 | `/automate-me` | you want your own `-mode` skill, drafted from how you've actually worked. |
 | `/reflect` | a long task landed and you want the recipe captured as a skill edit. |
 | `/tdd` | you're fixing a bug and there's a cheap local test path. write the failing test first, then the fix. |
+| `/typescript-best-practices` | you're reading or editing typescript. grounds the type-system-discipline principle in syntax. |
 | `/unslop` | you're cleaning up writing. removes AI tells. |
 
 ## the `poteto-agent` subagent
