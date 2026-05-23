@@ -1,21 +1,16 @@
 /// <reference types="bun-types-no-globals/lib/index.d.ts" />
 
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { dirname } from "node:path";
 import { stdin } from "bun";
 
-const STATE_PATH = resolve(".cursor/hooks/state/continual-learning.json");
-const INCREMENTAL_INDEX_PATH = resolve(
-  ".cursor/hooks/state/continual-learning-index.json"
-);
+import { migrateLegacyState, resolveMemoryTargets } from "./lib/memory-targets.ts";
+
 const DEFAULT_MIN_TURNS = 10;
 const DEFAULT_MIN_MINUTES = 120;
 const TRIAL_DEFAULT_MIN_TURNS = 3;
 const TRIAL_DEFAULT_MIN_MINUTES = 15;
 const TRIAL_DEFAULT_DURATION_MINUTES = 24 * 60;
-
-const FOLLOWUP_MESSAGE =
-  `Run the \`continual-learning\` skill now. Use the \`agents-memory-updater\` subagent for the full memory update flow. Use incremental transcript processing with index file \`${INCREMENTAL_INDEX_PATH}\`: only consider transcripts not in the index or transcripts whose mtime is newer than indexed mtime. Have the subagent refresh index mtimes, remove entries for deleted transcripts, and update \`AGENTS.md\` only for high-signal recurring user corrections and durable workspace facts. Exclude one-off/transient details and secrets. If no meaningful updates exist, respond exactly: No high-signal memory updates.`;
 
 interface StopHookInput {
   conversation_id: string;
@@ -62,7 +57,7 @@ function readEnvValue(primary: string, legacy: string): string | undefined {
   return process.env[primary] ?? process.env[legacy];
 }
 
-function loadState(): ContinuousLearningState {
+function loadState(statePath: string): ContinuousLearningState {
   const fallback: ContinuousLearningState = {
     version: 1,
     lastRunAtMs: 0,
@@ -72,12 +67,12 @@ function loadState(): ContinuousLearningState {
     trialStartedAtMs: null,
   };
 
-  if (!existsSync(STATE_PATH)) {
+  if (!existsSync(statePath)) {
     return fallback;
   }
 
   try {
-    const raw = readFileSync(STATE_PATH, "utf-8");
+    const raw = readFileSync(statePath, "utf-8");
     const parsed = JSON.parse(raw) as Partial<ContinuousLearningState>;
     if (parsed.version !== 1) {
       return fallback;
@@ -114,12 +109,12 @@ function loadState(): ContinuousLearningState {
   }
 }
 
-function saveState(state: ContinuousLearningState): void {
-  const directory = dirname(STATE_PATH);
+function saveState(statePath: string, state: ContinuousLearningState): void {
+  const directory = dirname(statePath);
   if (!existsSync(directory)) {
     mkdirSync(directory, { recursive: true });
   }
-  writeFileSync(STATE_PATH, `${JSON.stringify(state, null, 2)}\n`, "utf-8");
+  writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`, "utf-8");
 }
 
 function getTranscriptMtimeMs(transcriptPath: string | null | undefined): number | null {
@@ -143,10 +138,40 @@ async function parseHookInput<T>(): Promise<T> {
   return JSON.parse(text) as T;
 }
 
+function buildFollowupMessage(
+  targets: ReturnType<typeof resolveMemoryTargets>
+): string {
+  const workspaceLine = targets.workspaceFile
+    ? targets.workspaceFileBlocked
+      ? `Workspace memory file (\`${targets.workspaceFile}\`) is BLOCKED: ${targets.workspaceFileBlockReason} Do not write workspace facts to disk; mention the block in the summary instead.`
+      : `Workspace memory file (shared, may be committed): \`${targets.workspaceFile}\`. Write only durable, team-relevant workspace facts here.`
+    : "No workspace memory file is configured. Do NOT write to any file inside the workspace; keep all learnings in the user memory file.";
+
+  return [
+    "Run the `continual-learning` skill now. Use the `agents-memory-updater` subagent for the full memory update flow.",
+    "",
+    "Resolved targets for this run:",
+    `- User memory file (personal, never committed): \`${targets.userFile}\``,
+    `- ${workspaceLine}`,
+    `- Incremental transcript index: \`${targets.indexFile}\``,
+    "",
+    "Use incremental transcript processing: only consider transcripts not in the index, or transcripts whose mtime is newer than the indexed mtime. After processing, refresh index mtimes and remove entries for deleted transcripts.",
+    "",
+    "Routing:",
+    "- `## Learned User Preferences` → user memory file only.",
+    "- `## Learned Workspace Facts` → workspace memory file when configured and not blocked; otherwise user memory file under a `## Learned Workspace Facts (local)` heading.",
+    "",
+    "Exclude one-off / transient details and secrets. If no meaningful updates exist, respond exactly: No high-signal memory updates.",
+  ].join("\n");
+}
+
 async function main(): Promise<number> {
   try {
     const input = await parseHookInput<StopHookInput>();
-    const state = loadState();
+    const targets = resolveMemoryTargets();
+    migrateLegacyState(targets);
+
+    const state = loadState(targets.cadenceFile);
 
     if (input.generation_id && input.generation_id === state.lastProcessedGenerationId) {
       console.log(JSON.stringify({}));
@@ -222,18 +247,18 @@ async function main(): Promise<number> {
       state.lastRunAtMs = now;
       state.turnsSinceLastRun = 0;
       state.lastTranscriptMtimeMs = transcriptMtimeMs;
-      saveState(state);
+      saveState(targets.cadenceFile, state);
 
       console.log(
         JSON.stringify({
-          followup_message: FOLLOWUP_MESSAGE,
+          followup_message: buildFollowupMessage(targets),
         })
       );
       return 0;
     }
 
     state.turnsSinceLastRun = turnsSinceLastRun;
-    saveState(state);
+    saveState(targets.cadenceFile, state);
     console.log(JSON.stringify({}));
     return 0;
   } catch (error) {
