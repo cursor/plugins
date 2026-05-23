@@ -59,135 +59,24 @@ the rest are useful when you want to specifically invoke them:
 
 ### examples
 
-mostly i type `/poteto-mode` at the start of a task and let it route to a playbook. the other skills fire as the steps need them. a few i reach for directly when i already know what i want.
+mostly i type `/poteto-mode` at the start of a task and let it route to a playbook. the other skills fire as the steps need them. a few i reach for directly.
 
-**bug fix.**
-
-```
-/poteto-mode i think this pr has a subtle bug where the scroll moves a little every 750ms, even when the user is idle. repro it first, then fix and verify.
-```
-
-routes to the bug fix playbook. it reproduces the bug before it touches any code.
-
-**perf.**
-
-```
-/poteto-mode a very large list takes a second or two to load. loading time shouldn't scale with the number of items since we virtualize. run a cpu trace and tell me why.
-```
-
-routes to the perf playbook. it profiles first instead of guessing.
-
-**feature.**
-
-```
-/poteto-mode i want to build a small feature behind a feature flag. when it's on, a little ascii pet follows your cursor and reacts when you hover over things.
-```
-
-routes to the feature playbook. it names the data shape first, then builds.
-
-**prototype.**
-
-```
-/poteto-mode let's build two prototypes of the markdown renderer so we can compare them. spawn an agent for each.
-```
-
-routes to the prototype playbook. it builds both in parallel so you can pick.
-
-**multi-phase work.**
-
-```
-/poteto-mode i want to open source a set of skills as a cursor plugin. make sure nothing internal leaks. work in a temp dir and don't commit yet. and give me the dependency graph of the skills to review before you start.
-```
-
-routes to the multi-phase plan playbook. it hands back the catalogue before it writes anything.
-
-**an overnight run.**
-
-```
-/poteto-mode i'm going to bed. i queued the stack up to land. make sure it lands if ci flakes. i want to wake up with everything merged.
-```
-
-runs unattended and doesn't block on you. pairs well with `/loop`.
-
-**visual parity.**
-
-```
-/poteto-mode the spacing between rows is too tall and wrong when this flag is on. the second image is how it should look. repro and fix until it matches.
-```
-
-reproduces against the reference image, then fixes until they line up.
-
-**`/how`.**
-
-```
-/how does this work? i want to know if we have an n+1 problem when we look up all the runs to cancel.
-```
-
-a walkthrough of the subsystem, with your specific question answered.
-
-**`/why`.**
-
-```
-/why is this feature flag not on yet?
-```
-
-fans out across whatever evidence is available (source control, tickets, chat, infra) to recover the reasoning.
-
-**`/architect`.**
-
-```
-design this instrumentation so it's high signal with no false positives. /architect this first.
-```
-
-grounds with `/how`, then fans out parallel design sketches before any code gets written.
-
-**`/arena`.**
-
-```
-/arena take my first prompt to the arena verbatim. i want to hear what they propose, then compare your notes with theirs.
-```
-
-several models attempt the same task in parallel, then the best parts get merged.
-
-**`/interrogate`.**
-
-```
-/interrogate review this pr.
-```
-
-several models try to break the diff before it ships.
-
-**`/tdd`.**
-
-```
-/tdd implement
-```
-
-writes the failing test first, then the code to pass it.
-
-**`/unslop`.**
-
-```
-can we unslop and tighten up the new changes?
-```
-
-strips the ai tells out of the prose. no em dashes, no connector colons, shorter sentences.
-
-**`/reflect`.**
-
-```
-/reflect that took way too long. capture what we learned so the next run doesn't repeat it.
-```
-
-mines the session we just finished for durable lessons and folds them into the right skills.
-
-**`/automate-me`.**
-
-```
-/automate-me
-```
-
-mines your history and drafts your own `-mode` skill that routes through pstack underneath.
+- **bug fix.** `/poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even when idle. repro first, then fix and verify.` repros before touching code.
+- **perf.** `/poteto-mode a big list takes a second or two to load even though we virtualize. run a cpu trace and tell me why.` profiles before guessing.
+- **feature.** `/poteto-mode build a small feature behind a flag. an ascii pet follows the cursor and reacts on hover.` names the data shape first, then builds.
+- **prototype.** `/poteto-mode build two prototypes of the markdown renderer so we can compare. spawn an agent for each.` builds both in parallel so you pick.
+- **multi-phase.** `/poteto-mode open source these skills as a plugin. nothing internal leaks, work in a temp dir, show me the dependency graph first.` hands back the catalogue before writing anything.
+- **overnight run.** `/poteto-mode i'm going to bed. land the stack even if ci flakes. i want everything merged by morning.` runs unattended, doesn't block on you, pairs with `/loop`.
+- **visual parity.** `/poteto-mode the row spacing is too tall when this flag is on. the second image is correct. repro and fix until it matches.` fixes against the reference image until they line up.
+- **`/how`.** `/how do we cancel runs? do we have an n+1 when we look up every run to cancel?` a walkthrough of the subsystem with your question answered.
+- **`/why`.** `/why is this feature flag not on yet?` fans out across source control, tickets, chat, and infra to recover the reasoning.
+- **`/architect`.** `design this instrumentation to be high signal with no false positives. /architect this first.` grounds with `/how`, then fans out parallel design sketches before any code.
+- **`/arena`.** `/arena take my prompt to the arena verbatim. i want to compare their proposals with yours.` several models attempt the same task in parallel, then the best parts merge.
+- **`/interrogate`.** `/interrogate review this pr.` several models try to break the diff before it ships.
+- **`/tdd`.** `/tdd implement` writes the failing test first, then the code to pass it.
+- **`/unslop`.** `can we unslop and tighten the new changes?` strips the ai tells out of the prose.
+- **`/reflect`.** `/reflect that took too long. capture what we learned so the next run doesn't repeat it.` mines the finished session for lessons and folds them into the right skills.
+- **`/automate-me`.** `/automate-me` mines your history and drafts your own `-mode` skill that routes through pstack.
 
 ## the `poteto-agent` subagent
 
