@@ -41,6 +41,17 @@ Commit it only when the work is ambitious enough that a reviewer needs the trail
 - Append-only. A wrong call gets a new row that supersedes it. Never edit or delete history.
 - Prefer evidence produced by committed scripts over hand-made one-offs, so a reviewer can re-run it (the **encode-lessons-in-structure** principle skill).
 
+## Audit the log against the transcript
+
+At the end of the run, before handing back, check the log told the truth. Read this run's transcript under the active workspace's `agent-transcripts/` directory (the system prompt names the path). Don't glob across `~/.cursor/projects/*/`; that reads unrelated private chats. Walk the log against what actually happened:
+
+- Every row maps to a real action. Cut invented or aspirational entries.
+- Each row's evidence resolves and shows what the row claims.
+- A fork, pivot, or abandoned approach that shaped the work but isn't logged is a gap. Add it.
+- Drop padding. If nobody would audit a row, it doesn't earn its place.
+
+Fix the log, not the story. If the work diverged from what a row claims, the row is wrong.
+
 ## Reviewing the trail
 
 Read top to bottom, follow the evidence pointers, spot-check. GitHub renders a committed TSV as a table; `column -s$'\t' -t decisions.tsv` renders it in a terminal. A row whose evidence doesn't resolve, or whose result is unverified, is the audit catching a gap.
