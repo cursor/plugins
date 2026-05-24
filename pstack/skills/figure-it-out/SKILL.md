@@ -1,6 +1,6 @@
 ---
 name: figure-it-out
-description: "Design a rigorous, auditable playbook for a task that no standard playbook fits: large migrations, novel or ambiguous multi-phase work, or anything a human reviews after walking away. Scales rigor to the task and biases toward more, runs a hypothesis-driven loop, and keeps a decision trail via show-me-your-work. Use for /figure-it-out, 'figure it out', or when no playbook matches the task."
+description: "Design a rigorous, auditable playbook for a task too large or cross-cutting for a single bundled playbook, or that no playbook fits: a migration across many call sites, an ambitious multi-part change, novel or ambiguous multi-phase work, or anything a human reviews after stepping away. Scales rigor to the task and biases toward more, runs a hypothesis-driven loop, and keeps a decision trail via show-me-your-work. Use for /figure-it-out, 'figure it out', a large migration, or when no narrower playbook is a good fit."
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 When the task matches no playbook, design one. The deliverable before any code is the workflow itself: a sequence of phases that scales rigor to the task, runs the scientific method, and leaves a decision trail a human can audit after stepping away. Bias toward more rigor. The cost of building the wrong thing dwarfs the cost of being careful.
 
-Don't reinvent a playbook you already have. If the task matches Bug fix, Perf, Feature, Visual parity, Eval, or Multi-phase plan, route there. This skill is for work those don't cover.
+Don't reinvent a playbook you already have. A focused single-unit task that matches Bug fix, Perf, Feature, Visual parity, Eval, or Multi-phase plan routes there. But a large or cross-cutting version of one (a migration across many call sites, an ambitious multi-part change), or work the user reviews after stepping away, belongs here even though a single-unit version would be a Feature. The rigor and the audit trail are the point.
 
 ## Start
 

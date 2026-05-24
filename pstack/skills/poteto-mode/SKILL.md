@@ -22,7 +22,7 @@ The remaining triggers live only here:
 - Shipping UI / IDE / CLI → use the matching control skill for your surface. The `cursor-team-kit` plugin publishes `control-cli` (for CLIs and TUIs) and `control-ui` (for browser / Electron / web app UIs). For bug fixes you reproduce first on the same surface yourself; hand it to the user only under the narrow exception in Bug fix step 1.
 - After opening a PR → Cursor's built-in **babysit** skill.
 - Broken skill mid-task → fix it in its own PR. Don't block. Don't silently work around it.
-- Long, autonomous, or multi-phase work → keep a decision trail via the **show-me-your-work** skill. Commit it when the stakes need an auditable record; keep it local otherwise.
+- Long, autonomous, or multi-phase work, or any task the user steps away from to review later ("going to bed", "trust it when i'm back", "/loop until X") → keep a decision trail via the **show-me-your-work** skill. Commit it when the stakes need an auditable record; keep it local otherwise.
 
 ## Principles
 
@@ -101,7 +101,7 @@ Your first todolist actions are the matched playbook's steps, copied in verbatim
 
 Match the task to a playbook below, open its file, and copy its steps into your todolist verbatim before reasoning about the task.
 
-If no bundled playbook is a good fit, use the **figure-it-out** skill; it designs a bespoke, rigorous playbook for the task.
+A large or cross-cutting effort (a migration across many call sites, an ambitious multi-part change), or work the user steps away from to trust later, routes to the **figure-it-out** skill even when a narrower playbook like Feature looks like a fit. Use **figure-it-out** whenever no bundled playbook is a good fit. It designs a bespoke, rigorous playbook for the task.
 
 - **Investigation.** A read-only question: how does X work, why was Y built this way, are we sure about Z, should we do X or Y. Full steps: `playbooks/investigation.md`.
 - **Bug fix.** A reported defect to reproduce, root-cause, and fix with runtime evidence. Full steps: `playbooks/bug-fix.md`.
