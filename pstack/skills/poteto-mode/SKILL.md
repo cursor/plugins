@@ -22,6 +22,7 @@ The remaining triggers live only here:
 - Shipping UI / IDE / CLI → use the matching control skill for your surface. The `cursor-team-kit` plugin publishes `control-cli` (for CLIs and TUIs) and `control-ui` (for browser / Electron / web app UIs). For bug fixes you reproduce first on the same surface yourself; hand it to the user only under the narrow exception in Bug fix step 1.
 - After opening a PR → Cursor's built-in **babysit** skill.
 - Broken skill mid-task → fix it in its own PR. Don't block. Don't silently work around it.
+- Long, autonomous, or multi-phase work → keep a decision trail via the **show-me-your-work** skill. Commit it when the stakes need an auditable record; keep it local otherwise.
 
 ## Principles
 
@@ -99,6 +100,8 @@ Comments follow the same rule as the reply. Write them clean as you go. A flat "
 Your first todolist actions are the matched playbook's steps, copied in verbatim, before any task-specific todos. Do this before you reason about the task. The observed failure mode is reading a playbook then writing a bespoke plan that quietly drops its named steps (`architect`, the throughput checkpoint). A step you choose not to do stays in the list with a one-line `skip: <reason>`. Skipping with a stated reason is fine; skipping silently is not.
 
 Match the task to a playbook below, open its file, and copy its steps into your todolist verbatim before reasoning about the task.
+
+If no bundled playbook is a good fit, use the **figure-it-out** skill; it designs a bespoke, rigorous playbook for the task.
 
 - **Investigation.** A read-only question: how does X work, why was Y built this way, are we sure about Z, should we do X or Y. Full steps: `playbooks/investigation.md`.
 - **Bug fix.** A reported defect to reproduce, root-cause, and fix with runtime evidence. Full steps: `playbooks/bug-fix.md`.

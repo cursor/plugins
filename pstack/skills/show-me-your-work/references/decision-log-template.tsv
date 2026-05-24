@@ -1,0 +1,5 @@
+ts	phase	decision	why	evidence	result
+2026-05-24T09:02:00Z	frame	scope = ~100 units, ~75h; surface blockers before looping	ground before committing to a long run	commit 3a9f1c2	5 blockers raised, awaiting go
+2026-05-24T09:40:00Z	harness	capture baselines from the pre-change impl first	baseline must be the old truth, more reviewable	scripts/snapshot.sh, baseline/	120 baselines captured
+2026-05-24T11:15:00Z	unit/widget	relocate styles verbatim, no behavior change	smallest change that is output-identical	commit 7c21e0a, pixel-diff 0	VERIFIED, tests green
+2026-05-24T12:30:00Z	unit/widget	revert delegate output, screenshots were blank placeholders	verify the artifact not the self-report	worktree reset	reverted, contract hardened
