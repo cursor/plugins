@@ -64,7 +64,7 @@ mostly i type `/poteto-mode` at the start of a task and let it route to a playbo
 ```
 bug fix:       /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even when idle. repro first, then fix and verify.
 perf:          /poteto-mode a big list takes a second or two to load even though we virtualize. run a cpu trace and tell me why.
-feature:       /poteto-mode build a small feature behind a flag. an ascii pet follows the cursor and reacts on hover.
+feature:       /poteto-mode build a small feature behind a feature flag. verify it really works.
 prototype:     /poteto-mode build two prototypes of the markdown renderer so we can compare. spawn an agent for each.
 multi-phase:   /poteto-mode open source these skills as a plugin. nothing internal leaks, work in a temp dir, show me the dependency graph first.
 overnight run: /poteto-mode i'm going to bed. land the stack even if ci flakes. i want everything merged by morning.
