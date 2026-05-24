@@ -55,6 +55,8 @@ the rest are useful when you want to specifically invoke them:
 | `/reflect` | a long task landed and you want the recipe captured as a skill edit. |
 | `/tdd` | you're fixing a bug and there's a cheap local test path. write the failing test first, then the fix. |
 | `/typescript-best-practices` | you're reading or editing typescript. grounds the type-system-discipline principle in syntax. |
+| `/figure-it-out` | no bundled playbook fits. designs a rigorous, auditable playbook for the task. |
+| `/show-me-your-work` | you want a reviewable decision trail. logs decisions to a tsv you can commit. |
 | `/unslop` | you're cleaning up writing. removes AI tells. |
 
 ### examples
