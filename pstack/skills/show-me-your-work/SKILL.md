@@ -17,11 +17,13 @@ Copy `references/decision-log-template.tsv` to start. Columns:
 - **ts.** ISO8601 timestamp. The timeline axis.
 - **phase.** The phase or workstream.
 - **decision.** What was chosen or done, one line.
-- **why.** The rationale. Name the principle when one drove it (`exhaust-the-design-space: one-way door`).
+- **why.** The reason in plain words. If a principle drove it, say it plainly (`explored options first, this was a one-way door`), not as a jargon tag.
 - **evidence.** A link or path that proves it: commit SHA, PR number, `file:line`, or an artifact, trace, or screenshot path. Never a paragraph.
 - **result.** The outcome or predicate state: `tests green`, `reverted`, `pixel-diff 0`, `INCONCLUSIVE`, `open`.
 
 ## Logging a row
+
+Write each entry the way you'd tell a teammate what you did. Plain words, concrete actions, no AI speak or abstract jargon (the **unslop** skill applies to log text too). A reviewer should understand each row without decoding it.
 
 Use the helper so rows stay well-formed: `scripts/log.sh <logfile> <phase> <decision> <why> <evidence> <result>`. It stamps `ts`, writes the header on first use, and strips stray tabs. A bare `printf` appending a row works too.
 
