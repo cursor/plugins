@@ -64,22 +64,24 @@ the rest are useful when you want to specifically invoke them:
 mostly i type `/poteto-mode` at the start of a task and let it route to a playbook. the other skills fire as the steps need them. a few i reach for directly.
 
 ```
-bug fix:       /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even when idle. repro first, then fix and verify.
-perf:          /poteto-mode a big list takes a second or two to load even though we virtualize. run a cpu trace and tell me why.
-feature:       /poteto-mode build a small feature behind a feature flag. verify it really works.
-prototype:     /poteto-mode build two prototypes of the markdown renderer so we can compare. spawn an agent for each.
-multi-phase:   /poteto-mode open source these skills as a plugin. nothing internal leaks, work in a temp dir, show me the dependency graph first.
-overnight run: /poteto-mode i'm going to bed. land the stack even if ci flakes. i want everything merged by morning.
-visual parity: /poteto-mode the row spacing is too tall when this flag is on. the second image is correct. repro and fix until it matches.
-how:           /how do we cancel runs? do we have an n+1 when we look up every run to cancel?
-why:           /why is this feature flag not on yet?
-architect:     design this instrumentation to be high signal with no false positives. /architect this first.
-arena:         /arena take my prompt to the arena verbatim. i want to compare their proposals with yours.
-interrogate:   /interrogate review this pr.
-tdd:           /tdd implement
-unslop:        can we unslop and tighten the new changes?
-reflect:       /reflect that took too long. capture what we learned so the next run doesn't repeat it.
-automate-me:   /automate-me
+bug fix:           /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even when idle. repro first, then fix and verify.
+perf:              /poteto-mode a big list takes a second or two to load even though we virtualize. run a cpu trace and tell me why.
+feature:           /poteto-mode build a small feature behind a feature flag. verify it really works.
+prototype:         /poteto-mode build two prototypes of the markdown renderer so we can compare. spawn an agent for each.
+multi-phase:       /poteto-mode open source these skills as a plugin. nothing internal leaks, work in a temp dir, show me the dependency graph first.
+overnight run:     /poteto-mode i'm going to bed. land the stack even if ci flakes. i want everything merged by morning.
+visual parity:     /poteto-mode the row spacing is too tall when this flag is on. the second image is correct. repro and fix until it matches.
+figure it out:     /poteto-mode i'm stepping away. migrate every caller from the synchronous store to the new async one, keeping behavior identical. i want to trust it was done right when i'm back.
+how:               /how do we cancel runs? do we have an n+1 when we look up every run to cancel?
+why:               /why is this feature flag not on yet?
+architect:         design this instrumentation to be high signal with no false positives. /architect this first.
+arena:             /arena take my prompt to the arena verbatim. i want to compare their proposals with yours.
+interrogate:       /interrogate review this pr.
+tdd:               /tdd implement
+unslop:            can we unslop and tighten the new changes?
+reflect:           /reflect that took too long. capture what we learned so the next run doesn't repeat it.
+show-me-your-work: /show-me-your-work keep a decision trail i can review when i'm back.
+automate-me:       /automate-me
 ```
 
 ## the `poteto-agent` subagent
