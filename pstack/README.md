@@ -30,7 +30,26 @@ use `/poteto-mode` at the start of a task. it reads your request, picks from a s
 
 ### just use `/poteto-mode`
 
-this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with fourteen playbooks. investigation, bug fix, perf, runtime forensics, trace forensics, feature, refactoring, prototype, visual parity, authoring a skill, eval, autonomous run, session pickup, and multi-phase plan. when invoked it:
+this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with fourteen playbooks:
+
+| playbook | for |
+|---|---|
+| investigation | a read-only question. how does x work, why was y built this way, are we sure. |
+| bug fix | reproduce a defect, root-cause it, and fix with runtime evidence. |
+| perf | trace a measured slowness and improve it against a baseline. |
+| runtime forensics | diagnose a live symptom (leak, idle-cpu spin, glitch) from instrumentation. |
+| trace forensics | diagnose a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot). |
+| feature | new or changed behavior, built from a named data shape. |
+| refactoring | a behavior-preserving change to structure or shape. |
+| prototype | a throwaway sketch to make a design decision cheaply. |
+| visual parity | pixel-exact ui equivalence between two implementations. |
+| authoring a skill | writing or editing a SKILL.md. |
+| eval | test how a skill or prompt change affects agent behavior, blinded. |
+| autonomous run | drive a long task to completion without stopping. |
+| session pickup | resume or take over a prior agent's in-flight work. |
+| multi-phase plan | work that spans phases or stacked PRs. |
+
+when invoked it:
 
 1. opens a todo list. the first item is reading the inline principles index in the skill.
 2. matches your task to a playbook and copies the steps in verbatim.
