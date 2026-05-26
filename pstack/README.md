@@ -30,7 +30,7 @@ use `/poteto-mode` at the start of a task. it reads your request, picks from a s
 
 ### just use `/poteto-mode`
 
-this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with seven playbooks. investigation, bug fix, perf, feature, authoring a skill, eval, and multi-phase plan. when invoked it:
+this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with fourteen playbooks. investigation, bug fix, perf, runtime forensics, trace forensics, feature, refactoring, prototype, visual parity, authoring a skill, eval, autonomous run, session pickup, and multi-phase plan. when invoked it:
 
 1. opens a todo list. the first item is reading the inline principles index in the skill.
 2. matches your task to a playbook and copies the steps in verbatim.
