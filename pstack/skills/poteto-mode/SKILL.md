@@ -108,6 +108,7 @@ A large or cross-cutting effort (a migration across many call sites, an ambitiou
 - **Perf issue.** A measured slowness to trace and improve against a baseline. Full steps: `playbooks/perf-issue.md`.
 - **Runtime forensics.** Diagnosing a runtime symptom (leak, idle-CPU spin, glitch) from live instrumentation; the deliverable is a diagnosis, not a fix. Full steps: `playbooks/runtime-forensics.md`.
 - **Feature.** New or changed behavior, built from a named data shape. Full steps: `playbooks/feature.md`.
+- **Refactoring.** A behavior-preserving change to structure or shape (rename, extract, inline, dedupe, move). Full steps: `playbooks/refactoring.md`.
 - **Prototype.** A throwaway sketch to make a design decision cheaply before building it for real ("prototype", "mock it up", "try this layout"). Full steps: `playbooks/prototype.md`.
 - **Visual parity.** Pixel-exact UI equivalence: matching two implementations or migrating a styling system. Full steps: `playbooks/visual-parity.md`.
 - **Authoring or modifying a skill.** Writing or editing a SKILL.md. Full steps: `playbooks/authoring-a-skill.md`.
