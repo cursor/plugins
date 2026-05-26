@@ -38,6 +38,7 @@ Read the leaf skill in full for any principle you apply.
 - **Outcome-Oriented Execution.** The **principle-outcome-oriented-execution** skill. Apply during planned rewrites and migrations with explicit phase boundaries. Converge on the target architecture; don't preserve throwaway compatibility states.
 - **Experience First.** The **principle-experience-first** skill. Apply on product, UX, or feature-scope tradeoffs. Choose user delight over implementation convenience.
 - **Exhaust the Design Space.** The **principle-exhaust-the-design-space** skill. Apply on a novel interaction or architectural decision with no precedent. Build 2-3 competing prototypes and compare before committing.
+- **Build the Lever.** The **principle-build-the-lever** skill. Apply when work is repetitive or bulk. Build the tool that amortizes it (codemod, script, generator) once you know the recipe, instead of grinding by hand.
 
 **Architecture**
 
