@@ -107,6 +107,7 @@ A large or cross-cutting effort (a migration across many call sites, an ambitiou
 - **Bug fix.** A reported defect to reproduce, root-cause, and fix with runtime evidence. Full steps: `playbooks/bug-fix.md`.
 - **Perf issue.** A measured slowness to trace and improve against a baseline. Full steps: `playbooks/perf-issue.md`.
 - **Runtime forensics.** Diagnosing a runtime symptom (leak, idle-CPU spin, glitch) from live instrumentation; the deliverable is a diagnosis, not a fix. Full steps: `playbooks/runtime-forensics.md`.
+- **Trace forensics.** Diagnosing a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot) handed to you after the fact; the deliverable is a diagnosis, not a fix. Full steps: `playbooks/trace-forensics.md`.
 - **Feature.** New or changed behavior, built from a named data shape. Full steps: `playbooks/feature.md`.
 - **Refactoring.** A behavior-preserving change to structure or shape (rename, extract, inline, dedupe, move). Full steps: `playbooks/refactoring.md`.
 - **Prototype.** A throwaway sketch to make a design decision cheaply before building it for real ("prototype", "mock it up", "try this layout"). Full steps: `playbooks/prototype.md`.
@@ -114,5 +115,6 @@ A large or cross-cutting effort (a migration across many call sites, an ambitiou
 - **Authoring or modifying a skill.** Writing or editing a SKILL.md. Full steps: `playbooks/authoring-a-skill.md`.
 - **Eval.** Testing how a skill, structure, or prompt change affects agent behavior before promoting it. Full steps: `playbooks/eval.md`.
 - **Autonomous run.** A long task to drive to completion without stopping ("run until done", "/loop until X"). Full steps: `playbooks/autonomous-run.md`.
+- **Session pickup.** Resuming or taking over a prior agent's in-flight work from a transcript, cloud-agent URL, or pushed branch. Full steps: `playbooks/session-pickup.md`.
 - **Multi-phase or multi-PR plan.** Work that spans phases or stacked PRs. Full steps: `playbooks/multi-phase-plan.md`.
 - **Opening a PR.** Invoked at the end of every other playbook. Full steps: `playbooks/opening-a-pr.md`.
