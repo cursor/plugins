@@ -1,0 +1,12 @@
+.DS_Store
+node_modules/
+.env
+.env.*
+!.env.example
+
+# Founder-local artifacts (each founder's own; not committed)
+sales-pack.md
+prospects/
+outreach-log/
+.gtm-state/
+*.local.md

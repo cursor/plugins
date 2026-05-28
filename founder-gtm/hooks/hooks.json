@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "bash ${CURSOR_PLUGIN_ROOT}/hooks/welcome-on-first-session.sh",
+        "timeout": 5
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "bash ${CURSOR_PLUGIN_ROOT}/hooks/check-voice-on-edit.sh",
+        "matcher": "Write|Edit",
+        "timeout": 5
+      }
+    ]
+  }
+}

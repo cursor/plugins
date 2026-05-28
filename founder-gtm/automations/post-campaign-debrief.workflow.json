@@ -1,0 +1,37 @@
+{
+  "name": "founder-gtm — post-campaign debrief",
+  "description": "Manual-trigger automation. Run 7 days after a specific campaign goes out to get a focused learning report for just that campaign, separate from the weekly cross-campaign /gtm-get-better sweep. Useful when you want to know if a single play worked before deciding whether to run it again or retire it.",
+  "trigger": {
+    "type": "manual",
+    "inputs": [
+      {
+        "name": "campaign_name",
+        "description": "The campaign slug to debrief (e.g. seed-funded-vp-eng-2026-01). Must match the campaign field in outreach-log/*.jsonl rows.",
+        "required": true
+      },
+      {
+        "name": "lookback_days",
+        "description": "How many days back to read from the log. Defaults to 14.",
+        "required": false,
+        "default": 14
+      }
+    ]
+  },
+  "workflow": {
+    "steps": [
+      {
+        "type": "agent",
+        "workspace": {
+          "root": ".",
+          "fallbackToProjectRoot": true
+        },
+        "prompt": "Run a campaign-scoped debrief of the play named {{campaign_name}}.\n\n1. Filter outreach-log/*.jsonl rows where campaign == {{campaign_name}} AND timestamp within last {{lookback_days}} days.\n2. Run /gtm-cold-email --check-replies if any email touches are in scope and gmail-token exists.\n3. Ask me to log any X/LinkedIn replies for this campaign's prospects that aren't already in manual-replies.jsonl.\n4. Compute the gtm-get-better metrics for this campaign only:\n   - enrolled, reply_rate, positive_rate, OOO-filtered_rate\n   - by-touch attribution (which touch produced each positive)\n   - opener / subject patterns that landed vs didn't (sample N may be small; flag if N<10)\n5. Compare against the success criteria in plays/{{campaign_name slugged to play file}}.md.\n6. Recommend ONE of: double down (run another cycle as-is) / iterate copy (re-run /gtm-design-play in iteration mode) / iterate signal or persona / retire.\n7. Update plays/{{campaign_name}}.md status if I confirm a decision.\n8. Append a campaign-scoped note to sales-pack.md § Update log (do NOT replace the weekly gtm-get-better entries — both should coexist).\n\nIf N<10 enrolled, refuse to make a strong recommendation. Tell me to run another cycle before judging the play."
+      }
+    ]
+  },
+  "notifications": {
+    "onComplete": "full",
+    "onNeedsInput": "always"
+  },
+  "version": "0.2.0"
+}

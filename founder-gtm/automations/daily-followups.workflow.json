@@ -1,0 +1,28 @@
+{
+  "name": "founder-gtm — daily followups + reply check",
+  "description": "Runs the cold-email state machine once a day. Checks replies, cancels pending follow-ups on any thread that replied, advances the queue for everyone else (respecting the daily cap and spacing). Surfaces positive replies for the founder to handle personally.",
+  "trigger": {
+    "type": "schedule",
+    "cron": "0 16 * * 1-5",
+    "timezone": "America/Los_Angeles",
+    "notes": "Fires weekdays at 9am Pacific. Late enough that overnight OOO replies are in, early enough that the day's follow-ups go out at normal business hours."
+  },
+  "workflow": {
+    "steps": [
+      {
+        "type": "agent",
+        "workspace": {
+          "root": ".",
+          "fallbackToProjectRoot": true
+        },
+        "prompt": "Run the gtm-cold-email reply state machine for today.\n\n1. Run /gtm-cold-email --check-replies first:\n   - Pull recent inbound from Gmail (last 14 days, threads we initiated).\n   - For each thread with new inbound, classify the first inbound message (positive/objection/neutral/OOO/negative) using the rubric in the gtm-get-better skill.\n   - Apply OOO heuristics first (cheap pre-filter), then LLM classification for the rest.\n   - Append to outreach-log/email-replies.jsonl with is_first_reply=true.\n   - For any classified thread, cancel pending follow-up entries in outreach-log/email-followups-pending.jsonl.\n\n2. Then run /gtm-cold-email --followups:\n   - For each pending entry where send_after <= now AND prospect state is NOT_REPLIED:\n     - Verify today's send count is under COLD_EMAIL_DAILY_CAP (default 25).\n     - Send via Gmail API (the draft already exists).\n     - Log to outreach-log/email.jsonl.\n     - Remove from pending.\n\n3. End with a one-screen summary:\n   - Follow-ups sent today: N\n   - New replies classified: positive=X, objection=Y, neutral=Z, OOO=W, negative=V\n   - Positive replies needing my personal response:\n     - {prospect_name} ({company}): \"{reply_excerpt}\"\n     - (one line per positive)\n   - Daily cap remaining: M of CAP\n\nIf there are positive replies, offer to draft personalized responses in my voice (from sales-pack.md) for me to review and send."
+      }
+    ]
+  },
+  "notifications": {
+    "onComplete": "brief",
+    "onNeedsInput": "always",
+    "summary": "Always notify on positive replies. Brief notification otherwise."
+  },
+  "version": "0.2.0"
+}
