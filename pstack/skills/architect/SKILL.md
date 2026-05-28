@@ -28,7 +28,7 @@ Skip Phase A only when the work is genuinely greenfield with no surrounding syst
 
 ## Phase B: Sketch
 
-Run the **arena** skill with the design-sketch task and the Phase A grounding artifacts as input. Pass `references/runner-prompt.md` as each runner's prompt. Each candidate produces a design package shaped per `references/rationale-template.md`: type sketch, function signatures, module map, and prose rationale.
+Run the **arena** skill with the design-sketch task and the Phase A grounding artifacts as input. Pass `references/runner-prompt.md` as each runner's prompt. Each candidate produces a design package shaped per `references/rationale-template.md`: the caller's usage written first, then the type sketch, function signatures, module map, and prose rationale derived from it.
 
 Use these slugs for the Phase B runners: `claude-opus-4-7-thinking-xhigh`, `gpt-5.3-codex-high-fast`, `gpt-5.5-high-fast`, and `composer-2.5-fast`.
 
@@ -76,4 +76,4 @@ When you do scrap:
 
 ## Outputs
 
-One file with new types and signatures for small changes; the module map plus type definitions for larger work. The rationale ships alongside, shaped per `references/rationale-template.md`, including the synthesis decision.
+The caller's usage is written first and the type sketch derived from it. One file with new types and signatures for small changes; the module map plus type definitions for larger work. The rationale ships alongside, shaped per `references/rationale-template.md`, including the usage sketch and the synthesis decision.
