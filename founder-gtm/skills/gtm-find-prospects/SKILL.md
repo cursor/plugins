@@ -247,14 +247,15 @@ Once you have a `role` column populated, run the title classifier:
 ```bash
 python ${CURSOR_PLUGIN_ROOT}/skills/gtm-find-prospects/scripts/title-classifier.py \
   --input prospects/raw.csv \
-  --output prospects/classified.csv
+  --out prospects/classified.csv
 ```
 
-This adds three columns based on keyword lists in `data/title-keywords.txt` and `data/title-exclusions.txt`:
+This adds four columns based on keyword lists in `data/title-keywords.txt` and `data/title-exclusions.txt`:
 
-- `title_is_tech_leader`, true if the role matches the leadership + technology rules
-- `title_is_mid_tier`, true for senior IC titles (Staff, Principal, Tech Lead)
-- `title_excluded_reason`, populated when an exclusion matched (e.g. "excluded:sales engineer", "excluded:chief of staff")
+- `persona_bucket`, the first matching persona bucket from `data/title-keywords.txt` (e.g. `cto`, `vp_engineering`, `staff_principal_engineer`)
+- `persona_confidence`, `high` when 2+ keywords matched, `medium` when 1 keyword matched, blank when no persona matched
+- `matched_keywords`, the pipe-separated keywords that matched
+- `exclusion_reason`, populated when an exclusion matched (e.g. `sales engineer`, `chief of staff`)
 
 Edit the data files to fit your ICP. The defaults are tuned for "VP+ engineering at startups" and exclude common look-alikes like Director of Sales Engineering, Chief of Staff, Customer Success leaders, and hardware engineers.
 
@@ -312,7 +313,7 @@ Score each candidate 0 to 100:
 | Factor | Weight | How to score |
 |---|---|---|
 | Signal strength | 35 | High (just funded, just complained about your problem) = 35. Medium (recently changed roles, recently shipped) = 22. Low (matches persona) = 8. |
-| Persona fit | 30 | `title_is_tech_leader` true and exact persona match = 30. Tech leader, adjacent persona = 18. Mid-tier IC at right company = 12. |
+| Persona fit | 30 | `persona_bucket` matches the target persona and `persona_confidence` is high or medium = 30. Adjacent engineering leadership bucket = 18. `staff_principal_engineer` or `founding_engineer` at the right company = 12. Rows with `exclusion_reason` populated should usually be dropped before ranking. |
 | Reachability | 15 | Email confirmed + LinkedIn + X = 15. Two of three = 9. One = 4. |
 | Warm path | 10 | Accelerator batchmate, shared connection, mutual follow, shared work history = 10. Otherwise 0. |
 | Play priors | 10 | Bump up if the signal type has worked for this founder before (read from `outreach-log/learned-*.md`). Defaults to 0 for first campaign. |

@@ -7,7 +7,7 @@
 | Field | Value |
 |---|---|
 | **Name** | daily-followups |
-| **Description** | Every weekday at 7am, run `/gtm-cold-email --followups` so Touch 2 / 3 / 4 messages go out on cadence. Honors the daily send cap from `.env` and the per-thread reply state so anyone who already replied gets dropped from the queue. |
+| **Description** | Every weekday at 7am, run `/gtm-cold-email --followups` so Touch 2 / 3 / 4 messages go out on cadence. Honors the daily send cap from `${CURSOR_PLUGIN_ROOT}/.env` and the per-thread reply state so anyone who already replied gets dropped from the queue. |
 | **Trigger** | Cron: `0 7 * * 1-5` (weekdays 7am local) |
 | **Tools** | None required. Cold-email uses the Gmail OAuth token stored at `${CURSOR_PLUGIN_ROOT}/.gtm-state/gmail-token.json`. |
 | **Optional tools** | `slack` — to ping you if the daily cap was hit or if any send failed (e.g. bounce). |

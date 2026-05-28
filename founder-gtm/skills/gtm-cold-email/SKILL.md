@@ -134,14 +134,14 @@ Options:
 - Auto-send with cap — sends up to {{daily-cap}} today, spaced 2–5 minutes apart
 ```
 
-Daily cap default: 25. Configurable via `.env`:
+Daily cap default: 25. Configurable via `${CURSOR_PLUGIN_ROOT}/.env`:
 ```
 COLD_EMAIL_DAILY_CAP=25
 COLD_EMAIL_MIN_INTERVAL_SECONDS=120
 COLD_EMAIL_MAX_INTERVAL_SECONDS=300
 ```
 
-Track today's sent count in `.gtm-state/send-counter-{{YYYY-MM-DD}}.json`. Refuse to exceed the cap.
+Track today's sent count in `${CURSOR_PLUGIN_ROOT}/.gtm-state/send-counter-{{YYYY-MM-DD}}.json`. Refuse to exceed the cap.
 
 ### Step 3: For each prospect, draft the sequence
 
@@ -259,7 +259,7 @@ Each send uses the Gmail API's `users.messages.send`. The skill's helper script 
 - Encoding the message as RFC 2822 + base64url.
 - Threading: Steps 2 to 4 use the same Message-ID `In-Reply-To` so they thread under Step 1 in the recipient's inbox.
 - Spacing: enforce `COLD_EMAIL_MIN_INTERVAL_SECONDS` between sends in auto-send mode.
-- Cap enforcement: increment `.gtm-state/send-counter-{{date}}.json`; refuse to exceed cap.
+- Cap enforcement: increment `${CURSOR_PLUGIN_ROOT}/.gtm-state/send-counter-{{date}}.json`; refuse to exceed cap.
 
 Drafts mode: use `users.drafts.create` instead. Drafts appear in the founder's Gmail Drafts folder; threading still works on send.
 

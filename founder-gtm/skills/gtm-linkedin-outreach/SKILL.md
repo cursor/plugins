@@ -24,7 +24,7 @@ Options:
 - Manual: I'll copy-paste each note into LinkedIn myself
 ```
 
-Persist the choice to `.gtm-state/tools.json` under key `linkedin_tool`.
+Persist the choice to `${CURSOR_PLUGIN_ROOT}/.gtm-state/tools.json` under key `linkedin_tool`.
 
 ### 0b: Pick the daily connect limit
 
@@ -47,7 +47,7 @@ Options:
 - Override (I'll set my own number)
 ```
 
-Save the chosen integer as `LINKEDIN_DAILY_LIMIT` in `${CURSOR_PLUGIN_ROOT}/.env`. Also write the choice to `.gtm-state/tools.json` under `linkedin_daily_limit` so other tools see the same number.
+Save the chosen integer as `LINKEDIN_DAILY_LIMIT` in `${CURSOR_PLUGIN_ROOT}/.env`. Also write the choice to `${CURSOR_PLUGIN_ROOT}/.gtm-state/tools.json` under `linkedin_daily_limit` so other tools see the same number.
 
 ### 0c: Per-day counter
 

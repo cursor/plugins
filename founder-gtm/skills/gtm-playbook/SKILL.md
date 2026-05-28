@@ -5,9 +5,9 @@ description: Opens or points to the Founder GTM canvas playbook. Use when a foun
 
 # GTM Playbook
 
-Open the visual playbook at `canvases/founder-gtm-playbook.canvas.tsx`.
+Open the visual playbook at `${CURSOR_PLUGIN_ROOT}/canvases/founder-gtm-playbook.canvas.tsx`.
 
-If the `cursor-app-control` MCP is available, use `open_resource` to open that file in Cursor. If it is not available, tell the founder where the canvas lives and suggest running `/gtm-setup` after they skim it.
+If the `cursor-app-control` MCP is available, use `open_resource` with that absolute plugin-root path. Do not open `canvases/founder-gtm-playbook.canvas.tsx` as a workspace-relative path; after Marketplace install, the canvas lives inside the installed plugin, not necessarily in the founder's current project. If `cursor-app-control` is not available, tell the founder where the canvas lives and suggest running `/gtm-setup` after they skim it.
 
 After opening the canvas, give a short orientation:
 
