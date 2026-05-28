@@ -32,8 +32,6 @@ Internal-style workflows for CI, code review, shipping, and test reliability. Th
 | `deslop` | Remove AI-generated code slop and clean up code style |
 | `workflow-from-chats` | Extract durable working preferences from chats into skills, rules, or docs |
 
-Thermo-nuclear review skills (`thermos`, deep review, code-quality rubrics, subagents) moved to the **[Thermos](../thermos/)** plugin. Install with `/add-plugin thermos`.
-
 ### Agents
 
 | Agent | Description |
