@@ -1,3 +1,0 @@
-requests>=2.31
-feedparser>=6.0
-mcp>=1.0

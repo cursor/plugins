@@ -69,11 +69,6 @@
       "description": "Fan large tasks out across parallel Cursor cloud agents with planners, workers, verifiers, and structured handoffs."
     },
     {
-      "name": "founder-gtm",
-      "source": "founder-gtm",
-      "description": "Go-to-market toolkit for early-stage founders: sales pack, prospecting, outbound on X, LinkedIn, email, warm intros, and a weekly learning loop."
-    },
-    {
       "name": "pstack",
       "source": "pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
