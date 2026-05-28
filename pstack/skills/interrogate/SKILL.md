@@ -37,7 +37,7 @@ Launch all four in a single message using the Task tool, each with a different m
 
 | Subagent | Model |
 |----------|-------|
-| Reviewer A | `claude-opus-4-7-thinking-xhigh` |
+| Reviewer A | `claude-opus-4-8-thinking-xhigh` |
 | Reviewer B | `gpt-5.3-codex-high-fast` |
 | Reviewer C | `gpt-5.5-high-fast` |
 | Reviewer D | `composer-2.5-fast` |

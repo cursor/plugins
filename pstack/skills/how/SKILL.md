@@ -64,7 +64,7 @@ Then proceed to Step 3.
 Spawn a single Task subagent that explores and explains in one pass:
 
 - `subagent_type`: `generalPurpose`
-- `model`: `claude-opus-4-7-thinking-xhigh`
+- `model`: `claude-opus-4-8-thinking-xhigh`
 - `readonly`: `true`
 
 This agent does its own exploration (Glob, Grep, Read) and writes the explanation directly. Read `references/explainer-prompt.md` for the communication style and output format. The agent follows the same structure, it just doesn't have explorer findings as input.
@@ -76,7 +76,7 @@ Proceed to Step 4.
 Once all explorers have returned, spawn a single Task subagent to synthesize their findings into one coherent explanation:
 
 - `subagent_type`: `generalPurpose`
-- `model`: `claude-opus-4-7-thinking-xhigh`
+- `model`: `claude-opus-4-8-thinking-xhigh`
 - `readonly`: `true`
 
 The explainer gets all explorers' findings and writes the human-facing explanation (see output format below). Read `references/explainer-prompt.md` for the full prompt template. The explainer reconciles overlapping findings, resolves contradictions, and weaves the separate slices into a unified picture.
@@ -113,7 +113,7 @@ After the explanation is complete, spawn architectural critics. Launch all in a 
 
 | Subagent | Model |
 |----------|-------|
-| Critic A | `claude-opus-4-7-thinking-xhigh` |
+| Critic A | `claude-opus-4-8-thinking-xhigh` |
 | Critic B | `gpt-5.3-codex-high-fast` |
 | Critic C | `gpt-5.5-high-fast` |
 

@@ -76,7 +76,7 @@ Read the leaf skill in full for any principle you apply.
 
 **Use `subagent_type: "poteto-agent"` for any subagent you spawn directly inside a playbook step** (code-writing delegates, ad-hoc helpers). `/poteto-mode` and `subagent_type: "poteto-agent"` route through the same wrapper. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`) configure their own `subagent_type` for diverse-model review and exploration; respect what the skill prescribes rather than overriding it to `poteto-agent`.
 
-**Defaults for every `Task` call.** `run_in_background: true`, agent mode (readonly strips MCP), file pointers not inlined context, and explicit model (`composer-2.5-fast` for code, `claude-opus-4-7-thinking-xhigh` for prose and judgment).
+**Defaults for every `Task` call.** `run_in_background: true`, agent mode (readonly strips MCP), file pointers not inlined context, and explicit model (`composer-2.5-fast` for code, `claude-opus-4-8-thinking-xhigh` for prose and judgment).
 
 You own every subagent's work. Review the diff and write your own summary; don't pass through what it said. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary. A second opinion is the same prompt against a different model; agreement is high-signal.
 
