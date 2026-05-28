@@ -6,6 +6,10 @@ This is the prose that ships alongside the type sketch. One page. Sentence-case 
 
 *One paragraph. What we're trying to do, and what about the existing system or constraints makes the shape non-obvious. If [Phase A](../SKILL.md#phase-a-ground-the-problem) surfaced constraints the design now has to honor (existing types we have to interop with, callers we can't break, invariants that crossed our boundary), name them here so the reader sees the same constraints you saw.*
 
+## Usage (caller's view)
+
+*Write this first, before the type sketch. Show the README or quickstart the consumer reads, plus two or three realistic call sites in their own code. What they import, what they call, what comes back. The type sketch in [Shape](#shape) is derived from this. The two must agree, so when they diverge, reconcile the sketch to the usage, not the reverse. The caller's experience is the spec. The types serve it.*
+
 ## Shape
 
 *The recommended architecture. Data structures first; then how data flows through the signatures. Name the load-bearing decisions: which invariants are encoded in types, where validation lives, what the system deliberately does not do. Cite the principle behind each decision (e.g., `per boundary-discipline`); don't restate it.*
