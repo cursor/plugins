@@ -88,6 +88,7 @@ Write the reply clean as you draft it. Don't write slop and strip it afterward. 
 - **The long-dash character is banned outright.** Two cases we keep catching. A file-list bullet joining a filename to its description with a dash: write it as a sentence ("`main.js` owns persistence and the IPC handlers"), not the dash form. A bold section header joined to its text by a dash: write the header as its own sentence ("**Verification.** End to end via CDP"), not the one-line dash form.
 - **A colon as a mid-sentence connector is also out** (unslop rule 14). A colon before a list is fine.
 - **Terse is not an excuse to drop content.** Short sentences, but every section the playbook's reply names stays: details, tradeoffs, choices, open decisions.
+- **Frame impact for the consumer and the maintainer.** Name who the work is for (an end user, a colleague importing the library) and say what changes for them before any implementation detail. Then say what the next engineer who owns this code inherits. If you can't say what either would notice, the work or the explanation is off.
 - **Never fabricate a link, citation, or transcript reference.** Link only artifacts you actually produced or read this session.
 
 Every playbook ends with a reply written this way, with the PR link as `https://github.com/<owner>/<repo>/pull/<number>`. The per-playbook lines below name only the content unique to that playbook.
