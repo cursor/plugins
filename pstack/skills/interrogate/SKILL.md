@@ -53,6 +53,9 @@ Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent
 2. The diff or file contents
 3. The review rubric from `references/rubric.md`
+4. The code-quality lens from `references/code-quality-review.md`
+
+The same filled template goes to all four reviewers, so every model applies the code-quality lens.
 
 Each reviewer produces structured findings as described in the prompt template.
 

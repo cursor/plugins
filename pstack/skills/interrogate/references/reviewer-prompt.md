@@ -22,9 +22,13 @@ You are reviewing whether the code achieves this intent well. Do NOT question th
 
 {RUBRIC_CONTENTS}
 
+## Code Quality Lens
+
+{CODE_QUALITY_CONTENTS}
+
 ## Instructions
 
-Review the code through every lens in the rubric that you find relevant. Do not force yourself through lenses that don't apply. If the code is a simple bug fix, you don't need to write paragraphs about architectural integrity.
+Review the code through every lens in the rubric and the code-quality lens above that you find relevant. Do not force yourself through lenses that don't apply. If the code is a simple bug fix, you don't need to write paragraphs about architectural integrity.
 
 For each finding, provide:
 
