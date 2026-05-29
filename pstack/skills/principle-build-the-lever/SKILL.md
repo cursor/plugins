@@ -1,21 +1,23 @@
 ---
 name: principle-build-the-lever
-description: "Apply when work is repetitive or bulk: many similar edits, a check you'll rerun, a population to transform, a fan-out to subagents. Build the tool that amortizes it (codemod, script, generator, or a skill your subagents follow) once you know the recipe, instead of grinding by hand."
+description: "Apply to any non-trivial work, not just bulk work: edits, migrations, analyses, checks. Build the tool that does it or proves it (codemod, script, generator, or a skill your subagents follow) instead of working by hand. The tool is the artifact a reviewer can rerun."
 disable-model-invocation: true
 ---
 # Build the Lever
 
-When the work repeats, build the tool that does it instead of grinding by hand.
+When the work isn't trivial, build the tool that does it instead of doing it by hand.
 
-**Why:** Doing the same edit a hundred times is slow and drifts into inconsistent mistakes. A codemod, generator, or script does it once, the same way every time, reruns for free, and gives a reviewer one artifact to check.
+**Why:** Two payoffs. Throughput: a codemod, generator, or script does the work the same way every time and reruns for free. Confidence: the tool is one artifact a reviewer can read and rerun to check the work. Hand-done changes can only be re-verified by redoing them. A deterministic script turns "trust me" into "run this".
 
-**Pattern:** When you would otherwise repeat a transform, a check, or a setup more than a handful of times, build the lever instead.
+**Pattern:** Default to building the lever. Skip it only when the task is genuinely trivial, a couple of obvious edits you can see at a glance.
 
-- Do the first few by hand to learn the exact recipe, then build the tool. Don't build on a guess.
-- Codemod or script for bulk edits, generator for repetitive files, a dump-to-sqlite query for repeated analysis, a rerunnable check for repeated verification.
-- When you fan work out to subagents, write the lever as a skill they all read: the recipe, the verification contract, and the do-not-touch fences in one artifact, so every delegate inherits the same hardened version instead of re-explaining it per prompt and watching each one drift. Harden it the moment a delegate games or drops the contract, then re-dispatch. Keep it outside the delegates' write scope so they can't quietly edit the contract.
-- Commit it when the work outlives the session, so the next run reruns it instead of redoing it.
+- Do the first unit by hand to learn the recipe, then build the tool. Prove it by rerunning it on that unit and diffing against your hand-done version. Make the lever safe to rerun. A reviewer will.
+- Codemod or script for edits, generator for repetitive files, a dump-to-sqlite query for analysis, a rerunnable check for verification.
+- A deterministic lever beats fan-out. If the tool can process every unit in one pass, run it yourself; don't fan out delegates to hand-apply what a script can do.
+- When you fan work out to subagents, write the lever as a skill they all read: the recipe, the verification contract, and the do-not-touch fences in one artifact, so every delegate inherits the same hardened version instead of re-explaining it per prompt and watching each one drift. Keep it outside the delegates' write scope so they can't quietly edit the contract.
+- Applying this principle produces a file. If you cited it and there is no codemod, script, generator, or delegate skill in the diff, you didn't apply it.
+- Commit the lever when the work outlives the session, so the next run reruns it instead of redoing it.
 
-**Balance:** Leverage, not gold-plating. The [Laziness Protocol](../principle-laziness-protocol/SKILL.md) still holds. Build the lever only when it pays for itself across the remaining work, never for a one-off.
+**Balance:** The bar is triviality, not repetition. A one-off still earns a lever when the lever is what makes the work checkable. Leverage, not gold-plating, per the [Laziness Protocol](../principle-laziness-protocol/SKILL.md): the smallest script that does or proves the job, never a framework.
 
-Distinct from [Encode Lessons in Structure](../principle-encode-lessons-in-structure/SKILL.md), which makes a recurring instruction a durable guardrail. This is throughput on the work in front of you.
+Distinct from [Encode Lessons in Structure](../principle-encode-lessons-in-structure/SKILL.md), which makes a recurring instruction a durable guardrail. This is throughput and reviewability on the work in front of you. For scripting the verification itself, see [Prove It Works](../principle-prove-it-works/SKILL.md).
