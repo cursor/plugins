@@ -54,7 +54,7 @@ when invoked it:
 1. opens a todo list. the first item is reading the inline principles index in the skill.
 2. matches your task to a playbook and copies the steps in verbatim.
 3. routes to the other skills as the steps fire.
-4. writes unslopped replies.
+4. writes unslopped replies framed for the consumer and the maintainer.
 
 the full rules and playbooks live in `skills/poteto-mode/SKILL.md`.
 
@@ -67,9 +67,9 @@ the rest are useful when you want to specifically invoke them:
 | `/poteto-mode` | default entry point for any non-trivial task. |
 | `/how` | you want a walkthrough of how a subsystem works. |
 | `/why` | you want to know why something was built this way. discovers available MCPs at run time and queries each evidence category in parallel (source control, issue tracker, long-form docs, real-time chat, infra observability, error tracking, analytics warehouse). |
-| `/architect` | you're about to write code that crosses a function boundary and want the types and module shape settled first. |
+| `/architect` | you're about to write code that crosses a function boundary and want the caller's usage, types, and module shape settled first. |
 | `/arena` | you want N parallel attempts at the same thing, then to grab the best parts of each. |
-| `/interrogate` | you have a diff and want four different models to try to break it. |
+| `/interrogate` | you have a diff and want four different models to try to break it, including a strict code-quality lens. |
 | `/automate-me` | you want your own `-mode` skill, drafted from how you've actually worked. |
 | `/reflect` | a long task landed and you want the recipe captured as a skill edit. |
 | `/tdd` | you're fixing a bug and there's a cheap local test path. write the failing test first, then the fix. |
