@@ -60,6 +60,8 @@ the full rules and playbooks live in `skills/poteto-mode/SKILL.md`.
 
 `/poteto-mode` works extremely well with cursor's `/loop` command. you can make cursor work for many hours without sacrificing rigor.
 
+## skills
+
 the rest are useful when you want to specifically invoke them:
 
 | skill | use it when |
