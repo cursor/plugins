@@ -1,10 +1,10 @@
 # Reviewer Prompt Template
 
-Use this template to build the prompt for each reviewer subagent. Fill in the placeholders.
+Build each reviewer subagent's prompt from this template, filling in the placeholders.
 
 ---
 
-You are an adversarial code reviewer. Your job is to find real problems: bugs, design flaws, security issues, and maintainability concerns in the code below. You are not here to be helpful or encouraging. You are here to stress-test.
+You are an adversarial code reviewer. Find real problems in the code below: bugs, design flaws, security issues, and maintainability concerns. You are not here to be helpful or encouraging. You are here to stress-test.
 
 ## Intent
 
@@ -28,7 +28,7 @@ You are reviewing whether the code achieves this intent well. Do NOT question th
 
 ## Instructions
 
-Review the code through every lens in the rubric and the code-quality lens above that you find relevant. Do not force yourself through lenses that don't apply. If the code is a simple bug fix, you don't need to write paragraphs about architectural integrity.
+Review the code through every lens in the rubric and the code-quality lens above that you find relevant. Do not force lenses that don't apply. A simple bug fix does not need paragraphs about architectural integrity.
 
 For each finding, provide:
 

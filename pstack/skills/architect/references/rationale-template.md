@@ -1,14 +1,14 @@
 # Rationale template
 
-This is the prose that ships alongside the type sketch. One page. Sentence-case headings, no boilerplate. Replace the italic notes with the actual content.
+The prose that ships alongside the type sketch. One page. Sentence-case headings, no boilerplate. Replace the italic notes with actual content.
 
 ## Problem
 
-*One paragraph. What we're trying to do, and what about the existing system or constraints makes the shape non-obvious. If [Phase A](../SKILL.md#phase-a-ground-the-problem) surfaced constraints the design now has to honor (existing types we have to interop with, callers we can't break, invariants that crossed our boundary), name them here so the reader sees the same constraints you saw.*
+*One paragraph. What we're trying to do, and what about the existing system or constraints makes the shape non-obvious. If [Phase A](../SKILL.md#phase-a-ground-the-problem) surfaced constraints the design must honor (existing types to interop with, callers we can't break, invariants that crossed our boundary), name them here so the reader sees the same constraints you saw.*
 
 ## Usage (caller's view)
 
-*Write this first, before the type sketch. Show the README or quickstart the consumer reads, plus two or three realistic call sites in their own code. What they import, what they call, what comes back. The type sketch in [Shape](#shape) is derived from this. The two must agree, so when they diverge, reconcile the sketch to the usage, not the reverse. The caller's experience is the spec. The types serve it.*
+*Write this first, before the type sketch. Show the README or quickstart the consumer reads, plus two or three realistic call sites in their own code. What they import, what they call, what comes back. The type sketch in [Shape](#shape) is derived from this. The two must agree; when they diverge, reconcile the sketch to the usage, not the reverse. The caller's experience is the spec. The types serve it.*
 
 ## Shape
 
@@ -24,7 +24,7 @@ This is the prose that ships alongside the type sketch. One page. Sentence-case 
 
 ## Alternatives considered
 
-*Required. Name at least one concrete alternative shape, with one line on why it lost. Two or three when the design space had real contenders; one is fine when the constraints forced the answer, with the conclusion phrased as "this was the only viable shape because..." Avoid listing flavors of the same shape. Distinct from "Synthesis decision" above: this section is about design alternatives the chosen shape considered and rejected, not about other runner candidates.*
+*Required. Name at least one concrete alternative shape, with one line on why it lost. Two or three when the design space had real contenders; one is fine when the constraints forced the answer, with the conclusion phrased as "this was the only viable shape because..." Avoid listing flavors of the same shape. Distinct from "Synthesis decision": this section covers design alternatives the chosen shape considered and rejected, not other runner candidates.*
 
 ## Open questions and risks
 
@@ -32,4 +32,4 @@ This is the prose that ships alongside the type sketch. One page. Sentence-case 
 
 ## Next implementation step
 
-*The first thing to build against the sketch. One sentence. The thing you'd start writing immediately after synthesis (or after Phase D sign-off, if a checkpoint was opted into).*
+*The first thing to build against the sketch. One sentence. What you'd start writing immediately after synthesis (or after Phase D sign-off, if a checkpoint was opted into).*

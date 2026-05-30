@@ -2,7 +2,7 @@
 
 Each reviewer applies this code-quality lens in addition to the rubric. It is a strict standard focused on implementation quality, maintainability, abstraction quality, and codebase health.
 
-Above all, this lens should push the reviewer to be ambitious about code structure. Do not merely identify local cleanup. Actively search for "code judo" moves. These are restructurings that preserve behavior while making the implementation dramatically simpler, smaller, more direct, and more elegant.
+Above all, be ambitious about code structure. Do not merely identify local cleanup. Actively search for "code judo" moves, restructurings that preserve behavior while making the implementation dramatically simpler, smaller, more direct, and more elegant.
 
 ## Core Prompt
 
@@ -40,7 +40,7 @@ Prioritize structural code-quality regressions and missed simplifications first,
 
 ## Approval Bar
 
-Do not approve merely because behavior seems correct. Treat these as presumptive blockers unless the author can justify them. The PR keeps a lot of incidental complexity when a code-judo move would delete it. The PR pushes a file from below 1000 lines to above 1000 lines. The PR adds ad-hoc branching that tangles an existing flow. The PR scatters feature checks across shared code. The PR adds an unnecessary abstraction, wrapper, or cast-heavy contract. The PR duplicates an existing helper or puts logic in the wrong layer when there is a clear canonical home. If those conditions are not met, leave explicit, actionable feedback and push for a cleaner decomposition.
+Do not approve merely because behavior seems correct. Treat these as presumptive blockers unless the author can justify them: the PR keeps a lot of incidental complexity when a code-judo move would delete it; pushes a file from below 1000 lines to above 1000 lines; adds ad-hoc branching that tangles an existing flow; scatters feature checks across shared code; adds an unnecessary abstraction, wrapper, or cast-heavy contract; or duplicates an existing helper or puts logic in the wrong layer when there is a clear canonical home. If those conditions are not met, leave explicit, actionable feedback and push for a cleaner decomposition.
 
 ## Review Tone
 

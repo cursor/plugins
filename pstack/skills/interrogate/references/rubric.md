@@ -1,6 +1,6 @@
 # Review Rubric
 
-Review through whichever of these lenses are relevant to the code under review. Not every lens applies to every change. Use judgment.
+Review through whichever lenses are relevant. Not every lens applies to every change. Use judgment.
 
 ## Correctness
 
@@ -11,8 +11,8 @@ Does the code actually do what the intent says it should?
 - Off-by-one, type coercion, integer overflow, string encoding
 - State management: race conditions, stale closures, dangling references
 - Does the happy path work? Does the sad path work?
-- Idempotency: what happens if this operation runs twice? What if a previous run crashed halfway? If the answer is "it depends on what state was left behind," there's a missing reconciliation step.
-- Concurrency: if multiple actors can touch the same mutable state (files, branches, shared data), is access serialized structurally (locks, sequential phases, exclusive ownership), or is it relying on conventions that won't hold?
+- Idempotency: what happens if this operation runs twice, or if a previous run crashed halfway? If the answer is "it depends on what state was left behind," there's a missing reconciliation step.
+- Concurrency: if multiple actors can touch the same mutable state (files, branches, shared data), is access serialized structurally (locks, sequential phases, exclusive ownership), or by conventions that won't hold?
 
 When you find a potential bug, trace the execution path. Don't just flag "this could be nil". Show the call chain that makes it nil.
 
@@ -20,9 +20,7 @@ When you find a potential bug, trace the execution path. Don't just flag "this c
 
 Is the code fixing the actual problem or papering over a symptom?
 
-To answer this well, you often need to look beyond the changed files. Read the surrounding code: callers, callees, type definitions, sibling modules. Understand the architecture the change lives in. A guard clause might look fine in isolation but reveal a broken invariant when you see what's upstream. A retry loop might seem defensive until you read the contract it's retrying against.
-
-Use the tools available to you (Read, Grep, Glob) to explore. Follow the call chain. Read the types. Understand why the code exists before judging whether the change is addressing the right layer.
+Answering this often requires looking beyond the changed files. Read the surrounding code (callers, callees, type definitions, sibling modules) and understand the architecture the change lives in. Use the tools available to you (Read, Grep, Glob) to explore. Follow the call chain. Read the types. Understand why the code exists before judging whether the change addresses the right layer.
 
 - Guard clauses that mask a deeper invariant violation
 - Retry logic that hides a broken contract
@@ -35,11 +33,11 @@ Use the tools available to you (Read, Grep, Glob) to explore. Follow the call ch
 
 Does the code fit well into the system it's part of?
 
-- Boundary discipline: is validation happening at system boundaries, or scattered through business logic? Data should be validated once at the point it enters the system, then trusted internally.
+- Boundary discipline: is validation at system boundaries, or scattered through business logic? Validate data once where it enters the system, then trust it internally.
 - Abstraction level: is the code mixing high-level orchestration with low-level detail?
 - Coupling: does this change introduce dependencies that will make future changes harder?
 - Data model fit: do the data structures match the actual access patterns? The right structure makes downstream code obvious; the wrong one fights you at every turn.
-- Bolted-on vs. integrated: does the change feel like it was patched onto the existing design, or does it read as if the design always accounted for it? If the new requirement had been known from the start, would the code look like this?
+- Bolted-on vs. integrated: was the change patched onto the existing design, or does it read as if the design always accounted for it? If the new requirement had been known from the start, would the code look like this?
 - Legacy dual-paths: does the change introduce a new API while keeping the old one alive? If there are no external consumers, migrate callers and delete the old path in the same wave. Don't leave compatibility layers that will become permanent.
 
 Don't penalize simple code for lacking abstraction. Premature abstraction is worse than duplication.
