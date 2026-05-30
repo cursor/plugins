@@ -1,6 +1,6 @@
 ### Perf issue
 
-**You own the measurement story. Plan, review, verify the numbers.** Tie every fix to a measurement; don't read source instead of measuring.
+**You own the measurement story. Plan, review, verify the numbers.** Tie every fix to a measurement, don't read source instead of measuring.
 
 1. Capture a baseline trace via the matching control skill.
 2. `how` to ground hypotheses; don't claim a perf ceiling without running it first.
@@ -8,6 +8,5 @@
 4. Parse and compare the artifacts (JSON to sqlite, diff). "Inconclusive" or wrong-surface is not a pass; flag it.
 5. Cite the measurement in the PR.
 6. Run **Opening a PR**.
-
 
 **Reply:** baseline number, post-fix number, delta, artifact path.

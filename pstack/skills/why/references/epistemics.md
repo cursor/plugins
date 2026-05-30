@@ -1,16 +1,16 @@
 # Epistemics
 
-This file is the heart of the `why` skill. It defines how to reason about confidence when your evidence is historical, fragmentary, and sometimes contradictory, and how to communicate that confidence to the user without flattening it into false certainty.
+How to reason about confidence when evidence is historical, fragmentary, and sometimes contradictory, and how to communicate it without flattening it into false certainty.
 
-The `why` skill exists because code doesn't carry its own motivation. You can see what code does by reading it; you can't see *why it exists* by reading it. That information lives in commits, PRs, tickets, docs, and conversations, all of which are incomplete, biased, and sometimes missing entirely. Pretending otherwise produces confident-sounding guesses that mislead the user.
+Code doesn't carry its own motivation. You can read what code does; you can't read *why it exists*. That lives in commits, PRs, tickets, docs, and conversations, all incomplete, biased, and sometimes missing entirely. Pretending otherwise produces confident-sounding guesses that mislead the user.
 
 ## Confidence Tiers
 
-Every claim in the final output must sit in one of these tiers. The tier determines both where the claim goes in the output (which section) and how it's phrased.
+Every claim in the final output must sit in one of these tiers. The tier determines which output section the claim goes in and how it's phrased.
 
 ### 1. Direct
 
-There is an explicit, textual citation that answers the question. Not "the code does X so the author must have wanted X". Something an author actually *wrote* that says why.
+An explicit, textual citation that answers the question. Not "the code does X so the author must have wanted X." Something an author actually *wrote* that says why.
 
 Examples:
 - A PR description that says "this fixes the bug where users with >1000 items couldn't paginate"
@@ -23,7 +23,7 @@ Phrasing: confident, present tense. "This exists because X." Cite the source.
 
 ### 2. Supported
 
-Multiple pieces of indirect evidence converge on the same conclusion. No single source states it explicitly, but the pattern across sources makes the conclusion likely.
+Multiple pieces of indirect evidence converge. No single source states it explicitly, but the pattern across sources makes it likely.
 
 Examples:
 - The PR title says "improve performance," the ticket is labeled "perf," and the surrounding commits all touch the same hot path
@@ -34,7 +34,7 @@ Phrasing: confident but clearly derived. "The evidence points strongly to X: [th
 
 ### 3. Inferred
 
-The claim is a reasonable reading of the context, but nothing explicitly supports it. The reader should understand this is *your interpretation*, not a fact from the record.
+A reasonable reading of the context, but nothing explicitly supports it. The reader should understand this is *your interpretation*, not a fact from the record.
 
 Examples:
 - The PR doesn't say why, but given the error was happening in production (per the incident channel timing) and the fix was rushed (merged the same day), it was likely a hotfix.
@@ -44,7 +44,7 @@ Phrasing: hedged. "It appears", "likely", "suggests", "is consistent with", "one
 
 ### 4. Speculative
 
-A plausible hypothesis, but the evidence is thin and other explanations fit equally well. Presenting these is valuable. The user may know which is right, but they must be clearly marked as guesses.
+A plausible hypothesis, but the evidence is thin and other explanations fit equally well. Presenting these is valuable, but mark them clearly as guesses.
 
 Examples:
 - "This might be a workaround for a browser bug that's since been fixed, but we found no contemporary evidence of that."
@@ -54,7 +54,7 @@ Phrasing: explicitly speculative. "One possibility is X, but we have no direct e
 
 ### 5. Unknown
 
-You looked and couldn't find out. This is a valid and important outcome. Document it.
+You looked and couldn't find out. A valid and important outcome. Document it.
 
 Phrasing: "We searched X, Y, and Z and found no evidence of why." Be specific about *what* you searched. "We couldn't find out" is less useful than "we searched the ticket tracker with keywords A and B, scanned the 6 PRs that touched this file since 2023, and grep'd the repo for string literals matching the threshold; none surfaced a rationale."
 
@@ -62,13 +62,13 @@ Phrasing: "We searched X, Y, and Z and found no evidence of why." Be specific ab
 
 ### Words that carry confidence. Use carefully
 
-These words imply **Direct** or **Supported** level confidence. Don't use them for inferences.
+These imply **Direct** or **Supported** confidence. Don't use them for inferences.
 
-- "because." Implies a causal claim with evidence
-- "the reason is." Same
-- "was designed to." Claims author intent
-- "fixes", "addresses", "solves." Claims the change achieved its goal
-- "the team decided." Claims a group decision happened
+- "because". Implies a causal claim with evidence
+- "the reason is". Same
+- "was designed to". Claims author intent
+- "fixes", "addresses", "solves". Claims the change achieved its goal
+- "the team decided". Claims a group decision happened
 
 If you're using these, you should have a citation immediately adjacent.
 
@@ -84,39 +84,39 @@ If you're using these, you should have a citation immediately adjacent.
 - "may have been"
 - "the evidence points toward"
 
-These signal to the reader that you're interpreting, not reporting. Use them liberally in the "What We Can Reasonably Infer" section.
+These signal that you're interpreting, not reporting. Use them liberally in the "What We Can Reasonably Infer" section.
 
 ### Words to avoid
 
-- "obviously." If it were obvious, the user wouldn't be asking
-- "clearly." Almost always precedes a claim that isn't clear
-- "of course." Same
+- "obviously". If it were obvious, the user wouldn't be asking
+- "clearly". Almost always precedes a claim that isn't clear
+- "of course". Same
 - "just" (as in "it's just X for performance"). Dismissive and usually hides uncertainty
-- "I think" / "I believe." You're an agent synthesizing evidence, not giving a personal opinion. Use "the evidence suggests" instead.
+- "I think" / "I believe". You're synthesizing evidence, not giving a personal opinion. Use "the evidence suggests" instead.
 
 ### Avoid rationalization
 
 Code that "makes sense" today may have been written for reasons that no longer apply, or that were wrong when they were written. Don't retrofit a clean rationale onto messy history.
 
-Specifically, resist the urge to:
+Resist the urge to:
 - Assume the author did the "right" thing and work backward to justify it
 - Assume a consistent pattern across the codebase was intentional when it might be copy-paste
 - Turn an absence of evidence into evidence of absence ("no one mentioned security concerns, so it must not have been a concern")
 
 ## The Sycophancy Trap
 
-Users often phrase `why` questions with an embedded hypothesis: "Why do we do it this way, I assume it's for performance?" Do not simply confirm the hypothesis. Treat it as one candidate explanation among others and check the evidence independently. If the evidence supports their hypothesis, say so with citations. If it doesn't, say so, and present what the evidence *does* support.
+Users often phrase `why` questions with an embedded hypothesis: "Why do we do it this way, I assume it's for performance?" Don't simply confirm it. Treat it as one candidate among others and check the evidence independently. If the evidence supports it, say so with citations; if not, say so and present what the evidence *does* support.
 
-This is important enough to restate. The user's guess is a prompt for investigation, not a conclusion to validate.
+The user's guess is a prompt for investigation, not a conclusion to validate.
 
 ## When Evidence Contradicts
 
-If you find two sources that disagree (e.g., the PR description says one thing but the ticket says another), surface both in the final output. Don't pick the one that fits a tidier narrative. A typical contradiction pattern:
+If two sources disagree (the PR description says one thing, the ticket says another), surface both. Don't pick the one that fits a tidier narrative. A typical pattern:
 
 - **The ticket says** "we need this for customer X's compliance requirement"
 - **The PR says** "cleaning up tech debt in this area"
 
-These may both be true (the ticket motivated the work, the PR described the author's framing of it), or one may be wrong. Present both with their citations and let the user make the call.
+Both may be true (the ticket motivated the work, the PR is the author's framing of it), or one may be wrong. Present both with their citations and let the user make the call.
 
 ## When Evidence Is Missing
 
@@ -126,7 +126,7 @@ An honest "we don't know" is one of the most valuable outputs this skill can pro
 - They'll need to ask a human (the original author, the product owner, the team lead) to find out
 - Or they can decide the question isn't worth pursuing further
 
-Failing to mark a gap, and instead filling it with a confident guess, actively harms the user, because they'll act on the guess.
+Failing to mark a gap and filling it with a confident guess actively harms the user; they'll act on the guess.
 
 When you hit a gap, name it concretely:
 - What question you were trying to answer
@@ -136,7 +136,7 @@ When you hit a gap, name it concretely:
 
 ## Calibration Check Before Finalizing
 
-Before the synthesizer delivers the output, it should review every claim in "What We Found" and "What We Can Reasonably Infer" and ask:
+Before delivering the output, the synthesizer should review every claim in "What We Found" and "What We Can Reasonably Infer" and ask:
 
 1. Does this claim have a citation? If not, either add one or move it to "Inferred" / "Hypotheses".
 2. Is the phrasing calibrated to the tier? (A Direct claim can use "because"; an Inferred claim cannot.)
