@@ -2,12 +2,10 @@
 
 ## What this source contains
 
-Databricks is the product-analytics, data-pipeline, and warehouse-telemetry layer. It complements Datadog: Datadog is the *infra/runtime* view; Databricks is the *product/data* view, what users actually did, which experiments ran, how feature usage evolved, where a threshold constant came from.
+Databricks is the product-analytics, data-pipeline, and warehouse-telemetry layer. It complements Datadog: Datadog is the *infra/runtime* view, Databricks is the *product/data* view (what users did, which experiments ran, how feature usage evolved, where a threshold constant came from).
 
-Relevant content:
-
-- **Product analytics events.** `your_warehouse.events.analytics_track_event` (raw) and the typed, deduplicated per-event dbt models in `<your_analytics_db>.<schema>.<table>`. User behavior: feature invocations, clicks, accepts/rejects, submissions, client-reported errors.
-- **Usage & billing events.** `your_warehouse.events.usage_event` / `<your_analytics_db>.<schema>.stg_usage_events`; `your_warehouse.events.raw_model_event` / `<your_analytics_db>.<schema>.stg_raw_model_events`. Relevant for cost- or volume-driven decisions.
+- **Product analytics events.** `your_warehouse.events.analytics_track_event` (raw) and typed, deduplicated per-event dbt models in `<your_analytics_db>.<schema>.<table>`. User behavior: feature invocations, clicks, accepts/rejects, submissions, client-reported errors.
+- **Usage & billing events.** `your_warehouse.events.usage_event` / `<your_analytics_db>.<schema>.stg_usage_events`; `your_warehouse.events.raw_model_event` / `<your_analytics_db>.<schema>.stg_raw_model_events`. For cost- or volume-driven decisions.
 - **Experiment / feature-flag data.** Exposure and outcome tables. **Schema is company-specific.** Probe with `SHOW TABLES` before assuming names.
 - **System tables.** `system.query.history`, `system.compute.warehouses`, `system.billing.*`, `system.access.audit`. Answer "was this query expensive?", "how often did anyone run this?", "when did warehouse load spike?"
 - **dbt lineage.** Models in `<your_analytics_db>.<schema>` reveal what pipelines depend on a table/field; upstream changes frequently motivate consumer-code changes.
@@ -15,7 +13,7 @@ Relevant content:
 
 ## How to search it
 
-Use the Databricks SQL MCP available in your environment. Primary tool: `execute_sql_read_only`. If it returns a `statement_id`, poll with `poll_sql_result` rather than re-running.
+Use the Databricks SQL MCP. Primary tool: `execute_sql_read_only`. If it returns a `statement_id`, poll with `poll_sql_result` rather than re-running.
 
 **Orient before querying.** Schemas are company-specific; probe before trusting a table name:
 
@@ -26,9 +24,9 @@ DESCRIBE TABLE <your_analytics_db>.<schema>.stg_<event>;
 
 **Time-bound every query.** These tables are huge and unconstrained scans time out. Filter on `_timestamp` (events) or `start_time` (`system.query.history`) with a window bracketing the ship date, typically ~30 days before and after, wider only for strong reason.
 
-**Prefer typed dbt models over the raw table.** `<your_analytics_db>.<schema>.<table>` is deduplicated, typed, and liquid-clustered; `your_warehouse.events.analytics_track_event` has duplicates and untyped `properties_json`. Model-name pattern: `stg_<source>_<event_name_with_underscores>` where `<source>` is `app`, `backend`, `website`, or `cli`. See the `databricks-use-dbt-models` skill for the full mapping. Drop to the raw table only when there's no dbt model yet, or you need events from inside the dbt refresh lag.
+**Prefer typed dbt models over the raw table.** `<your_analytics_db>.<schema>.<table>` is deduplicated, typed, and liquid-clustered; `your_warehouse.events.analytics_track_event` has duplicates and untyped `properties_json`. Model-name pattern: `stg_<source>_<event_name_with_underscores>`, where `<source>` is `app`, `backend`, `website`, or `cli`. See the `databricks-use-dbt-models` skill for the full mapping. Drop to the raw table only when there's no dbt model yet, or you need events from inside the dbt refresh lag.
 
-**Column conventions on the typed dbt models** (knowing these avoids a round-trip through `DESCRIBE`):
+**Column conventions on the typed dbt models** (knowing these avoids a `DESCRIBE` round-trip):
 
 - `_timestamp`, `_id`, `_auth_id`, `_request_id`, `event_name`. Standard on every model
 - `properties_<name>`. Typed, underscore-cased event properties (`properties_entrypoint`, `properties_size_bytes`, …)
@@ -36,9 +34,9 @@ DESCRIBE TABLE <your_analytics_db>.<schema>.stg_<event>;
 
 ### Investigation patterns that tend to pay off
 
-You already know SQL; these just point at which table + column combinations carry which shape of "why". Pick the one that matches the target:
+Pick the table + column combination that matches the target:
 
-1. **Event usage trajectory.** Daily counts on the relevant `stg_*` model across a ±30d window around the PR merge. A step function from zero to steady volume within a day or two of the merge is strong circumstantial evidence that the PR launched the feature. A decay to zero suggests a deprecation or deletion motive.
+1. **Event usage trajectory.** Daily counts on the relevant `stg_*` model across a ±30d window around the PR merge. A step function from zero to steady volume within a day or two of the merge is strong circumstantial evidence the PR launched the feature. A decay to zero suggests a deprecation or deletion.
 2. **Guard-rail / defensive-check origin.** Distribution (median / p99 / max) of the relevant `properties_<name>` column in the 14 days *before* the PR. A p99 that matches the target's threshold constant suggests the number was chosen from data.
 3. **Experiment / feature-flag lookup.** `SHOW TABLES ... LIKE '*experiment*'` to find the exposure table, then pull exposure counts by variant for the relevant flag key near the PR date.
 4. **Query-history evidence for migrations, backfills, or perf rewrites.** `system.query.history` filtered by `statement_text ILIKE '%<table_or_symbol>%'` with a tight `start_time` window surfaces the expensive queries that likely motivated the change (sort by `total_duration_ms` or aggregate `SUM(read_bytes)`, `COUNT(*)`).
@@ -46,16 +44,14 @@ You already know SQL; these just point at which table + column combinations carr
 
 ## What good evidence looks like here
 
-- An event's daily count goes from ~0 to steady volume within a day or two of the PR merge. Suggests "this PR launched the feature"
+Beyond the pattern shapes above:
+
 - An error-classifying event's count drops to near zero in the days after a defensive-code PR. Suggests the PR resolved that error class
 - An exposure table row names the target's feature-flag key with a "shipped" / "concluded" decision around the PR ship date
-- A pre-ship distribution whose p99 matches the target's threshold constant. Suggests the number was chosen from data, not plucked from the air
-- A `system.query.history` row shows a heavy migration/backfill query running around the same day a PR changed the target schema
-- A `<your_analytics_db>.<schema>` model the target depends on was changed upstream in the same window (lead for the git investigator)
 
 ## Common pitfalls
 
-- **Instrumented ≠ caused.** The existence of an event means someone cared enough to log it, not that the target code exists *because* of it. Always pair with a PR/commit citation from the git investigator before claiming causation.
+- **Instrumented ≠ caused.** An event's existence means someone cared enough to log it, not that the target code exists *because* of it. Pair with a PR/commit citation from the git investigator before claiming causation.
 - **Silent instrumentation changes.** A step function in event volume may mean a new event started being logged, not that user behavior changed. Check for instrumentation PRs in the same window before reading the ramp as a feature-launch signal.
 - **Schema drift.** Event properties evolve; a column on the typed dbt model today may not have existed when the target was written. Older data may carry the property only inside raw `properties_json`.
 - **dbt refresh lag.** `<your_analytics_db>.<schema>.*` is rebuilt on a schedule (often hourly/daily). For events from the last few hours, fall back to `your_warehouse.events.*` and deduplicate by `_id`.
