@@ -32,11 +32,20 @@ const NONGIT_NOTICE =
   'inactive (outcomes are derived from git diffs). Run `git init` here, or ' +
   'open a git project, to enable recall and recording.';
 
+// The hook's own timeout is 3s; give stdin a slightly shorter window to drain.
+const STDIN_WATCHDOG_MS = 2000;
+
+let alreadyEmitted = false;
+
 /**
- * Emit a JSON object and exit cleanly. Falls back to `{}` if serialization
- * somehow fails.
+ * Emit a JSON object exactly once and exit cleanly. Falls back to `{}` if
+ * serialization somehow fails.
  */
 function emit(obj) {
+  if (alreadyEmitted) {
+    return;
+  }
+  alreadyEmitted = true;
   let text = '{}';
   try {
     text = JSON.stringify(obj);
@@ -97,15 +106,25 @@ function throttled(key, ttlMs) {
 
 /**
  * Decide whether a memory entry belongs to the current workspace.
- *   - tagged with workspace_id: match iff we know our id and it's equal
- *     (if we don't know our id, don't exclude on this basis)
- *   - else tagged with cwd: match iff equal (likewise lenient when unknown)
- *   - untagged: always include
+ *   - tagged with workspace_id, our id known: match iff equal.
+ *   - tagged with workspace_id, our id UNKNOWN: do not blanket-include (that
+ *     would leak other workspaces' entries from a shared graph). Fall back to
+ *     cwd matching: in-scope iff the entry's cwd equals currentDir; if the
+ *     entry has no cwd and currentDir is unknown too, then (and only then)
+ *     don't exclude.
+ *   - else tagged with cwd: match iff equal (lenient only when currentDir
+ *     is unknown).
+ *   - untagged (no workspace_id and no cwd): always include (legacy).
  */
 function belongsToWorkspace(entry, currentId, currentDir) {
   if (entry && typeof entry.workspace_id === 'string' && entry.workspace_id) {
     if (currentId === null || currentId === undefined) {
-      return true;
+      // Cannot resolve our own id — fall back to cwd matching rather than
+      // surfacing a possibly-foreign workspace's entries.
+      if (typeof entry.cwd === 'string' && entry.cwd) {
+        return currentDir ? entry.cwd === currentDir : false;
+      }
+      return !currentDir;
     }
     return entry.workspace_id === currentId;
   }
@@ -217,7 +236,7 @@ function main() {
 
   // 2. Workspace-scoped evolution memory.
   try {
-    const graphPath = findMemoryGraph();
+    const graphPath = findMemoryGraph(currentDir);
     const currentId = resolveWorkspaceId(currentDir);
     const candidates = gatherWorkspaceEntries(graphPath, currentId, currentDir);
     const relevant = filterRelevant(candidates);
@@ -238,13 +257,41 @@ function main() {
 }
 
 // This hook does not need stdin, but Cursor still pipes a JSON object. Drain it
-// so the writer never gets EPIPE, then run. Guard everything.
-try {
-  // Consume stdin without blocking; we don't actually use its contents.
-  process.stdin.on('data', () => {});
-  process.stdin.on('error', () => {});
-  process.stdin.resume();
-  main();
-} catch (_err) {
-  emit({});
-}
+// (so the writer never races a half-drained pipe / gets EPIPE) and only then
+// run main(). A short watchdog guarantees we still run if stdin never closes.
+// main() stays synchronous; we only gate when it is invoked. Guard everything.
+(function run() {
+  try {
+    let started = false;
+    const start = () => {
+      if (started) {
+        return;
+      }
+      started = true;
+      try {
+        main();
+      } catch (_err) {
+        emit({});
+      }
+    };
+
+    const watchdog = setTimeout(start, STDIN_WATCHDOG_MS);
+    if (typeof watchdog.unref === 'function') {
+      watchdog.unref();
+    }
+
+    // Consume stdin without blocking; we don't actually use its contents.
+    process.stdin.on('data', () => {});
+    process.stdin.on('end', () => {
+      clearTimeout(watchdog);
+      start();
+    });
+    process.stdin.on('error', () => {
+      clearTimeout(watchdog);
+      start();
+    });
+    process.stdin.resume();
+  } catch (_err) {
+    emit({});
+  }
+})();

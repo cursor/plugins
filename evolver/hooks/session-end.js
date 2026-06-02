@@ -181,9 +181,9 @@ function recordToHub(payload) {
  * contract consumed by external tooling — keep it exact. Returns true on
  * success.
  */
-function recordToLocal(entry) {
+function recordToLocal(entry, projectDir) {
   try {
-    const graphPath = findMemoryGraph();
+    const graphPath = findMemoryGraph(projectDir);
     fs.mkdirSync(path.dirname(graphPath), { recursive: true });
     fs.appendFileSync(graphPath, `${JSON.stringify(entry)}\n`);
     return true;
@@ -230,15 +230,18 @@ function finish(projectDir, diff) {
   });
 
   // Always also attempt a local record.
-  const localOk = recordToLocal({
-    timestamp: new Date().toISOString(),
-    gene_id: 'ad_hoc',
-    signals,
-    outcome: { status, score, note: summary },
-    cwd: projectDir,
-    workspace_id: resolveWorkspaceId(projectDir),
-    source: 'hook:session-end',
-  });
+  const localOk = recordToLocal(
+    {
+      timestamp: new Date().toISOString(),
+      gene_id: 'ad_hoc',
+      signals,
+      outcome: { status, score, note: summary },
+      cwd: projectDir,
+      workspace_id: resolveWorkspaceId(projectDir),
+      source: 'hook:session-end',
+    },
+    projectDir
+  );
 
   let destination;
   if (hubOk) {
@@ -280,11 +283,9 @@ function finish(projectDir, diff) {
     };
 
     const watchdog = setTimeout(() => {
-      // Stdin never closed in time — emit a bare object and bail.
-      if (!done) {
-        done = true;
-        emit({});
-      }
+      // Stdin never closed in time — still do the work (proceed() is guarded
+      // by `done`, so it runs at most once whether the timeout or `end` fires).
+      proceed();
     }, STDIN_WATCHDOG_MS);
     if (typeof watchdog.unref === 'function') {
       watchdog.unref();

@@ -59,14 +59,15 @@ outcomes in terms the memory graph indexes well:
 ## Full pipeline (optional)
 
 The bundled hooks record outcomes and recall them — that works on its own. To
-unlock the **full evolution engine** (automated log analysis, the
-review-and-solidify cycle that proposes and applies code improvements, and
-EvoMap Hub sync for community strategies), install the engine:
+get the **full evolution engine** (automated log analysis, the
+review-and-solidify cycle that proposes and applies code improvements), install
+it:
 
 ```bash
 npm install -g @evomap/evolver
 ```
 
-Once it's on `PATH`, the same hooks automatically find it and run the complete
-pipeline instead of the local-only fallback. See the plugin README for
-connecting an EvoMap Hub node.
+This gives you the engine's CLI (e.g. `evolver run`) to run that pipeline
+separately — the hooks do not auto-detect or invoke it. The memory the hooks
+record is what the pipeline consumes. See the plugin README for connecting an
+EvoMap Hub node for community strategies.

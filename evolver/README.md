@@ -19,9 +19,9 @@ Three hooks run automatically — you don't invoke them:
 
 | Hook | Event | Effect |
 |---|---|---|
-| `evolver-session-start.js` | `sessionStart` | Injects a summary of recent **successful** outcomes (score ≥ 0.5, < 7 days, max 3) as context. |
-| `evolver-signal-detect.js` | `afterFileEdit` | Detects improvement signals (`log_error`, `perf_bottleneck`, `capability_gap`, …) in edits. |
-| `evolver-session-end.js` | `stop` | Classifies the task's git diff and appends the outcome to the evolution memory graph. |
+| `session-start.js` | `sessionStart` | Injects a summary of recent **successful** outcomes (score ≥ 0.5, < 7 days, max 3) as context. |
+| `signal-detect.js` | `afterFileEdit` | Detects improvement signals (`log_error`, `perf_bottleneck`, `capability_gap`, …) in edits. |
+| `session-end.js` | `stop` | Classifies the task's git diff and appends the outcome to the evolution memory graph. |
 
 It also ships:
 
@@ -64,11 +64,14 @@ immediately. **No account, no key, no network.**
 npm install -g @evomap/evolver
 ```
 
-Once `@evomap/evolver` is on `PATH`, the same hooks automatically find it and
-run the **full pipeline** — automated log analysis and the review-and-solidify
-cycle that proposes and applies code improvements — instead of the local-only
-fallback. Set `EVOLVER_ROOT` to point at a specific install if you have more
-than one.
+The bundled hooks always do lightweight **local** recall/record — local git
+diff + JSONL append, plus optional Hub sync. Installing `@evomap/evolver` does
+**not** change what the hooks do and they do not auto-detect or invoke it.
+What it adds is the engine's **CLI** — e.g. `evolver run` (the full automated
+review-and-solidify pipeline that analyzes logs and proposes/applies code
+improvements) and `evolver review` — which you run separately. The memory the
+hooks record feeds that pipeline, so the two compose without the hooks ever
+shelling out to the engine.
 
 ### EvoMap Hub (community strategies)
 
@@ -90,21 +93,22 @@ registration.
 EvoMap deliberately splits two products:
 
 - **`@evomap/evolver`** — the GPL-licensed, source-available evolution engine
-  (daemon + CLI). Its hook scripts are what this plugin bundles.
+  (daemon + CLI). This plugin does **not** bundle it; the plugin's own hooks are
+  an independent MIT clean-room implementation that records memory in the same
+  format the engine reads, so the two interoperate when you install it.
 - **`@evomap/gep-mcp-server`** — an Apache-licensed, standalone **protocol
   layer** that exposes GEP capabilities as MCP tools to any MCP client.
 
-This plugin bundles the **evolver hooks** because they are exactly the
-session-lifecycle glue Cursor needs, and they degrade gracefully when the
-engine isn't installed. If you also want the `gep_*` MCP tools inside Cursor,
-add `@evomap/gep-mcp-server` to your Cursor MCP config directly — it is not
-re-bundled here to avoid duplicating that separately-maintained product.
+This plugin ships its own lightweight session-lifecycle hooks (the glue Cursor
+needs), which work standalone and degrade gracefully. If you also want the
+`gep_*` MCP tools inside Cursor, add `@evomap/gep-mcp-server` to your Cursor MCP
+config directly — it is not re-bundled here to avoid duplicating that
+separately-maintained product.
 
 ## Environment variables
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `EVOLVER_ROOT` | (auto-detected) | Path to the `@evomap/evolver` install. |
 | `MEMORY_GRAPH_PATH` | (auto) | Override the memory graph file location. |
 | `EVOMAP_HUB_URL` / `EVOMAP_API_KEY` / `EVOMAP_NODE_ID` | (unset) | Enable Hub recording. |
 | `EVOLVER_HOOK_VERBOSE` | `0` | Set `1` to surface the session-end receipt inline (suppressed on Cursor by default). |

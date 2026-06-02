@@ -81,14 +81,36 @@ function isGitWorkspace(dir) {
 }
 
 /**
- * Return the path to the evolution memory graph (a JSONL file). Honours the
- * MEMORY_GRAPH_PATH override; otherwise defaults to a well-known location under
- * the home directory and best-effort creates the parent directory.
+ * Return the path to the evolution memory graph (a JSONL file).
+ *
+ * Resolution order:
+ *   1. MEMORY_GRAPH_PATH override, if set.
+ *   2. `<projectDir>/memory/evolution/memory_graph.jsonl` — but only if it
+ *      already EXISTS (an evolver-managed project owns this file). We never
+ *      create a project-local graph in an arbitrary folder, so plain projects
+ *      fall through to the user-level path.
+ *   3. The user-level `~/.evolver/memory/evolution/memory_graph.jsonl`, whose
+ *      parent directory is best-effort created.
  */
-function findMemoryGraph() {
+function findMemoryGraph(projectDir) {
   const override = process.env.MEMORY_GRAPH_PATH;
   if (typeof override === 'string' && override.length > 0) {
     return override;
+  }
+  if (looksLikeDir(projectDir)) {
+    const projectPath = path.join(
+      projectDir,
+      'memory',
+      'evolution',
+      'memory_graph.jsonl'
+    );
+    try {
+      if (fs.statSync(projectPath).isFile()) {
+        return projectPath;
+      }
+    } catch (_err) {
+      // Not present — fall through to the user-level default.
+    }
   }
   const defaultPath = path.join(
     os.homedir(),
