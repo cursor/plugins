@@ -72,6 +72,11 @@
       "name": "pstack",
       "source": "pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
+    },
+    {
+      "name": "evolver",
+      "source": "evolver",
+      "description": "Persistent, auditable evolution memory for the agent: recalls what worked on past tasks at session start, detects improvement signals while you edit, and records outcomes when a task ends. Powered by the Genome Evolution Protocol (GEP)."
     }
   ]
 }

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "node \"${CURSOR_PLUGIN_ROOT}/hooks/session-start.js\"",
+        "timeout": 3
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "node \"${CURSOR_PLUGIN_ROOT}/hooks/signal-detect.js\"",
+        "timeout": 2
+      }
+    ],
+    "stop": [
+      {
+        "command": "node \"${CURSOR_PLUGIN_ROOT}/hooks/session-end.js\"",
+        "timeout": 8,
+        "loop_limit": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+---
+description: Use evolution memory on substantive tasks — recall relevant past outcomes before starting, and let outcomes be recorded at the end.
+alwaysApply: false
+---
+
+# Evolution memory
+
+This workspace has the Evolver plugin installed. It maintains a persistent,
+auditable memory of past task outcomes.
+
+For any **substantive** task (a feature, a non-trivial fix, a refactor):
+
+- **Before starting**, consult the evolution memory injected at session start.
+  If a recent *successful* outcome matches the task, reuse that approach. If a
+  recent *failure* matches, do not repeat it.
+- **After finishing**, the outcome is recorded automatically by the stop hook.
+  If the task carried a clear, durable lesson, state it plainly in your final
+  message so it is captured.
+
+Skip this for trivial or purely conversational turns — evolution memory is for
+work worth learning from, not ceremony on every reply.
+
+The `capability-evolver` skill and the `/evolve` command provide the full
+workflow. Installing `@evomap/evolver` (`npm install -g @evomap/evolver`)
+upgrades the local-only memory into the full review-and-solidify pipeline.

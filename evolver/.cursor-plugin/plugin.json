@@ -1,0 +1,33 @@
+{
+  "name": "evolver",
+  "displayName": "Evolver — Self-Evolving Agent Memory",
+  "description": "Gives the agent a persistent, auditable evolution memory. Recalls what worked on past tasks at session start, detects improvement signals while you edit, and records outcomes when a task ends — powered by the Genome Evolution Protocol (GEP). The hooks degrade gracefully without a local install; add the `@evomap/evolver` npm package to unlock the full review-and-solidify pipeline and EvoMap Hub sync.",
+  "version": "0.1.0",
+  "author": {
+    "name": "EvoMap",
+    "email": "team@evomap.ai"
+  },
+  "publisher": "EvoMap",
+  "homepage": "https://evomap.ai",
+  "repository": "https://github.com/EvoMap/evolver-cursor-plugin",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "evolution",
+    "self-improvement",
+    "agent-memory",
+    "gep",
+    "meta-learning",
+    "evomap"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "memory",
+    "automation",
+    "self-improvement"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/",
+  "rules": "./rules/",
+  "hooks": "./hooks/hooks.json"
+}

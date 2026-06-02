@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Evolver">
+  <rect width="64" height="64" rx="14" fill="#0B0E14"/>
+  <!-- DNA-like double helix: two sine strands with rungs -->
+  <g fill="none" stroke="#5EEAD4" stroke-width="3" stroke-linecap="round">
+    <path d="M22 12 C 42 24, 22 40, 42 52"/>
+    <path d="M42 12 C 22 24, 42 40, 22 52"/>
+  </g>
+  <g stroke="#7C9CFF" stroke-width="2.4" stroke-linecap="round">
+    <line x1="26" y1="20" x2="38" y2="20"/>
+    <line x1="30" y1="32" x2="34" y2="32"/>
+    <line x1="26" y1="44" x2="38" y2="44"/>
+  </g>
+</svg>
