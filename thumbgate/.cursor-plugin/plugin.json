@@ -1,0 +1,38 @@
+{
+  "name": "thumbgate",
+  "displayName": "ThumbGate",
+  "description": "👍👎 Thumbs down a mistake — your AI agent won't repeat it. Thumbs up good work — it remembers the pattern.",
+  "version": "1.26.8",
+  "author": {
+    "name": "Igor Ganapolsky"
+  },
+  "homepage": "https://thumbgate.ai",
+  "repository": "https://github.com/IgorGanapolsky/ThumbGate",
+  "license": "MIT",
+  "keywords": [
+    "cursor",
+    "cursor-plugin",
+    "feedback",
+    "thumbs-up-down",
+    "thumbgate",
+    "ai-agent-memory",
+    "mistake-prevention",
+    "coding-agent",
+    "pre-action-gates",
+    "mcp"
+  ],
+  "logo": "assets/logo-400x400.png",
+  "category": "developer-tools",
+  "tags": [
+    "agent-governance",
+    "feedback",
+    "mcp",
+    "pre-action-checks"
+  ],
+  "commands": "./commands/",
+  "agents": "./agents/",
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./mcp.json"
+}
