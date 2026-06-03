@@ -72,6 +72,11 @@
       "name": "pstack",
       "source": "pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
+    },
+    {
+      "name": "logrocket",
+      "source": "logrocket",
+      "description": "Connect Cursor to LogRocket to query session replays, metrics, issues, and user behavior."
     }
   ]
 }

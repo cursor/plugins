@@ -1,0 +1,19 @@
+{
+  "name": "logrocket",
+  "displayName": "LogRocket",
+  "version": "0.1.0",
+  "description": "Connect Cursor to LogRocket to query session replays, metrics, issues, and user behavior using natural language.",
+  "author": {
+    "name": "LogRocket",
+    "email": "support@logrocket.com"
+  },
+  "homepage": "https://github.com/cursor/plugins/tree/main/logrocket",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": ["logrocket", "session-replay", "analytics", "mcp", "galileo"],
+  "category": "developer-tools",
+  "tags": ["logrocket", "session-replay", "analytics", "observability", "debugging"],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}
