@@ -75,6 +75,34 @@ describe("kickoff dedupe", () => {
     expect(active).toBeNull();
   });
 
+  test("does not adopt a planner whose slug only shares a prefix", async () => {
+    const now = Date.parse("2026-05-01T16:00:00.000Z");
+    // An active planner for the distinct goal "refactor-ui" (named
+    // "refactor-ui-root") must not be adopted when kicking off goal "refactor":
+    // "refactor-ui-root".startsWith("refactor") is true, so a bare prefix match
+    // would silently attach the new run to the wrong goal's planner.
+    const active = await findActiveRootPlanner(
+      {
+        async list() {
+          return {
+            items: [
+              {
+                agentId: "bc-refactor-ui",
+                name: "refactor-ui-root",
+                createdAt: now - 1_000,
+                latestRun: { id: "run-refactor-ui", status: "running" },
+              },
+            ],
+          };
+        },
+      },
+      "refactor",
+      now
+    );
+
+    expect(active).toBeNull();
+  });
+
   test("falls back to listRuns when list omits latest run", async () => {
     const now = Date.parse("2026-05-01T16:00:00.000Z");
     const active = await findActiveRootPlanner(
