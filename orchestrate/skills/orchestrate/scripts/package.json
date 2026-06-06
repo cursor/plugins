@@ -14,7 +14,7 @@
     "check": "biome check --write . && tsc --noEmit"
   },
   "dependencies": {
-    "@cursor/sdk": "^1.0.8",
+    "@cursor/sdk": "^1.0.12",
     "@slack/web-api": "^7.15.1",
     "commander": "^12.0.0",
     "zod": "^4.3.6",
