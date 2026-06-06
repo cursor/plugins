@@ -25,7 +25,7 @@ The N candidates will receive the same prompt, so the prompt is the contract. Ge
 
 1. State the artifact each candidate is producing.
 2. Derive the rubric. State what success looks like for *this* task, then turn it into 3-6 concrete gradeable criteria. Concrete: `Adds a --dry-run flag that skips writes`. Vague: `code is correct`. The rubric is the picker's tool in Phase D; candidates only see the task.
-3. Pick the runners. Default runners are your configured arena list (defaults `claude-opus-4-8-thinking-xhigh`, `claude-opus-4-8-thinking-high`, `sonnet-4-6-thinking-xhigh`). Spawn more when the arena covers multiple design directions. Same model N times when the work is generation-bound rather than judgment-sensitive.
+3. Pick the runners. Default runners are your configured arena list (defaults `claude-opus-4-8-thinking-xhigh`, `claude-opus-4-8-thinking-high`, `sonnet-4-6-thinking-xhigh`, `sonnet-4-6-thinking-medium`). Spawn more when the arena covers multiple design directions. Same model N times when the work is generation-bound rather than judgment-sensitive.
 4. Assign output paths. Each candidate writes to its own location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`). N candidates writing to the same path is shared mutable state and fails the the **separate-before-serializing-shared-state** principle skill test.
 
 ## Phase B: Fan out

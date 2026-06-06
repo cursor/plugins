@@ -41,14 +41,14 @@ judgment and prose: claude-opus-4-8-thinking-xhigh
 hardest tasks: claude-fable-5-thinking-max
 how explorer: sonnet-4-6-thinking-xhigh
 how explainer: claude-opus-4-8-thinking-xhigh
-how critics: claude-opus-4-8-thinking-xhigh, claude-opus-4-8-thinking-high, sonnet-4-6-thinking-xhigh
+how critics: claude-opus-4-8-thinking-xhigh, claude-opus-4-8-thinking-high, sonnet-4-6-thinking-xhigh, sonnet-4-6-thinking-medium
 why investigators: sonnet-4-6-thinking-xhigh
 why synthesizer: claude-opus-4-8-thinking-xhigh
 reflect tooling: sonnet-4-6-thinking-xhigh
 reflect judgment, divergent, synthesizer: claude-opus-4-8-thinking-xhigh
-arena runners: claude-opus-4-8-thinking-xhigh, claude-opus-4-8-thinking-high, sonnet-4-6-thinking-xhigh
-architect runners: claude-opus-4-8-thinking-xhigh, claude-opus-4-8-thinking-high, sonnet-4-6-thinking-xhigh
-interrogate reviewers: claude-opus-4-8-thinking-xhigh, claude-opus-4-8-thinking-high, sonnet-4-6-thinking-xhigh
+arena runners: claude-opus-4-8-thinking-xhigh, claude-opus-4-8-thinking-high, sonnet-4-6-thinking-xhigh, sonnet-4-6-thinking-medium
+architect runners: claude-opus-4-8-thinking-xhigh, claude-opus-4-8-thinking-high, sonnet-4-6-thinking-xhigh, sonnet-4-6-thinking-medium
+interrogate reviewers: claude-opus-4-8-thinking-xhigh, claude-opus-4-8-thinking-high, sonnet-4-6-thinking-xhigh, sonnet-4-6-thinking-medium
 ```
 
 ### 6. Confirm
