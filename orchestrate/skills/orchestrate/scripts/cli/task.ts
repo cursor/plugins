@@ -478,11 +478,8 @@ export async function findActiveRootPlanner(
   nowMs: number = Date.now()
 ): Promise<ActiveRootPlanner | null> {
   const list = await agentApi.list({ runtime: "cloud", limit: 50 });
-  // Kickoff names the root planner exactly `${rootSlug}-root` (see the
-  // `kickoff` action). Match that full name, not a bare `startsWith(rootSlug)`
-  // prefix — otherwise slug `auth` would adopt an unrelated `auth-ui-root`
-  // planner because `"auth-ui-root".startsWith("auth")` is true, silently
-  // attaching a fresh run to a different goal's planner.
+  // Exact match, not startsWith: a prefix slug would otherwise adopt another
+  // goal's `<slug>-root` planner (e.g. "auth" adopting "auth-ui-root").
   const rootPlannerName = `${rootSlug}-root`;
   for (const item of listItems(list)) {
     const name = stringField(item, "name");
