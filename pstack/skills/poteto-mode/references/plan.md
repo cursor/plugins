@@ -25,7 +25,7 @@ Resolve what is in scope vs explicitly out, technical or platform constraints, p
 Delegate codebase exploration (the **guard-the-context-window** principle skill).
 
 - Prefer `subagent_type: "poteto-agent"`. `generalPurpose` is the fallback. Never use the built-in `plan` subagent_type; it ignores this skill.
-- Pass `model:` explicitly per the Model configuration roles (defaults `composer-2.5-fast` for code, `claude-opus-4-8-thinking-xhigh` for judgment).
+- Pass `model:` explicitly per the configured roles (defaults `composer-2.5-fast` for code, `claude-opus-4-8-thinking-xhigh` for judgment).
 
 Each explorer returns file pointers, conventions, dependencies, test infrastructure, and entry points. No inlined dumps.
 

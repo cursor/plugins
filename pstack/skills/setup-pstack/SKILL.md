@@ -15,7 +15,7 @@ Enumerate the model slugs you can pass to a `Task` subagent in this session; tha
 
 ### 2. Load current state
 
-The default role-to-model table lives in the **poteto-mode** Model configuration section. If `~/.cursor/rules/pstack-models.mdc` already exists, read it and treat its values as the current choices. Otherwise start from the defaults.
+The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.cursor/rules/pstack-models.mdc` already exists, read it and treat its values as the current choices. Otherwise start from those defaults.
 
 ### 3. Map and confirm
 

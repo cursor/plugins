@@ -77,35 +77,9 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 **Use `subagent_type: "poteto-agent"` for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). `/poteto-mode` and `poteto-agent` route through the same wrapper. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`) set their own `subagent_type` for diverse-model review; respect what the skill prescribes, don't override to `poteto-agent`.
 
-**Defaults for every `Task` call.** `run_in_background: true`, agent mode (readonly strips MCP), file pointers not inlined context, explicit model per role (see **Model configuration**; defaults `composer-2.5-fast` for code, `claude-opus-4-8-thinking-xhigh` for prose and judgment).
+**Defaults for every `Task` call.** `run_in_background: true`, agent mode (readonly strips MCP), file pointers not inlined context, explicit model per role (configurable via `/setup-pstack`; defaults `composer-2.5-fast` for code, `claude-opus-4-8-thinking-xhigh` for prose and judgment).
 
 You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
-
-## Model configuration
-
-Every model pstack picks has a role and a default. To override the defaults, run the **setup-pstack** skill. It detects the models you have access to and writes `~/.cursor/rules/pstack-models.mdc`, an always-applied rule with one line per role. When that rule is present its choices win. Otherwise each skill uses the default named inline. Override only the lines you want and leave the rest.
-
-The defaults, one role per line:
-
-| Role | Default model |
-|------|---------------|
-| feature, refactoring | `composer-2.5-fast` |
-| bug-fix, perf-issue | `gpt-5.5-high-fast` |
-| judgment and prose (the general `Task` default) | `claude-opus-4-8-thinking-xhigh` |
-| how explorer | `composer-2.5-fast` |
-| how explainer (synthesize and direct-explain) | `claude-opus-4-8-thinking-xhigh` |
-| how critics | `claude-opus-4-8-thinking-xhigh`, `gpt-5.5-high-fast`, `composer-2.5-fast` |
-| why investigators | `composer-2.5-fast` |
-| why synthesizer | `claude-opus-4-8-thinking-xhigh` |
-| reflect tooling | `composer-2.5-fast` |
-| reflect judgment, divergent, synthesizer | `claude-opus-4-8-thinking-xhigh` |
-| arena runners | `claude-opus-4-8-thinking-xhigh`, `gpt-5.5-high-fast`, `composer-2.5-fast` |
-| architect runners | `claude-opus-4-8-thinking-xhigh`, `gpt-5.5-high-fast`, `composer-2.5-fast` |
-| interrogate reviewers | `claude-opus-4-8-thinking-xhigh`, `gpt-5.5-high-fast`, `composer-2.5-fast` |
-
-Panel roles (how critics, arena, architect, interrogate) list several models. Spawn one subagent per model in the configured list, so adding or removing a model changes how many run. Never hardcode the count.
-
-When a skill below names a model, it is the default for that role. Read the configured value from the rule when present, and never reintroduce a model the user removed.
 
 ## Writing the reply
 
