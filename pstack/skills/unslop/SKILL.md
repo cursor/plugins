@@ -1,6 +1,9 @@
 ---
 name: unslop
-description: Cut AI tells from any writing. Must always apply.
+description: >-
+  Removes AI writing patterns and restores natural voice in prose. Use when the
+  user says "unslop", "sounds like AI", "humanize this", or polishing commit
+  messages, PR descriptions, and vault notes. Not for Swift code review (deslopme).
 ---
 
 # Unslop
