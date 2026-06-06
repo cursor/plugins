@@ -45,7 +45,7 @@ The right decomposition depends on the question. Use your judgment. Narrow quest
 Spawn all explorers in a single message:
 
 - `subagent_type`: `generalPurpose`
-- `model`: your configured how-explorer model (default `grok-4.5-fast-xhigh`)
+- `model`: your configured how-explorer model (default `sonnet-4-6-thinking-xhigh`)
 - `readonly`: `true`
 
 Each explorer gets the same base prompt from `references/explorer-prompt.md` plus a specific exploration angle naming its slice. Each explorer should:
@@ -109,7 +109,7 @@ Run the full explain flow above (Steps 1-4). You must understand the architectur
 
 ### Step 2. Spawn Critics
 
-After the explanation is complete, spawn one architectural critic per model in your configured how-critics list (defaults `claude-opus-4-8-thinking-xhigh`, `gpt-5.5-high-fast`, `grok-4.5-fast-xhigh`), all in a single message.
+After the explanation is complete, spawn one architectural critic per model in your configured how-critics list (defaults `claude-opus-4-8-thinking-xhigh`, `claude-opus-4-8-thinking-high`, `sonnet-4-6-thinking-xhigh`), all in a single message.
 
 For each critic:
 - `subagent_type`: `generalPurpose`

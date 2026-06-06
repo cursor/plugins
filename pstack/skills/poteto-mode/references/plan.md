@@ -25,7 +25,7 @@ Resolve what is in scope vs explicitly out, technical or platform constraints, p
 Delegate codebase exploration (the **guard-the-context-window** principle skill).
 
 - Prefer `subagent_type: "poteto-agent"`. `generalPurpose` is the fallback. Never use the built-in `plan` subagent_type; it ignores this skill.
-- Pass `model:` explicitly per the configured roles (defaults `grok-4.5-fast-xhigh` for code, `claude-opus-4-8-thinking-xhigh` for judgment).
+- Pass `model:` explicitly per the configured roles (defaults `sonnet-4-6-thinking-xhigh` for code, `claude-opus-4-8-thinking-xhigh` for judgment).
 
 Each explorer returns file pointers, conventions, dependencies, test infrastructure, and entry points. No inlined dumps.
 
@@ -96,7 +96,7 @@ In the overview, name which poteto-mode non-negotiables the implementer must app
 
 - the **how** skill over each unfamiliar subsystem before changing it.
 - the **interrogate** skill for adversarial review on contested designs before shipping.
-- `/deslop` over each diff before commit. the **unslop** skill over any prose surface.
+- `/deslopme` over each diff before commit. the **unslop** skill over any prose surface.
 - the **show-me-your-work** skill to keep a decision trail when the plan is large enough to need an auditable record.
 - Cursor's built-in **babysit** skill after opening the PR.
 

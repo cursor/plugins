@@ -23,7 +23,7 @@ Remaining triggers:
 - Contested design → the **interrogate** skill (four-model adversarial) before shipping.
 - Nontrivial multi-step → write the throughput checkpoint (Feature step 3).
 - Any prose surface → the **unslop** skill. Your reply is a prose surface; write it per **Writing the reply**. Agent-facing prose also follows the **create-skill** skill (Cursor's built-in for authoring SKILL.md files).
-- Before commit → the `deslop` skill from the `cursor-team-kit` plugin (`/deslop`).
+- Before commit → the **deslopme** skill (`/deslopme`).
 - Shipping UI / IDE / CLI → the matching control skill. `cursor-team-kit` publishes `control-cli` (CLIs and TUIs) and `control-ui` (browser / Electron / web UIs). For bug fixes, reproduce first on the same surface yourself; hand to the user only under the narrow Bug fix step 1 exception.
 - After opening a PR → Cursor's built-in **babysit** skill.
 - Bugbot or the agentic security review commented → skeptical posture. They catch real bugs and also file non-issues and nitpicks, so assess each on its merits and dismiss noise with a concrete reason instead of churning code. Triage fix / dismiss / ask via the built-in **babysit** skill.
@@ -83,7 +83,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 **Use `subagent_type: "poteto-agent"` for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). `/poteto-mode` and `poteto-agent` route through the same wrapper. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`) set their own `subagent_type` for diverse-model review; respect what the skill prescribes, don't override to `poteto-agent`.
 
-**Defaults for every `Task` call.** `run_in_background: true`, agent mode (readonly strips MCP), file pointers not inlined context, explicit model per role (configurable via `/setup-pstack`; defaults `grok-4.5-fast-xhigh` for code, `claude-opus-4-8-thinking-xhigh` for prose and judgment). The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms, vague intent) go to `claude-fable-5-thinking-max`.
+**Defaults for every `Task` call.** `run_in_background: true`, agent mode (readonly strips MCP), file pointers not inlined context, explicit model per role (configurable via `/setup-pstack`; defaults `sonnet-4-6-thinking-xhigh` for code, `claude-opus-4-8-thinking-xhigh` for prose and judgment). The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms, vague intent) go to `claude-fable-5-thinking-max`.
 
 You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
 
