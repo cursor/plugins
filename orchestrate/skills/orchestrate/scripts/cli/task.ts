@@ -481,10 +481,13 @@ export async function findActiveRootPlanner(
   nowMs: number = Date.now()
 ): Promise<ActiveRootPlanner | null> {
   const list = await agentApi.list({ runtime: "cloud", limit: 50 });
+  // Exact match, not startsWith: a prefix slug would otherwise adopt another
+  // goal's `<slug>-root` planner (e.g. "auth" adopting "auth-ui-root").
+  const rootPlannerName = `${rootSlug}-root`;
   for (const item of listItems(list)) {
     const name = stringField(item, "name");
     if (!name) continue;
-    if (!name.startsWith(rootSlug)) continue;
+    if (name !== rootPlannerName) continue;
     const createdAt = timeMs(field(item, "createdAt"));
     if (createdAt === null || nowMs - createdAt > MAX_BOOT_MS) continue;
     const agentId =
