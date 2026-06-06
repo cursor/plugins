@@ -11,5 +11,6 @@ If the cleanup reveals a missing feature or a real bug, split it out and ship th
 5. Prove behavior is unchanged on the real artifact, not "it compiles" (**principle-prove-it-works**). For larger reshapes, run an equivalence check: a script that diffs old-vs-new outputs, a recorded baseline replayed against the new code, or a smoke run on the matching surface via the relevant control skill. Own the verification yourself; do not trust a delegate's "looks good" summary.
 6. Confirm the change earns its place. The success measure is reduced reader load (**principle-minimize-reader-load**): fewer layers between question and answer, less hidden state, fewer indirections without a second consumer. If the diff does not lower reader load somewhere, revert it.
 7. Rebase into small ordered commits that tell the story. A subtraction commit, then the reshape, then any follow-on cleanup, so a single revert undoes one slice. Run **Opening a PR**.
+   Shape the commits with the **sequence-verifiable-units** principle skill, so each behavior-preserving slice stays green before the next.
 
 **Reply:** the structure that changed, the pin you held it against, the equivalence proof, the reader-load delta, what shipped and what got reverted. No new behavior.
