@@ -24,6 +24,8 @@ fork it. improve it. make it yours. PRs are welcome!
 
 type `/automate-me`. it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
 
+models are configurable too. type `/setup-pstack`. it detects the models you have access to and writes a small always-applied rule mapping each role (code, judgment, the review panels) to a model. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
+
 ## usage
 
 use `/poteto-mode` at the start of a task. it reads your request, picks from a set of playbooks, and runs the other skills as the steps need them.
@@ -73,6 +75,7 @@ the rest are useful when you want to specifically invoke them:
 | `/arena` | you want N parallel attempts at the same thing, then to grab the best parts of each. |
 | `/interrogate` | you have a diff and want four different models to try to break it, including a strict code-quality lens. |
 | `/automate-me` | you want your own `-mode` skill, drafted from how you've actually worked. |
+| `/setup-pstack` | you want to pick which models pstack uses per role. detects your models and writes a config rule. |
 | `/reflect` | a long task landed and you want the recipe captured as a skill edit. |
 | `/tdd` | you're fixing a bug and there's a cheap local test path. write the failing test first, then the fix. |
 | `/typescript-best-practices` | you're reading or editing typescript. grounds the type-system-discipline principle in syntax. |
