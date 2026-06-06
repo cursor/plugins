@@ -13,7 +13,7 @@ The dispatcher is one-shot. Take the user's goal, launch a cloud root planner vi
 One-time setup: run `bun install` inside this skill's `scripts/` directory if `node_modules/` is missing. The scripts live outside the host repo's package manager workspace on purpose.
 
 ```bash
-bun cli.ts kickoff "<goal>" [--repo <url>] [--ref main] [--model claude-opus-4-7] [--slack-channel C123] [--dispatcher-name "Alex"]
+bun cli.ts kickoff "<goal>" [--repo <url>] [--ref main] [--model claude-opus-4-8] [--slack-channel C123] [--dispatcher-name "Alex"]
 ```
 
 The CLI reads `CURSOR_API_KEY`, auto-detects the repo from `git config --get remote.origin.url`, builds the spawn prompt, spawns via `cursor-sdk`, and prints `{ agentId, runId, status, url, dispatcherFirstName }` JSON. Slack is optional. If `SLACK_BOT_TOKEN` is set, also pass `--slack-channel <id>` or set `SLACK_CHANNEL_ID`; otherwise kickoff fails before spawning. If the token is unset, Slack stays disabled.

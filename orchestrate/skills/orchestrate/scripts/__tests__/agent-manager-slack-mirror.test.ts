@@ -2,14 +2,14 @@ import { afterAll, describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-
-const TEST_SLACK_CHANNEL = "C123TEST";
 import type { State } from "../schemas.ts";
 import {
   installSlackWebApiMock,
   resetSlackWebApiMock,
   slackWebApiCalls,
 } from "./support/slack-web-api-mock.ts";
+
+const TEST_SLACK_CHANNEL = "C123TEST";
 
 installSlackWebApiMock();
 
@@ -54,6 +54,12 @@ async function waitFor(predicate: () => boolean, label: string): Promise<void> {
   throw new Error(`timed out waiting for ${label}`);
 }
 
+function formatStartedSlackDirective(d: Date): string {
+  const epoch = Math.floor(d.getTime() / 1000);
+  const fallback = d.toISOString().replace(/\.\d{3}Z$/, "Z");
+  return `<!date^${epoch}^{ago}|${fallback}>`;
+}
+
 describe("AgentManager Slack status mirror", () => {
   test("Creates a task thread message then edits it in place", async () => {
     const workspace = mkdtempSync(join(tmpdir(), "orch-slack-mirror-"));
@@ -89,10 +95,11 @@ describe("AgentManager Slack status mirror", () => {
       const mgr = await AgentManager.load(workspace);
       const task = requireTask(mgr.getTask("worker-one"), "worker-one");
 
+      const startedAt = new Date(Date.now() - 2 * 60_000).toISOString();
       mgr.touch(task, {
         agentId: "bc-child",
         status: "running",
-        startedAt: new Date(Date.now() - 2 * 60_000).toISOString(),
+        startedAt,
       });
       await waitFor(
         () => readState(workspace).tasks[0]?.slackTs === "222.333",
@@ -114,7 +121,7 @@ describe("AgentManager Slack status mirror", () => {
         channel: TEST_SLACK_CHANNEL,
         thread_ts: "111.222",
         username: "worker-one",
-        text: "▶︎ running\nstarted 2m ago · <https://cursor.com/agents/bc-child|view>",
+        text: `▶︎ running\nstarted ${formatStartedSlackDirective(new Date(startedAt))} · <https://cursor.com/agents/bc-child|view>`,
       });
       expect(calls[0].args.icon_emoji).toBeUndefined();
       expect(calls[1].args).toMatchObject({
@@ -184,7 +191,9 @@ describe("AgentManager Slack status mirror", () => {
   });
 
   test("Child planner load does not create a top-level kickoff", async () => {
-    const workspace = mkdtempSync(join(tmpdir(), "orch-slack-child-no-kickoff-"));
+    const workspace = mkdtempSync(
+      join(tmpdir(), "orch-slack-child-no-kickoff-")
+    );
     resetSlackWebApiMock(() => {
       throw new Error("child planner should not post kickoff");
     });
@@ -227,7 +236,9 @@ describe("AgentManager Slack status mirror", () => {
   });
 
   test("Child planner load fails when kickoff ref is missing", async () => {
-    const workspace = mkdtempSync(join(tmpdir(), "orch-slack-child-missing-ref-"));
+    const workspace = mkdtempSync(
+      join(tmpdir(), "orch-slack-child-missing-ref-")
+    );
     resetSlackWebApiMock(() => {
       throw new Error("child planner should not post kickoff");
     });
@@ -320,7 +331,7 @@ describe("AgentManager Slack status mirror", () => {
         call => call.method === "chat.update"
       );
       expect(update?.args.text).toBe(
-        "▶︎ running\nstarted 0m ago · <https://cursor.com/agents/bc-child|view>"
+        "▶︎ running\nstarted just now · <https://cursor.com/agents/bc-child|view>"
       );
     } finally {
       rmSync(workspace, { recursive: true, force: true });
@@ -372,7 +383,7 @@ describe("AgentManager Slack status mirror", () => {
         call => call.method === "chat.postMessage"
       );
       expect(mirror?.args.text).toBe(
-        "▶︎ running\nstarted 0m ago · <https://cursor.com/agents/bc-child|view>"
+        "▶︎ running\nstarted just now · <https://cursor.com/agents/bc-child|view>"
       );
     } finally {
       rmSync(workspace, { recursive: true, force: true });
@@ -551,6 +562,75 @@ describe("AgentManager Slack status mirror", () => {
       ).mirrorTaskToSlack(task);
 
       expect(slackWebApiCalls()).toEqual([]);
+    } finally {
+      rmSync(workspace, { recursive: true, force: true });
+    }
+  });
+
+  test("Noticed-idle attention does not flip the badge; stuck escalation does", async () => {
+    const workspace = mkdtempSync(join(tmpdir(), "orch-slack-mirror-stuck-"));
+    let postCount = 0;
+    resetSlackWebApiMock((method, args) => ({
+      ok: true,
+      channel: args.channel,
+      ts: method === "chat.update" ? args.ts : `333.${++postCount}`,
+    }));
+
+    try {
+      writeFileSync(
+        join(workspace, "plan.json"),
+        JSON.stringify(
+          {
+            goal: "mirror status",
+            rootSlug: "mirror-status",
+            baseBranch: "main",
+            repoUrl: "https://github.com/example-org/example-repo",
+            slackKickoffRef: { channel: "C123", ts: "111.222" },
+            tasks: [
+              {
+                name: "worker-one",
+                type: "worker",
+                scopedGoal: "Do the work.",
+              },
+            ],
+          },
+          null,
+          2
+        )
+      );
+      const mgr = await AgentManager.load(workspace);
+      const task = requireTask(mgr.getTask("worker-one"), "worker-one");
+
+      mgr.touch(task, {
+        agentId: "bc-child",
+        status: "running",
+        startedAt: new Date().toISOString(),
+      });
+      await waitFor(
+        () =>
+          slackWebApiCalls().some(call => call.method === "chat.postMessage"),
+        "initial running mirror"
+      );
+
+      mgr.logAttention(
+        "worker-one: SSE idle 300000ms, polled status=running; watchdog still waiting"
+      );
+      await new Promise(resolve => setTimeout(resolve, 25));
+      expect(
+        slackWebApiCalls().filter(c => c.method === "chat.update")
+      ).toHaveLength(0);
+
+      mgr.logAttention("worker-one: SSE idle 1800000ms; stuck");
+      await waitFor(
+        () => slackWebApiCalls().some(call => call.method === "chat.update"),
+        "stuck mirror"
+      );
+      const stuck = slackWebApiCalls().find(
+        call => call.method === "chat.update"
+      );
+      expect(stuck?.args.text).toBe(
+        "⚠ stuck\nno activity for 30m · <https://cursor.com/agents/bc-child|view>"
+      );
     } finally {
       rmSync(workspace, { recursive: true, force: true });
     }

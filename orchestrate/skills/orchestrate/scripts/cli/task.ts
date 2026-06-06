@@ -21,8 +21,8 @@ import {
   loadOrBail,
   parsePositiveIntegerOrBail,
   parseRespawnSourceOrBail,
-  resolveKickoffSlackChannelOrBail,
   resolveKickoffRepoUrl,
+  resolveKickoffSlackChannelOrBail,
   resolveWorkspaceSlackChannelOrBail,
   type SpawnOptions,
   transitivelyDependsOn,
@@ -108,8 +108,11 @@ export function registerTaskCommands(program: Command): void {
     .argument("<goal>", "Root orchestration goal")
     .option("--repo <url>", "Repository URL to orchestrate")
     .option("--ref <ref>", "Starting git ref for the cloud workspace", "main")
-    .option("--model <id>", "Model id for the root planner", "claude-opus-4-7")
-    .option("--force", "Spawn a new root planner even when a recent matching run exists.")
+    .option("--model <id>", "Model id for the root planner", "claude-opus-4-8")
+    .option(
+      "--force",
+      "Spawn a new root planner even when a recent matching run exists."
+    )
     .option(
       "--slack-channel <id>",
       "Slack channel id for run visibility. Falls back to SLACK_CHANNEL_ID."

@@ -36,14 +36,21 @@ import {
   parseStateJson,
   TASK_NAME_RE,
 } from "../schemas.ts";
-import type { CommentDestinations } from "./comment-retry-queue.ts";
 import { plannedBranchForTask } from "./branches.ts";
+import type { CommentDestinations } from "./comment-retry-queue.ts";
 
 const SPAWN_MAX_ATTEMPTS = 3;
 const SPAWN_RETRY_BACKOFF_MS = 2_000;
 const WAIT_WATCHDOG_POLL_INTERVAL_MS = 60_000;
+// Internal watchdog "noticed idle" debug logs. Lower threshold = earlier
+// visibility into stalled SSE / tool-call streams without disturbing the
+// user-facing badge below.
 const WAIT_SSE_IDLE_ATTENTION_MS = 300_000;
 const WAIT_TOOL_CALL_IDLE_ATTENTION_MS = 300_000;
+// User-facing escalation. Watchdog logs a "; stuck" entry once idle crosses
+// this, and the Slack badge keys off that marker. Default 30m; overridable
+// for tool_call via ORCHESTRATE_TOOL_CALL_IDLE_MS.
+const STUCK_ESCALATION_MS = 1_800_000;
 // Caps rapid cycling if `run.wait()` errors sub-second while `Agent.getRun`
 // still reports running. Without it, state.attention and saveState frequency
 // would blow up. Negligible cost when retries take ~1-2 minutes.
@@ -934,7 +941,9 @@ export class AgentManager {
       }
       const prNumber = parseHandoffPrNumber(body);
       const sdkError =
-        rr.status === "finished" ? null : runResultErrorMessage(rr) ?? lastWaitError;
+        rr.status === "finished"
+          ? null
+          : (runResultErrorMessage(rr) ?? lastWaitError);
       const failureMode =
         parseHandoffFailureMode(body) ??
         (rr.status === "finished"
@@ -1383,7 +1392,7 @@ export class AgentManager {
     task: TaskState
   ): { kind: SlackDisplayKind; emoji: string; label: string } | null {
     if (task.status === "pending") return null;
-    if (task.status === "running" && this.latestIdleWarningMs(task) !== null) {
+    if (task.status === "running" && this.latestStuckIdleMs(task) !== null) {
       return { kind: "stuck", emoji: "⚠", label: "stuck" };
     }
     switch (task.status) {
@@ -1403,19 +1412,13 @@ export class AgentManager {
     }
   }
 
-  private slackSummaryForTask(
-    task: TaskState,
-    kind: SlackDisplayKind
-  ): string {
+  private slackSummaryForTask(task: TaskState, kind: SlackDisplayKind): string {
     const view = formatAgentFooter(task.agentId);
     switch (kind) {
       case "running":
-        return appendSlackView(
-          `started ${formatElapsedMinutes(task.startedAt)} ago`,
-          view
-        );
+        return appendSlackView(formatStartedSummary(task.startedAt), view);
       case "stuck": {
-        const idleMs = this.latestIdleWarningMs(task);
+        const idleMs = this.latestStuckIdleMs(task);
         return appendSlackView(
           `no activity for ${formatDurationMinutes(idleMs ?? 0)}`,
           view
@@ -1467,9 +1470,10 @@ export class AgentManager {
     }
   }
 
-  private latestIdleWarningMs(task: TaskState): number | null {
+  private latestStuckIdleMs(task: TaskState): number | null {
     for (const entry of [...this.state.attention].reverse()) {
       if (!entry.message.startsWith(`${task.name}:`)) continue;
+      if (!isStuckEscalationMessage(entry.message)) continue;
       const idleMs = parseIdleWarningMs(entry.message);
       if (idleMs !== null) return idleMs;
     }
@@ -1769,11 +1773,13 @@ function failureModeText(mode: TaskState["failureMode"]): string {
   }
 }
 
-function formatElapsedMinutes(startedAt: string | null): string {
-  if (!startedAt) return "0m";
+function formatStartedSummary(startedAt: string | null): string {
+  if (!startedAt) return "started just now";
   const started = Date.parse(startedAt);
-  if (!Number.isFinite(started)) return "0m";
-  return formatDurationMinutes(Date.now() - started);
+  if (!Number.isFinite(started)) return "started just now";
+  const epoch = Math.floor(started / 1000);
+  const fallback = new Date(started).toISOString().replace(/\.\d{3}Z$/, "Z");
+  return `started <!date^${epoch}^{ago}|${fallback}>`;
 }
 
 function formatDurationMinutes(ms: number): string {
@@ -1850,7 +1856,9 @@ async function waitRunWithWatchdog(args: {
 }): Promise<RunResult> {
   const ac = new AbortController();
   let idleEpisodeLogged = false;
+  let sseStuckEpisodeLogged = false;
   let toolCallIdleEpisodeLogged = false;
+  let toolCallStuckEpisodeLogged = false;
   const waitStartedAt = Date.now();
 
   const pollLoop = async (): Promise<RunResult> => {
@@ -1883,10 +1891,14 @@ async function waitRunWithWatchdog(args: {
           `${args.taskLabel}: SSE idle ${idleMs}ms, polled status=running; watchdog still waiting`
         );
       }
+      if (idleMs >= STUCK_ESCALATION_MS && !sseStuckEpisodeLogged) {
+        sseStuckEpisodeLogged = true;
+        args.logAttention(`${args.taskLabel}: SSE idle ${idleMs}ms; stuck`);
+      }
       const toolCallIdleMs =
         Date.now() - (args.lastToolCallAt.value ?? waitStartedAt);
       if (
-        toolCallIdleMs >= toolCallIdleThresholdMs() &&
+        toolCallIdleMs >= WAIT_TOOL_CALL_IDLE_ATTENTION_MS &&
         !toolCallIdleEpisodeLogged
       ) {
         toolCallIdleEpisodeLogged = true;
@@ -1897,6 +1909,15 @@ async function waitRunWithWatchdog(args: {
             lastToolCallAt: args.lastToolCallAt.value,
             waitStartedAt,
           })
+        );
+      }
+      if (
+        toolCallIdleMs >= toolCallStuckThresholdMs() &&
+        !toolCallStuckEpisodeLogged
+      ) {
+        toolCallStuckEpisodeLogged = true;
+        args.logAttention(
+          `${args.taskLabel}: tool_call idle ${toolCallIdleMs}ms; stuck`
         );
       }
     }
@@ -1992,13 +2013,15 @@ export function formatToolCallIdleWarning(args: {
   return `${args.taskLabel}: tool_call idle ${args.idleMs}ms; last=${lastCall}`;
 }
 
-function toolCallIdleThresholdMs(): number {
+function toolCallStuckThresholdMs(): number {
   const raw = process.env.ORCHESTRATE_TOOL_CALL_IDLE_MS;
-  if (!raw) return WAIT_TOOL_CALL_IDLE_ATTENTION_MS;
+  if (!raw) return STUCK_ESCALATION_MS;
   const parsed = Number.parseInt(raw, 10);
-  return Number.isFinite(parsed) && parsed > 0
-    ? parsed
-    : WAIT_TOOL_CALL_IDLE_ATTENTION_MS;
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : STUCK_ESCALATION_MS;
+}
+
+function isStuckEscalationMessage(message: string): boolean {
+  return /\b(?:SSE|tool_call) idle \d+ms; stuck$/.test(message);
 }
 
 function summarizeToolCall(event: unknown): ToolCallInspection {
