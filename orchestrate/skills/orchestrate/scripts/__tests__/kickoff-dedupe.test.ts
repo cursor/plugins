@@ -4,9 +4,9 @@ import { spawnSync } from "node:child_process";
 const SCRIPTS_DIR = new URL("..", import.meta.url).pathname;
 
 import {
-  MAX_BOOT_MS,
   findActiveRootPlanner,
   inferKickoffRootSlug,
+  MAX_BOOT_MS,
 } from "../cli/task.ts";
 
 describe("kickoff dedupe", () => {
@@ -128,8 +128,12 @@ describe("kickoff dedupe", () => {
   });
 
   test("infers root slug from an explicit kickoff prefix", () => {
-    expect(inferKickoffRootSlug("refactor-ui: shrink Settings")).toBe("refactor-ui");
-    expect(inferKickoffRootSlug("`refactor-ui`: shrink Settings")).toBe("refactor-ui");
+    expect(inferKickoffRootSlug("refactor-ui: shrink Settings")).toBe(
+      "refactor-ui"
+    );
+    expect(inferKickoffRootSlug("`refactor-ui`: shrink Settings")).toBe(
+      "refactor-ui"
+    );
   });
 
   test("kickoff command adopts unless --force is passed", () => {

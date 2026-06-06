@@ -147,9 +147,7 @@ async function uploadFileToThread(args: {
   }
   const slack = createSlackAdapter(args.channel);
   if (!slack) {
-    throw new Error(
-      "SLACK_BOT_TOKEN not set; cannot upload Slack file"
-    );
+    throw new Error("SLACK_BOT_TOKEN not set; cannot upload Slack file");
   }
   const content = readFileSync(args.filePath);
   const initial =
@@ -230,10 +228,10 @@ export function loadKickoffThreadTsOrBail(args: {
   return loadKickoffRefOrBail(args).threadTs;
 }
 
-function loadKickoffRefOrBail(args: {
-  workspace: string;
-  taskName: string;
-}): { channel: string; threadTs: string } {
+function loadKickoffRefOrBail(args: { workspace: string; taskName: string }): {
+  channel: string;
+  threadTs: string;
+} {
   const planPath = join(resolve(args.workspace), "plan.json");
   if (!existsSync(planPath)) {
     throw new Error(

@@ -4,7 +4,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import type { SlackAdapter, SlackMessageRef } from "../adapters/types.ts";
+
 const TEST_SLACK_CHANNEL = "C123TEST";
+
 import {
   commentRetryQueuePath,
   drainCommentRetryQueue,
