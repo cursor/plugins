@@ -32,7 +32,7 @@ use `/poteto-mode` at the start of a task. it reads your request, picks from a s
 
 ### just use `/poteto-mode`
 
-this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with fourteen playbooks:
+this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with fifteen playbooks:
 
 | playbook | for |
 |---|---|
@@ -43,12 +43,13 @@ this skill is the main shortcut. i use it whenever i need the agent to do rigoro
 | trace forensics | diagnose a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot). |
 | feature | new or changed behavior, built from a named data shape. |
 | refactoring | a behavior-preserving change to structure or shape. |
-| prototype | a throwaway sketch to make a design decision cheaply. |
+| prototype | a throwaway sketch to make a design or behavioral decision cheaply, or to settle an empirical fork by observing it. |
 | visual parity | pixel-exact ui equivalence between two implementations. |
 | authoring a skill | writing or editing a SKILL.md. |
 | eval | test how a skill or prompt change affects agent behavior, blinded. |
 | autonomous run | drive a long task to completion without stopping. |
 | session pickup | resume or take over a prior agent's in-flight work. |
+| pause safely | suspend in-flight work cleanly so it can be resumed later. |
 | multi-phase plan | work that spans phases or stacked PRs. |
 
 when invoked it:
@@ -127,11 +128,11 @@ pstack also ships a subagent that runs my style end to end. spawn it from a pare
 
 ## principles
 
-nineteen short skills, one principle each. `poteto-mode` indexes them inline and reads that index at task start. the standalone files are there so other skills can reference a principle by name, and so the index can point at the full rule for each.
+twenty short skills, one principle each. `poteto-mode` indexes them inline and reads that index at task start. the standalone files are there so other skills can reference a principle by name, and so the index can point at the full rule for each.
 
 - core: laziness-protocol, foundational-thinking, redesign-from-first-principles, subtract-before-you-add, minimize-reader-load, outcome-oriented-execution, experience-first, exhaust-the-design-space, build-the-lever.
 - architecture: boundary-discipline, type-system-discipline, make-operations-idempotent, migrate-callers-then-delete-legacy-apis, separate-before-serializing-shared-state.
-- verification: prove-it-works, fix-root-causes.
+- verification: prove-it-works, fix-root-causes, sequence-verifiable-units.
 - delegation: guard-the-context-window, never-block-on-the-human.
 - meta: encode-lessons-in-structure.
 
