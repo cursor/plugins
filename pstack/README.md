@@ -72,6 +72,7 @@ the rest are useful when you want to specifically invoke them:
 | `/poteto-mode` | default entry point for any non-trivial task. |
 | `/how` | you want a walkthrough of how a subsystem works. |
 | `/why` | you want to know why something was built this way. discovers available MCPs at run time and queries each evidence category in parallel (source control, issue tracker, long-form docs, real-time chat, infra observability, error tracking, analytics warehouse). |
+| `/teach` | you want a body of work explained plainly. composes `how` and `why` into one paced, layered explanation led by the single core idea, no quizzes. |
 | `/architect` | you're about to write code that crosses a function boundary and want the caller's usage, types, and module shape settled first. |
 | `/arena` | you want N parallel attempts at the same thing, then to grab the best parts of each. |
 | `/interrogate` | you have a diff and want four different models to try to break it, including a strict code-quality lens. |
