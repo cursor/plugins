@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "falconer": {
+      "url": "https://falconer.com/api/mcp"
+    }
+  }
+}
