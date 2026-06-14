@@ -10,4 +10,6 @@
 5. Cite the measurement in the PR.
 6. Run **Opening a PR**.
 
+For sustained improvement against a metric rather than a one-off fix, use the Hillclimb playbook (`playbooks/hillclimb.md`).
+
 **Reply:** baseline number, post-fix number, delta, artifact path.
