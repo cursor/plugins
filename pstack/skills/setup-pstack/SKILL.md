@@ -36,7 +36,9 @@ alwaysApply: true
 ---
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
 feature, refactoring: composer-2.5-fast
-bug-fix, perf-issue, hillclimb: gpt-5.5-high-fast
+bug-fix: gpt-5.5-high-fast
+perf-issue: gpt-5.5-high-fast
+hillclimb: gpt-5.5-high-fast
 judgment and prose: claude-opus-4-8-thinking-xhigh
 how explorer: composer-2.5-fast
 how explainer: claude-opus-4-8-thinking-xhigh
