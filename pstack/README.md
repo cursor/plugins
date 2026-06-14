@@ -32,13 +32,14 @@ use `/poteto-mode` at the start of a task. it reads your request, picks from a s
 
 ### just use `/poteto-mode`
 
-this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with fifteen playbooks:
+this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with sixteen playbooks:
 
 | playbook | for |
 |---|---|
 | investigation | a read-only question. how does x work, why was y built this way, are we sure. |
 | bug fix | reproduce a defect, root-cause it, and fix with runtime evidence. |
 | perf | trace a measured slowness and improve it against a baseline. |
+| hillclimb | sustained, scientific improvement of one metric against a target, looping hypotheses with before/after measurement and one commit per accepted win. |
 | runtime forensics | diagnose a live symptom (leak, idle-cpu spin, glitch) from instrumentation. |
 | trace forensics | diagnose a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot). |
 | feature | new or changed behavior, built from a named data shape. |
