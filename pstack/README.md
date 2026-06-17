@@ -73,6 +73,8 @@ the rest are useful when you want to specifically invoke them:
 | `/poteto-mode` | default entry point for any non-trivial task. |
 | `/how` | you want a walkthrough of how a subsystem works. |
 | `/why` | you want to know why something was built this way. discovers available MCPs at run time and queries each evidence category in parallel (source control, issue tracker, long-form docs, real-time chat, infra observability, error tracking, analytics warehouse). |
+| `/recall` | you're starting or resuming work and want your recent context on a topic rebuilt from your own chat history and the shared record, handed back as a tight current-state brief. |
+| `/blast-radius` | you have a small-looking change and want to know what else it could break, with the one fact it's safe because of proven by running code, not asserted. |
 | `/architect` | you're about to write code that crosses a function boundary and want the caller's usage, types, and module shape settled first. |
 | `/arena` | you want N parallel attempts at the same thing, then to grab the best parts of each. |
 | `/interrogate` | you have a diff and want four different models to try to break it, including a strict code-quality lens. |
