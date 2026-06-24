@@ -1,0 +1,30 @@
+---
+description: Before risky tool calls (git push, rm -rf, npm publish, deploy), check prevention rules via the thumbgate MCP server. If a rule matches, STOP and explain why.
+alwaysApply: true
+---
+
+# Pre-Action Gates
+
+Before executing any of these risky actions, query the `prevention_rules` MCP tool to check for matching prevention rules:
+
+- `git push` (especially force push)
+- `rm -rf` or recursive file deletion
+- `npm publish`
+- `deploy` commands (any deployment target)
+- Database migration commands
+- Secret or credential changes
+
+## Enforcement flow
+
+1. Extract the command or action about to be executed.
+2. Call `prevention_rules` with the action description to check for matching rules.
+3. If a rule matches:
+   - **STOP** the action immediately.
+   - Display the matched rule's description and corrective action.
+   - Ask the user to confirm before proceeding.
+4. If no rules match, proceed normally.
+
+## After a blocked action
+
+- Suggest the corrective action from the matched prevention rule.
+- Offer to capture feedback if the block was incorrect (false positive).
