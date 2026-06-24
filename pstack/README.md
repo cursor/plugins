@@ -26,6 +26,12 @@ type `/automate-me`. it mines your recent transcripts, drafts a `<your-name>-mod
 
 models are configurable too. type `/setup-pstack`. it detects the models you have access to and writes a small always-applied rule mapping each role (code, judgment, the review panels) to a model. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
 
+## automations
+
+pstack also ships automation playbooks. benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. `/setup-benny` is the entry point. installing pstack exposes it alongside `/triage-issue-reports` and `/reproduce-and-fix-issues`.
+
+cursor's public plugin schema can't create or enable live automations. `/setup-benny` uses the built-in `/automate` skill to review each new draft and hand it off to the Automations editor. existing automations are edited directly in the ui, so setup won't create duplicates. you'll need slack, issue-tracker, repository, pull-request, and target-app control configuration.
+
 ## usage
 
 use `/poteto-mode` at the start of a task. it reads your request, picks from a set of playbooks, and runs the other skills as the steps need them.
