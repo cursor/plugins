@@ -28,9 +28,9 @@ models are configurable too. type `/setup-pstack`. it detects the models you hav
 
 ## automations
 
-pstack also ships automation playbooks. benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. `/setup-benny` is the entry point. installing pstack exposes it alongside `/triage-issue-reports` and `/reproduce-and-fix-issues`.
+pstack also ships a dormant [benny automation pack](./automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
 
-cursor's public plugin schema can't create or enable live automations. `/setup-benny` uses the built-in `/automate` skill to review each new draft and hand it off to the Automations editor. existing automations are edited directly in the ui, so setup won't create duplicates. you'll need slack, issue-tracker, repository, pull-request, and target-app control configuration.
+to set it up, point cursor at [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.md). setup copies the pack into the target repository at `.cursor/automations/benny/`, enables pstack there for shared skills, and keeps user configuration outside the copied pack.
 
 ## usage
 

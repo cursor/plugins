@@ -6,17 +6,32 @@ disable-model-invocation: true
 
 # Set up Benny
 
-Benny ships as an automation pack inside pstack. Installing pstack makes this skill and the two operational skills name-addressable.
+Benny ships as a dormant automation pack inside pstack. The plugin manifest exposes only pstack's normal skill root; this file and the two operational files are not slash skills.
 
-Benny needs external configuration and two live Cursor automations. The plugin manifest cannot package those automations.
+The human enters setup by pointing Cursor at the pack's `FOR_AGENTS.md`. The bootstrap flow copies the whole pack into the target repository, then reads this file directly at `.cursor/automations/benny/skills/setup-benny/SKILL.md`.
+
+Benny needs external configuration and two live Cursor automations.
 
 Do not create or update an automation until the user explicitly asks. Never put a secret value in plugin files, prompts, or committed configuration.
 
-## 1. Install pstack in the target repository
+## 1. Copy the pack and enable shared pstack skills
 
 Do this before asking for Benny configuration and before invoking the built-in `/automate` skill.
 
-Ask which repository will run the automations. Add pstack to that repository's `.cursor/settings.json`. If the file or `.cursor` directory does not exist, create it.
+Ask which repository will run the automations. The source pack is the directory containing `FOR_AGENTS.md`. The destination is `<target-repository>/.cursor/automations/benny/`.
+
+Merge the entire source pack into the destination:
+
+1. Create the destination when it is absent.
+2. Copy every source file to the same relative path.
+3. Preserve destination-only files. Never delete unrelated files during install or refresh.
+4. Keep user-owned configuration, feature maps, and routing maps outside the destination. Never overwrite them.
+5. When an existing source-managed file differs, inspect the diff and merge without discarding local edits. If ownership is ambiguous, stop and ask before replacing it.
+6. Verify that the destination contains `FOR_AGENTS.md`, this setup file, both operational files, their references, and the templates.
+
+If this file is already being read from the target destination, treat the copy as complete and run the same verification before continuing.
+
+Add pstack to the target repository's `.cursor/settings.json`. If the file or `.cursor` directory does not exist, create it.
 
 Merge this entry into the existing JSON or JSONC:
 
@@ -30,11 +45,8 @@ Merge this entry into the existing JSON or JSONC:
 
 Preserve every unrelated top-level setting and every other plugin entry. If `plugins.pstack` already exists, change only its `enabled` value. Preserve comments and valid JSONC syntax when the file uses JSONC. Validate the file after editing it.
 
-Reload the target project or start a fresh agent rooted there. Verify that these skills resolve from project scope:
+Reload the target project or start a fresh agent rooted there. Verify that these shared pstack skills resolve from project scope:
 
-- `setup-benny`
-- `triage-issue-reports`
-- `reproduce-and-fix-issues`
 - `how`
 - `why`
 - `tdd`
@@ -48,33 +60,36 @@ Reload the target project or start a fresh agent rooted there. Verify that these
 
 Do not count a skill loaded from the current session or a user-scoped plugin. The check must show that a fresh agent in the target repository receives pstack through project settings.
 
-If project-scoped plugin installation is unavailable or any required skill does not resolve, stop and explain the failure. Do not copy the Benny skills or a hand-picked dependency set into the repository. The operational skills depend on the wider pstack plugin.
+If project-scoped plugin installation is unavailable or any shared dependency does not resolve, stop and explain the failure.
 
-Tell the user that `.cursor/settings.json` must be committed before either automation is enabled. Do not commit it unless the user asks.
+The Benny files are read directly from `.cursor/automations/benny/`. Do not add that directory to a plugin manifest or expect its `SKILL.md` files to appear in the slash-skill list.
 
-Once this check passes, live automation prompts may invoke the project-scoped skills by name. They must not embed an absolute plugin installation path or copy plugin file contents.
+Tell the user that `.cursor/settings.json`, `.cursor/automations/benny/`, and any referenced secret-free configuration must be committed before either automation is enabled. Do not commit them unless the user asks.
+
+Once this check passes, live automation prompts may read the committed operational files by their stable repository-relative paths. They must not embed a plugin cache path or copy the file contents.
 
 ## 2. Adapt the configuration
 
-Open these installed examples:
+Open these copied examples:
 
 - `../../templates/configuration.example.yaml`
 - `../reproduce-and-fix-issues/references/feature-map.example.md`
 
-Create user-owned copies outside the plugin. These are configuration files, not replacement skills. Example locations:
+Create user-owned copies outside `.cursor/automations/benny/`. These are configuration files, not pack files. Example locations:
 
-- Project config, such as `<project-config-dir>/benny/configuration.yaml`
-- Project feature map, such as `<project-config-dir>/benny/feature-map.md`
+- Project config, such as `.cursor/benny/configuration.yaml`
+- Project feature map, such as `.cursor/benny/feature-map.md`
+- Project routing map, such as `.cursor/benny/routing.md`
 - User config, such as `~/.config/benny/configuration.yaml`
 - User feature map, such as `~/.config/benny/feature-map.md`
 
 Fill one feature-map section for every user-facing feature the automation may reproduce. Keep it at the user point of view. Do not freeze implementation details or current code paths in the map.
 
-Do not edit the installed examples. Plugin updates may replace them.
+Do not edit the copied examples. Pack refreshes may update source-managed files after conflict review, but they must never touch the user-owned copies.
 
 Prefer committed, secret-free files in the target repository when a fresh automation checkout must read them. Otherwise paraphrase the required values into the live prompt. Reference a repository file only after the built-in `/automate` skill confirms that the file is committed in the repository where the automation runs.
 
-Never use an absolute path inside the installed plugin. The live prompt may name a verified project-scoped skill, but it cannot rely on a plugin cache path.
+Use stable repository-relative paths for committed pack and configuration files. Never reference the plugin source directory or a plugin cache path from a live automation.
 
 ## 3. Fill the required choices
 
@@ -98,7 +113,7 @@ Use only model slugs shown as available in the user's Cursor model picker or sup
 
 The source channel, triage identity, repository, tracker adapter, control skill, and feature map must be explicit. Fail setup if any required value stays ambiguous.
 
-Use the bundled `unslop` skill on the final automation names, descriptions, and prompt shims before saving them.
+Use pstack's `unslop` skill on the final automation names, descriptions, and prompt shims before saving them.
 
 ## 4. Check integration capabilities
 
@@ -126,7 +141,7 @@ Do not use undocumented integration endpoints.
 
 If the user wants reroutes or owner pings:
 
-1. Copy `../triage-issue-reports/references/routing.example.md` outside the plugin.
+1. Copy `../triage-issue-reports/references/routing.example.md` outside `.cursor/automations/benny/`.
 2. Replace every placeholder with public or organization-local values.
 3. Keep owner pings off by default.
 4. Allow a ping only for a configured feature owner or a confirmed likely regression author.
@@ -153,7 +168,7 @@ If any capability is missing, leave the repro automation disabled. It must fail 
 
 Ask whether this is first-time creation or configuration of existing automations.
 
-Read `../../FOR_AGENTS.md` as the primary user-intent source for either path. Use it to understand the two triggers, tools, instructions, outcomes, and shared rules. Do not put its installed plugin path or content into a live automation field.
+Read `../../FOR_AGENTS.md` from the copied pack as the primary user-intent source for either path. Use it to understand the two triggers, tools, instructions, outcomes, and shared rules.
 
 ### First-time creation
 
@@ -161,20 +176,20 @@ Create one automation at a time.
 
 For each automation:
 
-1. Read the matching bundled prompt template as secondary internal source material.
+1. Read the matching copied prompt template as secondary internal source material.
 2. Turn `FOR_AGENTS.md`, the finished Benny configuration, and the template intent into a complete natural-language request.
-3. Tell the live prompt to invoke its verified project-scoped operational skill by name.
-4. Do not put an installed plugin path or template excerpt into an automation field. A repo file may be referenced only when the built-in `automate` skill confirms that the automation runs in that same repo and the file is committed there.
+3. Tell the live prompt to read and follow its exact committed operational file under `.cursor/automations/benny/`.
+4. Use the stable repository-relative path, not a plugin source or cache path. Do not copy the operational file contents into the live prompt.
 5. Read and follow the built-in `automate` skill.
 6. Let `automate` discover Slack channels, the repository, and connected integrations.
-7. Let `automate` run its completeness and authentication gates.
+7. Let `automate` confirm that the copied pack and any referenced configuration files are committed in the same repository where the automation will run.
 8. Let `automate` show its draft table, obtain approval, ask readiness, and open the Automations editor.
 9. Finish the editor handoff for this automation before starting the next one.
 
 Give `automate` this complete triage intent, filled from configuration:
 
 - Name `benny-triage`.
-- Invoke `triage-issue-reports` by name from the target repository's project-scoped pstack install.
+- Read and follow `.cursor/automations/benny/skills/triage-issue-reports/SKILL.md` for every run.
 - Trigger on each new top-level report in the configured source Slack channel.
 - Read the triggering thread and reply only inside it.
 - Use the configured issue-tracker integration.
@@ -185,7 +200,7 @@ Give `automate` this complete triage intent, filled from configuration:
 After the triage editor handoff is complete, give `automate` this complete repro and fix intent:
 
 - Name `benny-reproduce`.
-- Invoke `reproduce-and-fix-issues` by name from the target repository's project-scoped pstack install.
+- Read and follow `.cursor/automations/benny/skills/reproduce-and-fix-issues/SKILL.md` for every run.
 - Trigger on the same new top-level reports in the configured source Slack channel.
 - Use the configured repository and default branch.
 - Read the source thread and reply only inside it.
@@ -207,6 +222,7 @@ Finish configuration, routing, control-adapter, and feature-map validation. Then
 For the existing triage automation, update:
 
 - Name and description
+- Direct instruction to read `.cursor/automations/benny/skills/triage-issue-reports/SKILL.md`
 - New top-level Slack report trigger and source channel
 - Slack thread read and reply capabilities
 - Issue-tracker integration
@@ -215,6 +231,7 @@ For the existing triage automation, update:
 For the existing repro automation, update:
 
 - Name and description
+- Direct instruction to read `.cursor/automations/benny/skills/reproduce-and-fix-issues/SKILL.md`
 - Matching Slack trigger and source channel
 - Repository and default branch
 - Slack thread read and reply capabilities
@@ -234,7 +251,7 @@ Do not enable either automation until the thread-safety test passes after the ed
 
 Use a test channel or a harmless test report.
 
-Before testing, confirm that the target repository's `.cursor/settings.json` change is committed on the branch used by the automation checkout. If it is not committed, stop. Tell the user that the automation cannot be enabled yet.
+Before testing, confirm that the target repository's `.cursor/settings.json`, `.cursor/automations/benny/`, and every referenced secret-free configuration file are committed on the branch used by the automation checkout. Confirm that both live prompts point at their exact committed operational files. If any check fails, stop. Tell the user that the automation cannot be enabled yet.
 
 Verify:
 

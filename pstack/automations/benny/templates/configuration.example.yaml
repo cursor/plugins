@@ -39,14 +39,14 @@ tracker:
   require_compensation_action: true
 
 routing:
-  map_path: "/path/outside/plugin/routing.md"
+  map_path: ".cursor/benny/routing.md"
   owner_pings_default: false
   allow_feature_owner_ping: false
   allow_confirmed_regression_author_ping: false
 
 control:
   skill_name: "control-target-app"
-  feature_map_path: "/path/outside/plugin/feature-map.md"
+  feature_map_path: ".cursor/benny/feature-map.md"
   environment: "safe-test-environment-placeholder"
   artifact_directory: "/tmp/benny-artifacts"
   artifact_retention_hours: 24

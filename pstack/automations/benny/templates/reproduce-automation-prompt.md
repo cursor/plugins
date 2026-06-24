@@ -1,10 +1,10 @@
 # Reproduce automation prompt
 
-> Source material for `/setup-benny` only. Paraphrase this intent into a built-in `automate` draft. Do not reference this template path or content in the live automation unless `automate` confirms that the file is committed in the same repository where the automation will run. Installed plugin files generally do not qualify.
+> Source material for the copied setup workflow. Paraphrase this intent into a built-in `automate` draft after `automate` confirms that the copied pack is committed in the repository where the automation will run.
 
-Use the `reproduce-and-fix-issues` skill for this run.
+Read and follow `.cursor/automations/benny/skills/reproduce-and-fix-issues/SKILL.md` for this run.
 
-Setup source configuration. Do not copy this path into the live draft:
+Configuration source. Include this repository-relative path only when it is committed in the same target repository. Otherwise paraphrase the configured values. Never use a plugin source or cache path:
 
 ```text
 {{BENNY_CONFIG_PATH}}
@@ -26,7 +26,7 @@ Treat the source channel and root thread timestamp as immutable. If either is mi
 
 Wait for a configured triage marker from the configured triage identity in this exact thread. Proceed only for `[benny:bug]` or `[benny:performance]`.
 
-Require the configured control-adapter skill before attempting a repro. Reproduce the exact discriminating symptom twice through the real UI. Verify existing pull requests or commits without authoring over them. Attempt a bounded fix only after a confirmed repro and the skill's fix gate.
+Require the configured control-adapter skill before attempting a repro. Reproduce the exact discriminating symptom twice through the real UI. Verify existing pull requests or commits without authoring over them. Attempt a bounded fix only after a confirmed repro and the operational file's fix gate.
 
 The coordinator is the only Slack poster. Every child prompt must forbid `SendSlackMessage`, `PostToSlack`, `chat.postMessage`, and all other Slack writes. Children return findings only.
 

@@ -25,9 +25,6 @@
 		"review",
 		"planning"
 	],
-	"skills": [
-		"./skills/",
-		"./automations/benny/skills/"
-	],
+	"skills": "./skills/",
 	"agents": "./agents/"
 }
