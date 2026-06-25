@@ -72,6 +72,11 @@
       "name": "pstack",
       "source": "pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
+    },
+    {
+      "name": "open-code-review",
+      "source": "open-code-review",
+      "description": "AI-powered code review on Git diffs — workspace changes, branch ranges, and single commits with concurrent per-file analysis and context-aware review using the ocr CLI."
     }
   ]
 }
