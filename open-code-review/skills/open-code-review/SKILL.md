@@ -93,7 +93,7 @@ ocr review --audience agent --background "business context here" [user-args]
 | User says | Command to run |
 |-----------|---------------|
 | "review my changes" / "review the working copy" | `ocr review --audience agent -b "context"` |
-| "review this PR" / "review feature branch" | `ocr review --audience agent -b "context" --from main --to <branch>` |
+| "review this PR" / "review feature branch" | `ocr review --audience agent -b "context" --from <base-branch> --to <head-branch>` (resolve the actual PR base — e.g. `main`, `master`, `develop` — via `git` or the PR metadata; do not assume `main`) |
 | "review commit abc123" | `ocr review --audience agent -b "context" --commit abc123` |
 | "what would be reviewed?" (dry-run) | `ocr review --preview` |
 
@@ -103,13 +103,13 @@ ocr review --audience agent --background "business context here" [user-args]
 
 ### Step 3: Classify and Report
 
-For each comment from the review output, classify by priority and report all issues to the user:
+For each comment from the review output, classify by priority:
 
 - **High**: Obvious bugs, security issues, clear mistakes, or well-founded suggestions with precise fix proposals
 - **Medium**: Reasonable concerns but context-dependent, style/performance suggestions, or fixes that require manual implementation
-- **Low**: Likely false positives, lacking sufficient context, nitpicks, or meaningless suggestions
+- **Low**: Likely false positives, lacking sufficient context, nitpicks, or meaningless suggestions — discard silently
 
-Report all comments grouped by priority level.
+Report High and Medium comments grouped by priority level.
 
 ### Step 4: Fix
 
@@ -170,7 +170,7 @@ When `start_line` and `end_line` are both `0`, the comment failed to locate the 
 1. Read the comment content to understand the issue
 2. Examine the target file mentioned in the comment
 3. Identify the relevant code section based on the comment's context
-4. Apply the fix or suggestion to the correct location
+4. Report the finding with the corrected location (apply fixes only if the user requested automatic fixes per Step 4)
 
 ## Custom Review Rules
 

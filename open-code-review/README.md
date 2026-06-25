@@ -57,7 +57,7 @@ flowchart TB
 @open-code-review review my current changes
 ```
 
-**Review a branch against main:**
+**Review a branch against its base:**
 
 ```
 @open-code-review review this branch against main
@@ -69,10 +69,10 @@ flowchart TB
 @open-code-review review commit abc1234
 ```
 
-**Review and auto-fix high-confidence issues:**
+**Review and auto-fix high-priority issues:**
 
 ```
-@open-code-review review and fix high-confidence issues
+@open-code-review review and fix high-priority issues
 ```
 
 ## Custom review rules
