@@ -43,3 +43,22 @@ plugins/
 ## License
 
 MIT
+
+---
+
+## ai-configs setup
+
+If you use [alekscbarragan/ai-configs](https://github.com/alekscbarragan/ai-configs), clone this fork to the canonical path so `setup.sh` wires `pstack/agents/poteto-agent.md` automatically:
+
+```bash
+mkdir -p ~/Developer/OpenSource/Cursor
+git clone git@github.com:alekscbarragan/cursor-plugins.git ~/Developer/OpenSource/Cursor/plugins
+```
+
+`setup.sh` gates the symlink on this directory existing — it skips gracefully if missing. To use a different path, set `CURSOR_PLUGINS_PATH` in `~/.ai/.env.local`:
+
+```bash
+CURSOR_PLUGINS_PATH="$HOME/path/to/cursor-plugins"
+```
+
+Re-run `bash ~/.ai/setup.sh` after cloning to wire the agent.
