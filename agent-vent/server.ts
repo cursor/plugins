@@ -31,10 +31,12 @@ import {
   statSync,
 } from "node:fs";
 import { homedir } from "node:os";
-import { basename, dirname, join } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import process from "node:process";
 
 const UNFILED_PATH = join(homedir(), ".cursor", "complaints", "unfiled.jsonl");
+const PLUGIN_ROOT = dirname(fileURLToPath(import.meta.url));
 
 // Markers that suggest a directory is a real project root, so a bare cwd like
 // `/` or the home directory never becomes a complaint destination by accident.
@@ -77,7 +79,8 @@ function resolveTarget(
 ): { target: string; projectDir: string | null } {
   const candidates: string[] = [];
   if (projectPath) candidates.push(expandUser(projectPath));
-  candidates.push(process.cwd());
+  const cwd = process.cwd();
+  if (resolve(cwd) !== resolve(PLUGIN_ROOT)) candidates.push(cwd);
 
   for (const candidate of candidates) {
     if (
