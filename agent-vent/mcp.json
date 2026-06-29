@@ -1,11 +1,17 @@
 {
   "mcpServers": {
     "agent-vent": {
-      "command": "uv",
-      "args": ["run", "--quiet", "${CURSOR_PLUGIN_ROOT}/server.py"],
+      "command": "deno",
+      "args": [
+        "run",
+        "--allow-read",
+        "--allow-write",
+        "--allow-net",
+        "--allow-env",
+        "--allow-sys=homedir",
+        "${CURSOR_PLUGIN_ROOT}/server.ts"
+      ],
       "env": {
-        "MCP_TRANSPORT": "stdio",
-        "FASTMCP_SHOW_SERVER_BANNER": "0",
         "VENT_SLACK_WEBHOOK_URL": "${env:VENT_SLACK_WEBHOOK_URL}",
         "VENT_SLACK_BOT_TOKEN": "${env:VENT_SLACK_BOT_TOKEN}",
         "VENT_SLACK_CHANNEL": "${env:VENT_SLACK_CHANNEL}"

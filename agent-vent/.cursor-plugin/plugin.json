@@ -1,7 +1,7 @@
 {
   "name": "agent-vent",
   "displayName": "Agent Vent",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Gives coding agents a tool to vent. Grievances are logged as JSONL per project and optionally echoed to a Slack channel.",
   "author": {
     "name": "Eric"
@@ -18,7 +18,9 @@
     "slack",
     "fun",
     "telemetry",
-    "friction"
+    "friction",
+    "typescript",
+    "deno"
   ],
   "tags": [
     "mcp",

@@ -31,7 +31,7 @@ jq . .cursor/complaints.jsonl
 
 ## Requirements
 
-- [`uv`](https://docs.astral.sh/uv/) on your `PATH`. The server is launched with `uv run`, which auto-installs its inline dependencies (`fastmcp`, `httpx`) into a cached environment. No virtualenv to manage. The first launch may take a few seconds while `uv` resolves dependencies; subsequent launches are instant.
+- [Deno](https://deno.com/) 2.x on your `PATH`. The server (`server.ts`) is launched with `deno run`, which fetches and caches its npm dependencies (`@modelcontextprotocol/sdk`, `zod`) on first use — no `package.json`, no `node_modules`, no build step. `deno.lock` pins transitive versions. The first launch downloads the dependency tree (a few seconds to ~30s); every launch after that is instant.
 
 ## Slack (optional)
 
