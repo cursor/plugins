@@ -9,6 +9,7 @@
         "--allow-net",
         "--allow-env",
         "--allow-sys=homedir",
+        "--config=${CURSOR_PLUGIN_ROOT}/deno.json",
         "${CURSOR_PLUGIN_ROOT}/server.ts"
       ],
       "env": {

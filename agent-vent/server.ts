@@ -232,7 +232,7 @@ server.registerTool(
       entry.project = basename(projectDir);
       entry.project_path = projectDir;
     }
-    if (mood) entry.mood = mood;
+    if (mood !== undefined) entry.mood = mood;
     if (intensity != null) entry.intensity = intensity;
 
     // Reorder keys to match the documented schema (ts, project, …, complaint, …).
@@ -241,7 +241,7 @@ server.registerTool(
       ...(entry.project ? { project: entry.project } : {}),
       ...(entry.project_path ? { project_path: entry.project_path } : {}),
       complaint: entry.complaint,
-      ...(entry.mood ? { mood: entry.mood } : {}),
+      ...(entry.mood !== undefined ? { mood: entry.mood } : {}),
       ...(entry.intensity != null ? { intensity: entry.intensity } : {}),
     } as Grievance;
 
