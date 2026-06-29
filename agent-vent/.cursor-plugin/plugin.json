@@ -1,0 +1,30 @@
+{
+  "name": "agent-vent",
+  "displayName": "Agent Vent",
+  "version": "0.1.0",
+  "description": "Gives coding agents a tool to vent. Grievances are logged as JSONL per project and optionally echoed to a Slack channel.",
+  "author": {
+    "name": "Eric"
+  },
+  "homepage": "https://github.com/cursor/plugins/tree/main/agent-vent",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "category": "developer-tools",
+  "keywords": [
+    "mcp",
+    "agent",
+    "vent",
+    "complaints",
+    "slack",
+    "fun",
+    "telemetry",
+    "friction"
+  ],
+  "tags": [
+    "mcp",
+    "agents",
+    "slack",
+    "developer-tools"
+  ],
+  "mcpServers": "./mcp.json"
+}
