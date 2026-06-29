@@ -63,16 +63,17 @@ mcp = FastMCP(
 
 def resolve_target(project_path: str | None) -> tuple[Path, Path | None]:
     """Return (jsonl file to append to, resolved project dir or None)."""
-    candidates = []
     if project_path:
-        candidates.append(Path(project_path).expanduser())
-    candidates.append(Path.cwd())
-
-    for candidate in candidates:
-        if candidate.is_dir() and any(
-            (candidate / marker).exists() for marker in PROJECT_MARKERS
-        ):
+        candidate = Path(project_path).expanduser()
+        if candidate.is_dir():
             return candidate / ".cursor" / "complaints.jsonl", candidate
+
+    cwd = Path.cwd()
+    home = Path.home()
+    if cwd.is_dir() and cwd not in (home, Path("/")) and any(
+        (cwd / marker).exists() for marker in PROJECT_MARKERS
+    ):
+        return cwd / ".cursor" / "complaints.jsonl", cwd
     return UNFILED_PATH, None
 
 
@@ -118,7 +119,7 @@ def post_to_slack(entry: dict, count: int) -> str:
             return " Echoed to Slack."
     except Exception as exc:  # never let Slack break the vent
         LOGGER.warning("Slack delivery failed: %s", exc)
-        return f" (Slack delivery failed: {exc})"
+        return " (Slack delivery failed.)"
 
     return ""  # Slack not configured
 
