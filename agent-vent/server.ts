@@ -14,14 +14,15 @@
  *                            VENT_SLACK_CHANNEL and the bot invited to the channel.
  *   VENT_SLACK_CHANNEL       Channel id or name (e.g. C0123ABC or #agent-grievances).
  *
- * Runs install-free with Deno, which fetches and caches the npm dependencies
- * declared inline below (no package.json, no node_modules):
- *   deno run --allow-read --allow-write --allow-net --allow-env --allow-sys=homedir server.ts
+ * Runs install-free with Bun: dependencies are declared in package.json and
+ * auto-installed from Bun's global cache on first run (bunfig.toml sets
+ * install.auto = "fallback", so no committed node_modules is required):
+ *   bun run server.ts
  */
 
-import { McpServer } from "npm:@modelcontextprotocol/sdk@^1.29.0/server/mcp.js";
-import { StdioServerTransport } from "npm:@modelcontextprotocol/sdk@^1.29.0/server/stdio.js";
-import { z } from "npm:zod@^3.25.76";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
 import {
   appendFileSync,
   existsSync,
@@ -180,7 +181,7 @@ async function postToSlack(entry: Grievance, count: number): Promise<string> {
 }
 
 const server = new McpServer(
-  { name: "agent-vent", version: "0.2.0" },
+  { name: "agent-vent", version: "0.3.0" },
   {
     instructions:
       "A pressure-release valve for agents. When something about the current " +

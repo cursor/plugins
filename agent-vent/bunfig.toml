@@ -1,0 +1,5 @@
+# Use the plugin's own node_modules when present, otherwise auto-install the
+# dependencies from Bun's global cache. This keeps the server install-free
+# without breaking if an unrelated node_modules exists higher up the tree.
+[install]
+auto = "fallback"

@@ -31,7 +31,7 @@ jq . .cursor/complaints.jsonl
 
 ## Requirements
 
-- [Deno](https://deno.com/) 2.x on your `PATH`. The server (`server.ts`) is launched with `deno run`, which fetches and caches its npm dependencies (`@modelcontextprotocol/sdk`, `zod`) on first use — no `package.json`, no `node_modules`, no build step. `deno.lock` pins transitive versions. The first launch downloads the dependency tree (a few seconds to ~30s); every launch after that is instant.
+- [Bun](https://bun.sh/) on your `PATH`. The server (`server.ts`) is launched with `bun run`, which auto-installs its dependencies (`@modelcontextprotocol/sdk`, `zod`, pinned in `package.json`) from Bun's global cache on first use — no committed `node_modules`, no build step. `bunfig.toml` sets `install.auto = "fallback"` so this works even if an unrelated `node_modules` exists higher up the filesystem. The first launch downloads the dependency tree (a few seconds to ~30s); every launch after that is instant.
 
 ## Slack (optional)
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0
+
+- Switched the runtime from Deno to **Bun**, matching the toolchain already used elsewhere in this repo. Launches with `bun run server.ts`; dependencies are pinned in `package.json` and auto-installed from Bun's global cache (`bunfig.toml` sets `install.auto = "fallback"`). No committed `node_modules`, no build step.
+- No behavior change to the `vent` tool, JSONL storage, or Slack delivery.
+
 ## 0.2.0
 
 - Rewritten in TypeScript on the official MCP SDK (`@modelcontextprotocol/sdk`), with `zod` input schemas.

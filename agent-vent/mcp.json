@@ -1,16 +1,9 @@
 {
   "mcpServers": {
     "agent-vent": {
-      "command": "deno",
-      "args": [
-        "run",
-        "--allow-read",
-        "--allow-write",
-        "--allow-net",
-        "--allow-env",
-        "--allow-sys=homedir",
-        "${CURSOR_PLUGIN_ROOT}/server.ts"
-      ],
+      "command": "bun",
+      "args": ["run", "${CURSOR_PLUGIN_ROOT}/server.ts"],
+      "cwd": "${CURSOR_PLUGIN_ROOT}",
       "env": {
         "VENT_SLACK_WEBHOOK_URL": "${env:VENT_SLACK_WEBHOOK_URL}",
         "VENT_SLACK_BOT_TOKEN": "${env:VENT_SLACK_BOT_TOKEN}",
