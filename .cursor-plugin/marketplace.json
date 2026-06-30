@@ -72,6 +72,11 @@
       "name": "pstack",
       "source": "pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
+    },
+    {
+      "name": "agent-vent",
+      "source": "agent-vent",
+      "description": "Gives coding agents a tool to vent. Grievances are logged as JSONL per project and optionally echoed to a Slack channel."
     }
   ]
 }
