@@ -2,13 +2,8 @@
   "mcpServers": {
     "agent-vent": {
       "command": "bun",
-      "args": ["run", "${CURSOR_PLUGIN_ROOT}/server.ts"],
-      "cwd": "${CURSOR_PLUGIN_ROOT}",
-      "env": {
-        "VENT_SLACK_WEBHOOK_URL": "${env:VENT_SLACK_WEBHOOK_URL}",
-        "VENT_SLACK_BOT_TOKEN": "${env:VENT_SLACK_BOT_TOKEN}",
-        "VENT_SLACK_CHANNEL": "${env:VENT_SLACK_CHANNEL}"
-      }
+      "args": ["run", "--install=fallback", "${CURSOR_PLUGIN_ROOT}/server.ts"],
+      "cwd": "${CURSOR_PLUGIN_ROOT}"
     }
   }
 }

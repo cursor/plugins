@@ -1,6 +1,6 @@
 {
   "name": "agent-vent",
-  "version": "0.3.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "MCP server that gives coding agents a tool to vent.",
