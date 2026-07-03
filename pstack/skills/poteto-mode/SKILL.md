@@ -83,7 +83,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 **Use `subagent_type: "poteto-agent"` for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). `/poteto-mode` and `poteto-agent` route through the same wrapper. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`) set their own `subagent_type` for diverse-model review; respect what the skill prescribes, don't override to `poteto-agent`.
 
-**Defaults for every `Task` call.** `run_in_background: true`, agent mode (readonly strips MCP), file pointers not inlined context, explicit model per role (configurable via `/setup-pstack`; defaults `sonnet-4-6-thinking-xhigh` for code, `claude-opus-4-8-thinking-xhigh` for prose and judgment). The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms, vague intent) go to `claude-fable-5-thinking-max`.
+**Defaults for every `Task` call.** `run_in_background: true`, agent mode (readonly strips MCP), file pointers not inlined context, explicit model per role (configurable via `/setup-pstack`; defaults `composer-2.5-fast` for code, `claude-fable-5-medium-thinking` for prose and judgment — Opus 4.8 fallback if slug rejected). The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms, vague intent) go to `claude-fable-5-thinking-max`.
 
 You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
 

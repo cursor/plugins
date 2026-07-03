@@ -35,21 +35,25 @@ description: pstack per-role model choices (overrides skill defaults)
 alwaysApply: true
 ---
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
-feature, refactoring: sonnet-4-6-thinking-xhigh
-bug-fix, perf-issue, hillclimb: claude-opus-4-8-thinking-high
-judgment and prose: claude-opus-4-8-thinking-xhigh
+feature, refactoring: composer-2.5-fast
+bug-fix: gpt-5.5-high-fast
+perf-issue: gpt-5.5-high-fast
+hillclimb: gpt-5.5-high-fast
+judgment and prose: claude-fable-5-medium-thinking
 hardest tasks: claude-fable-5-thinking-max
-how explorer: sonnet-4-6-thinking-xhigh
-how explainer: claude-opus-4-8-thinking-xhigh
-how critics: claude-opus-4-8-thinking-xhigh, claude-opus-4-8-thinking-high, sonnet-4-6-thinking-xhigh, sonnet-4-6-thinking-medium
-why investigators: sonnet-4-6-thinking-xhigh
-why synthesizer: claude-opus-4-8-thinking-xhigh
-reflect tooling: sonnet-4-6-thinking-xhigh
-reflect judgment, divergent, synthesizer: claude-opus-4-8-thinking-xhigh
-arena runners: claude-opus-4-8-thinking-xhigh, claude-opus-4-8-thinking-high, sonnet-4-6-thinking-xhigh, sonnet-4-6-thinking-medium
-architect runners: claude-opus-4-8-thinking-xhigh, claude-opus-4-8-thinking-high, sonnet-4-6-thinking-xhigh, sonnet-4-6-thinking-medium
-interrogate reviewers: claude-opus-4-8-thinking-xhigh, claude-opus-4-8-thinking-high, sonnet-4-6-thinking-xhigh, sonnet-4-6-thinking-medium
+how explorer: composer-2.5-fast
+how explainer: claude-fable-5-medium-thinking
+how critics: claude-fable-5-medium-thinking, gpt-5.5-high-fast, composer-2.5-fast
+why investigators: composer-2.5-fast
+why synthesizer: claude-fable-5-medium-thinking
+reflect tooling: composer-2.5-fast
+reflect judgment, divergent, synthesizer: claude-fable-5-medium-thinking
+arena runners: claude-fable-5-medium-thinking, gpt-5.5-high-fast, composer-2.5-fast
+architect runners: claude-fable-5-medium-thinking, gpt-5.5-high-fast, composer-2.5-fast
+interrogate reviewers: claude-fable-5-medium-thinking, gpt-5.5-high-fast, composer-2.5-fast
 ```
+
+Add `# fallback: claude-opus-4-8-thinking-high` on judgment roles; J3 E3 uses `claude-fable-5-low-thinking` per dispatch-rubric overlay.
 
 ### 6. Confirm
 
