@@ -40,6 +40,7 @@ bug-fix: gpt-5.5-high-fast
 perf-issue: gpt-5.5-high-fast
 hillclimb: gpt-5.5-high-fast
 judgment and prose: claude-opus-4-8-thinking-xhigh
+hardest tasks: claude-fable-5-thinking-max
 how explorer: grok-4.5-fast-xhigh
 how explainer: claude-opus-4-8-thinking-xhigh
 how critics: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, grok-4.5-fast-xhigh
