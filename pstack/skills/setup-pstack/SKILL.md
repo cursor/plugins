@@ -35,21 +35,21 @@ description: pstack per-role model choices (overrides skill defaults)
 alwaysApply: true
 ---
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
-feature, refactoring: composer-2.5-fast
+feature, refactoring: grok-4.5-fast-xhigh
 bug-fix: gpt-5.5-high-fast
 perf-issue: gpt-5.5-high-fast
 hillclimb: gpt-5.5-high-fast
 judgment and prose: claude-opus-4-8-thinking-xhigh
-how explorer: composer-2.5-fast
+how explorer: grok-4.5-fast-xhigh
 how explainer: claude-opus-4-8-thinking-xhigh
-how critics: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, composer-2.5-fast
-why investigators: composer-2.5-fast
+how critics: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, grok-4.5-fast-xhigh
+why investigators: grok-4.5-fast-xhigh
 why synthesizer: claude-opus-4-8-thinking-xhigh
-reflect tooling: composer-2.5-fast
+reflect tooling: grok-4.5-fast-xhigh
 reflect judgment, divergent, synthesizer: claude-opus-4-8-thinking-xhigh
-arena runners: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, composer-2.5-fast
-architect runners: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, composer-2.5-fast
-interrogate reviewers: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, composer-2.5-fast
+arena runners: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, grok-4.5-fast-xhigh
+architect runners: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, grok-4.5-fast-xhigh
+interrogate reviewers: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, grok-4.5-fast-xhigh
 ```
 
 ### 6. Confirm
