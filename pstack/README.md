@@ -40,24 +40,32 @@ this skill is the main shortcut. i use it whenever i need the agent to do rigoro
 
 | playbook | for |
 |---|---|
-| investigation | a read-only question. how does x work, why was y built this way, are we sure. |
-| bug fix | reproduce a defect, root-cause it, and fix with runtime evidence. |
-| perf | trace a measured slowness and improve it against a baseline. |
-| hillclimb | sustained, scientific improvement of one metric against a target, looping hypotheses with before/after measurement and one commit per accepted win. |
-| runtime forensics | diagnose a live symptom (leak, idle-cpu spin, glitch) from instrumentation. |
-| trace forensics | diagnose a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot). |
-| feature | new or changed behavior, built from a named data shape. |
-| refactoring | a behavior-preserving change to structure or shape. |
-| prototype | a throwaway sketch to make a design or behavioral decision cheaply, or to settle an empirical fork by observing it. |
-| visual parity | pixel-exact ui equivalence between two implementations. |
-| authoring a skill | writing or editing a SKILL.md. |
-| eval | test how a skill or prompt change affects agent behavior, blinded. |
-| autonomous run | drive a long task to completion without stopping. |
-| session pickup | resume or take over a prior agent's in-flight work. |
-| pause safely | suspend in-flight work cleanly so it can be resumed later. |
-| multi-phase plan | work that spans phases or stacked PRs. |
+| [investigation](./skills/poteto-mode/playbooks/investigation.md) | a read-only question. how does x work, why was y built this way, are we sure. |
+| [bug fix](./skills/poteto-mode/playbooks/bug-fix.md) | reproduce a defect, root-cause it, and fix with runtime evidence. |
+| [perf](./skills/poteto-mode/playbooks/perf-issue.md) | trace a measured slowness and improve it against a baseline. |
+| [hillclimb](./skills/poteto-mode/playbooks/hillclimb.md) | sustained, scientific improvement of one metric against a target, looping hypotheses with before/after measurement and one commit per accepted win. |
+| [runtime forensics](./skills/poteto-mode/playbooks/runtime-forensics.md) | diagnose a live symptom (leak, idle-cpu spin, glitch) from instrumentation. |
+| [trace forensics](./skills/poteto-mode/playbooks/trace-forensics.md) | diagnose a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot). |
+| [feature](./skills/poteto-mode/playbooks/feature.md) | new or changed behavior, built from a named data shape. |
+| [refactoring](./skills/poteto-mode/playbooks/refactoring.md) | a behavior-preserving change to structure or shape. |
+| [prototype](./skills/poteto-mode/playbooks/prototype.md) | a throwaway sketch to make a design or behavioral decision cheaply, or to settle an empirical fork by observing it. |
+| [visual parity](./skills/poteto-mode/playbooks/visual-parity.md) | pixel-exact ui equivalence between two implementations. |
+| [authoring a skill](./skills/poteto-mode/playbooks/authoring-a-skill.md) | writing or editing a SKILL.md. |
+| [eval](./skills/poteto-mode/playbooks/eval.md) | test how a skill or prompt change affects agent behavior, blinded. |
+| [autonomous run](./skills/poteto-mode/playbooks/autonomous-run.md) | drive a long task to completion without stopping. |
+| [session pickup](./skills/poteto-mode/playbooks/session-pickup.md) | resume or take over a prior agent's in-flight work. |
+| [pause safely](./skills/poteto-mode/playbooks/pause-safely.md) | suspend in-flight work cleanly so it can be resumed later. |
+| [multi-phase plan](./skills/poteto-mode/playbooks/multi-phase-plan.md) | work that spans phases or stacked PRs. |
 
 </details>
+
+```
+bug fix:        /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even
+                when idle. repro first, then fix and verify.
+overnight run:  /poteto-mode i'm going to bed. land the stack even if ci flakes. i want
+                everything merged by morning.
+```
+
 
 when invoked it:
 
@@ -81,37 +89,35 @@ the full rules and playbooks live in `skills/poteto-mode/SKILL.md`.
 
 | skill | use it when |
 |---|---|
-| `/poteto-mode` | default entry point for any non-trivial task. |
-| `/how` | you want a walkthrough of how a subsystem works. |
-| `/why` | you want to know why something was built this way. discovers available MCPs at run time and queries each evidence category in parallel (source control, issue tracker, long-form docs, real-time chat, infra observability, error tracking, analytics warehouse). |
-| `/recall` | you're starting or resuming work and want your recent context on a topic rebuilt from your own chat history and the shared record, handed back as a tight current-state brief. |
-| `/blast-radius` | you have a small-looking change and want to know what else it could break, with the one fact it's safe because of proven by running code, not asserted. |
-| `/architect` | you're about to write code that crosses a function boundary and want the caller's usage, types, and module shape settled first. |
-| `/arena` | you want N parallel attempts at the same thing, then to grab the best parts of each. |
-| `/interrogate` | you have a diff and want several different models to try to break it, including a strict code-quality lens. |
-| `/automate-me` | you want your own `-mode` skill, drafted from how you've actually worked. |
-| `/setup-pstack` | you want to pick which models pstack uses per role. detects your models and writes a config rule. |
-| `/reflect` | a long task landed and you want the recipe captured as a skill edit. |
-| `/tdd` | you're fixing a bug and there's a cheap local test path. write the failing test first, then the fix. |
-| `/typescript-best-practices` | you're reading or editing typescript. grounds the type-system-discipline principle in syntax. |
-| `/figure-it-out` | no bundled playbook fits. designs a rigorous, auditable playbook for the task. |
-| `/show-me-your-work` | you want a reviewable decision trail. logs decisions to a tsv you can commit. |
-| `/unslop` | you're cleaning up writing. removes AI tells. |
+| [`/poteto-mode`](./skills/poteto-mode/SKILL.md) | default entry point for any non-trivial task. |
+| [`/how`](./skills/how/SKILL.md) | you want a walkthrough of how a subsystem works. |
+| [`/why`](./skills/why/SKILL.md) | you want to know why something was built this way. discovers available MCPs at run time and queries each evidence category in parallel (source control, issue tracker, long-form docs, real-time chat, infra observability, error tracking, analytics warehouse). |
+| [`/recall`](./skills/recall/SKILL.md) | you're starting or resuming work and want your recent context on a topic rebuilt from your own chat history and the shared record, handed back as a tight current-state brief. |
+| [`/blast-radius`](./skills/blast-radius/SKILL.md) | you have a small-looking change and want to know what else it could break, with the one fact it's safe because of proven by running code, not asserted. |
+| [`/architect`](./skills/architect/SKILL.md) | you're about to write code that crosses a function boundary and want the caller's usage, types, and module shape settled first. |
+| [`/arena`](./skills/arena/SKILL.md) | you want N parallel attempts at the same thing, then to grab the best parts of each. |
+| [`/interrogate`](./skills/interrogate/SKILL.md) | you have a diff and want several different models to try to break it, including a strict code-quality lens. |
+| [`/automate-me`](./skills/automate-me/SKILL.md) | you want your own `-mode` skill, drafted from how you've actually worked. |
+| [`/setup-pstack`](./skills/setup-pstack/SKILL.md) | you want to pick which models pstack uses per role. detects your models and writes a config rule. |
+| [`/reflect`](./skills/reflect/SKILL.md) | a long task landed and you want the recipe captured as a skill edit. |
+| [`/tdd`](./skills/tdd/SKILL.md) | you're fixing a bug and there's a cheap local test path. write the failing test first, then the fix. |
+| [`/typescript-best-practices`](./skills/typescript-best-practices/SKILL.md) | you're reading or editing typescript. grounds the type-system-discipline principle in syntax. |
+| [`/figure-it-out`](./skills/figure-it-out/SKILL.md) | no bundled playbook fits. designs a rigorous, auditable playbook for the task. |
+| [`/show-me-your-work`](./skills/show-me-your-work/SKILL.md) | you want a reviewable decision trail. logs decisions to a tsv you can commit. |
+| [`/unslop`](./skills/unslop/SKILL.md) | you're cleaning up writing. removes AI tells. |
 
 </details>
+
+```
+how:            /how do we cancel runs? do we have an n+1 when we look up every run to cancel?
+interrogate:    /interrogate review this pr.
+```
+
 
 ### examples
 
 mostly i type `/poteto-mode` at the start of a task and let it route to a playbook. the other skills fire as the steps need them. a few i reach for directly.
 
-```
-bug fix:        /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even
-                when idle. repro first, then fix and verify.
-overnight run:  /poteto-mode i'm going to bed. land the stack even if ci flakes. i want
-                everything merged by morning.
-how:            /how do we cancel runs? do we have an n+1 when we look up every run to cancel?
-interrogate:    /interrogate review this pr.
-```
 
 <details>
 <summary>all the examples</summary>
@@ -152,19 +158,19 @@ automate-me:       /automate-me
 
 ## the `poteto-agent` subagent
 
-pstack also ships a subagent that runs my style end to end. spawn it from a parent agent via `subagent_type: "poteto-agent"`. it reads `poteto-mode` in full, including its inline principles index, before doing any work. substituting `generalPurpose` skips that read and drifts.
+pstack also ships a subagent that runs my style end to end. spawn it from a parent agent via [`subagent_type: "poteto-agent"`](./agents/poteto-agent.md). it reads `poteto-mode` in full, including its inline principles index, before doing any work. substituting `generalPurpose` skips that read and drifts.
 
-`/poteto-mode` and `subagent_type: "poteto-agent"` route through the same wrapper.
+`/poteto-mode` and [`subagent_type: "poteto-agent"`](./agents/poteto-agent.md) route through the same wrapper.
 
 ## principles
 
 twenty-one short skills, one principle each. `poteto-mode` indexes them inline and reads that index at task start. the standalone files are there so other skills can reference a principle by name, and so the index can point at the full rule for each.
 
-- core: laziness-protocol, foundational-thinking, redesign-from-first-principles, subtract-before-you-add, minimize-reader-load, outcome-oriented-execution, experience-first, exhaust-the-design-space, build-the-lever.
-- architecture: model-the-domain, boundary-discipline, type-system-discipline, make-operations-idempotent, migrate-callers-then-delete-legacy-apis, separate-before-serializing-shared-state.
-- verification: prove-it-works, fix-root-causes, sequence-verifiable-units.
-- delegation: guard-the-context-window, never-block-on-the-human.
-- meta: encode-lessons-in-structure.
+- core: [laziness-protocol](./skills/principle-laziness-protocol/SKILL.md), [foundational-thinking](./skills/principle-foundational-thinking/SKILL.md), [redesign-from-first-principles](./skills/principle-redesign-from-first-principles/SKILL.md), [subtract-before-you-add](./skills/principle-subtract-before-you-add/SKILL.md), [minimize-reader-load](./skills/principle-minimize-reader-load/SKILL.md), [outcome-oriented-execution](./skills/principle-outcome-oriented-execution/SKILL.md), [experience-first](./skills/principle-experience-first/SKILL.md), [exhaust-the-design-space](./skills/principle-exhaust-the-design-space/SKILL.md), [build-the-lever](./skills/principle-build-the-lever/SKILL.md).
+- architecture: [model-the-domain](./skills/principle-model-the-domain/SKILL.md), [boundary-discipline](./skills/principle-boundary-discipline/SKILL.md), [type-system-discipline](./skills/principle-type-system-discipline/SKILL.md), [make-operations-idempotent](./skills/principle-make-operations-idempotent/SKILL.md), [migrate-callers-then-delete-legacy-apis](./skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md), [separate-before-serializing-shared-state](./skills/principle-separate-before-serializing-shared-state/SKILL.md).
+- verification: [prove-it-works](./skills/principle-prove-it-works/SKILL.md), [fix-root-causes](./skills/principle-fix-root-causes/SKILL.md), [sequence-verifiable-units](./skills/principle-sequence-verifiable-units/SKILL.md).
+- delegation: [guard-the-context-window](./skills/principle-guard-the-context-window/SKILL.md), [never-block-on-the-human](./skills/principle-never-block-on-the-human/SKILL.md).
+- meta: [encode-lessons-in-structure](./skills/principle-encode-lessons-in-structure/SKILL.md).
 
 ## not shipped here
 
