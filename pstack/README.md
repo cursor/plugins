@@ -68,6 +68,8 @@ when invoked it:
 
 the full rules and playbooks live in `skills/poteto-mode/SKILL.md`.
 
+`/poteto-mode` is also a sticky mode: once entered it stays on across turns, applying itself when a playbook matches or the task needs rigor and staying out of the way otherwise. opt out any time by saying so.
+
 `/poteto-mode` works extremely well with cursor's `/loop` command. you can make cursor work for many hours without sacrificing rigor.
 
 ## skills
@@ -83,7 +85,7 @@ the rest are useful when you want to specifically invoke them:
 | `/blast-radius` | you have a small-looking change and want to know what else it could break, with the one fact it's safe because of proven by running code, not asserted. |
 | `/architect` | you're about to write code that crosses a function boundary and want the caller's usage, types, and module shape settled first. |
 | `/arena` | you want N parallel attempts at the same thing, then to grab the best parts of each. |
-| `/interrogate` | you have a diff and want four different models to try to break it, including a strict code-quality lens. |
+| `/interrogate` | you have a diff and want several different models to try to break it, including a strict code-quality lens. |
 | `/automate-me` | you want your own `-mode` skill, drafted from how you've actually worked. |
 | `/setup-pstack` | you want to pick which models pstack uses per role. detects your models and writes a config rule. |
 | `/reflect` | a long task landed and you want the recipe captured as a skill edit. |
@@ -137,10 +139,10 @@ pstack also ships a subagent that runs my style end to end. spawn it from a pare
 
 ## principles
 
-twenty short skills, one principle each. `poteto-mode` indexes them inline and reads that index at task start. the standalone files are there so other skills can reference a principle by name, and so the index can point at the full rule for each.
+twenty-one short skills, one principle each. `poteto-mode` indexes them inline and reads that index at task start. the standalone files are there so other skills can reference a principle by name, and so the index can point at the full rule for each.
 
 - core: laziness-protocol, foundational-thinking, redesign-from-first-principles, subtract-before-you-add, minimize-reader-load, outcome-oriented-execution, experience-first, exhaust-the-design-space, build-the-lever.
-- architecture: boundary-discipline, type-system-discipline, make-operations-idempotent, migrate-callers-then-delete-legacy-apis, separate-before-serializing-shared-state.
+- architecture: model-the-domain, boundary-discipline, type-system-discipline, make-operations-idempotent, migrate-callers-then-delete-legacy-apis, separate-before-serializing-shared-state.
 - verification: prove-it-works, fix-root-causes, sequence-verifiable-units.
 - delegation: guard-the-context-window, never-block-on-the-human.
 - meta: encode-lessons-in-structure.
