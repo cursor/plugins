@@ -76,6 +76,9 @@ the full rules and playbooks live in `skills/poteto-mode/SKILL.md`.
 
 `/poteto-mode` runs most of these for you when a step needs them (`how`, `why`, `architect`, `arena`, `interrogate`, `unslop`, `tdd`, and the principles). the table below is for when you want one directly:
 
+<details>
+<summary>all skills</summary>
+
 | skill | use it when |
 |---|---|
 | `/poteto-mode` | default entry point for any non-trivial task. |
@@ -95,12 +98,23 @@ the full rules and playbooks live in `skills/poteto-mode/SKILL.md`.
 | `/show-me-your-work` | you want a reviewable decision trail. logs decisions to a tsv you can commit. |
 | `/unslop` | you're cleaning up writing. removes AI tells. |
 
+</details>
+
 ### examples
 
 mostly i type `/poteto-mode` at the start of a task and let it route to a playbook. the other skills fire as the steps need them. a few i reach for directly.
 
+```
+bug fix:        /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even
+                when idle. repro first, then fix and verify.
+overnight run:  /poteto-mode i'm going to bed. land the stack even if ci flakes. i want
+                everything merged by morning.
+how:            /how do we cancel runs? do we have an n+1 when we look up every run to cancel?
+interrogate:    /interrogate review this pr.
+```
+
 <details>
-<summary>example invocations</summary>
+<summary>all the examples</summary>
 
 ```
 bug fix:           /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even
