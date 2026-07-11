@@ -35,6 +35,16 @@ use [`/poteto-mode`](./skills/poteto-mode/SKILL.md) at the start of a task. it r
 
 this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with sixteen playbooks:
 
+```
+/poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even when idle. repro
+first, then fix and verify.
+```
+
+```
+/poteto-mode i'm going to bed. land the stack even if ci flakes. i want everything merged by
+morning.
+```
+
 <details>
 <summary>the sixteen playbooks</summary>
 
@@ -59,13 +69,6 @@ this skill is the main shortcut. i use it whenever i need the agent to do rigoro
 
 </details>
 
-```
-/poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even when idle. repro first, then fix and verify.
-```
-
-```
-/poteto-mode i'm going to bed. land the stack even if ci flakes. i want everything merged by morning.
-```
 
 
 when invoked it:
@@ -84,6 +87,14 @@ the full rules and playbooks live in [`skills/poteto-mode/SKILL.md`](./skills/po
 ## skills
 
 [`/poteto-mode`](./skills/poteto-mode/SKILL.md) runs most of these for you when a step needs them (`how`, `why`, `architect`, `arena`, `interrogate`, `unslop`, `tdd`, and the principles). the table below is for when you want one directly:
+
+```
+/how do we cancel runs? do we have an n+1 when we look up every run to cancel?
+```
+
+```
+/interrogate review this pr.
+```
 
 <details>
 <summary>all skills</summary>
@@ -109,13 +120,6 @@ the full rules and playbooks live in [`skills/poteto-mode/SKILL.md`](./skills/po
 
 </details>
 
-```
-/how do we cancel runs? do we have an n+1 when we look up every run to cancel?
-```
-
-```
-/interrogate review this pr.
-```
 
 
 ### examples
