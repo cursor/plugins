@@ -18,6 +18,15 @@ fork it. improve it. make it yours. PRs are welcome!
 /add-plugin pstack
 ```
 
+## get started
+
+two steps:
+
+1. run `/setup-pstack` and choose which models you want.
+2. use `/poteto-mode` whenever you're doing anything that requires rigor.
+
+that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: your main agent reasons and reviews, precisely-specified code goes to fast code models (cursor grok 4.5 by default), and prose and judgment go to a thinking model. `/setup-pstack` changes any of it.
+
 ## make it yours
 
 `poteto-mode` is my style. you may not want exactly that.
@@ -74,7 +83,7 @@ the full rules and playbooks live in `skills/poteto-mode/SKILL.md`.
 
 ## skills
 
-the rest are useful when you want to specifically invoke them:
+`/poteto-mode` runs most of these for you when a step needs them (`how`, `why`, `architect`, `arena`, `interrogate`, `unslop`, `tdd`, and the principles). the table below is for when you want one directly:
 
 | skill | use it when |
 |---|---|
