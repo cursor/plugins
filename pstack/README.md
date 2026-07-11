@@ -60,10 +60,11 @@ this skill is the main shortcut. i use it whenever i need the agent to do rigoro
 </details>
 
 ```
-bug fix:        /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even
-                when idle. repro first, then fix and verify.
-overnight run:  /poteto-mode i'm going to bed. land the stack even if ci flakes. i want
-                everything merged by morning.
+/poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even when idle. repro first, then fix and verify.
+```
+
+```
+/poteto-mode i'm going to bed. land the stack even if ci flakes. i want everything merged by morning.
 ```
 
 
@@ -109,8 +110,11 @@ the full rules and playbooks live in `skills/poteto-mode/SKILL.md`.
 </details>
 
 ```
-how:            /how do we cancel runs? do we have an n+1 when we look up every run to cancel?
-interrogate:    /interrogate review this pr.
+/how do we cancel runs? do we have an n+1 when we look up every run to cancel?
+```
+
+```
+/interrogate review this pr.
 ```
 
 
