@@ -27,20 +27,6 @@ two steps:
 
 that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: your main agent reasons and reviews, precisely-specified code goes to fast code models (cursor grok 4.5 by default), and prose and judgment go to a thinking model. `/setup-pstack` changes any of it.
 
-## make it yours
-
-`poteto-mode` is my style. you may not want exactly that.
-
-type `/automate-me`. it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
-
-models are configurable too. type `/setup-pstack`. it detects the models you have access to and writes a small always-applied rule mapping each role (code, judgment, the review panels) to a model. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
-
-## automations
-
-pstack also ships a dormant [benny automation pack](./automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
-
-to set it up, point cursor at [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.md). setup copies the pack into the target repository at `.cursor/automations/benny/`, enables pstack there for shared skills, and keeps user configuration outside the copied pack.
-
 ## usage
 
 use `/poteto-mode` at the start of a task. it reads your request, picks from a set of playbooks, and runs the other skills as the steps need them.
@@ -48,6 +34,9 @@ use `/poteto-mode` at the start of a task. it reads your request, picks from a s
 ### just use `/poteto-mode`
 
 this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with sixteen playbooks:
+
+<details>
+<summary>the sixteen playbooks</summary>
 
 | playbook | for |
 |---|---|
@@ -67,6 +56,8 @@ this skill is the main shortcut. i use it whenever i need the agent to do rigoro
 | session pickup | resume or take over a prior agent's in-flight work. |
 | pause safely | suspend in-flight work cleanly so it can be resumed later. |
 | multi-phase plan | work that spans phases or stacked PRs. |
+
+</details>
 
 when invoked it:
 
@@ -108,6 +99,9 @@ the full rules and playbooks live in `skills/poteto-mode/SKILL.md`.
 
 mostly i type `/poteto-mode` at the start of a task and let it route to a playbook. the other skills fire as the steps need them. a few i reach for directly.
 
+<details>
+<summary>example invocations</summary>
+
 ```
 bug fix:           /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even
                    when idle. repro first, then fix and verify.
@@ -140,6 +134,8 @@ show-me-your-work: /show-me-your-work keep a decision trail i can review when i'
 automate-me:       /automate-me
 ```
 
+</details>
+
 ## the `poteto-agent` subagent
 
 pstack also ships a subagent that runs my style end to end. spawn it from a parent agent via `subagent_type: "poteto-agent"`. it reads `poteto-mode` in full, including its inline principles index, before doing any work. substituting `generalPurpose` skips that read and drifts.
@@ -169,6 +165,20 @@ install `cursor-team-kit` alongside pstack if you want the full set.
 ## why are there no planning skills?
 
 cursor already has a great plan mode which works great with pstack. but personally, i don't believe in planning. the best spec is code. if you do want to make a plan, `/poteto-mode` covers it, but it's not a default. 
+
+## make it yours
+
+`poteto-mode` is my style. you may not want exactly that.
+
+type `/automate-me`. it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
+
+models are configurable too. type `/setup-pstack`. it detects the models you have access to and writes a small always-applied rule mapping each role (code, judgment, the review panels) to a model. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
+
+## automations
+
+pstack also ships a dormant [benny automation pack](./automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
+
+to set it up, point cursor at [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.md). setup copies the pack into the target repository at `.cursor/automations/benny/`, enables pstack there for shared skills, and keeps user configuration outside the copied pack.
 
 ## license
 
