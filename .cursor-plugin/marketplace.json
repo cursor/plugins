@@ -102,6 +102,11 @@
       "name": "google-slides",
       "source": "google-slides",
       "description": "Connect Cursor to Google Slides via Google's remote MCP server — read and update presentations."
+    },
+    {
+      "name": "atlaso",
+      "source": "atlaso",
+      "description": "Automatic long-term memory for Cursor — recalls what you've decided and remembers what matters, across sessions, projects, and tools."
     }
   ]
 }

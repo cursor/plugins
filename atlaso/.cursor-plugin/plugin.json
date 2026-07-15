@@ -1,0 +1,18 @@
+{
+  "name": "atlaso",
+  "displayName": "Atlaso Memory",
+  "version": "0.1.0",
+  "description": "Long-term memory for Cursor — recalls what you've decided and remembers what matters, across sessions, projects, and tools.",
+  "author": { "name": "Atlaso", "email": "hello@atlaso.ai" },
+  "publisher": "Atlaso",
+  "homepage": "https://atlaso.ai",
+  "repository": "https://github.com/atlaso-labs/cursor",
+  "license": "MIT",
+  "logo": "assets/avatar.png",
+  "keywords": ["memory", "long-term-memory", "agent-memory", "recall", "hooks", "mcp"],
+  "category": "developer-tools",
+  "tags": ["memory", "automation", "hooks"],
+  "hooks": "./hooks/hooks.json",
+  "rules": "./rules/",
+  "skills": "./skills/"
+}
