@@ -16,7 +16,7 @@ decisions, preferences, and gotchas that persist across sessions, projects, and 
 - **Capture** happens on its own when a turn or session ends, with secrets scrubbed.
   You don't have to save anything.
 
-**When you want to act deliberately**, the `atlaso` MCP server exposes five tools —
+**When you want to act deliberately**, the `Atlaso` MCP server exposes five tools —
 `recall`, `remember`, `forget`, `recent`, `status`. Reach for `recall` before
 answering when past context would help, and `remember` when the user asks to keep
 something.

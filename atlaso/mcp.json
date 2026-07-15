@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "atlaso": {
+    "Atlaso": {
       "command": "bun",
       "args": ["run", "${CURSOR_PLUGIN_ROOT}/lib/mcp.ts"]
     }

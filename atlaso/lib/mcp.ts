@@ -21,7 +21,7 @@ import { cloudMode, online } from "./entitlement";
 import { REVOKED } from "./state";
 import { log } from "./log";
 
-const NAME = "atlaso";
+const NAME = "Atlaso";
 const VERSION = "0.1.0";
 const PROTOCOL = "2024-11-05";
 const TOOL = "cursor";
