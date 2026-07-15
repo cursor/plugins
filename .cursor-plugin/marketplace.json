@@ -72,6 +72,11 @@
       "name": "pstack",
       "source": "pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
+    },
+    {
+      "name": "atlaso",
+      "source": "atlaso",
+      "description": "Automatic long-term memory for Cursor — recalls what you've decided and remembers what matters, across sessions, projects, and tools."
     }
   ]
 }
