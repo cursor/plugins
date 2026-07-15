@@ -11,7 +11,7 @@ description: >-
 Memory in Cursor is mostly **automatic** (see the Atlaso rule for the mechanics):
 recall arrives at session start, and capture runs when a turn ends. Your job is
 judgment — keeping the signal clear so auto-capture grabs the right thing, and using
-the deliberate `atlaso` tools when they genuinely help.
+the deliberate `Atlaso` tools when they genuinely help.
 
 ## What's worth remembering (default: don't)
 
@@ -38,7 +38,7 @@ No → project. Scope is inferred from phrasing, so be explicit when it matters.
 
 ## The deliberate tools
 
-The `atlaso` MCP server backs the automatic loop with five tools for when you want to
+The `Atlaso` MCP server backs the automatic loop with five tools for when you want to
 act on purpose:
 
 - `recall <query>` — pull relevant past memory before answering (read-only).

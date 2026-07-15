@@ -9,7 +9,7 @@ Initial release.
 ### Added
 - **Automatic memory loop** via Cursor hooks — `sessionStart` recalls relevant notes
   into a rules file; `stop`/`sessionEnd` capture the exchange. Zero model involvement.
-- **`atlaso` MCP server** — 5 tools (`recall`, `remember`, `forget`, `recent`,
+- **`Atlaso` MCP server** — 5 tools (`recall`, `remember`, `forget`, `recent`,
   `status`) for deliberate memory moves, reusing the same per-device credential the
   hooks mint (one auth, one unlink).
 - **Per-tool credentials** — the plugin holds its own token so "remove Cursor" revokes

@@ -15,7 +15,7 @@ decisions, preferences, and gotchas, across sessions, projects, and devices.
 
 ## Deliberate control
 
-The `atlaso` MCP server exposes five tools — `recall`, `remember`, `forget`,
+The `Atlaso` MCP server exposes five tools — `recall`, `remember`, `forget`,
 `recent`, `status` — for when you want to act on purpose: `recall` before answering
 when past context would help, `remember` when the user asks to keep something.
 
