@@ -1,0 +1,34 @@
+{
+  "name": "yolfi",
+  "displayName": "Yolfi Payments",
+  "version": "0.2.0",
+  "description": "Add crypto checkout, payment links, signed webhooks, and payment verification with Yolfi.",
+  "author": {
+    "name": "Yolfi"
+  },
+  "homepage": "https://yolfi.com/ai-agent-kit",
+  "repository": "https://github.com/yolfinance/yolfi-agent",
+  "license": "MIT",
+  "logo": "./assets/favicon.ico",
+  "keywords": [
+    "payments",
+    "crypto",
+    "stablecoins",
+    "checkout",
+    "webhooks",
+    "mcp"
+  ],
+  "category": "payments",
+  "tags": [
+    "payments",
+    "crypto",
+    "checkout",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": {
+    "yolfi": {
+      "url": "https://app.yolfi.com/mcp"
+    }
+  }
+}
