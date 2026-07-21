@@ -2,6 +2,44 @@
 
 Official Cursor plugins for popular developer tools, frameworks, and SaaS products. Each plugin is a standalone directory at the repository root with its own `.cursor-plugin/plugin.json` manifest.
 
+## Adding this repository as a marketplace
+
+To use this repository as a plugin marketplace in Cursor:
+
+1. Open **Dashboard → Plugins**.
+2. In the **Team Marketplaces** section, select **Add Marketplace**.
+3. Choose **Import from Repo** and paste this repository's URL:
+
+   ```text
+   https://github.com/tomazb/cursor-plugins
+   ```
+
+4. Review the parsed plugins and save.
+
+Once imported, install individual plugins from the **Customize** sidebar, or with the `/add-plugin` command, e.g.:
+
+```bash
+/add-plugin cursor-rubber-duck
+```
+
+## 🦆 Featured: Rubber Duck
+
+**[Rubber Duck](cursor-rubber-duck/)** is a constructive second-opinion critic for your plans, code, and tests. It spawns a read-only critic agent on a **contrasting model family** and returns findings sorted by severity — **Blocking / Non-blocking / Suggestions** — without ever editing your files.
+
+With the plugin installed, an always-on rule nudges the main agent to consult the duck at high-leverage moments (after planning, mid-implementation on complex work, after writing tests, after repeated failures). You can also invoke it manually at any time:
+
+```text
+/rubber-duck What edge cases are missing?
+```
+
+Install it with:
+
+```bash
+/add-plugin cursor-rubber-duck
+```
+
+See the [Rubber Duck README](cursor-rubber-duck/README.md) for architecture and usage details.
+
 ## Plugins
 
 | `name` | Plugin | Author | Category | `description` (from marketplace) |
