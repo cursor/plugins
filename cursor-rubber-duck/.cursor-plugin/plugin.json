@@ -1,0 +1,34 @@
+{
+  "name": "cursor-rubber-duck",
+  "displayName": "Rubber Duck",
+  "version": "1.0.0",
+  "description": "Constructive second-opinion critic for plans, code, and tests — runs on a contrasting model family, reports Blocking / Non-blocking / Suggestions, never edits files.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "rubber-duck",
+    "second-opinion",
+    "critique",
+    "code-review",
+    "planning",
+    "blind-spots",
+    "subagents"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "review",
+    "quality",
+    "planning",
+    "automation"
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "rules": "./rules/",
+  "commands": "./commands/"
+}

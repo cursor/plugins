@@ -1,0 +1,28 @@
+---
+description: Consult the rubber-duck critic at high-leverage moments for a constructive second opinion on plans, code, and tests.
+alwaysApply: true
+---
+
+# Consult Rubber Duck
+
+When this plugin is installed, seek a constructive second opinion from the `rubber-duck` critic at high-leverage moments. Follow the `rubber-duck` skill to package context and spawn the critic.
+
+## When to consult
+
+Consult **before** committing to non-trivial work:
+
+1. **After planning a non-trivial change, before implementing** — highest leverage; catch design flaws while course corrections are cheap.
+2. **Mid-implementation** on complex multi-file or unfamiliar work — check for blind spots.
+3. **After writing tests** — validate coverage and that behavior matches the original request.
+4. **Reactively** after repeated failures or unexpected results — get an independent analysis instead of retrying the same approach.
+
+## When to skip
+
+Skip for small, well-understood changes: typos, one-line fixes, renames, obvious formatting, or mechanical follow-ups the user already approved.
+
+## How to use the critique
+
+1. Spawn the `rubber-duck` agent via the Task tool with `readonly: true` and a **contrasting model family** (see the `rubber-duck` skill).
+2. Treat the critic as advisory: **you** decide what to change; the critic must not edit files or mutate the environment.
+3. Summarize the critique for the user in the timeline (for example: "The critique pointed out a blind spot around X, so I updated the plan to address that.") — do not dump the full critic report verbatim unless the user asks.
+4. Address **Blocking** findings before proceeding. Fold in **Non-blocking** findings when cheap. Defer or note **Suggestions** explicitly.
