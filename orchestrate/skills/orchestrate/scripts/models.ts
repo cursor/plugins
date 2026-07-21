@@ -22,8 +22,8 @@ export interface ModelProfile {
 // Run `bun cli.ts models --check` after SDK or backend model-schema drift.
 export const MODEL_CATALOG: ModelProfile[] = [
   {
-    slug: "claude-opus-4-7",
-    selection: { id: "claude-opus-4-7" },
+    slug: "claude-opus-4-8",
+    selection: { id: "claude-opus-4-8" },
     summary: "Solid judgment Opus; right tier for verifier acceptance checks.",
     strengths: [
       "judgment",
@@ -39,7 +39,7 @@ export const MODEL_CATALOG: ModelProfile[] = [
   {
     slug: "opus-max",
     selection: {
-      id: "claude-opus-4-7",
+      id: "claude-opus-4-8",
       params: [
         { id: "thinking", value: "true" },
         { id: "context", value: "1m" },
@@ -50,7 +50,7 @@ export const MODEL_CATALOG: ModelProfile[] = [
       "Maximum-reasoning Opus; reserved for exceptionally difficult judgment tasks.",
     strengths: ["complex judgment", "deep reasoning", "ambiguity resolution"],
     speed: "slow",
-    use: "Reserved for exceptionally difficult tasks. May overthink simple problems — only reach for this when standard `claude-opus-4-7` has produced unsatisfying results.",
+    use: "Reserved for exceptionally difficult tasks. May overthink simple problems — only reach for this when standard `claude-opus-4-8` has produced unsatisfying results.",
   },
   {
     slug: "gpt-5.5-high-fast",
@@ -95,9 +95,9 @@ export const MODEL_CATALOG: ModelProfile[] = [
     use: "Workers whose task is non-trivial and where quality matters more than throughput. Reach for this over `gpt-5.5-high-fast` when subtle correctness matters more than turnaround.",
   },
   {
-    slug: "claude-opus-4-7-thinking-xhigh",
+    slug: "claude-opus-4-8-thinking-xhigh",
     selection: {
-      id: "claude-opus-4-7",
+      id: "claude-opus-4-8",
       params: [
         { id: "thinking", value: "true" },
         { id: "effort", value: "xhigh" },
@@ -107,7 +107,7 @@ export const MODEL_CATALOG: ModelProfile[] = [
       "Thinking Opus at xhigh effort; reserved for orchestration roles where deep judgment matters most.",
     strengths: ["judgment", "second opinions", "prose", "ambiguity resolution"],
     speed: "slow",
-    use: "Default for subplanners: they decompose, route, and synthesize, where deep judgment pays off. Also the the code discipline subagent default for prose, judgment, and second opinions. Resolved here so planners can pass the slug straight through `Task({ model })` without falling through to bare `{ id }` and being rejected as `invalid_model`.",
+    use: "Default for subplanners: they decompose, route, and synthesize, where deep judgment pays off. Also the code discipline subagent default for prose, judgment, and second opinions. Resolved here so planners can pass the slug straight through `Task({ model })` without falling through to bare `{ id }` and being rejected as `invalid_model`.",
     defaultFor: ["subplanner"],
   },
   {

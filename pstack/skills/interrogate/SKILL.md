@@ -1,12 +1,12 @@
 ---
 name: interrogate
-description: "Use for \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Four LLM reviewers challenge changes from independent angles."
+description: "Use for \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Multiple LLM reviewers challenge changes from independent angles."
 disable-model-invocation: true
 ---
 
 # Interrogate
 
-Spawn four reviewers on four different models to adversarially review code changes. Each model gets the same prompt and rubric. The adversarial signal comes from model diversity, not assigned personas. Models differ in blind spots, priors, and reasoning patterns. Agreement across models is high-confidence signal; lone-model findings are worth reading but lower confidence.
+Spawn one reviewer per configured model to adversarially review code changes. Each model gets the same prompt and rubric. The adversarial signal comes from model diversity, not assigned personas. Models differ in blind spots, priors, and reasoning patterns. Agreement across models is high-confidence signal; lone-model findings are worth reading but lower confidence.
 
 The deliverable is a synthesized verdict. Do NOT auto-apply changes.
 
@@ -33,21 +33,14 @@ Write one clear paragraph. Reviewers challenge whether the work achieves the int
 
 ## Step 3, Spawn Reviewers
 
-Launch all four in a single message using the Task tool, each with a different model.
-
-| Subagent | Model |
-|----------|-------|
-| Reviewer A | `claude-opus-4-8-thinking-xhigh` |
-| Reviewer B | `gpt-5.3-codex-high-fast` |
-| Reviewer C | `gpt-5.5-high-fast` |
-| Reviewer D | `composer-2.5-fast` |
+Launch one reviewer per model in your configured interrogate list (defaults `claude-opus-4-8-thinking-xhigh`, `gpt-5.5-high-fast`, `grok-4.5-fast-xhigh`), all in a single message.
 
 For each reviewer:
 - `subagent_type`: `generalPurpose`
-- `model`: the model from the table
+- `model`: one model from the configured interrogate list
 - `readonly`: `true`
 
-If a model slug in the table is rejected as unresolvable when you try to spawn the subagent, check the valid slugs in the Task tool's error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with the valid slug, and open a separate PR to update this table. Do not block the review on the slug issue.
+If a configured model slug is rejected as unresolvable when you try to spawn the subagent, check the valid slugs in the Task tool's error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with the valid slug, and open a separate PR to update the configured defaults. Do not block the review on the slug issue.
 
 Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent
@@ -55,7 +48,7 @@ Read `references/reviewer-prompt.md` and fill in the template with:
 3. The review rubric from `references/rubric.md`
 4. The code-quality lens from `references/code-quality-review.md`
 
-The same filled template goes to all four reviewers, so every model applies the code-quality lens.
+The same filled template goes to all reviewers, so every model applies the code-quality lens.
 
 Each reviewer produces structured findings as described in the prompt template.
 
@@ -63,7 +56,7 @@ Each reviewer produces structured findings as described in the prompt template.
 
 As results come back, build a unified picture:
 
-1. **Parse all findings** from the four reviewers
+1. **Parse all findings** from the reviewers
 2. **Identify consensus**. Findings raised by 2+ models independently are highest signal.
 3. **Identify lone-model findings**. Still worth reading, but weight accordingly.
 4. **Deduplicate**. Different models may describe the same issue differently. Merge these and note which models raised it.
@@ -75,7 +68,7 @@ You are the lead reviewer, a pragmatic senior engineer, not a neutral aggregator
 
 Read `references/lead-judgment.md` for the full framework. Reviewers only see a slice of the codebase. You have the full context (the goal, the constraints, the timeline, which tradeoffs were already considered). Use that context aggressively.
 
-Categorize every finding into one of four buckets:
+Categorize every finding using these buckets:
 
 - **Act on**. Real issues affecting correctness, security, or maintainability given the actual goals. These would block a real PR.
 - **Consider**. Legitimate points, but you're not sure they outweigh the cost of addressing them right now. Worth the user's attention.
@@ -95,10 +88,7 @@ Present the verdict in this structure:
 > [The stated intent paragraph from Step 2]
 
 ### Reviewers
-- Model A: [model name], [N findings]
-- Model B: [model name], [N findings]
-- Model C: [model name], [N findings]
-- Model D: [model name], [N findings]
+List each reviewer on its own line like `- <model name>: [N findings]`
 
 ### Act On
 [Findings that should be addressed. For each: description, which models raised it, why it matters.]

@@ -428,7 +428,9 @@ export function stripGitSuffix(url: string): string {
   return url.endsWith(".git") ? url.slice(0, -4) : url;
 }
 
-export function loadCommentDestinations(channelId: string): CommentDestinations {
+export function loadCommentDestinations(
+  channelId: string
+): CommentDestinations {
   return { slack: createSlackAdapter(channelId) };
 }
 

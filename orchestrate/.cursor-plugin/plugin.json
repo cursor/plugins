@@ -1,7 +1,7 @@
 {
   "name": "orchestrate",
   "displayName": "Orchestrate",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Fan a large task out across parallel Cursor cloud agents via the Cursor SDK: planners publish tasks, workers hand off back up, and a script reconciles the tree from disk and git.",
   "author": {
     "name": "Cursor",

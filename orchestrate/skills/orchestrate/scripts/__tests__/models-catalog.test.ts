@@ -28,7 +28,7 @@ describe("MODEL_CATALOG", () => {
 
   // Verifiers do focused acceptance-criteria checks; xhigh is overkill there.
   test("defaultModelForType('verifier') returns opus high (not xhigh)", () => {
-    expect(defaultModelForType("verifier")).toBe("claude-opus-4-7");
+    expect(defaultModelForType("verifier")).toBe("claude-opus-4-8");
   });
 
   // Subplanners decompose, route, and synthesize; reserve xhigh for them.
@@ -36,7 +36,7 @@ describe("MODEL_CATALOG", () => {
   // there is no "planner" TaskType.)
   test("defaultModelForType('subplanner') returns opus xhigh", () => {
     expect(defaultModelForType("subplanner")).toBe(
-      "claude-opus-4-7-thinking-xhigh"
+      "claude-opus-4-8-thinking-xhigh"
     );
   });
 
@@ -74,11 +74,11 @@ describe("MODEL_CATALOG", () => {
 
   // Planners pass this slug straight through
   // `Task({ model })`. Without an entry, `resolveModelSelection` falls back to
-  // `{ id: "claude-opus-4-7-thinking-xhigh" }`, which the backend rejects as
+  // `{ id: "claude-opus-4-8-thinking-xhigh" }`, which the backend rejects as
   // `invalid_model`.
-  test("claude-opus-4-7-thinking-xhigh binds to opus with thinking + xhigh effort", () => {
-    const sel = resolveModelSelection("claude-opus-4-7-thinking-xhigh");
-    expect(sel.id).toBe("claude-opus-4-7");
+  test("claude-opus-4-8-thinking-xhigh binds to opus with thinking + xhigh effort", () => {
+    const sel = resolveModelSelection("claude-opus-4-8-thinking-xhigh");
+    expect(sel.id).toBe("claude-opus-4-8");
     const params = new Map((sel.params ?? []).map(p => [p.id, p.value]));
     expect(params.get("thinking")).toBe("true");
     expect(params.get("effort")).toBe("xhigh");

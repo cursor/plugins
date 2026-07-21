@@ -29,7 +29,10 @@ export function redactBody(text: string): { text: string; reasons: string[] } {
   return { text: redacted, reasons: [...reasons] };
 }
 
-function redactSensitiveAssignments(text: string, reasons: Set<string>): string {
+function redactSensitiveAssignments(
+  text: string,
+  reasons: Set<string>
+): string {
   return text.replace(SENSITIVE_ASSIGNMENT_RE, match => {
     const [key] = match.split(/\s*[:=]\s*/, 1);
     if (SENSITIVE_KEY_RE.test(key ?? "")) {
