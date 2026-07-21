@@ -1,8 +1,8 @@
 {
-  "name": "cursor-plugins",
+  "name": "tomazb-cursor-plugins",
   "owner": {
-    "name": "Cursor",
-    "email": "plugins@cursor.com"
+    "name": "Tomazb",
+    "email": "tomaz@sama-navitas.si"
   },
   "metadata": {
     "description": "Official Cursor plugin marketplace: developer tools, framework rules, MCP integrations, and agent skills"
