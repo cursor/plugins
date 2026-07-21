@@ -72,6 +72,11 @@
       "name": "pstack",
       "source": "pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
+    },
+    {
+      "name": "cursor-rubber-duck",
+      "source": "cursor-rubber-duck",
+      "description": "Constructive second-opinion critic for plans, code, and tests on a contrasting model — Blocking / Non-blocking / Suggestions, read-only, with /rubber-duck."
     }
   ]
 }
