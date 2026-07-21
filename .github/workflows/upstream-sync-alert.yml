@@ -5,6 +5,10 @@ on:
     - cron: "0 9 * * 1" # Monday 09:00 UTC
   workflow_dispatch:
 
+concurrency:
+  group: upstream-sync-alert
+  cancel-in-progress: false
+
 permissions:
   contents: read
   issues: write
@@ -13,10 +17,12 @@ jobs:
   check-upstream:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Fetch upstream and compare
         id: compare
@@ -24,12 +30,15 @@ jobs:
           set -euo pipefail
           git remote add upstream https://github.com/cursor/plugins.git 2>/dev/null || \
             git remote set-url upstream https://github.com/cursor/plugins.git
+          git fetch --no-tags origin main
           git fetch --no-tags upstream main
-          BEHIND=$(git rev-list --count HEAD..upstream/main)
+          # Always measure how far origin/main is behind upstream/main
+          # (not the workflow ref, which can differ on workflow_dispatch).
+          BEHIND=$(git rev-list --count origin/main..upstream/main)
           echo "behind=${BEHIND}" >> "$GITHUB_OUTPUT"
           {
             echo "log<<EOF"
-            git log --oneline HEAD..upstream/main | head -20
+            git log -20 --oneline origin/main..upstream/main
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
           echo "Commits behind upstream/main: ${BEHIND}"

@@ -27,24 +27,31 @@ Sync by **merging** `upstream/main` into a sync branch and opening a PR. Do **no
 ```sh
 git remote -v
 # origin should be this fork (e.g. tomazb/cursor-plugins)
-git remote add upstream https://github.com/cursor/plugins.git 2>/dev/null || true
+git remote add upstream https://github.com/cursor/plugins.git 2>/dev/null || \
+  git remote set-url upstream https://github.com/cursor/plugins.git
 git fetch upstream
 git fetch origin
 ```
 
-### 2. Analyze
+Always pin `upstream` to `https://github.com/cursor/plugins.git` (do not keep a stale URL).
+
+### 2. Analyze (on `main`)
+
+Compare `origin/main` to `upstream/main`, not whatever branch you currently have checked out:
 
 ```sh
-git log --oneline HEAD..upstream/main        # new upstream commits
-git log --oneline upstream/main..HEAD        # our commits ahead of upstream
-git diff --stat HEAD..upstream/main          # what changed upstream
+git checkout main
+git pull origin main
+git log --oneline origin/main..upstream/main        # new upstream commits
+git log --oneline upstream/main..origin/main        # our commits ahead of upstream
+git diff --stat origin/main..upstream/main          # what changed upstream
 ```
 
-If `HEAD..upstream/main` is empty, there is nothing to sync. Stop.
+If `origin/main..upstream/main` is empty, there is nothing to sync. Stop.
 
 ### 3. Snapshot protected paths (before merge)
 
-Protected paths may be absent until custom work lands. Record which exist **before** the merge; only fail later if one that existed disappears.
+Protected paths may be absent until custom work lands. Persist which exist **before** the merge; verification must fail if any of those disappear.
 
 ```sh
 PROTECTED_PATHS=(
@@ -58,8 +65,12 @@ PROTECTED_PATHS=(
   .github/workflows/copilot-plugin-sync.yml
 )
 
+: > /tmp/sync-fork-protected-present.txt
 for p in "${PROTECTED_PATHS[@]}"; do
-  if [ -e "$p" ]; then echo "present: $p"; fi
+  if [ -e "$p" ]; then
+    echo "$p" >> /tmp/sync-fork-protected-present.txt
+    echo "present: $p"
+  fi
 done
 ```
 
@@ -67,13 +78,14 @@ Also treat marketplace/README mentions of those fork-only plugins as protected c
 
 ### 4. Sync branch
 
-Create a branch from current `main` (or the branch you intend to update). Never force-push `main`.
+Create a branch from `main`. Never force-push `main`. Include a UTC timestamp so a retry for the same upstream tip does not collide:
 
 ```sh
 SHORT=$(git rev-parse --short upstream/main)
+STAMP=$(date -u +%Y%m%d%H%M)
 git checkout main
 git pull origin main
-git checkout -b "branch/sync-upstream-${SHORT}-d3b9"
+git checkout -b "branch/sync-upstream-${SHORT}-${STAMP}-d3b9"
 ```
 
 ### 5. Merge (not rebase)
@@ -103,7 +115,7 @@ git merge upstream/main
 
 Compare root plugin directories (exclude infra: `.github`, `scripts`, `schemas`, `.cursor-plugin`, and protected fork-only paths).
 
-**ADDED plugin:** ensure `/.cursor-plugin/plugin.json` exists (from upstream), add marketplace row, add README table row.
+**ADDED plugin:** ensure `<plugin-directory>/.cursor-plugin/plugin.json` exists (from upstream), add marketplace row, add README table row.
 
 **REMOVED plugin:** remove marketplace row and README row; do not leave stale fork-only references for that slug.
 
@@ -114,7 +126,17 @@ Do **not** create `.claude-plugin/` manifests.
 ### 8. Verify
 
 ```sh
-# Protected paths that were present before merge must still exist
+# Fail if any protected path that existed pre-merge is gone
+while IFS= read -r p; do
+  [ -z "$p" ] && continue
+  if [ ! -e "$p" ]; then
+    echo "ERROR: protected path missing after merge: $p" >&2
+    exit 1
+  fi
+done < /tmp/sync-fork-protected-present.txt
+
+# Schema/name checks for marketplace + per-plugin manifests only
+# (does not verify protected-path preservation — that is the loop above)
 node scripts/validate-plugins.mjs
 
 git log --oneline -5
@@ -133,7 +155,15 @@ node scripts/validate-copilot-plugin.mjs copilot-plugins/thermos
 
 ### 9. Ship
 
+Stage and commit any conflict resolutions (and churn updates) before pushing. A conflicted merge is unfinished until you commit:
+
 ```sh
+git add -A
+if [ -f .git/MERGE_HEAD ]; then
+  git commit --no-edit
+elif ! git diff --cached --quiet; then
+  git commit -m "Sync with upstream cursor/plugins"
+fi
 git push -u origin HEAD
 ```
 
@@ -153,6 +183,8 @@ Open a PR into `main`. Do **not** `git push --force` to `main`.
 - Taking “our” README.md wholesale instead of merging upstream’s plugin changes
 - Dropping fork-only marketplace rows during conflict resolution
 - Deleting protected paths that existed before the merge
+- Analyzing / alerting from a non-`main` ref instead of `origin/main` vs `upstream/main`
 - Syncing from an upstream branch other than `main`
+- Pushing before committing resolved merge conflicts
 - Rebase + force-push to `main` (breaks PR history and open custom branches)
 - Creating `.claude-plugin/` files (not this fork’s custom layer)
