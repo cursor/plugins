@@ -16,6 +16,7 @@ Meta workflows for creating Cursor plugins that are marketplace-ready.
 |:------|:------------|
 | `create-plugin-scaffold` | Scaffold a new plugin directory with manifest, components, and repository wiring |
 | `review-plugin-submission` | Run a pre-submission quality check against marketplace expectations |
+| `sync-fork` | Merge `cursor/plugins` upstream into this fork while preserving fork-only plugins and Copilot tooling |
 
 ### Rules
 

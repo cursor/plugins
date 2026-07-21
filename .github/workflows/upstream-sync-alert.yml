@@ -1,0 +1,99 @@
+name: Upstream sync alert
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # Monday 09:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch upstream and compare
+        id: compare
+        run: |
+          set -euo pipefail
+          git remote add upstream https://github.com/cursor/plugins.git 2>/dev/null || \
+            git remote set-url upstream https://github.com/cursor/plugins.git
+          git fetch --no-tags upstream main
+          BEHIND=$(git rev-list --count HEAD..upstream/main)
+          echo "behind=${BEHIND}" >> "$GITHUB_OUTPUT"
+          {
+            echo "log<<EOF"
+            git log --oneline HEAD..upstream/main | head -20
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+          echo "Commits behind upstream/main: ${BEHIND}"
+
+      - name: Ensure upstream-sync label
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create upstream-sync \
+            --description "Fork is behind cursor/plugins; run sync-fork" \
+            --color "D93F0B" \
+            --force
+
+      - name: Close tracking issue when caught up
+        if: steps.compare.outputs.behind == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          ISSUE=$(gh issue list --label upstream-sync --state open --json number,title \
+            --jq '[.[] | select(.title | startswith("Upstream sync:"))] | .[0].number // empty')
+          if [ -n "${ISSUE}" ]; then
+            gh issue comment "${ISSUE}" --body "Caught up with \`cursor/plugins\` \`main\`. Closing this tracking issue."
+            gh issue close "${ISSUE}" --reason completed
+          else
+            echo "Already in sync; no open upstream-sync issue."
+          fi
+
+      - name: Open or update tracking issue when behind
+        if: steps.compare.outputs.behind != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BEHIND: ${{ steps.compare.outputs.behind }}
+          LOG: ${{ steps.compare.outputs.log }}
+        run: |
+          set -euo pipefail
+          TITLE="Upstream sync: ${BEHIND} commits behind cursor/plugins"
+          BODY_FILE=$(mktemp)
+          {
+            echo "This fork is **${BEHIND}** commit(s) behind [\`cursor/plugins\`](https://github.com/cursor/plugins) \`main\`."
+            echo
+            echo "### Recent upstream commits"
+            echo
+            echo '```'
+            echo "${LOG}"
+            echo '```'
+            echo
+            echo "### What to do"
+            echo
+            echo '1. In Cursor, run the `sync-fork` skill (ask: "sync this fork with upstream").'
+            echo "2. Review the sync PR — fork-only paths must survive; prefer upstream for shared plugins."
+            echo '3. Merge the sync PR into `main`.'
+            echo "4. This issue is updated weekly (or on workflow_dispatch) and closes automatically once caught up."
+            echo
+            echo 'Workflow: `.github/workflows/upstream-sync-alert.yml`'
+          } > "${BODY_FILE}"
+
+          ISSUE=$(gh issue list --label upstream-sync --state open --json number,title \
+            --jq '[.[] | select(.title | startswith("Upstream sync:"))] | .[0].number // empty')
+
+          if [ -n "${ISSUE}" ]; then
+            gh issue edit "${ISSUE}" --title "${TITLE}" --body-file "${BODY_FILE}"
+            gh issue comment "${ISSUE}" --body "Still behind: **${BEHIND}** commit(s) as of this check."
+            echo "Updated issue #${ISSUE}"
+          else
+            gh issue create --title "${TITLE}" --body-file "${BODY_FILE}" --label upstream-sync
+          fi
