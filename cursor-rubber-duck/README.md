@@ -50,7 +50,7 @@ Trivial edits are skipped. You can always force a critique with `/rubber-duck` o
 
 **Manual:**
 
-```
+```text
 /rubber-duck What edge cases are missing?
 ```
 

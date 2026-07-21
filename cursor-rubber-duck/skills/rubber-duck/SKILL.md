@@ -19,11 +19,11 @@ Gather what the critic needs:
 - **Focus** (optional): any question from the user (e.g. "What edge cases are missing?").
 - **Constraints**: known non-goals, deadlines, or decisions already locked.
 
-Prefer the smallest sufficient context. For branch work, `git diff <base>...HEAD` (default base `main`) plus contents of changed files is usually enough.
+Before handoff, redact or omit credentials, secrets, tokens, private keys, and obvious PII from the artifact. Do not send blocked sensitive content unless the user explicitly opts in. Prefer the smallest sufficient context. For branch work, `git diff <base>...HEAD` (default base `main`) plus contents of changed files is usually enough.
 
 ## Step 2 — Pick one contrasting critic model
 
-Choose **one** model from a **different family** than the session model:
+Choose **one** model from a **different family** than the session model. Use Task `model` slugs as accepted by the Task tool (same convention as other plugins in this marketplace, e.g. pstack):
 
 | Session model family | Critic model (preferred) |
 |----------------------|--------------------------|
@@ -31,7 +31,7 @@ Choose **one** model from a **different family** than the session model:
 | GPT / Codex | `claude-opus-4-8-thinking-high` |
 | Composer / other / unknown | `claude-opus-4-8-thinking-high` |
 
-If a slug is rejected as unresolvable, pick the closest same-family alternative from the Task tool’s valid list (prefer the highest-reasoning tier). Do not block the critique on a slug mismatch.
+If a slug is rejected as unresolvable, pick the closest resolvable alternative from a **different** model family (prefer the highest-reasoning tier from the Task tool’s valid list). If no cross-family model is available, tell the user the critique cannot preserve model contrast and ask whether to proceed with the best available model or skip.
 
 ## Step 3 — Spawn the critic
 
@@ -63,3 +63,4 @@ If the critic reports no issues, say so briefly and continue.
 - Skip style, formatting, naming, comment grammar, and nit best-practices that do not affect correctness or success.
 - Never auto-apply critic edits; you own all file changes.
 - Skip the consult for trivial, well-understood edits (see `consult-rubber-duck` rule).
+- Do not reproduce redacted secrets in the user-facing critique summary.

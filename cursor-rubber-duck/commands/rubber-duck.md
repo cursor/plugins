@@ -9,14 +9,14 @@ Consult the rubber-duck critic. Follow the `rubber-duck` skill: package intent +
 
 ## Usage
 
-```
+```text
 /rubber-duck
 /rubber-duck <optional focus question>
 ```
 
 ## Examples
 
-```
+```text
 /rubber-duck
 /rubber-duck What edge cases are missing?
 /rubber-duck Critique the plan before I implement
