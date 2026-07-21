@@ -59,7 +59,10 @@ describe("models --check", () => {
   });
 });
 
-function profile(slug: string, selection: ModelProfile["selection"]): ModelProfile {
+function profile(
+  slug: string,
+  selection: ModelProfile["selection"]
+): ModelProfile {
   return {
     slug,
     selection,

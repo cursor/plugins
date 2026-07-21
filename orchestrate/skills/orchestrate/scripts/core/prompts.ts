@@ -248,7 +248,9 @@ function renderMergeDiscipline(t: PlanTask, plan: Plan): string {
   const target = mergeWorkerTargetBranch(plan, t);
   const sources = mergeWorkerSourceBranches(plan, t);
   const sourceList =
-    sources.length > 0 ? sources.map(branch => `  - ${branch}`).join("\n") : "  - (none)";
+    sources.length > 0
+      ? sources.map(branch => `  - ${branch}`).join("\n")
+      : "  - (none)";
   return `
 - This is a merge worker for slice \`${slice}\`.
 - Merge dependency branches into \`${target}\` one at a time, in \`dependsOn\` order.

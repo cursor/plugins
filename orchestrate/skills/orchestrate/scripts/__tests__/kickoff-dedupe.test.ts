@@ -4,9 +4,9 @@ import { spawnSync } from "node:child_process";
 const SCRIPTS_DIR = new URL("..", import.meta.url).pathname;
 
 import {
-  MAX_BOOT_MS,
   findActiveRootPlanner,
   inferKickoffRootSlug,
+  MAX_BOOT_MS,
 } from "../cli/task.ts";
 
 describe("kickoff dedupe", () => {
@@ -75,6 +75,30 @@ describe("kickoff dedupe", () => {
     expect(active).toBeNull();
   });
 
+  test("does not adopt a planner whose slug only shares a prefix", async () => {
+    const now = Date.parse("2026-05-01T16:00:00.000Z");
+    const active = await findActiveRootPlanner(
+      {
+        async list() {
+          return {
+            items: [
+              {
+                agentId: "bc-refactor-ui",
+                name: "refactor-ui-root",
+                createdAt: now - 1_000,
+                latestRun: { id: "run-refactor-ui", status: "running" },
+              },
+            ],
+          };
+        },
+      },
+      "refactor",
+      now
+    );
+
+    expect(active).toBeNull();
+  });
+
   test("falls back to listRuns when list omits latest run", async () => {
     const now = Date.parse("2026-05-01T16:00:00.000Z");
     const active = await findActiveRootPlanner(
@@ -104,8 +128,12 @@ describe("kickoff dedupe", () => {
   });
 
   test("infers root slug from an explicit kickoff prefix", () => {
-    expect(inferKickoffRootSlug("refactor-ui: shrink Settings")).toBe("refactor-ui");
-    expect(inferKickoffRootSlug("`refactor-ui`: shrink Settings")).toBe("refactor-ui");
+    expect(inferKickoffRootSlug("refactor-ui: shrink Settings")).toBe(
+      "refactor-ui"
+    );
+    expect(inferKickoffRootSlug("`refactor-ui`: shrink Settings")).toBe(
+      "refactor-ui"
+    );
   });
 
   test("kickoff command adopts unless --force is passed", () => {

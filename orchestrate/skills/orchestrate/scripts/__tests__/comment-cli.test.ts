@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { loadKickoffThreadTsOrBail } from "../cli/comments.ts";
+
 const TEST_SLACK_CHANNEL = "C123TEST";
 
 const CLI_PATH = new URL("../cli.ts", import.meta.url).pathname;

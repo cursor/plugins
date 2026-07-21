@@ -192,7 +192,12 @@ describe("hasStructuredHandoff", () => {
   // verifier-only match keeps the finished-no-handoff sidecar from
   // firing on every successful verifier run.
   test("Detects the verifier template's ## Verification heading", () => {
-    const body = ["## Verification", "live-ui-verified", "## Target", "`t`"].join("\n");
+    const body = [
+      "## Verification",
+      "live-ui-verified",
+      "## Target",
+      "`t`",
+    ].join("\n");
     expect(hasStructuredHandoff(body)).toBe(true);
   });
 
