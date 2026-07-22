@@ -47,6 +47,8 @@ The [Authoring or modifying a skill playbook](../../skills/poteto-mode/playbooks
 
 Use `create-skill` because that is the authoring flow named in the current pstack playbook. Do not write a `SKILL.md` from memory.
 
+If the skill must drive your app and prove behavior, use the dedicated verification workflow. `/create-verification-skill` generates the project skill. `/maintain-verification-skill` keeps the generated feature map current. Follow [Create and maintain a project verification skill](./06-verify-and-ship.md#create-a-project-verification-skill).
+
 ## 4. Test the skill change without revealing the comparison
 
 Before you replace a skill rule, ask `/poteto-mode` to run the Eval playbook:

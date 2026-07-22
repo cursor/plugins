@@ -18,7 +18,7 @@ For your first run, follow these pages in order:
 3. [Understand the code](./03-understand.md). Before you edit, use `/how`, `/why`, `/teach`, or the Session pickup playbook.
 4. [Design the change](./04-design.md). Compare designs. Review the chosen design.
 5. [Build and clean the change](./05-build-and-clean.md). Use the build playbooks. When a bug has a small local test path, use `/tdd`. Clean the prose.
-6. [Verify and ship](./06-verify-and-ship.md). Prove behavior on the real artifact. Open a focused PR.
+6. [Verify and ship](./06-verify-and-ship.md). Prove behavior on the real artifact. If the project has no scripted verification path, run [`/create-verification-skill`](../../skills/create-verification-skill/SKILL.md). If the verification skill's feature map drifts, run [`/maintain-verification-skill`](../../skills/maintain-verification-skill/SKILL.md). Open a focused PR.
 7. [Run work while you are away](./07-overnight.md). Set a finish condition and keep a decision log. Use Cursor's built-in `/loop` command.
 8. [Understand the principles](./08-principles.md). See when each of the 21 principles changes a playbook decision.
 9. [Create and test your own pstack skills](./09-make-it-yours.md). Create a personal mode. Test skill changes.
