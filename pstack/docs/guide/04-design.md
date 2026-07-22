@@ -2,6 +2,8 @@
 
 One attempt at a hard design locks in the first shape the model thought of. These three skills exist so that doesn't happen. `/architect` settles types and boundaries before implementation. `/arena` runs several attempts in parallel and merges the best parts. `/interrogate` has other models try to break the result.
 
+![Three robots draft competing bridge models at their own tables under /architect, /arena, and /interrogate panels, while a judge robot with a clipboard inspects skeptically.](./images/design.jpg)
+
 ## Settle the shape with `/architect`
 
 ```text

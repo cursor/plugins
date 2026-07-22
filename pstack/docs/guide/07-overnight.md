@@ -2,6 +2,8 @@
 
 This is the payoff for everything before it. An agent you can trust to verify its own work is an agent you can leave alone with a hard task. What makes that safe isn't hope. It's a checkable finish condition, an isolated worktree, and a decision log you audit in the morning.
 
+![She waves goodnight from the door while robots keep the factory running, one updating a DECISION LOG wall board under a BUILD LOOP ACTIVE sign.](./images/overnight.jpg)
+
 ## The overnight contract
 
 A good handoff has the goal, the finish condition, permissions, and an escape hatch. It doesn't need to be long:
