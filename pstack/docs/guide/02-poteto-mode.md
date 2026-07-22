@@ -1,8 +1,8 @@
 # Route work through `/poteto-mode`
 
-Use `/poteto-mode` for a task with several steps or a result you must verify. Give `/poteto-mode` the task. Give `/poteto-mode` the finish condition. `/poteto-mode` matches a playbook. It copies the playbook steps into the todo list. When a step requires another skill, `/poteto-mode` calls that skill.
+`/poteto-mode` is the front door. You give it a goal, it matches one of sixteen playbooks, copies that playbook's steps into the todo list, and calls the other skills as the steps need them. In this page you learn what a good prompt looks like, and how little of one you actually need.
 
-## Follow the routing rules
+## What happens to your prompt
 
 ```mermaid
 flowchart TD
@@ -23,83 +23,66 @@ flowchart TD
     J --> K
 ```
 
-The diagram shows the common routes. Use the other bundled playbooks for these tasks:
+The diagram shows the common routes. There are also playbooks for hillclimbing a metric, diagnosing runtime symptoms and captured traces, prototypes, visual parity, authoring and evaluating skills, autonomous runs, session pickup, pausing safely, and multi-phase plans. The [playbook directory](../../skills/poteto-mode/playbooks/) has the full set.
 
-- Improve one metric through repeated attempts.
-- Diagnose a live runtime symptom.
-- Diagnose a saved trace.
-- Build a prototype.
-- Match a visual reference.
-- Write or edit a skill.
-- Test a skill change.
-- Continue an unattended run.
-- Continue a prior session.
-- Pause work.
-- Write a multi-phase plan.
+## Say the goal, not the ceremony
 
-Read the [playbook directory](../../skills/poteto-mode/playbooks/) for the full list.
-
-## Describe the result
-
-State the result instead of listing skills:
+You don't write a spec. You say what's wrong or what you want, plus anything you already know that saves the agent time:
 
 ```text
-/poteto-mode fix the duplicate notification.
-Reproduce it first.
-The finish condition is one notification after three retries.
+/poteto-mode users get two notifications after a retry. repro first, then fix and verify.
 ```
 
-The todo list should contain the Bug fix steps. `/poteto-mode` keeps each skipped step and adds `skip: <reason>`.
+That's a Bug fix prompt. "repro first" is a real constraint, not politeness, and the playbook honors it. Watch the todo list fill with the Bug fix steps. A skipped step stays visible with `skip: <reason>`.
 
-If the task is already clear from the conversation, short prompts work:
+When the conversation already carries the context, the prompt shrinks to almost nothing. All of these are enough:
 
 ```text
 /poteto-mode do it
 ```
 
-If the prior messages state the task and finish condition, send this plain follow-up:
-
 ```text
 continue
 ```
 
-## Match a new playbook when the task changes
-
-If you switch tasks in the same chat, say:
-
 ```text
-/poteto-mode new task.
-Investigate why the cache entry survives logout.
-Do not change code.
+keep going until done
 ```
 
-`new task` is a plain prompt phrase. It tells `/poteto-mode` to match the new request to a playbook. The read-only request should select Investigation instead of continuing the prior build playbook.
+Short works because the mode is sticky and the playbook holds the structure. Your words carry the intent, and the skill carries the rigor.
 
-## Use a separate worktree
+## Switch tasks with "new task"
 
-If another agent uses the repository, ask for an isolated worktree:
-
-```text
-/poteto-mode new task.
-Create a branch from <base>.
-Create a separate worktree for that branch.
-Implement the parser change in that worktree.
-```
-
-A separate branch and worktree keep this task's files and commits apart from other work. The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) defines the branch, commit, and PR flow for code changes.
-
-## Set a finish condition before you leave
-
-State a checkable finish condition before you leave:
+A long chat accumulates context from the last task. When you change subjects, say so:
 
 ```text
-/poteto-mode I am stepping away.
-Keep working until the migration check reports zero old callers.
-Log each decision for review.
+/poteto-mode new task. figure out why the cache entry survives logout. don't change any code yet.
 ```
 
-When you leave work for later review, `/poteto-mode` uses `/figure-it-out`. `/figure-it-out` invokes `/show-me-your-work` to record decisions. If no bundled playbook fits, `/poteto-mode` also uses `/figure-it-out`.
+"new task" tells `/poteto-mode` to re-match rather than continue the prior playbook. "don't change any code yet" pins this one to Investigation. Without those two phrases, a mode mid-Feature tends to treat your question as the next feature step.
 
-Read [`poteto-mode`](../../skills/poteto-mode/SKILL.md) for the routing rules. If you want the full unattended workflow, read [Run work while you are away](./07-overnight.md).
+## Give parallel work its own worktree
+
+If you run several agents against one repository, they will fight over the working tree. Ask for isolation up front:
+
+```text
+/poteto-mode new task. branch off <base> in a fresh worktree, then port the parser change there.
+```
+
+Each task in its own branch and worktree means no agent stomps another's files. The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) already works from a worktree for code changes, so mostly you only say this when a specific base or location matters.
+
+## Leave it running
+
+When you step away, say what done means and go:
+
+```text
+/poteto-mode im stepping away. keep going until the migration check reports zero old callers. log your decisions.
+```
+
+Work you'll review later routes through [`/figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases and keeps a [`/show-me-your-work`](../../skills/show-me-your-work/SKILL.md) decision log. [Run work while you sleep](./07-overnight.md) covers the full overnight contract.
+
+**Pitfall:** don't enumerate skills in your prompt ("use /how, then /architect, then /arena..."). The playbook already sequences them, and a hand-written sequence usually reorders or drops steps the playbook would have kept. Name a skill only when you want to override a specific choice.
+
+Read [`poteto-mode`](../../skills/poteto-mode/SKILL.md) itself for the full routing rules.
 
 Next: [Understand the code](./03-understand.md).

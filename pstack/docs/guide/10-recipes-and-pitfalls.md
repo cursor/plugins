@@ -1,84 +1,75 @@
-# Use pstack recipes and avoid common mistakes
+# Recipes and pitfalls
 
-When you need a known workflow, copy one recipe. Add concrete paths from your project. Add a finish condition and a verification command.
+Prompts worth copying, then the mistakes everyone makes once. Swap in your own paths and finish conditions. The recipes are deliberately informal. That's how they get typed in practice, and the skills read intent fine.
 
 ## Understand an unfamiliar subsystem
 
 ```text
-/how trace the request from the public API to storage.
-Name the owning modules and failure path.
-/why explain why these boundaries exist.
-Name the constraints that still apply.
+use /how first to understand how this initialization works. then use /why to figure out why it broke recently.
 ```
 
-Use `/how` for current mechanics. Use `/why` for the evidence behind the design.
+Mechanics first, history second. Each skill's report tells you which sources it searched, so you know what the answer is grounded in.
 
-## Learn enough to review a PR
+## Get a second opinion on a design
 
 ```text
-/teach me how this PR works.
-Explain why this design was chosen.
-Name the evidence that would disprove the main assumption.
+ask /arena for a second opinion on this thread and our approach
 ```
 
-When you want one combined explanation, use `/teach`.
+Your current design becomes one candidate among several, and the synthesis tells you whether the panel found something better or confirmed what you had. Cheap insurance before a costly commitment.
 
-## Design a costly change
+## Review a branch skeptically
 
 ```text
-/architect with checkpoint.
-Show the caller usage, types, signatures, and module map before implementation.
-/interrogate the chosen design against the stated intent.
-Do not edit files.
+/interrogate the whole branch, but skeptically. don't change anything yet. no nitpicks unless it's an actual bug or regression in behavior.
 ```
 
-`/architect` already runs `/arena`. If you want a different panel size, configure `architect runners` through `/setup-pstack` before the task.
+The qualifiers do real work. "don't change anything yet" keeps it read-only, and the nitpick rule pre-filters the noise so `Act on` findings are worth your time.
 
-## Fix a bug with a small regression test
+## Fix a bug through a failing test
 
 ```text
-/poteto-mode fix the duplicate write.
-1. Reproduce the bug with one command.
-2. If a small local test exists, use /tdd.
-3. If you use /tdd, show the test failure.
-4. Fix the cause.
-5. Rerun the reproduction command.
+/poteto-mode repro the duplicate write first. if there's a cheap test path, /tdd it. then fix and rerun.
 ```
 
-If a test needs broad setup or costly fixtures, skip the new test. Use the closest executable check. State why you skipped the test.
+"if there's a cheap test path" matters. Forcing a test through brittle mocks proves less than running the real command, and the playbook is allowed to say so.
 
-## Run a large task while you are away
+## Keep a run honest while you're away
 
 ```text
-/poteto-mode I am stepping away.
-1. Use /figure-it-out to design the phases.
-2. Use this finish condition:
-   - The migration check reports zero old callers.
-   - All fixtures pass.
-3. Keep a decision log with /show-me-your-work.
-4. Run Cursor's /loop until the finish condition passes.
+im going to bed, keep going autonomously until every fixture passes. do not stop. keep a decision log i can audit in the morning.
 ```
 
-Give `/loop` a finish condition. Do not use a duration as a substitute.
+The full contract is on the [overnight page](./07-overnight.md). The short form works once the task and finish condition are already in the conversation.
 
-## Improve a skill after a session
+## Redirect a drifting run
+
+Steering prompts are one line:
 
 ```text
-/reflect
+i said the goal is to repro. i did not ask for a fix yet.
 ```
 
-Approve a durable correction. Route the edit through the Authoring or modifying a skill playbook. Run the Eval playbook when you need evidence that the new rule changes behavior.
+```text
+apply prove it works. show me the real output, not the build log.
+```
 
-## Avoid common mistakes
+```text
+/unslop that, no emdashes
+```
 
-- Do not invoke every skill on every task. Use `/poteto-mode`, then add a skill when you need direct control.
-- Do not give `/loop` a vague finish condition such as "make it better." Give it a command or artifact that can pass or fail.
-- Do not let parallel agents write in one worktree. Give each independent attempt its own worktree.
-- Do not accept every review comment. Use `/interrogate` to separate real defects from unsupported preferences.
-- If no prior run covers the topic, use the Investigation playbook. Use `/how` for current behavior. Add `/why` when you need design reasons.
-- Do not treat `auto` as a model slug. `auto` tells pstack to inherit the parent chat model.
-- Do not invoke `typescript-best-practices` by hand. `typescript-best-practices` loads for `.ts` and `.tsx` files.
-- Do not report success from a build alone. Verify the real command, flow, stored value, or profile.
-- Do not write a `SKILL.md` without the Authoring or modifying a skill playbook and Cursor's `create-skill` flow.
+You rarely need more words. You need the right name, and [the principles page](./08-principles.md) is the vocabulary.
 
-Return to the [guide index](./README.md). To review tool boundaries, read [what pstack does not include](./06-verify-and-ship.md#replace-tools-that-pstack-does-not-include).
+## The pitfalls
+
+- **Enumerating skills in the prompt.** "use /how then /architect then /arena" reorders steps the playbook already sequences. State the goal and constraints. Name a skill only to override a default.
+- **A vague finish condition.** "make it better" gives `/loop` nothing to check. Give a command or artifact that can pass or fail.
+- **Parallel agents in one worktree.** They overwrite each other and the diff becomes archaeology. Say "own worktree per attempt" and the isolation is free.
+- **Accepting every review comment.** Bots and humans both file real catches and noise in one list. `/interrogate` sorts findings into act-on and dismissed buckets with reasons, and you can override either way.
+- **Treating `auto` as a model slug.** `auto` and `inherit-parent` mean "omit the model field so the subagent inherits the parent chat model." [Setup](./01-setup.md) covers the roles.
+- **Reporting success off a green build.** A build proves it compiles. Ask for the real command, flow, stored value, or profile, and expect the evidence in the reply.
+- **Writing a `SKILL.md` freehand.** Route it through the [Authoring or modifying a skill playbook](../../skills/poteto-mode/playbooks/authoring-a-skill.md) so validation and review happen.
+
+That's the guide. If you skipped ahead, go back to [setup](./01-setup.md) and run one real task. The habits stick from use, not from reading.
+
+Back to the [guide index](./README.md).

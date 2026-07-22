@@ -1,40 +1,30 @@
-# Use pstack effectively
+# The pstack guide
 
-Use one real task throughout this tutorial. You complete these steps:
+pstack works best when you stop micromanaging the agent. You describe what you want and how you'll know it's done. `/poteto-mode` picks the playbook, runs the other skills as the steps need them, and shows you the evidence. This guide teaches that habit with realistic prompts.
 
-1. Configure pstack.
-2. Match the task to a playbook.
-3. Verify the result.
-4. If you leave before the work ends, record each decision for later review.
+Here's what you'll learn:
 
-Start with `/poteto-mode`. If you need to control one part of the work, name the relevant skill.
+1. [Set up pstack](./01-setup.md). Install the plugin and pick your models.
+2. [Route work through `/poteto-mode`](./02-poteto-mode.md). Give it a goal and watch it pick a playbook.
+3. [Understand the code](./03-understand.md). `/how`, `/why`, `/teach`, and `/recall` before you edit anything.
+4. [Design the change](./04-design.md). `/architect`, `/arena`, and `/interrogate` before code locks in a shape.
+5. [Build and clean the change](./05-build-and-clean.md). The build playbooks, `/tdd`, and `/unslop`.
+6. [Verify and ship](./06-verify-and-ship.md). Prove behavior on the real app, then open a focused PR.
+7. [Run work while you sleep](./07-overnight.md). An overnight contract and a decision log you can audit.
+8. [Steer with principle names](./08-principles.md). The 21 names that redirect an agent mid-task.
+9. [Make it yours](./09-make-it-yours.md). Your own mode, plus how to test a skill change.
+10. [Recipes and pitfalls](./10-recipes-and-pitfalls.md). Prompts to copy and mistakes to skip.
 
-## Follow the tutorial in order
+Read the pages in order the first time. After that, each page stands alone.
 
-For your first run, follow these pages in order:
+## If you only remember one thing
 
-1. [Set up pstack](./01-setup.md). Install the plugin. Configure model inheritance.
-2. [Route work through `/poteto-mode`](./02-poteto-mode.md). Start a task. Follow the matched playbook.
-3. [Understand the code](./03-understand.md). Before you edit, use `/how`, `/why`, `/teach`, or the Session pickup playbook.
-4. [Design the change](./04-design.md). Compare designs. Review the chosen design.
-5. [Build and clean the change](./05-build-and-clean.md). Use the build playbooks. When a bug has a small local test path, use `/tdd`. Clean the prose.
-6. [Verify and ship](./06-verify-and-ship.md). Prove behavior on the real artifact. If the project has no scripted verification path, run [`/create-verification-skill`](../../skills/create-verification-skill/SKILL.md). If the verification skill's feature map drifts, run [`/maintain-verification-skill`](../../skills/maintain-verification-skill/SKILL.md). Open a focused PR.
-7. [Run work while you are away](./07-overnight.md). Set a finish condition and keep a decision log. Use Cursor's built-in `/loop` command.
-8. [Understand the principles](./08-principles.md). See when each of the 21 principles changes a playbook decision.
-9. [Create and test your own pstack skills](./09-make-it-yours.md). Create a personal mode. Test skill changes.
-10. [Use recipes and avoid common mistakes](./10-recipes-and-pitfalls.md). Copy useful prompts. Fix common mistakes.
-
-## Start with one prompt
-
-If you need one prompt now, use:
+Give the agent a goal and a way to check it, in your own words:
 
 ```text
-/poteto-mode <your task>.
-Use this finish condition: <observable result>.
-Complete the task.
-Show the evidence that proves the finish condition.
+/poteto-mode the export writes duplicate rows when a retry lands mid-run. repro first, then fix and verify.
 ```
 
-The first todo tells `/poteto-mode` to read the Principles section. The next todos copy the matched playbook steps. If `/poteto-mode` skips a step, the step stays as `skip: <reason>`.
+You don't need to name a playbook or list skills. "repro first" and a checkable outcome are all the routing signal `/poteto-mode` needs. It matches the Bug fix playbook, copies the steps into a todo list, and calls the right skills as each step fires.
 
 Next: [Set up pstack](./01-setup.md).

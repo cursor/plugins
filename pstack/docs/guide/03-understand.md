@@ -1,89 +1,59 @@
 # Understand the code before changing it
 
-Before you edit unfamiliar code, use pstack to build an up-to-date explanation with sources. Use `/how` to trace behavior. Use `/why` to find past reasons. Use `/teach` to combine both.
+Editing code you don't understand is how subtle regressions ship. pstack gives you four ways in. `/how` explains what the code does now. `/why` digs up the reasons it's shaped that way. `/teach` blends both into one explanation. `/recall` rebuilds your own recent context on a topic.
 
-## Trace the code path with `/how`
-
-Run:
+## Trace behavior with `/how`
 
 ```text
-/how trace what happens from the CLI command to the final database write.
-Name the owning modules and the error path.
+/how do we dedupe notifications? is there an n+1 when we look up subscribers?
 ```
 
-[`/how`](../../skills/how/SKILL.md) reads the code and returns the runtime flow, key types, file map, and non-obvious behavior. For a large subsystem, `/how` starts two to four read-only explorers. It then starts one explainer. For a small question, `/how` starts one explainer directly.
+Ask the question you actually have. [`/how`](../../skills/how/SKILL.md) reads the code and answers at the level of a senior engineer onboarding you onto the subsystem, with the runtime flow, the key types, and the non-obvious parts. For a big subsystem it fans out two to four read-only explorers first. For a narrow question it just reads and explains.
 
-If you also want an architecture review, ask for Critique mode:
+`/how` can also push back on the design. Ask for Critique mode when you suspect the structure itself:
 
 ```text
-/how explain the sync service.
-Then critique its ownership boundaries.
+/how explain the sync service, then critique its ownership boundaries
 ```
 
-The critique follows the explanation. This order keeps review comments tied to the real design.
+The explanation comes first, so the critique stays grounded in how the thing really works.
 
-## Find past reasons with `/why`
-
-Run:
+## Dig up history with `/why`
 
 ```text
-/why was this retry limit set to five?
-Which constraints still apply?
+/why was the retry limit set to five? does the reason still hold?
 ```
 
-[`/why`](../../skills/why/SKILL.md) starts from source control. It also searches the evidence categories your connectors expose. These categories can include tickets, long-form documents, team discussions, runtime signals, error records, and product data.
+[`/why`](../../skills/why/SKILL.md) works like a detective on a cold case. It starts from source control, then queries whatever evidence categories your MCPs expose, such as the issue tracker, long-form docs, team chat, observability, error tracking, and analytics, all in parallel. The report cites everything, separates direct evidence from inference, and says "appears to" when the record is thin. A null result gets reported too, because "nobody wrote down why" is itself an answer.
 
-The report separates direct evidence from inference. When the evidence supports several explanations, the report lists each one. The report also lists missing evidence and every source category searched.
+The two compose naturally. `do why first then how` is a perfectly good prompt when you suspect the history explains the mess.
 
-Use both skills when mechanics and history matter:
+## Actually understand it with `/teach`
 
 ```text
-/how explain how request retries work now.
-/why explain why the retry policy has this shape and which assumptions may be stale.
+/teach me how this PR changes retries. convince me it fixes the cause and not the symptom.
 ```
 
-## Combine behavior and history with `/teach`
+[`/teach`](../../skills/teach/SKILL.md) is for when a summary isn't enough. It runs `/how` and `/why`, for a small change maybe just one of them, and weaves the findings into a plain explanation that builds up diagram by diagram. The "convince me" framing is worth stealing. It turns the explanation into an argument you can poke at instead of a tour.
 
-Run:
+## Rebuild your own context with `/recall`
 
 ```text
-/teach me how this PR changes retries.
-Explain why this design was chosen.
-Tell me what I should verify as a reviewer.
+/recall catch me up on the export work from last week
 ```
 
-For a subsystem, [`/teach`](../../skills/teach/SKILL.md) runs `/how` and `/why` in parallel. For a small change, `/teach` may run only one. It combines the findings in plain language.
+[`/recall`](../../skills/recall/SKILL.md) mines your own recent chats plus the shared record (issues, prior fixes, errors still firing) and hands back a brief on where things stand and what's next. Use it when you're returning to a topic cold. If you want to resume one specific chat, that's the Session pickup playbook below, not `/recall`.
 
-Ask the explanation to test the design argument:
+## Take over prior work with Session pickup
+
+When another agent (or you, last week) left a branch mid-flight:
 
 ```text
-/teach me how this change works. Convince me that it fixes the cause instead of hiding the symptom.
+/poteto-mode take over this branch. read the decision log, figure out what's done, and continue from there. don't redo finished work.
 ```
 
-## Resume one run with the Session pickup playbook
+The [Session pickup playbook](../../skills/poteto-mode/playbooks/session-pickup.md) treats the prior trail as authoritative. It reconstructs the branch state and decisions, names the resume point, and verifies inherited claims against the original goal instead of re-deriving everything from scratch.
 
-If you take over a prior run, give `/poteto-mode` the prior transcript, a cloud-agent URL, or the pushed branch:
-
-```text
-/poteto-mode take over this branch with the Session pickup playbook.
-Read the prior work record.
-Identify completed work.
-Continue from the first unfinished step.
-```
-
-The [Session pickup playbook](../../skills/poteto-mode/playbooks/session-pickup.md) reconstructs the branch, decisions, and open work. It does not repeat completed investigation. It verifies inherited claims against the original goal before it reports the outcome.
-
-## Investigate a topic across runs
-
-If the topic spans several sessions, start a new Investigation:
-
-```text
-/poteto-mode investigate the current state of request retries.
-Use /how to trace the retry code path.
-Use /why to find the decisions that still constrain the retry policy.
-Do not change code.
-```
-
-Add the branch names, PR links, or document links that define your scope. The connectors can search only the evidence they expose.
+**Pitfall:** don't skip this page's skills because "the agent will read the code anyway." An agent that starts editing without a traced model tends to fix the symptom at the first plausible spot. `/how` first is cheaper than the second bug.
 
 Next: [Design the change](./04-design.md).

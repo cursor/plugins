@@ -1,70 +1,49 @@
 # Set up pstack
 
-In this tutorial, you install pstack. You configure its model roles. You then start a task with `/poteto-mode`. The `/setup-pstack` skill writes a rule for new sessions.
+In this page you install the plugin, pick which models pstack uses, and run your first task. Setup is one command plus a short conversation.
 
 ## Install the plugin
 
-1. Open a Cursor chat.
-2. Run:
+In a Cursor chat, run:
 
-   ```text
-   /add-plugin pstack
-   ```
+```text
+/add-plugin pstack
+```
 
-3. Confirm that Cursor reports the plugin as installed.
+Cursor confirms the plugin is installed.
 
-## Configure model roles
-
-1. Run [`/setup-pstack`](../../skills/setup-pstack/SKILL.md):
-
-   ```text
-   /setup-pstack
-   ```
-
-2. Review the available models and the role list.
-3. For each role you want to override, choose a model.
-4. Confirm the choices.
-
-The skill writes `~/.cursor/rules/pstack-models.mdc`. A role that is absent from the rule uses the skill's default. If you want to restore a default, delete that role's line.
-
-## Keep Auto-plan on the parent model
-
-If you use Auto-plan, set a role to either `inherit-parent` or `auto`. Both values tell pstack to omit the subagent `model` field. The subagent then inherits the parent chat model.
-
-These values are aliases. They are not model slugs.
-
-For a panel role, each list entry starts one subagent. A list of inherited entries keeps the same panel size. Every subagent uses the parent model.
-
-## Accept a verification skill offer (optional)
-
-After model setup, `/setup-pstack` checks for a `verify-*` skill. It also checks for an existing harness that can drive the real app for proof.
-
-If the project has neither, `/setup-pstack` offers once:
-
-> want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill.
-
-If you accept, `/setup-pstack` invokes [`/create-verification-skill`](../../skills/create-verification-skill/SKILL.md). The skill writes `.cursor/skills/verify-<app>/`. It proves the generated skill once before it returns the files.
-
-If you decline, `/setup-pstack` moves on. Declining is fine.
-
-For creation and later upkeep with [`/maintain-verification-skill`](../../skills/maintain-verification-skill/SKILL.md), read [Create a project verification skill](./06-verify-and-ship.md#create-a-project-verification-skill).
-
-After setup, start a new Cursor chat. The model rule applies to new sessions.
-
-## Start your first task
+## Pick your models
 
 Run:
 
 ```text
-/poteto-mode add a JSON output option to this command.
-Keep the current text output unchanged.
-Verify both output forms.
+/setup-pstack
 ```
 
-The first todo tells `/poteto-mode` to read the Principles section. The next todos come from the matched playbook. For this prompt, `/poteto-mode` should choose the Feature playbook.
+[`/setup-pstack`](../../skills/setup-pstack/SKILL.md) detects the models you have access to, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `~/.cursor/rules/pstack-models.mdc`, a small rule every pstack skill reads.
 
-You can now write normal follow-up prompts. `/poteto-mode` stays active until you opt out.
+You only override what you care about. A role with no line in the rule keeps the skill's default. To restore a default later, delete that role's line, or just run `/setup-pstack` again.
 
-If you want to change one role or panel, read the full [`setup-pstack` skill](../../skills/setup-pstack/SKILL.md).
+You might be wondering what happens if you use Auto. Set a role to `inherit-parent` or `auto` and pstack omits the subagent `model` field, so the subagent inherits your parent chat model. Both values mean the same thing, and neither is a model slug. For a panel role the value is a list, and one subagent runs per entry, so the list length sets the panel size.
+
+## Accept the verification offer, or don't
+
+At the end of setup, `/setup-pstack` looks for a way to prove app behavior in your project, either a `verify-*` skill or an existing harness. If it finds neither, it offers once to generate one with [`/create-verification-skill`](../../skills/create-verification-skill/SKILL.md).
+
+Say yes and it writes `.cursor/skills/verify-<app>/`, a project-local skill that teaches agents to drive your app the way a user does. It proves the skill works once before handing it over. Say no and setup moves on. You can run `/create-verification-skill` yourself any time. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers when it earns its place.
+
+After setup, start a new chat. The model rule applies to new sessions.
+
+## Run your first task
+
+Pick something real but small, and describe it the way you'd describe it to a colleague:
+
+```text
+/poteto-mode add a --json flag to this command. text output stays byte-identical. verify both.
+```
+
+Watch the todo list. The first item is always "read the Principles section". The rest are the matched playbook's steps copied in, the Feature playbook for this prompt. If `/poteto-mode` skips a step, the step stays in the list with `skip: <reason>`, so you can see what it chose not to do.
+
+From here you can type normal follow-ups. `/poteto-mode` is sticky. It stays on for the conversation until you opt out by saying so.
 
 Next: [Route work through `/poteto-mode`](./02-poteto-mode.md).

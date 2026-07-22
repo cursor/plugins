@@ -1,81 +1,69 @@
-# The principles change work decisions
+# Steer with principle names
 
-pstack has 21 principle skills. A playbook defines the steps for a task. The principles change the decisions inside those steps.
+pstack ships 21 principles as individual skills. `/poteto-mode` reads their index at the start of every multi-step task, applies the ones the task triggers, and names each applied principle in its reply along with the decision it changed.
 
-For every multi-step task, `/poteto-mode` puts "read the Principles section in full" first in the todo list. For each principle the agent applies, the agent reads the full skill. In the final reply, the agent names each applied principle and the decision it changed.
+You don't invoke principles. You use their names to steer. Each name points at a complete rule the agent has already read, so one phrase redirects the work more precisely than a paragraph of instructions.
 
-You do not need to invoke all 21 principles. Their names give you a precise way to redirect the work.
+## Steering in practice
 
-## Core principles set scope and design choices
+Say the agent is about to bolt a new adapter onto three existing ones:
 
-The nine core principles decide how much to build and when to reconsider the design:
+```text
+use subtract before you add. delete the obsolete adapters first, then design what's left.
+```
+
+Say it claims success because the build passed:
+
+```text
+apply prove it works. run the real import flow and show me the written records.
+```
+
+Say two parallel attempts are about to write to the same branch:
+
+```text
+separate before serializing shared state. give each attempt its own worktree, no locks.
+```
+
+Each phrase lands because the rule behind it is specific. The agent still has to say, in its reply, which decision the rule changed. A principle citation with no decision behind it is the tell that it name-dropped instead of applying.
+
+## The 21, briefly
+
+The core principles decide how much to build and when to rethink the design:
 
 - [Laziness Protocol](../../skills/principle-laziness-protocol/SKILL.md) prefers deletion and the smallest change that solves the problem.
-- [Foundational Thinking](../../skills/principle-foundational-thinking/SKILL.md) chooses the core data structures before logic.
-- [Redesign from First Principles](../../skills/principle-redesign-from-first-principles/SKILL.md) treats a new requirement as a base assumption.
-- [Subtract Before You Add](../../skills/principle-subtract-before-you-add/SKILL.md) removes unused or redundant code before adding structure.
-- [Minimize Reader Load](../../skills/principle-minimize-reader-load/SKILL.md) reduces layers, hidden state, and needless indirection.
-- [Outcome-Oriented Execution](../../skills/principle-outcome-oriented-execution/SKILL.md) moves planned rewrites toward the target design. It avoids code that only keeps intermediate phases compatible.
-- [Experience First](../../skills/principle-experience-first/SKILL.md) favors the user result over implementation convenience.
-- [Exhaust the Design Space](../../skills/principle-exhaust-the-design-space/SKILL.md) builds two or three competing prototypes when a new design has no codebase precedent.
-- [Build the Lever](../../skills/principle-build-the-lever/SKILL.md) creates the smallest script, generator, check, or shared skill that performs or proves nontrivial work.
+- [Foundational Thinking](../../skills/principle-foundational-thinking/SKILL.md) chooses the core data structures before writing logic.
+- [Redesign from First Principles](../../skills/principle-redesign-from-first-principles/SKILL.md) integrates a new requirement as if it had been there from day one.
+- [Subtract Before You Add](../../skills/principle-subtract-before-you-add/SKILL.md) removes dead weight before building on top of it.
+- [Minimize Reader Load](../../skills/principle-minimize-reader-load/SKILL.md) collapses layers and hidden state a reader must hold in their head.
+- [Outcome-Oriented Execution](../../skills/principle-outcome-oriented-execution/SKILL.md) converges rewrites on the target design instead of preserving throwaway compatibility states.
+- [Experience First](../../skills/principle-experience-first/SKILL.md) chooses the user's result over implementation convenience.
+- [Exhaust the Design Space](../../skills/principle-exhaust-the-design-space/SKILL.md) builds two or three competing prototypes when there's no precedent.
+- [Build the Lever](../../skills/principle-build-the-lever/SKILL.md) builds the script that does or proves the work, so a reviewer can rerun it.
 
-## Architecture principles set code structure
+The architecture principles decide where state, validation, and compatibility live:
 
-The six architecture principles decide where state, validation, and compatibility belong:
+- [Model the Domain](../../skills/principle-model-the-domain/SKILL.md) encodes repeated rules in one structure, not scattered conditionals.
+- [Boundary Discipline](../../skills/principle-boundary-discipline/SKILL.md) validates at the boundary and trusts internal types.
+- [Type System Discipline](../../skills/principle-type-system-discipline/SKILL.md) makes illegal states unrepresentable.
+- [Make Operations Idempotent](../../skills/principle-make-operations-idempotent/SKILL.md) converges retries on the same end state.
+- [Migrate Callers Then Delete Legacy APIs](../../skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md) migrates and deletes in one wave.
+- [Separate Before Serializing Shared State](../../skills/principle-separate-before-serializing-shared-state/SKILL.md) removes the sharing before adding coordination.
 
-- [Model the Domain](../../skills/principle-model-the-domain/SKILL.md) encodes repeated rules in one data structure.
-- [Boundary Discipline](../../skills/principle-boundary-discipline/SKILL.md) validates external data at the boundary and trusts internal types.
-- [Type System Discipline](../../skills/principle-type-system-discipline/SKILL.md) makes invalid states hard to represent.
-- [Make Operations Idempotent](../../skills/principle-make-operations-idempotent/SKILL.md) makes retries converge on the same result.
-- [Migrate Callers Then Delete Legacy APIs](../../skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md) migrates every caller and removes the old API in the same refactor.
-- [Separate Before Serializing Shared State](../../skills/principle-separate-before-serializing-shared-state/SKILL.md) removes shared writes before adding coordination.
+The verification principles define what counts as proof:
 
-## Verification principles define proof
+- [Prove It Works](../../skills/principle-prove-it-works/SKILL.md) verifies the real artifact, not a proxy.
+- [Fix Root Causes](../../skills/principle-fix-root-causes/SKILL.md) reproduces and traces to the cause before changing code.
+- [Sequence Work into Verifiable Units](../../skills/principle-sequence-verifiable-units/SKILL.md) ends each small unit in a check before starting the next.
 
-The three verification principles require evidence:
+The delegation principles keep parallel work sane:
 
-- [Prove It Works](../../skills/principle-prove-it-works/SKILL.md) checks the real artifact before `/poteto-mode` reports success.
-- [Fix Root Causes](../../skills/principle-fix-root-causes/SKILL.md) confirms the failure mechanism before the agent changes code.
-- [Sequence Work into Verifiable Units](../../skills/principle-sequence-verifiable-units/SKILL.md) finishes and checks one small unit before the next.
+- [Guard the Context Window](../../skills/principle-guard-the-context-window/SKILL.md) routes bulk reading to subagents and keeps findings in the main chat.
+- [Never Block on the Human](../../skills/principle-never-block-on-the-human/SKILL.md) proceeds on reversible work and presents the result.
 
-## Delegation principles protect context and progress
+And one meta principle:
 
-The two delegation principles control parallel work:
+- [Encode Lessons in Structure](../../skills/principle-encode-lessons-in-structure/SKILL.md) turns advice you've repeated twice into a lint, check, or script.
 
-- [Guard the Context Window](../../skills/principle-guard-the-context-window/SKILL.md) sends large reads to subagents and keeps short findings in the main chat.
-- [Never Block on the Human](../../skills/principle-never-block-on-the-human/SKILL.md) keeps reversible work moving without a permission pause.
+Don't memorize the list. Skim it now, then come back when you catch the agent doing something a name here would have prevented. That's how the vocabulary sticks.
 
-## The meta principle turns repeated advice into checks
-
-[Encode Lessons in Structure](../../skills/principle-encode-lessons-in-structure/SKILL.md) replaces repeated prose instructions with a lint rule, check, script, or metadata field.
-
-## A principle name changes the next decision
-
-A principle name is a direct instruction. This prompt asks the agent to remove old structure before editing:
-
-```text
-Use Subtract Before You Add.
-1. Delete the obsolete adapters.
-2. Design the remaining path.
-```
-
-This prompt rejects a compile-only success claim:
-
-```text
-Apply Prove It Works.
-1. Run the real import flow.
-2. Show the written records.
-3. After both checks pass, report success.
-```
-
-This prompt keeps parallel agents isolated:
-
-```text
-Apply Separate Before Serializing Shared State.
-Give each attempt its own worktree instead of adding a lock.
-```
-
-The name works because it points to a complete rule. The agent still has to state which decision the rule changed.
-
-Next: [Create and test your own pstack skills](./09-make-it-yours.md).
+Next: [Make it yours](./09-make-it-yours.md).

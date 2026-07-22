@@ -1,85 +1,57 @@
-# Run work while you are away
+# Run work while you sleep
 
-Turn a long task into an unattended run with a checkable finish condition. Keep the work isolated. Record each decision. When you step away, use `/figure-it-out` even if the task follows a known playbook. Use the Autonomous run playbook to repeat each check.
+This is the payoff for everything before it. An agent you can trust to verify its own work is an agent you can leave alone with a hard task. What makes that safe isn't hope. It's a checkable finish condition, an isolated worktree, and a decision log you audit in the morning.
 
-## Define the unattended run
+## The overnight contract
 
-Before you leave, give `/poteto-mode` six inputs:
-
-1. State the exact finish condition.
-2. Request an isolated worktree from the named base branch.
-3. State which writes the agent may make.
-4. Name the verification command or artifact.
-5. Request a `/show-me-your-work` decision log.
-6. Give a stop condition for a genuine dead end.
-
-Use a prompt like this:
+A good handoff has the goal, the finish condition, permissions, and an escape hatch. It doesn't need to be long:
 
 ```text
-/poteto-mode I am stepping away.
-Use <base> as the base branch.
-Create an isolated worktree.
-Migrate every caller to the new parser in that worktree.
-Use this finish condition:
-- No caller uses the old API.
-- All parser fixtures pass.
-- The old API no longer exists.
-Before editing, use /figure-it-out to design the phases.
-Keep a /show-me-your-work decision log.
-Add evidence for each decision or checkpoint.
-Until the finish condition passes, keep the run active with Cursor's /loop.
-If no viable approach remains, stop.
-Record the evidence.
+/poteto-mode im going to bed. migrate every caller to the new parser in a fresh worktree off <base>.
+done means zero old callers, all parser fixtures pass, old api deleted.
+keep a decision log. don't ask me before committing.
+/loop until done. if you're truly stuck after a few hours, stop and write up why.
 ```
 
-Before writing code, `/figure-it-out` writes the workflow. The workflow expresses the finish condition as a check that every iteration can run.
+Walk through what each line buys you:
 
-## Follow the unattended loop
+- "im going to bed" is a session override. The agent stops asking and keeps going.
+- "done means..." turns the goal into checks every iteration can run.
+- "fresh worktree off `<base>`" keeps the run from colliding with anything else you have open.
+- "don't ask me before committing" pre-answers the permission the agent would otherwise block on.
+- `/loop` is Cursor's built-in wake mechanism, not a pstack skill. The [Autonomous run playbook](../../skills/poteto-mode/playbooks/autonomous-run.md) uses it to re-check the finish condition on events or a heartbeat.
+- The escape hatch lets it stop at a genuine dead end and write up why, which beats eight hours of creative goal reinterpretation.
+
+Because you'll review this work after stepping away, `/poteto-mode` routes it through [`/figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases before any code and wires in the decision log.
+
+## What the loop does all night
 
 ```mermaid
 flowchart TD
-    A[Define the finish condition] --> B[Make the smallest supported change]
-    B --> C[Check the real artifact]
-    C --> D{Did the change make progress}
-    D -->|No| E[Discard the change]
-    D -->|Yes| F[Commit the change]
-    E --> G[Append one decision log row]
+    A[Check the finish condition] --> B[Make the smallest justified change]
+    B --> C[Verify against the real artifact]
+    C --> D{Progress?}
+    D -->|Yes| E[Commit]
+    D -->|No| F[Discard]
+    E --> G[Log one decision row]
     F --> G
-    G --> H{Finish condition met}
-    H -->|No| B
-    H -->|Yes| I[Review the decision log and report]
+    G --> A
 ```
 
-The [Autonomous run playbook](../../skills/poteto-mode/playbooks/autonomous-run.md) uses Cursor's `/loop` command to wake the run for a later check. `/loop` is a Cursor command, not a pstack skill.
+One change, one check, one log row, every iteration. Changes that didn't help get discarded, not left to ride. A plateau means pivot, not stop, and the finish condition never quietly relaxes to declare victory.
 
-Each iteration follows this sequence:
+## The morning audit
 
-1. Make one evidence-backed change.
-2. Check the finish condition.
-3. If the change made progress, commit it.
-4. If the change did not help, discard it.
-5. Append one row to the decision log.
+[`/show-me-your-work`](../../skills/show-me-your-work/SKILL.md) is what makes the run reviewable. Each row records the time, phase, decision, reason, an evidence pointer, and the result, in a TSV at `decisions.tsv` (or `.audit/<task-slug>.tsv` when several runs share a directory). It stays local by default. Commit it when the work is ambitious enough that a reviewer needs the trail to trust the result.
 
-## Use `/figure-it-out` before unattended work
-
-When you will review work after stepping away, use [`/figure-it-out`](../../skills/figure-it-out/SKILL.md). Use it also for large migrations, cross-cutting work, or tasks with no matched playbook. It writes a phased workflow with a baseline, isolated work, explicit verdicts, and final verification.
-
-Run `/figure-it-out` once for the unattended run. After the workflow settles the main design, do not run another design comparison. If new evidence invalidates the design, compare the designs again.
-
-## Keep a reviewable decision log
-
-[`/show-me-your-work`](../../skills/show-me-your-work/SKILL.md) writes one append-only TSV row for each decision or checkpoint. Each row records the time, phase, decision, reason, evidence pointer, and result. The default path is `decisions.tsv` or `.audit/<task-slug>.tsv`.
-
-For routine work, keep the decision log local. When a reviewer needs the decision log for a large change, commit it.
-
-When you return, run:
+When you're back, ask for the run in review form:
 
 ```text
-/show-me-your-work summarize the unattended run.
-Compare the decision log with the transcript.
-Flag weak evidence.
+/show-me-your-work catch me up on what you did last night
 ```
 
-Before `/show-me-your-work` reports the run, it asks a different model family to review the decision log. The final report states the finish condition, iteration count, and final result. It lists accepted changes, discarded changes, open work, and review flags.
+Before the skill hands back its summary, it spawns a reviewer on a different model family to read the trail and the transcript, and the reply ends with an Attention section listing what deserves your scrutiny. Read that section first, then the log rows it points at. You're auditing decisions, not re-reading the whole night.
 
-Next: [Understand the principles](./08-principles.md).
+**Pitfall:** a duration is not a finish condition. "work on this for 4 hours" gives the agent nothing to check, and you'll wake up to four hours of motion instead of a result. Give `/loop` a predicate that can pass or fail.
+
+Next: [Steer with principle names](./08-principles.md).

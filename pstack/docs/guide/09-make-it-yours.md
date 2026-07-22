@@ -1,74 +1,57 @@
-# Create and test your own pstack skills
+# Make it yours
 
-You create a personal mode from your work. You turn one repeated correction into a skill change. You test the change before you adopt it.
+poteto-mode is one person's style. The machinery underneath, playbooks, routing, model roles, works just as well wearing yours. This page covers generating a personal mode, capturing lessons from a session, authoring a focused skill, and testing a skill change before you trust it.
 
-## 1. Create a personal mode
-
-Run:
+## Generate your own mode with `/automate-me`
 
 ```text
-/automate-me create a <handle>-mode skill from how I work in this project.
+/automate-me
 ```
 
-[`/automate-me`](../../skills/automate-me/SKILL.md) reads transcripts from the active workspace. It looks for repeated response, delegation, verification, code, prose, and process preferences. It then asks you which patterns matter.
+You don't describe your style, because [`/automate-me`](../../skills/automate-me/SKILL.md) reads it out of your history. It mines your recent transcripts in the active workspace for repeated preferences, in how you like replies, delegation, verification, code, prose, and process, then asks you which patterns are really you. It drafts `.cursor/skills/<your-name>-mode/SKILL.md` through Cursor's built-in `create-skill` flow, runs the draft through [`/unslop`](../../skills/unslop/SKILL.md), and opens a PR from a worktree so you review it like any other change.
 
-The skill drafts `.cursor/skills/<handle>-mode/SKILL.md` through Cursor's built-in skill creator, `create-skill`. `/automate-me` applies the [`unslop` skill](../../skills/unslop/SKILL.md). It then shows you the draft. After you approve the draft, `/automate-me` opens a PR from a worktree.
-
-When your preferences change, run `/automate-me` again:
+Run it again whenever your habits drift:
 
 ```text
-/automate-me update my <handle>-mode skill with the work since its last edit.
+/automate-me update my mode skill with everything since its last edit
 ```
 
-The update keeps rules that new evidence did not contradict. It adds a rule only when the pattern repeats.
+Update mode mines only the history since the skill last changed. It keeps rules you haven't contradicted, revises the ones with new evidence, and adds sections only for genuinely new patterns.
 
-## 2. Reflect on one completed session
+## Capture a session's lessons with `/reflect`
 
-Run:
+Right after a task that taught you something, run:
 
 ```text
-/reflect
+/reflect that took way too long. capture what we learned so the next run doesn't repeat it.
 ```
 
-[`/reflect`](../../skills/reflect/SKILL.md) sends the current transcript to three reviewers. A synthesizer groups the results as `Accepted`, `Rejected`, or `Backlog`.
+[`/reflect`](../../skills/reflect/SKILL.md) sends the transcript to three parallel reviewers, then a synthesizer sorts the proposals into `Accepted`, `Rejected`, and `Backlog` and waits for your approval before any skill changes. Approve a proposal only if it would change a future decision. One weird session is an anecdote, not a rule.
 
-Before you edit a skill, review the proposals. Approve only rules that will change a future decision. One unusual session is not enough evidence for a permanent rule.
+## Author a focused skill
 
-## 3. Author one focused skill
-
-If you already know the workflow to capture, run:
+When you already know the workflow you want to capture:
 
 ```text
-/poteto-mode write a skill for verifying database migrations.
-Use the Authoring or modifying a skill playbook.
+/poteto-mode write a skill for verifying database migrations in this repo
 ```
 
-The [Authoring or modifying a skill playbook](../../skills/poteto-mode/playbooks/authoring-a-skill.md) uses Cursor's built-in `create-skill` flow. It validates frontmatter, referenced files, and cross-skill links. It adds tests for structural rules. It skips tests for subjective rules. It then uses the Opening a PR playbook.
+Writing a skill matches the [Authoring or modifying a skill playbook](../../skills/poteto-mode/playbooks/authoring-a-skill.md), which routes through Cursor's built-in `create-skill`, validates the frontmatter and links, and ships the result through the Opening a PR playbook. Agent-facing prose has a higher bar than human prose, because an unhelpful sentence becomes an instruction some future agent follows. Let the playbook hold that bar rather than writing a `SKILL.md` freehand.
 
-Use `create-skill` because that is the authoring flow named in the current pstack playbook. Do not write a `SKILL.md` from memory.
+One special case has its own generator. A skill that must drive your app and prove behavior is a verification skill, so use [`/create-verification-skill`](../../skills/create-verification-skill/SKILL.md) and [`/maintain-verification-skill`](../../skills/maintain-verification-skill/SKILL.md) instead. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers both.
 
-If the skill must drive your app and prove behavior, use the dedicated verification workflow. `/create-verification-skill` generates the project skill. `/maintain-verification-skill` keeps the generated feature map current. Follow [Create and maintain a project verification skill](./06-verify-and-ship.md#create-a-project-verification-skill).
+## Test a skill change blind
 
-## 4. Test the skill change without revealing the comparison
-
-Before you replace a skill rule, ask `/poteto-mode` to run the Eval playbook:
+A skill edit affects every future session, so test it like the experiment it is:
 
 ```text
-/poteto-mode run the Eval playbook for this skill change.
-Use the same natural task for the current and proposed forms.
-Do not reveal the comparison to the workers.
+/poteto-mode run the eval playbook on this skill change. same task for both variants, candidates stay blind.
 ```
 
-The [Eval playbook](../../skills/poteto-mode/playbooks/eval.md) creates isolated directories with ordinary project names. Each worker receives the same user-style prompt without the hidden scoring criteria. One judge reviews all outputs under neutral labels.
+The [Eval playbook](../../skills/poteto-mode/playbooks/eval.md) is built around one failure mode, the observer effect. An agent that knows it's being evaluated behaves differently. So candidate agents get an organic-looking task in sanitized directories, never the words "eval" or "candidate", and never each other's existence. One judge scores all outputs under neutral labels, and chain-following gets graded from which files each candidate actually read, not from what it claims.
 
-Expect these artifacts:
+Read every output yourself before accepting the verdict. If you disagree with the judge, suspect the rubric before you suspect your judgment.
 
-- A short success rubric that workers never see.
-- One isolated output per worker.
-- Workspace-scoped transcripts that show which files each worker read.
-- One judge verdict across all outputs.
-- A recommendation to keep or reject the skill change.
+**Pitfall:** don't edit a skill mid-task because it's misbehaving. Fix it in its own PR and keep the task moving. A skill edit that ships tangled into feature work is invisible to review and impossible to evaluate.
 
-Before you accept the judge's result, read every output. If your judgment differs, check for an unclear rubric or judge bias before you decide.
-
-Next: [Use pstack recipes and avoid common mistakes](./10-recipes-and-pitfalls.md).
+Next: [Recipes and pitfalls](./10-recipes-and-pitfalls.md).

@@ -1,77 +1,68 @@
 # Design before you write code
 
-When a design would be costly to reverse, start with `/architect`. `/architect` already runs `/arena`. If you want several attempts at another artifact, run `/arena` directly. Before you ship a contested design, run `/interrogate`.
+One attempt at a hard design locks in the first shape the model thought of. These three skills exist so that doesn't happen. `/architect` settles types and boundaries before implementation. `/arena` runs several attempts in parallel and merges the best parts. `/interrogate` has other models try to break the result.
 
-## Sketch the contract with `/architect`
-
-Run:
+## Settle the shape with `/architect`
 
 ```text
-/architect design the import pipeline.
-Do not write code yet.
-Show the caller usage, types, function signatures, and module ownership.
+/architect design the import pipeline before writing any code. i care most about how callers use it.
 ```
 
-When code already exists, [`/architect`](../../skills/architect/SKILL.md) runs `/how` first. If the design changes ownership or layers, `/architect` also runs `/why`. `/architect` then runs `/arena` to compare complete candidate designs.
+[`/architect`](../../skills/architect/SKILL.md) grounds itself first, running `/how` over the code the design touches and `/why` when it moves ownership or layers. Then it runs `/arena` to produce competing design sketches, with the caller's usage written first in each, followed by types, signatures, and a module map.
 
-The synthesized design starts with caller usage. It includes types, signatures, a module map, and a synthesis decision.
-
-If you want to review the synthesized design before implementation, ask for a checkpoint:
+By default it proceeds straight from the synthesized design into implementation. If you want to see the design first, say so:
 
 ```text
-/architect with checkpoint.
-Stop after the synthesized design.
-Wait for my review.
+/architect with checkpoint. stop and show me before implementing.
 ```
 
-Without that request, `/architect` proceeds from the synthesized design into implementation.
-
-## Compare alternatives with `/arena`
-
-Use `/arena` directly when you want several attempts at the same artifact:
+## Fan out attempts with `/arena`
 
 ```text
-/arena compare candidate designs for the cache key format.
-Keep each candidate output separate.
-Judge each design on migration safety, lookup cost, and reader load.
+/arena take my prompt to the arena verbatim. i want to compare their proposals with yours.
 ```
+
+[`/arena`](../../skills/arena/SKILL.md) is the general tool underneath. N subagents attempt the same task in parallel, each writing to its own worktree or directory. A read-only judge, on a different model family when your configuration allows one, scores every candidate against a rubric. The coordinator reads each candidate end to end, picks a base, grafts in the best ideas from the losers, and verifies the result.
 
 ```mermaid
 flowchart LR
     A[One task] --> B[Configured panel]
-    B --> C[Candidate design 1]
-    B --> D[Candidate design 2]
-    B --> E[Candidate design N]
+    B --> C[Candidate 1]
+    B --> D[Candidate 2]
+    B --> E[Candidate N]
     C --> F[Cross-judge]
     D --> F
     E --> F
     F --> G[Pick a base]
-    G --> H[Add useful parts]
-    H --> I[Verify the synthesized design]
+    G --> H[Graft the best parts]
+    H --> I[Verify]
 ```
 
-[`/arena`](../../skills/arena/SKILL.md) writes each candidate design to a separate path. A read-only judge scores every candidate design. The coordinating agent reads each design and chooses a base. It adds selected parts from other designs. It records each rejection. It then verifies the synthesized design.
-
-Your [`setup-pstack` configuration](../../skills/setup-pstack/SKILL.md) controls the panel. The guide does not assume a specific model.
-
-## Challenge the result with `/interrogate`
-
-Run:
+The panel comes from your [`/setup-pstack`](../../skills/setup-pstack/SKILL.md) configuration, and you can adjust it per task. Ask for more candidates when the decision matters, fewer when it doesn't:
 
 ```text
-/interrogate review this branch against the stated intent.
-Do not change files.
-If a style comment does not expose a maintenance risk, ignore it.
+/arena this, 5 candidates. the cache key format is expensive to change later.
 ```
 
-[`/interrogate`](../../skills/interrogate/SKILL.md) sends the same intent, diff, and rubric to the configured review panel. It returns one verdict with `Act on`, `Consider`, `Noted`, and `Dismissed` findings. It does not apply fixes.
+## Break it with `/interrogate`
 
-Review the `Act on` findings. Check the dismissed findings too. The lead explains each dismissal. You can override a dismissal.
+```text
+/interrogate the whole branch, but skeptically. no nitpicks unless it's an actual bug or regression.
+```
 
-## Choose the amount of design work
+[`/interrogate`](../../skills/interrogate/SKILL.md) sends the same diff, intent, and rubric to several reviewers on different model families. Model diversity is the point. Different models have different blind spots, so a finding two models raise independently is high-confidence signal. The lead sorts everything into `Act on`, `Consider`, `Noted`, and `Dismissed`, with a reason for each dismissal, and applies nothing automatically.
 
-For a small finished change, use `/interrogate` alone. When function boundaries or module ownership change, use `/architect`. If several independent answers would improve a separate decision, run `/arena` directly. Before you ship a contested design that would be costly to reverse, run `/interrogate`.
+Read the dismissals too. The lead is a pragmatic senior engineer, not an oracle, and you can override it.
 
-Most changes do not need the full sequence.
+## How much design work does a task deserve?
+
+You might be wondering whether every change needs this. No. Most changes need none of it. A rough ladder:
+
+- A small, finished change you're unsure about needs `/interrogate` alone.
+- A change that crosses function boundaries or moves ownership earns `/architect`, which brings `/arena` with it.
+- A standalone decision where independent attempts would help, like naming, formats, or an algorithm, is `/arena` directly.
+- A contested design that's expensive to reverse gets `/architect`, then `/interrogate` before shipping.
+
+`/poteto-mode` already applies this ladder. Boundary-crossing work triggers `/architect` on its own, so you reach for these directly mainly when you want more or less scrutiny than the default.
 
 Next: [Build and clean the change](./05-build-and-clean.md).

@@ -1,61 +1,63 @@
 # Build the change and clean the diff
 
-Tell `/poteto-mode` the task type. State the finish condition. Name the evidence you expect. `/poteto-mode` chooses the matched playbook and cleans the diff before each commit.
+The build playbooks share one discipline. Say what you observed, let the playbook demand the evidence. This page shows what to put in the prompt for each common build task, then the cleanup habit that keeps diffs reviewable.
 
-## Choose the build playbook
+## Prompt each build playbook with what you know
 
-Use these prompts as starting points:
-
-| Playbook | Prompt | Result to expect |
-|---|---|---|
-| [Bug fix](../../skills/poteto-mode/playbooks/bug-fix.md) | `/poteto-mode this command emits two records after a retry. Reproduce the failure. Find the cause. Fix the cause. Rerun the same command.` | A failing reproduction, a confirmed cause, the smallest supported fix, and a passing reproduction. |
-| [Feature](../../skills/poteto-mode/playbooks/feature.md) | `/poteto-mode add a --json option. Keep text output unchanged. Define the data shape before implementation. Verify both output forms.` | A grounded design, a named data shape, an implementation diff, and real output from both forms. |
-| [Refactoring](../../skills/poteto-mode/playbooks/refactoring.md) | `/poteto-mode move parsing into one module without changing behavior. Record the current output first. After each step, prove that the output is unchanged.` | A behavior pin, small structural commits, and old-versus-new output proof. |
-| [Perf issue](../../skills/poteto-mode/playbooks/perf-issue.md) | `/poteto-mode startup takes 1.8 seconds on this fixture. Capture a baseline profile. Fix the measured cause. Report the before and after values.` | A baseline artifact, a trace-backed change, a post-change artifact, and a measured difference. |
-
-When you want repeated attempts against one metric, use the [Hillclimb playbook](../../skills/poteto-mode/playbooks/hillclimb.md). Set a target and a minimum attempt count. Give Hillclimb a fixed measurement command. Name the regression check.
-
-## When the test path is cheap, use TDD
-
-Run:
+A bug prompt states the symptom and asks for a reproduction first:
 
 ```text
-/tdd add a regression test for the duplicate record.
-Run the test before the fix.
-Show the expected failure.
-Fix the bug.
-Rerun the test.
+/poteto-mode this command emits two records after a retry. repro first, then fix and verify.
 ```
 
-[`/tdd`](../../skills/tdd/SKILL.md) writes the smallest useful failing test before the production fix. It reruns the same test after the fix. When the change has wider risk, `/tdd` runs nearby checks.
-
-If a test needs broad setup or brittle mocks, use the closest executable check. State why you skipped the test. A focused script or real command can provide stronger evidence than a test that copies implementation details.
-
-## Let TypeScript rules load on their own
-
-[`typescript-best-practices`](../../skills/typescript-best-practices/SKILL.md) loads when the agent reads or edits a `.ts` or `.tsx` file. You do not need a slash command.
-
-The skill turns the type system and boundary principles into concrete TypeScript rules. It favors discriminated unions, boundary validation, `unknown` for external data, exhaustive variants, and schema-derived types.
-
-## Clean the diff before each commit
-
-The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) calls `/deslop` before each commit. pstack does not bundle `/deslop`.
-
-1. If your environment exposes `/deslop`, run it on the diff.
-2. If `/deslop` is unavailable, ask `/poteto-mode` to remove needless comments, unsupported guards, dead compatibility paths, and unrelated edits.
-3. Apply [`/unslop`](../../skills/unslop/SKILL.md) to documentation, commit text, and the PR description.
-4. Inspect the diff.
-5. Run the repository checks.
-
-Use a direct prompt when a prose file still needs work:
+A feature prompt states the behavior and what must not change:
 
 ```text
-/unslop pstack/docs/guide/05-build-and-clean.md.
-Cut filler.
-Remove repeated claims.
-Keep the commands and evidence.
+/poteto-mode add a --json flag. text output stays byte-identical. verify both forms.
 ```
 
-`/poteto-mode` applies `/unslop` to its replies. To rewrite a prose file, invoke `/unslop` with the file path.
+A refactoring prompt pins behavior before structure moves:
+
+```text
+/poteto-mode move parsing into one module, zero behavior change. record the current output first and prove it's unchanged after.
+```
+
+A perf prompt states the measurement, not a vibe:
+
+```text
+/poteto-mode startup takes 1.8s on this fixture. trace it, fix the measured cause, show me before and after.
+```
+
+Each of these routes to its playbook ([Bug fix](../../skills/poteto-mode/playbooks/bug-fix.md), [Feature](../../skills/poteto-mode/playbooks/feature.md), [Refactoring](../../skills/poteto-mode/playbooks/refactoring.md), [Perf issue](../../skills/poteto-mode/playbooks/perf-issue.md)), and the playbook supplies the steps you didn't type: reproduce before fixing, name the data shape before implementing, pin behavior before restructuring, profile before optimizing.
+
+For sustained improvement of one number, there's the [Hillclimb playbook](../../skills/poteto-mode/playbooks/hillclimb.md). Give it the metric, a target, and a floor on attempts, and it loops one hypothesis at a time with a frozen measurement harness. It keeps wins and reverts everything else.
+
+## Write the failing test first with `/tdd`
+
+When a bug has a cheap local test path, the whole prompt can be two words:
+
+```text
+/tdd implement
+```
+
+In context, that's enough. [`/tdd`](../../skills/tdd/SKILL.md) writes the smallest test that fails for the intended reason, then the fix, then reruns the test. If a test would need broad harness setup or brittle mocks, the skill says so and uses the closest executable check instead. Don't force a test where a real command is stronger evidence.
+
+## Let the TypeScript rules load themselves
+
+[`typescript-best-practices`](../../skills/typescript-best-practices/SKILL.md) has no slash command in your workflow. It loads whenever the agent touches a `.ts` or `.tsx` file and turns the type-system principles into concrete rules: discriminated unions, `unknown` at boundaries, exhaustive variants, schema-derived types.
+
+## Clean before you commit
+
+The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) runs `/deslop` on the diff before each commit and applies [`/unslop`](../../skills/unslop/SKILL.md) to the PR description and commit bodies. `/deslop` ships in the `cursor-team-kit` plugin, not in pstack. If you don't have it, ask for the same outcome in plain words: remove narrating comments, unsupported guards, dead compatibility paths, and unrelated edits.
+
+For prose, `/unslop` takes a target and any extra rules you have:
+
+```text
+/unslop the readme changes, no emdashes
+```
+
+You'll develop your own shorthand. The skill reads intent fine from terse prompts like `unslop that, tighten it`.
+
+**Pitfall:** cleanup is not optional polish. A diff with narrating comments and defensive dead weight reads as unfinished to reviewers, and the extra code is where the next bug hides. If the diff feels padded, say `deslop it` before you commit, not after review calls it out.
 
 Next: [Verify and ship](./06-verify-and-ship.md).
