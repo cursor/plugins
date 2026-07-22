@@ -45,7 +45,7 @@ The right decomposition depends on the question. Use your judgment. Narrow quest
 Spawn all explorers in a single message:
 
 - `subagent_type`: `generalPurpose`
-- `model`: resolve the configured `how explorer` role per `~/.cursor/rules/pstack-models.mdc`. Pass a real slug as `model`. Omit `model` for `inherit-parent`/`auto`. If the role line is absent, default to `gpt-5.6-sol-max`.
+- `model`: resolve the configured `how explorer` role per `~/.cursor/rules/pstack-models.mdc`. Pass a real slug as `model`. Omit `model` for `inherit-parent`/`auto`. If the role line is absent, default to `grok-4.5-fast-xhigh`.
 - `readonly`: `true`
 
 Each explorer gets the same base prompt from `references/explorer-prompt.md` plus a specific exploration angle naming its slice. Each explorer should:

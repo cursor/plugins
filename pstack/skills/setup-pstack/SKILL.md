@@ -48,10 +48,10 @@ perf-issue: gpt-5.6-sol-max
 hillclimb: gpt-5.6-sol-max
 judgment and prose: claude-fable-5-thinking-max
 hardest tasks: claude-fable-5-thinking-max
-how explorer: gpt-5.6-sol-max
+how explorer: grok-4.5-fast-xhigh
 how explainer: claude-fable-5-thinking-max
 how critics: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh
-why investigators: gpt-5.6-sol-max
+why investigators: grok-4.5-fast-xhigh
 why synthesizer: claude-fable-5-thinking-max
 reflect tooling: gpt-5.6-sol-max
 reflect judgment, divergent, synthesizer: claude-fable-5-thinking-max

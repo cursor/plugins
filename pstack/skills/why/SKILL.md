@@ -117,7 +117,7 @@ Launch all matching investigators in a single message so they run concurrently. 
 
 Subagent config (each):
 - `subagent_type`: `generalPurpose`
-- `model`: resolve the configured `why investigators` role per `~/.cursor/rules/pstack-models.mdc`. Pass a real slug as `model`. Omit `model` for `inherit-parent`/`auto`. If the role line is absent, default to `gpt-5.6-sol-max`.
+- `model`: resolve the configured `why investigators` role per `~/.cursor/rules/pstack-models.mdc`. Pass a real slug as `model`. Omit `model` for `inherit-parent`/`auto`. If the role line is absent, default to `grok-4.5-fast-xhigh`.
 - `readonly`: `false` (agent mode). **Do not use readonly/Ask mode.** It strips MCP access, which disables MCP-backed investigators entirely. The source control investigator would be safe in readonly, but keep modes uniform. Investigators still shouldn't write anything. That's a posture, not a sandbox.
 
 Each investigator gets:
