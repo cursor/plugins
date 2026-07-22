@@ -35,6 +35,18 @@ These values are aliases. They are not model slugs.
 
 For a panel role, each list entry starts one subagent. A list of inherited entries keeps the same panel size. Every subagent uses the parent model.
 
+## Decide whether to create a verification skill
+
+If the project has no `verify-*` skill or existing harness, `/setup-pstack` may offer:
+
+> want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill.
+
+If you accept, `/setup-pstack` runs [`/create-verification-skill`](../../skills/create-verification-skill/SKILL.md). The skill writes `.cursor/skills/verify-<app>/`. It proves the generated skill once before it returns the files.
+
+Declining is fine. `/setup-pstack` then finishes without creating a verification skill.
+
+If the feature map later drifts, run [`/maintain-verification-skill`](../../skills/maintain-verification-skill/SKILL.md). Read [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) for the creation and maintenance steps.
+
 After setup, start a new Cursor chat. The model rule applies to new sessions.
 
 ## Start your first task
