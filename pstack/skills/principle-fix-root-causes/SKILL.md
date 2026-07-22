@@ -14,6 +14,7 @@ When debugging, do not paper over symptoms. Trace every problem to its root caus
 - Reproduce first (if you can't reproduce it, you can't verify your fix)
 - Ask "why" until you hit the root cause
 - Resist the urge to add guards (adding a nil check to silence a crash is a symptom fix)
+- If a workaround needs a paragraph-long comment to justify it, the code is wrong (fix the code, not the comment)
 - Check for the pattern, not just the instance (grep for the same pattern, fix all instances)
 - When stuck, instrument. Don't guess (add logging, read the actual error)
 
