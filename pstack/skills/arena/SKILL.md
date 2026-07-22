@@ -38,7 +38,9 @@ If a candidate fails to produce output, proceed with N-1 and note the dropout in
 
 ## Phase C: Cross-judge
 
-After all Phase B candidates complete, spawn one readonly judge subagent on a different model family from the parent's. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with the parent's reading in Phase D, not with the candidates themselves. Spawning while candidates are still writing means the judge sees partial or empty outputs and reports them as dropouts.
+After all Phase B candidates complete, choose one value from the configured `arena cross-judge pool` in `~/.cursor/rules/pstack-models.mdc`. If the role line is absent, choose from defaults `claude-opus-4-8-thinking-xhigh`, `gpt-5.5-high-fast`, `grok-4.5-fast-xhigh`. Prefer a model family different from the parent's when possible. Pass a selected real slug as Task `model`. For selected `inherit-parent`/`auto`, omit `model`. A pool containing only `inherit-parent`/`auto` cannot provide a different family; still spawn the judge with `model` omitted.
+
+Spawn one readonly judge subagent with the resolved value. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with the parent's reading in Phase D, not with the candidates themselves. Spawning while candidates are still writing means the judge sees partial or empty outputs and reports them as dropouts.
 
 ## Phase D: Pick a base
 
