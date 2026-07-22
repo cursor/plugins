@@ -33,11 +33,11 @@ Write one clear paragraph. Reviewers challenge whether the work achieves the int
 
 ## Step 3, Spawn Reviewers
 
-Launch one reviewer per model in your configured interrogate list (defaults `claude-opus-4-8-thinking-xhigh`, `gpt-5.5-high-fast`, `grok-4.5-fast-xhigh`), all in a single message.
+Launch one reviewer per entry in your configured `interrogate reviewers` list, all in a single message. If the role line is absent, use defaults `claude-opus-4-8-thinking-xhigh`, `gpt-5.5-high-fast`, `grok-4.5-fast-xhigh`.
 
 For each reviewer:
 - `subagent_type`: `generalPurpose`
-- `model`: one model from the configured interrogate list
+- `model`: resolve that `interrogate reviewers` entry per `~/.cursor/rules/pstack-models.mdc`. Pass a real slug as `model`. Omit `model` for `inherit-parent`/`auto`.
 - `readonly`: `true`
 
 If a configured model slug is rejected as unresolvable when you try to spawn the subagent, check the valid slugs in the Task tool's error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with the valid slug, and open a separate PR to update the configured defaults. Do not block the review on the slug issue.
