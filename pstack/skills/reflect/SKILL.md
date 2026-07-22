@@ -40,15 +40,15 @@ Resolve each role in the table per `~/.cursor/rules/pstack-models.mdc`. Pass a r
 
 | Lens | `model` | Prompt template |
 |---|---|---|
-| Judgment | `reflect judgment, divergent, synthesizer` (default `claude-opus-4-8-thinking-xhigh`) | `references/judgment-reviewer.md` |
-| Tooling | `reflect tooling` (default `grok-4.5-fast-xhigh`) | `references/tooling-reviewer.md` |
-| Divergent | `reflect judgment, divergent, synthesizer` (default `claude-opus-4-8-thinking-xhigh`) | `references/divergent-reviewer.md` |
+| Judgment | `reflect judgment, divergent, synthesizer` (default `claude-fable-5-thinking-max`) | `references/judgment-reviewer.md` |
+| Tooling | `reflect tooling` (default `gpt-5.6-sol-max`) | `references/tooling-reviewer.md` |
+| Divergent | `reflect judgment, divergent, synthesizer` (default `claude-fable-5-thinking-max`) | `references/divergent-reviewer.md` |
 
 Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Task` response body.
 
 ### 3. Synthesize
 
-One `Task` call, `subagent_type: generalPurpose`, using the configured `reflect judgment, divergent, synthesizer` role. Resolve it per `~/.cursor/rules/pstack-models.mdc`. Pass a real slug as `model`. Omit `model` for `inherit-parent`/`auto`. If the role line is absent, default to `claude-opus-4-8-thinking-xhigh`. Use agent mode (`readonly: false`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access; readonly strips MCPs. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+One `Task` call, `subagent_type: generalPurpose`, using the configured `reflect judgment, divergent, synthesizer` role. Resolve it per `~/.cursor/rules/pstack-models.mdc`. Pass a real slug as `model`. Omit `model` for `inherit-parent`/`auto`. If the role line is absent, default to `claude-fable-5-thinking-max`. Use agent mode (`readonly: false`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access; readonly strips MCPs. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 

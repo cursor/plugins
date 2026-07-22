@@ -43,22 +43,22 @@ alwaysApply: true
 # Panel roles (lists): inherit-parent/auto on every entry keeps fan-out count but loses model diversity (all runners share the parent model). That is intentional for Auto-only users.
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
 feature, refactoring: grok-4.5-fast-xhigh
-bug-fix: gpt-5.5-high-fast
-perf-issue: gpt-5.5-high-fast
-hillclimb: gpt-5.5-high-fast
-judgment and prose: claude-opus-4-8-thinking-xhigh
+bug-fix: gpt-5.6-sol-max
+perf-issue: gpt-5.6-sol-max
+hillclimb: gpt-5.6-sol-max
+judgment and prose: claude-fable-5-thinking-max
 hardest tasks: claude-fable-5-thinking-max
-how explorer: grok-4.5-fast-xhigh
-how explainer: claude-opus-4-8-thinking-xhigh
-how critics: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, grok-4.5-fast-xhigh
-why investigators: grok-4.5-fast-xhigh
-why synthesizer: claude-opus-4-8-thinking-xhigh
-reflect tooling: grok-4.5-fast-xhigh
-reflect judgment, divergent, synthesizer: claude-opus-4-8-thinking-xhigh
-arena runners: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, grok-4.5-fast-xhigh
-arena cross-judge pool: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, grok-4.5-fast-xhigh
-architect runners: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, grok-4.5-fast-xhigh
-interrogate reviewers: claude-opus-4-8-thinking-xhigh, gpt-5.5-high-fast, grok-4.5-fast-xhigh
+how explorer: gpt-5.6-sol-max
+how explainer: claude-fable-5-thinking-max
+how critics: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh
+why investigators: gpt-5.6-sol-max
+why synthesizer: claude-fable-5-thinking-max
+reflect tooling: gpt-5.6-sol-max
+reflect judgment, divergent, synthesizer: claude-fable-5-thinking-max
+arena runners: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh
+arena cross-judge pool: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh
+architect runners: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh
+interrogate reviewers: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh
 ```
 
 ### 6. Confirm

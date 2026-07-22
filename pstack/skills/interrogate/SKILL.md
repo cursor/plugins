@@ -33,7 +33,7 @@ Write one clear paragraph. Reviewers challenge whether the work achieves the int
 
 ## Step 3, Spawn Reviewers
 
-Launch one reviewer per entry in your configured `interrogate reviewers` list, all in a single message. If the role line is absent, use defaults `claude-opus-4-8-thinking-xhigh`, `gpt-5.5-high-fast`, `grok-4.5-fast-xhigh`.
+Launch one reviewer per entry in your configured `interrogate reviewers` list, all in a single message. If the role line is absent, use defaults `claude-fable-5-thinking-max`, `gpt-5.6-sol-max`, `grok-4.5-fast-xhigh`.
 
 For each reviewer:
 - `subagent_type`: `generalPurpose`
