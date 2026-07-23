@@ -63,13 +63,9 @@ async function depositTurn(payload: Record<string, any>, event: string): Promise
       user = pending.user;
       asst = pending.asst || eventAsst;
       pendingSelected = true;
-    } else if (!pending && eventUser) {
-      // The transcript identifies a later turn that had no locally observed prompt.
-      user = eventUser;
-      asst = eventAsst;
     } else {
-      // With two different candidate turns and no identity match, fail closed: do
-      // not consume or deposit the newer pending prompt under an older end event.
+      // A receipt makes this a retry path. Fail closed unless the event identifies
+      // either that stopped turn or a newer prompt we actually observed locally.
       log("capture", "skip (ambiguous sessionEnd turn)");
       return;
     }
