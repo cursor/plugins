@@ -72,6 +72,11 @@
       "name": "pstack",
       "source": "pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
+    },
+    {
+      "name": "unforgit",
+      "source": "unforgit",
+      "description": "Git-backed repository memory for AI coding agents using MCP, project rules, and durable local knowledge."
     }
   ]
 }

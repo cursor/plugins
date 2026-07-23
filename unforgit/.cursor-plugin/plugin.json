@@ -1,0 +1,30 @@
+{
+  "name": "unforgit",
+  "displayName": "Unforgit",
+  "version": "0.9.3",
+  "description": "Git-backed repository memory for AI coding agents using MCP, project rules, and durable local knowledge.",
+  "author": {
+    "name": "Miguel Medeiros"
+  },
+  "publisher": "Unforgit",
+  "homepage": "https://unforgit.com",
+  "repository": "https://github.com/MiguelMedeiros/unforgit",
+  "license": "MIT",
+  "logo": "assets/avatar.png",
+  "keywords": [
+    "memory",
+    "mcp",
+    "agents",
+    "repository",
+    "knowledge-base"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "memory",
+    "mcp",
+    "agent-memory"
+  ],
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "mcpServers": "./mcp.json"
+}
