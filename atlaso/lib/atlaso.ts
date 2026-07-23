@@ -18,6 +18,7 @@ import {
 import { randomUUID } from "node:crypto";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import { scrub } from "./capture";
 
 export interface Auth {
   server: string;
@@ -48,6 +49,11 @@ export interface DepositItem {
   evidence_grade: string;
   scope_note: string | null;
   tags: string[];
+}
+
+export interface RememberOptions {
+  text: string;
+  tags?: string[];
 }
 
 const RECALL_TIMEOUT_MS = 8000;
@@ -223,7 +229,10 @@ export async function recall(
   limit = 8,
   project?: string,
 ): Promise<RecallResult[]> {
-  const params = new URLSearchParams({ q: query, limit: String(limit) });
+  // Explicit MCP queries are user-controlled too. Scrub before URL construction so
+  // a pasted token cannot escape through the read path while searching memory.
+  const safeQuery = scrub(query || "")[0];
+  const params = new URLSearchParams({ q: safeQuery, limit: String(limit) });
   if (project) params.set("project", project);
   const data = await call(auth, "GET", `/v1/recall?${params.toString()}`, null, RECALL_TIMEOUT_MS);
   const results = data?.results;
@@ -264,15 +273,18 @@ export async function claimToolCall(auth: Auth, tool: string): Promise<any | nul
 // user "remember" is tagged `manual` — the server enricher treats manual memories as
 // untouchable — plus the tool id for attribution. Mirrors the Python do_remember.
 
-/** Deposit ONE memory the user explicitly asked to keep. Returns the server id
- *  (so a later `forget` can target it), or null on failure. */
-export async function remember(auth: Auth, text: string): Promise<string | null> {
-  const t = (text || "").trim();
+/** Deposit ONE memory the user explicitly asked to keep. Client-side scrubbing is
+ *  mandatory here too: deliberate MCP saves get the same on-device secret boundary
+ *  as automatic capture. Returns the server id (so a later `forget` can target it),
+ *  or null on failure. */
+export async function remember(auth: Auth, opts: RememberOptions): Promise<string | null> {
+  const t = scrub(opts.text || "")[0].trim();
   if (!t) return null;
   const client_id = randomUUID().replace(/-/g, "");
+  const tags = [...new Set(["cursor", "manual", ...(opts.tags || [])])];
   const item: DepositItem = {
     client_id, text: t, polarity: "open", evidence_grade: "anecdotal",
-    scope_note: null, tags: ["cursor", "manual"],
+    scope_note: null, tags,
   };
   const data = await call(auth, "POST", "/v1/memories/batch", { items: [item] }, DEPOSIT_TIMEOUT_MS);
   if (!data) return null;

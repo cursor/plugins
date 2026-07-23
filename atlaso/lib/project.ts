@@ -96,9 +96,19 @@ function gitOrigin(root: string): string | null {
  *  github.com/me/app. */
 function normalizeRemote(url: string): string {
   let u = url.trim();
-  u = u.replace(/^[a-zA-Z]+:\/\//, ""); // strip scheme
-  u = u.replace(/^[^@/]+@/, ""); // strip user@
-  u = u.replace(":", "/"); // scp-style host:path → host/path (first colon only)
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(u)) {
+    try {
+      const parsed = new URL(u);
+      // Transport ports are not repository identity. ssh://host:2222/a/b and
+      // git@host:a/b must resolve to the same project key.
+      u = `${parsed.hostname}${parsed.pathname}`;
+    } catch {
+      u = u.replace(/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//, "");
+    }
+  } else {
+    u = u.replace(/^[^@/]+@/, ""); // strip user@
+    u = u.replace(":", "/"); // scp-style host:path → host/path (first colon only)
+  }
   u = u.replace(/\.git$/, "");
   return u.replace(/^\/+|\/+$/g, "").toLowerCase();
 }
@@ -118,6 +128,33 @@ export function projectKey(start?: string): string | null {
   } catch {
     return null;
   }
+}
+
+function firstWorkspaceFolder(raw: string | undefined): string | null {
+  const value = (raw || "").trim();
+  if (!value) return null;
+  try {
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) {
+      const first = parsed.find((x) => typeof x === "string" && x.trim());
+      if (typeof first === "string") return first.trim();
+    }
+  } catch {
+    /* common form is a single path, not JSON */
+  }
+  return value.split(/\r?\n|,/)[0]?.trim() || null;
+}
+
+/** Current project identity for long-lived MCP processes. Cursor exposes
+ *  CURSOR_PROJECT_DIR to plugin processes and WORKSPACE_FOLDER_PATHS to MCP
+ *  processes; prefer those explicit values, with cwd as a fail-closed fallback. */
+export function currentProjectKey(): string | null {
+  const root =
+    process.env.CURSOR_PROJECT_DIR ||
+    process.env.CURSOR_WORKSPACE_ROOT ||
+    firstWorkspaceFolder(process.env.WORKSPACE_FOLDER_PATHS) ||
+    process.cwd();
+  return projectKey(root);
 }
 
 /** (scope, project_key) from a deposit's tags — mirrors the server + Python
