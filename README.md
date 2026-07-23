@@ -1,6 +1,6 @@
 # Cursor plugins
 
-Official Cursor plugins for popular developer tools, frameworks, and SaaS products. Each plugin is a standalone directory at the repository root with its own `.cursor-plugin/plugin.json` manifest.
+Official Cursor plugins for popular developer tools, frameworks, and SaaS products. Each plugin is a standalone directory with its own `.cursor-plugin/plugin.json` manifest. First-party plugins live at the repository root; third-party integrations live under `third-party/`.
 
 ## Plugins
 
@@ -17,6 +17,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `cursor-sdk` | [Cursor SDK](cursor-sdk/) | Cursor | Developer Tools | Build apps, scripts, CI pipelines, and automations on top of the Cursor TypeScript SDK (@cursor/sdk) — runtime selection, auth, streaming, MCP, error handling, and ready-to-extend integration patterns. |
 | `orchestrate` | [Orchestrate](orchestrate/) | Cursor | Developer Tools | Fan large tasks out across parallel Cursor cloud agents with planners, workers, verifiers, and structured handoffs. |
 | `pstack` | [pstack](pstack/) | Lauren Tan | Developer Tools | if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence. |
+| `gong` | [Gong](third-party/gong/) | Cursor | Integrations | Gong MCP integration for revenue intelligence — account summaries, deal insights, and call briefs. |
 
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
@@ -28,7 +29,7 @@ This is a multi-plugin marketplace repository. The root `.cursor-plugin/marketpl
 plugins/
 ├── .cursor-plugin/
 │   └── marketplace.json       # Marketplace manifest (lists all plugins)
-├── plugin-name/
+├── plugin-name/               # First-party plugins
 │   ├── .cursor-plugin/
 │   │   └── plugin.json        # Per-plugin manifest
 │   ├── skills/                # Agent skills (SKILL.md with frontmatter)
@@ -37,6 +38,13 @@ plugins/
 │   ├── README.md
 │   ├── CHANGELOG.md
 │   └── LICENSE
+├── third-party/               # Third-party integrations
+│   └── gong/
+│       ├── .cursor-plugin/
+│       │   └── plugin.json
+│       ├── mcp.json
+│       ├── README.md
+│       └── LICENSE
 └── ...
 ```
 
