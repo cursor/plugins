@@ -4,7 +4,7 @@
     "sessionStart": [
       {
         "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/recall.ts",
-        "timeout": 20
+        "timeout": 50
       }
     ],
     "beforeSubmitPrompt": [
@@ -22,12 +22,13 @@
     "stop": [
       {
         "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/capture.ts",
-        "timeout": 30
+        "timeout": 50
       }
     ],
     "sessionEnd": [
       {
-        "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/capture.ts"
+        "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/capture.ts",
+        "timeout": 50
       }
     ]
   }

@@ -16,10 +16,12 @@
  * diagnostics go to the debug file (lib/log). One complete JSON object per line.
  */
 import { forget, health, loadAuth, recall, recent, remember } from "./atlaso";
+import { classifyScope } from "./capture";
 import { resolveCredential } from "./credential";
 import { cloudMode, online } from "./entitlement";
 import { REVOKED } from "./state";
 import { log } from "./log";
+import { currentProjectKey, visibleInProject } from "./project";
 
 const NAME = "Atlaso";
 const VERSION = "0.1.0";
@@ -42,10 +44,17 @@ export const TOOLS = [
   {
     name: "remember",
     description:
-      "Save a durable fact, decision, preference, or gotcha to Atlaso memory so it persists across sessions, projects, and tools. Use for things worth keeping, not transient chatter.",
+      "Save a durable fact, decision, preference, or gotcha to Atlaso memory. Project facts stay in the current project; personal preferences remain available across projects. Use for things worth keeping, not transient chatter.",
     inputSchema: {
       type: "object",
-      properties: { text: { type: "string" } },
+      properties: {
+        text: { type: "string" },
+        scope: {
+          type: "string",
+          enum: ["personal", "project"],
+          description: "Optional override. Omit to infer personal vs project from the text.",
+        },
+      },
       required: ["text"],
     },
   },
@@ -78,6 +87,14 @@ export const TOOLS = [
 const NOT_LINKED =
   "Atlaso memory isn't linked on this device yet. Start a Cursor chat (the plugin links automatically) or run `atlaso connect`.";
 
+function resultVisibleHere(r: { scope?: string; tags?: string[] }, project: string | null): boolean {
+  const tags = Array.isArray(r.tags) ? [...r.tags] : [];
+  // Some server versions expose the normalized scope separately. Preserve the
+  // fail-closed project rule even if such a row arrives without scope:* in tags.
+  if (r.scope === "project" && !tags.includes("scope:project")) tags.push("scope:project");
+  return visibleInProject(tags, project);
+}
+
 /** Run one tool. Gates on the SAME entitlement/tombstone check the hooks use
  *  (`online()`) BEFORE resolving a credential — otherwise a revoked or free-plan-
  *  gated tool could resurrect on the shared bearer through an MCP call (the hooks
@@ -100,15 +117,46 @@ export async function dispatch(name: string, args: any): Promise<any> {
   }
   const auth = await resolveCredential(TOOL);
   if (!auth) return { error: NOT_LINKED };
+  const project = currentProjectKey();
   switch (name) {
     case "recall": {
-      const results = await recall(auth, String(args?.query ?? ""), Number(args?.limit ?? 5));
-      return { results: results.map((r) => ({ id: r.id, content: r.content })) };
+      const limit = Math.max(1, Math.min(50, Number(args?.limit ?? 5) || 5));
+      const results = await recall(
+        auth,
+        String(args?.query ?? ""),
+        limit,
+        project ?? undefined,
+      );
+      return {
+        results: results
+          .filter((r) => resultVisibleHere(r, project))
+          .slice(0, limit)
+          .map((r) => ({ id: r.id, content: r.content })),
+      };
     }
-    case "recent":
-      return { memories: await recent(auth, Number(args?.limit ?? 10)) };
+    case "recent": {
+      const limit = Math.max(1, Math.min(50, Number(args?.limit ?? 10) || 10));
+      // `/v1/memories` is global/newest-first, so over-fetch before filtering or a
+      // run of foreign-project rows could crowd every visible memory out of the page.
+      const fetchLimit = Math.min(200, Math.max(limit * 4, 40));
+      const memories = (await recent(auth, fetchLimit))
+        .filter((r) => resultVisibleHere(r, project))
+        .slice(0, limit)
+        .map((r) => ({ id: r.id, content: r.content }));
+      return { memories };
+    }
     case "remember": {
-      const id = await remember(auth, String(args?.text ?? ""));
+      const text = String(args?.text ?? "");
+      const requested = args?.scope === "personal" || args?.scope === "project"
+        ? args.scope
+        : null;
+      const scope = requested ?? classifyScope(text);
+      if (scope === "project" && !project) {
+        return { saved: false, error: "could not identify the current project; retry with scope `personal` if this memory should be global" };
+      }
+      const tags = [`scope:${scope}`];
+      if (scope === "project" && project) tags.push(`project:${project}`);
+      const id = await remember(auth, { text, tags });
       return id ? { saved: true, id } : { saved: false, error: "empty text, or the server was unreachable" };
     }
     case "forget": {
@@ -120,6 +168,7 @@ export async function dispatch(name: string, args: any): Promise<any> {
     }
     case "status": {
       const h = await health(auth);
+      if (!h) return { connected: false, error: "Atlaso memory is unreachable right now. Try again when connected." };
       return { connected: true, fmi: h?.fmi ?? null, total: h?.deposit_count ?? null };
     }
     default:
@@ -181,8 +230,21 @@ export async function handle(msg: any): Promise<any | null> {
   }
 }
 
+// Handlers may finish concurrently, but stdout is one byte stream. Serialize complete
+// frames (including backpressure) so large overlapping responses cannot interleave.
+let writeQueue: Promise<void> = Promise.resolve();
+function writeFrame(resp: any): Promise<void> {
+  const frame = JSON.stringify(resp) + "\n";
+  const write = () => new Promise<void>((resolve, reject) => {
+    process.stdout.write(frame, (err) => err ? reject(err) : resolve());
+  });
+  const task = writeQueue.then(write, write);
+  writeQueue = task.catch(() => {});
+  return task;
+}
+
 /** Read newline-delimited JSON-RPC from stdin, write responses to stdout. Handlers
- *  run concurrently (no head-of-line blocking); each write is one whole frame. */
+ *  run concurrently (no head-of-line blocking); frame writes are serialized. */
 async function main(): Promise<void> {
   const decoder = new TextDecoder();
   let buf = "";
@@ -205,11 +267,11 @@ async function main(): Promise<void> {
       // on each so EOF can drain them — otherwise the process could exit before the
       // last frame's reply is written.
       const p = handle(msg)
-        .then((resp) => {
-          if (resp) process.stdout.write(JSON.stringify(resp) + "\n");
+        .then(async (resp) => {
+          if (resp) await writeFrame(resp);
         })
         .catch((e) => {
-          if (msg?.id != null) process.stdout.write(JSON.stringify(rpcErr(msg.id, -32603, String(e))) + "\n");
+          if (msg?.id != null) return writeFrame(rpcErr(msg.id, -32603, String(e)));
         })
         .finally(() => inflight.delete(p));
       inflight.add(p);

@@ -88,27 +88,38 @@ export function stashResponse(convId: string, asst: string): void {
   writePending(convId, { ...prev, asst });
 }
 
-/** Read + DELETE the turn's stash (called by stop/sessionEnd to deposit). Also
- *  prunes abandoned stashes so the dir can't grow without bound. */
-export function takePending(convId: string): Pending | null {
-  prune();
+export interface TakePendingOptions {
+  retain?: boolean;
+}
+
+/** Read the turn's stash (called by stop/sessionEnd to deposit). By default it is
+ *  deleted. `retain` keeps it through stop so a later sessionEnd uses the exact same
+ *  prompt-time workspace and therefore the same idempotency key. */
+export function takePending(convId: string, opts: TakePendingOptions = {}): Pending | null {
   const p = readPending(convId);
-  try {
-    unlinkSync(pendingPath(convId));
-  } catch {
-    /* already gone (e.g. stop + sessionEnd both firing) */
+  const retained = opts.retain ? pendingPath(convId) : null;
+  if (!opts.retain) {
+    try {
+      unlinkSync(pendingPath(convId));
+    } catch {
+      /* already gone */
+    }
   }
+  // Read the active conversation first. An end hook proves it is not abandoned even
+  // when a long-running turn made its mtime older than the general prune threshold.
+  prune(retained);
   return p;
 }
 
 /** Remove stashes older than STALE_MS (abandoned turns / crashed sessions). */
-function prune(): void {
+function prune(exclude: string | null = null): void {
   try {
     const dir = pendingDir();
     const now = Date.now();
     for (const name of readdirSync(dir)) {
       if (!name.endsWith(".json")) continue;
       const full = join(dir, name);
+      if (exclude && full === exclude) continue;
       try {
         if (now - statSync(full).mtimeMs > STALE_MS) rmSync(full, { force: true });
       } catch {

@@ -28,8 +28,11 @@ const convId = (payload: Record<string, any>): string =>
   String(payload?.conversation_id || payload?.conversationId || "default");
 
 /** The stop/sessionEnd path: assemble the turn and deposit it. */
-async function depositTurn(payload: Record<string, any>): Promise<void> {
-  const pending = takePending(convId(payload));
+async function depositTurn(payload: Record<string, any>, event: string): Promise<void> {
+  // Keep the prompt-time workspace through stop. If Cursor later fires sessionEnd
+  // for the same turn, it reuses this stash and produces the same client_id; the
+  // sessionEnd path then removes it. A new prompt also replaces the retained stash.
+  const pending = takePending(convId(payload), { retain: event === "stop" });
 
   // Prefer the stash (assembled across the turn); fall back to the payload's own
   // fields, then the transcript file — a Cursor build whose stop payload DOES carry
@@ -113,7 +116,7 @@ async function main(): Promise<void> {
     return;
   }
   // stop / sessionEnd (or any other end-of-turn trigger) → deposit.
-  await depositTurn(payload);
+  await depositTurn(payload, event);
 }
 
 main().catch(() => {}).finally(() => process.exit(0));

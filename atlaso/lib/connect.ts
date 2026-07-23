@@ -24,7 +24,7 @@ import { spawn } from "node:child_process";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import {
   appendFileSync, chmodSync, closeSync, fsyncSync, mkdirSync, openSync,
-  renameSync, statSync, unlinkSync, writeFileSync, writeSync,
+  renameSync, statSync, unlinkSync, utimesSync, writeFileSync, writeSync,
 } from "node:fs";
 import { createServer, type Server } from "node:http";
 import { hostname } from "node:os";
@@ -37,6 +37,7 @@ const LOCK_NAME = ".connecting";
 const LOCK_TTL_MS = 15 * 60 * 1000;
 const START_TIMEOUT_MS = 15000;
 const POLL_TIMEOUT_MS = 15000;
+const LOCK_HEARTBEAT_MS = 60 * 1000;
 
 export function hasToken(): boolean {
   return !!loadAuth()?.token;
@@ -50,11 +51,14 @@ function lockPath(): string {
  *  unpredictable temp name (O_EXCL, no symlink follow), fsync the file, atomic
  *  rename, then fsync the directory. Mirrors the Python `connect.save_auth`. */
 export function writeAuth(
-  server: string,
-  token: string,
-  user_id: string,
-  device_id: string | null,
+  opts: {
+    server: string;
+    token: string;
+    user_id: string;
+    device_id: string | null;
+  },
 ): string {
+  const { server, token, user_id, device_id } = opts;
   const dir = atlasoDir();
   mkdirSync(dir, { recursive: true });
   try {
@@ -95,7 +99,11 @@ function openBrowser(url: string): void {
     const plt = process.platform;
     const cmd = plt === "darwin" ? "open" : plt === "win32" ? "cmd" : "xdg-open";
     const args = plt === "win32" ? ["/c", "start", "", url] : [url];
-    spawn(cmd, args, { stdio: "ignore", detached: true }).unref();
+    const child = spawn(cmd, args, { stdio: "ignore", detached: true });
+    // spawn failures arrive asynchronously on EventEmitter.error, outside the
+    // surrounding try/catch. Swallow them: the URL is also written to connect.log.
+    child.once("error", () => {});
+    child.unref();
   } catch {
     /* best-effort */
   }
@@ -158,6 +166,18 @@ function waitForCode(server: Server, expectedState: string, timeoutMs: number): 
 /** Run the connect handshake to completion. 0 on success. Releases the lock. */
 export async function runConnect(): Promise<number> {
   let server: Server | null = null;
+  // Authorization can outlive the stale-lock TTL advertised by the server. Refresh
+  // the lock while this process is alive so another sessionStart cannot reclaim it
+  // and launch a second browser flow.
+  const heartbeat = setInterval(() => {
+    try {
+      const now = new Date();
+      utimesSync(lockPath(), now, now);
+    } catch {
+      /* manual connect or unwritable lock — best-effort */
+    }
+  }, LOCK_HEARTBEAT_MS);
+  heartbeat.unref();
   try {
     const base = (process.env.ATLASO_SERVER || loadAuth()?.server || defaultServer()).replace(/\/+$/, "");
     const label = (hostname() || "this device").slice(0, 80);
@@ -226,11 +246,17 @@ export async function runConnect(): Promise<number> {
     }
     if (t?.status === "approved") {
       if (!t.token || !t.user_id) return 1;
-      writeAuth(base, t.token, t.user_id, t.device_id ?? null);
+      writeAuth({
+        server: base,
+        token: t.token,
+        user_id: t.user_id,
+        device_id: t.device_id ?? null,
+      });
       return 0;
     }
     return 1;
   } finally {
+    clearInterval(heartbeat);
     try {
       server?.close();
     } catch {
@@ -293,11 +319,18 @@ export function maybeAutoconnect(tool = "cursor"): boolean {
   if (!acquireLock(lock)) return false;
   try {
     const entry = join(dirname(fileURLToPath(import.meta.url)), "..", "hooks", "connect.ts");
-    spawn("bun", ["run", entry], {
+    // Reuse the exact Bun executable running this hook. This avoids PATH drift in
+    // GUI launches; the override exists for deterministic failure-path tests.
+    const bun = process.env.ATLASO_BUN_PATH || process.execPath || "bun";
+    const child = spawn(bun, ["run", entry], {
       stdio: "ignore",
       detached: true,
       env: { ...process.env, ATLASO_TOOL: tool },
-    }).unref();
+    });
+    // ENOENT and similar failures are emitted asynchronously, not thrown. Release
+    // our filesystem lock so the next session can retry immediately.
+    child.once("error", () => releaseConnectLock());
+    child.unref();
     return true;
   } catch {
     try {
