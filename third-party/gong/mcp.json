@@ -1,0 +1,8 @@
+{
+  "$schema": "https://cursor.com/schemas/mcp.json",
+  "mcpServers": {
+    "gong": {
+      "url": "https://mcp.gong.io/mcp"
+    }
+  }
+}

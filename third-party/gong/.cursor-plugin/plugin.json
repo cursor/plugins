@@ -1,0 +1,27 @@
+{
+  "name": "gong",
+  "displayName": "Gong",
+  "version": "1.0.0",
+  "description": "Gong MCP integration for revenue intelligence — account summaries, deal insights, and call briefs.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://help.gong.io/docs/about-gong-mcp-server",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "gong",
+    "mcp",
+    "revenue",
+    "sales",
+    "calls",
+    "deals"
+  ],
+  "category": "integrations",
+  "tags": [
+    "mcp",
+    "sales",
+    "revenue-intelligence"
+  ]
+}

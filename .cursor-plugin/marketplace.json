@@ -72,6 +72,11 @@
       "name": "pstack",
       "source": "pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
+    },
+    {
+      "name": "gong",
+      "source": "third-party/gong",
+      "description": "Gong MCP integration for revenue intelligence — account summaries, deal insights, and call briefs."
     }
   ]
 }
