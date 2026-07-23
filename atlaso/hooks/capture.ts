@@ -13,11 +13,13 @@
  * Never breaks the session (always exits 0).
  */
 import { deposit, loadAuth, type DepositItem } from "../lib/atlaso";
-import { buildContent, classifyScope, heuristicPolarity, scrub, shouldDeposit, turnKey } from "../lib/capture";
+import {
+  buildContent, classifyScope, heuristicPolarity, messageKey, scrub, shouldDeposit, turnKey,
+} from "../lib/capture";
 import { resolveCredential } from "../lib/credential";
 import { online } from "../lib/entitlement";
 import { log } from "../lib/log";
-import { stashPrompt, stashResponse, takePending } from "../lib/pending";
+import { stashCompleted, stashPrompt, stashResponse, takeCompleted, takePending } from "../lib/pending";
 import { projectKey, workspaceRoot } from "../lib/project";
 import { parsePayload, readStdin } from "../lib/stdin";
 import { exchangeFromPayload, lastExchangeFromFile } from "../lib/transcript";
@@ -29,10 +31,13 @@ const convId = (payload: Record<string, any>): string =>
 
 /** The stop/sessionEnd path: assemble the turn and deposit it. */
 async function depositTurn(payload: Record<string, any>, event: string): Promise<void> {
-  // Keep the prompt-time workspace through stop. If Cursor later fires sessionEnd
-  // for the same turn, it reuses this stash and produces the same client_id; the
-  // sessionEnd path then removes it. A new prompt also replaces the retained stash.
-  const pending = takePending(convId(payload), { retain: event === "stop" });
+  const conversation = convId(payload);
+  // Completion receipts are separate from the pending-turn path, so a next prompt
+  // can never overwrite one and then be mistaken for the earlier stopped turn.
+  const completed = event === "sessionEnd" ? takeCompleted(conversation) : null;
+  // If stop already handled a turn, sessionEnd reconstructs only that stopped turn
+  // from its payload/transcript and leaves any newer prompt stash untouched.
+  const pending = completed ? null : takePending(conversation);
 
   // Prefer the stash (assembled across the turn); fall back to the payload's own
   // fields, then the transcript file — a Cursor build whose stop payload DOES carry
@@ -48,6 +53,52 @@ async function depositTurn(payload: Record<string, any>, event: string): Promise
     return;
   }
 
+  // scrub BOTH sides client-side so secrets never leave the machine.
+  const scrubbedUser = scrub(user)[0];
+  const content = buildContent(scrubbedUser, scrub(asst)[0]);
+  if (!content) return;
+  if (completed && completed.user_hash !== messageKey(scrubbedUser)) {
+    log("capture", "skip (sessionEnd does not match stopped turn)");
+    return;
+  }
+
+  // Project resolution prefers the workspace captured at prompt time (stashed),
+  // falling back to this payload's workspace_roots — both scope to the same repo.
+  const ws = pending?.ws || workspaceRoot(payload);
+  let scope = classifyScope(user);
+  let pk = projectKey(ws ?? undefined); // for the project tag AND the idempotency key
+  let clientId = turnKey(scrubbedUser, scope, scope === "project" ? pk : null);
+  // sessionEnd may reconstruct the same turn from a transcript whose workspace
+  // differs from the prompt-time root. Its matching receipt preserves the stop
+  // attribution and idempotency key.
+  if (completed) {
+    scope = completed.scope;
+    pk = completed.project;
+    clientId = completed.client_id;
+  }
+  const tags = ["cursor", "auto", `pol-hint:${heuristicPolarity(user)}`, `scope:${scope}`];
+  if (scope === "project" && pk) tags.push(`project:${pk}`);
+
+  const item: DepositItem = {
+    client_id: clientId,
+    text: content,
+    polarity: "open",
+    evidence_grade: "anecdotal",
+    scope_note: null,
+    tags,
+  };
+  if (event === "stop") {
+    // Write before the network call so sessionEnd can safely retry a timed-out or
+    // interrupted stop with the same idempotency key and project attribution.
+    stashCompleted(conversation, {
+      user_hash: messageKey(scrubbedUser),
+      client_id: clientId,
+      scope,
+      project: scope === "project" ? pk : null,
+      ts: Date.now(),
+    });
+  }
+
   const auth = loadAuth();
   if (!auth) {
     log("capture", "skip (no auth — online-first)");
@@ -59,28 +110,6 @@ async function depositTurn(payload: Record<string, any>, event: string): Promise
     log("capture", "skip (not cloud-linked — local-only)");
     return;
   }
-
-  // scrub BOTH sides client-side so secrets never leave the machine.
-  const scrubbedUser = scrub(user)[0];
-  const content = buildContent(scrubbedUser, scrub(asst)[0]);
-  if (!content) return;
-
-  // Project resolution prefers the workspace captured at prompt time (stashed),
-  // falling back to this payload's workspace_roots — both scope to the same repo.
-  const ws = pending?.ws || workspaceRoot(payload);
-  const scope = classifyScope(user);
-  const pk = projectKey(ws ?? undefined); // for the project tag AND the idempotency key
-  const tags = ["cursor", "auto", `pol-hint:${heuristicPolarity(user)}`, `scope:${scope}`];
-  if (scope === "project" && pk) tags.push(`project:${pk}`);
-
-  const item: DepositItem = {
-    client_id: turnKey(scrubbedUser, scope, scope === "project" ? pk : null),
-    text: content,
-    polarity: "open",
-    evidence_grade: "anecdotal",
-    scope_note: null,
-    tags,
-  };
   // Deposit with THIS tool's own credential (minted on first run) so the memory is
   // attributed to Cursor. Null = local-only this run (tombstoned/not-entitled) → skip.
   const cred = await resolveCredential(TOOL);

@@ -74,6 +74,14 @@ export function buildContent(userText: string, asstText: string): string {
   return content.trim();
 }
 
+/** Content-free fingerprint used to match a stop deposit with a later sessionEnd
+ *  fallback. Whitespace normalization tolerates transcript serialization differences
+ *  without persisting the user's message in the completion receipt. */
+export function messageKey(userMsg: string): string {
+  const normalized = (userMsg || "").trim().replace(/\s+/g, " ");
+  return createHash("sha256").update(normalized).digest("hex").slice(0, 32);
+}
+
 /** Deterministic per-turn idempotency key (the deposit's client_id). Derived from the
  *  USER message — the stable identity of a turn — NOT the assembled user+assistant
  *  content. This is load-bearing: `stop` may deposit a user-only turn while a late
