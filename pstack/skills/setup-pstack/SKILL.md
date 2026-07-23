@@ -7,13 +7,11 @@ description: Configure which models pstack uses per role. Detects your available
 
 Write `~/.cursor/rules/pstack-models.mdc`, an always-applied rule that sets pstack's model per role. The skills read it and fall back to their inline defaults when a line is absent, so this is an override layer, not a requirement.
 
-`inherit-parent` and `auto` are aliases. Either value means omit `model` from the Task call so the subagent inherits the parent chat model. Auto-plan users can use either value to stay on Auto. Do not invent an Auto Task slug.
-
 ## Steps
 
 ### 1. Detect available models
 
-Enumerate the model slugs you can pass to a `Task` subagent in this session; that is the dependable source. If Cursor also exposes a models API or CLI that lists the user's entitled models, prefer it for completeness. If you cannot detect any real slugs, still offer `inherit-parent` / `auto` and ask the user to paste any real slugs they want to use. The aliases are always valid and do not need to appear in the detected slug set. Never write a real slug you have not confirmed is available.
+Enumerate the model slugs you can pass to a `Task` subagent in this session; that is the dependable source. If Cursor also exposes a models API or CLI that lists the user's entitled models, prefer it for completeness. If you cannot detect any, ask the user to paste the slugs they have access to. Never write a real slug you have not confirmed is available. The aliases `inherit-parent` and `auto` are always valid even though they are not detected slugs.
 
 ### 2. Load current state
 
@@ -21,11 +19,11 @@ The default role-to-model mapping is the rule shape shown in step 5 below. If `~
 
 ### 3. Map and confirm
 
-Show every role with its current model, marking any real slug that is not in the detected set as needing a choice. Ask whether to accept as-is or change specific roles, offering the detected models plus `inherit-parent` / `auto` as options. Label the aliases as "inherit parent chat model (Auto)." Prefer AskQuestion over free text. For panel roles (how critics, arena runners, architect runners, interrogate reviewers) the value is a list, and one subagent runs per entry, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena selects one entry from it whose family differs from the parent's when possible.
+Show every role with its current model, marking any real slug not in the detected set as needing a choice. Ask whether to accept as-is or change specific roles, offering the detected models plus `inherit-parent` and `auto` (both mean: this role runs on the parent chat model, which is how Auto users stay on Auto) as the options. Prefer AskQuestion over free text. For panel roles (how critics, arena runners, architect runners, interrogate reviewers) the value is a list, and one subagent runs per entry, alias entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena selects one value from it whose model family differs from the parent's when possible.
 
 ### 4. Validate
 
-Require detected-set membership only for real slugs. `inherit-parent` and `auto` always pass validation. If a chosen real slug is not available, stop and ask again. A rule pointing at a model the user cannot use breaks every delegation that reads it.
+Every real slug written must be in the detected set; `inherit-parent` and `auto` always pass. If a chosen real slug is not available, stop and ask again. A rule pointing at a model the user cannot use breaks every delegation that reads it.
 
 ### 5. Write the rule
 
@@ -36,12 +34,8 @@ Write `~/.cursor/rules/pstack-models.mdc` with `alwaysApply: true` and one line 
 description: pstack per-role model choices (overrides skill defaults)
 alwaysApply: true
 ---
-# Resolve each role value before every Task spawn:
-# - a real model slug → pass it as Task `model`
-# - `inherit-parent` or `auto` → OMIT the `model` field entirely so the subagent inherits the parent chat model
-# - never substitute a skill's inline default when the role line is set to inherit-parent/auto
-# Panel roles (lists): inherit-parent/auto on every entry keeps fan-out count but loses model diversity (all runners share the parent model). That is intentional for Auto-only users.
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
+# `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit Task `model`). Alias entries in a panel list still count toward its fan-out.
 feature, refactoring: grok-4.5-fast-xhigh
 bug-fix: gpt-5.6-sol-max
 perf-issue: gpt-5.6-sol-max

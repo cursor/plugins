@@ -30,7 +30,7 @@ Skip Phase A only when the work is genuinely greenfield with no surrounding syst
 
 Run the **arena** skill with the design-sketch task and the Phase A grounding artifacts. Pass `references/runner-prompt.md` as each runner's prompt. Each candidate produces a design package shaped per `references/rationale-template.md`: the caller's usage written first, then the type sketch, function signatures, module map, and prose rationale derived from it.
 
-Use your configured `architect runners`. The routed **how** and **arena** skills resolve model values per `~/.cursor/rules/pstack-models.mdc`, including omitting Task `model` for `inherit-parent`/`auto`. If the role line is absent, use defaults `claude-fable-5-thinking-max`, `gpt-5.6-sol-max`, `grok-4.5-fast-xhigh`.
+Use your configured architect runners (defaults `claude-fable-5-thinking-max`, `gpt-5.6-sol-max`, `grok-4.5-fast-xhigh`).
 
 This is the **exhaust-the-design-space** principle skill made concrete. Whole-shape alternatives, not point fixes inside one shape.
 
