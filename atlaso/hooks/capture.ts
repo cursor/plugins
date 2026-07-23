@@ -19,7 +19,9 @@ import {
 import { resolveCredential } from "../lib/credential";
 import { online } from "../lib/entitlement";
 import { log } from "../lib/log";
-import { stashCompleted, stashPrompt, stashResponse, takeCompleted, takePending } from "../lib/pending";
+import {
+  clearPending, peekPending, stashCompleted, stashPrompt, stashResponse, takeCompleted,
+} from "../lib/pending";
 import { projectKey, workspaceRoot } from "../lib/project";
 import { parsePayload, readStdin } from "../lib/stdin";
 import { exchangeFromPayload, lastExchangeFromFile } from "../lib/transcript";
@@ -35,20 +37,56 @@ async function depositTurn(payload: Record<string, any>, event: string): Promise
   // Completion receipts are separate from the pending-turn path, so a next prompt
   // can never overwrite one and then be mistaken for the earlier stopped turn.
   const completed = event === "sessionEnd" ? takeCompleted(conversation) : null;
-  // If stop already handled a turn, sessionEnd reconstructs only that stopped turn
-  // from its payload/transcript and leaves any newer prompt stash untouched.
-  const pending = completed ? null : takePending(conversation);
+  // Peek first. A stop consumes the prompt only after its content-free completion
+  // receipt is durable, so an early failure leaves sessionEnd a recovery path.
+  const pending = peekPending(conversation);
 
-  // Prefer the stash (assembled across the turn); fall back to the payload's own
-  // fields, then the transcript file — a Cursor build whose stop payload DOES carry
-  // content, or a differently-wired session, still works.
-  let user = pending?.user || "";
-  let asst = pending?.asst || "";
-  if (!user && !asst) [user, asst] = exchangeFromPayload(payload);
-  if (!user && !asst) [user, asst] = lastExchangeFromFile(payload.transcript_path || "");
+  // Resolve the event's own turn independently from the pending stash. When both a
+  // prior stop receipt and a newer pending prompt exist, hashes tell us whether this
+  // sessionEnd is retrying the stopped turn or closing the newer one.
+  let [eventUser, eventAsst] = exchangeFromPayload(payload);
+  if (!eventUser && !eventAsst) {
+    [eventUser, eventAsst] = lastExchangeFromFile(payload.transcript_path || "");
+  }
+  let user = "";
+  let asst = "";
+  let pendingSelected = false;
+  let completedSelected = false;
+  if (completed) {
+    const eventHash = eventUser ? messageKey(scrub(eventUser)[0]) : "";
+    const pendingHash = pending?.user ? messageKey(scrub(pending.user)[0]) : "";
+    if (eventHash && eventHash === completed.user_hash) {
+      user = eventUser;
+      asst = eventAsst;
+      completedSelected = true;
+    } else if (pending && eventHash && eventHash === pendingHash) {
+      user = pending.user;
+      asst = pending.asst || eventAsst;
+      pendingSelected = true;
+    } else if (!pending && eventUser) {
+      // The transcript identifies a later turn that had no locally observed prompt.
+      user = eventUser;
+      asst = eventAsst;
+    } else {
+      // With two different candidate turns and no identity match, fail closed: do
+      // not consume or deposit the newer pending prompt under an older end event.
+      log("capture", "skip (ambiguous sessionEnd turn)");
+      return;
+    }
+  } else if (pending) {
+    user = pending.user;
+    asst = pending.asst || eventAsst;
+    pendingSelected = true;
+  } else {
+    user = eventUser;
+    asst = eventAsst;
+  }
 
   // worth-keeping gate on the USER message only (matches the Python client).
   if (!shouldDeposit(user)[0]) {
+    // A stop deliberately leaves the stash for sessionEnd until a receipt exists.
+    // sessionEnd is the final gate decision and can discard a non-durable turn.
+    if (event !== "stop" && pendingSelected) clearPending(conversation);
     log("capture", "skip (gate)");
     return;
   }
@@ -57,10 +95,6 @@ async function depositTurn(payload: Record<string, any>, event: string): Promise
   const scrubbedUser = scrub(user)[0];
   const content = buildContent(scrubbedUser, scrub(asst)[0]);
   if (!content) return;
-  if (completed && completed.user_hash !== messageKey(scrubbedUser)) {
-    log("capture", "skip (sessionEnd does not match stopped turn)");
-    return;
-  }
 
   // Project resolution prefers the workspace captured at prompt time (stashed),
   // falling back to this payload's workspace_roots — both scope to the same repo.
@@ -71,7 +105,7 @@ async function depositTurn(payload: Record<string, any>, event: string): Promise
   // sessionEnd may reconstruct the same turn from a transcript whose workspace
   // differs from the prompt-time root. Its matching receipt preserves the stop
   // attribution and idempotency key.
-  if (completed) {
+  if (completedSelected && completed) {
     scope = completed.scope;
     pk = completed.project;
     clientId = completed.client_id;
@@ -90,13 +124,20 @@ async function depositTurn(payload: Record<string, any>, event: string): Promise
   if (event === "stop") {
     // Write before the network call so sessionEnd can safely retry a timed-out or
     // interrupted stop with the same idempotency key and project attribution.
-    stashCompleted(conversation, {
+    const receiptSaved = stashCompleted(conversation, {
       user_hash: messageKey(scrubbedUser),
       client_id: clientId,
       scope,
       project: scope === "project" ? pk : null,
       ts: Date.now(),
     });
+    if (!receiptSaved) {
+      log("capture", "skip (completion receipt unavailable)");
+      return;
+    }
+    if (pendingSelected) clearPending(conversation);
+  } else if (pendingSelected) {
+    clearPending(conversation);
   }
 
   const auth = loadAuth();

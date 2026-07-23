@@ -79,6 +79,12 @@ function readPending(convId: string): Pending | null {
   return null;
 }
 
+/** Read the current turn without consuming it. Used by stop so an early failure
+ *  cannot erase the only copy before a completion receipt exists. */
+export function peekPending(convId: string): Pending | null {
+  return readPending(convId);
+}
+
 function writePending(convId: string, p: Pending): void {
   try {
     const dir = pendingDir();
@@ -112,22 +118,27 @@ export function stashResponse(convId: string, asst: string): void {
   writePending(convId, { ...prev, asst });
 }
 
-/** Read + DELETE the current turn's stash. Read before pruning: an end hook proves
- *  this conversation is active even when a long-running turn exceeded STALE_MS. */
-export function takePending(convId: string): Pending | null {
-  const p = readPending(convId);
+/** Delete the current turn after its caller has made the durable handoff decision. */
+export function clearPending(convId: string): void {
   try {
     unlinkSync(pendingPath(convId));
   } catch {
     /* already gone */
   }
   prune(pendingDir());
+}
+
+/** Read + DELETE the current turn's stash. Read before pruning: an end hook proves
+ *  this conversation is active even when a long-running turn exceeded STALE_MS. */
+export function takePending(convId: string): Pending | null {
+  const p = peekPending(convId);
+  clearPending(convId);
   return p;
 }
 
 /** Save a content-free completion receipt. A later stop overwrites the prior receipt,
  *  while a new prompt remains isolated in cursor-pending. */
-export function stashCompleted(convId: string, turn: CompletedTurn): void {
+export function stashCompleted(convId: string, turn: CompletedTurn): boolean {
   try {
     const dir = completedDir();
     mkdirSync(dir, { recursive: true });
@@ -141,8 +152,10 @@ export function stashCompleted(convId: string, turn: CompletedTurn): void {
       closeSync(fd);
     }
     renameSync(tmp, target);
+    return true;
   } catch {
     /* best-effort — sessionEnd may fall back without a stable receipt */
+    return false;
   }
 }
 
