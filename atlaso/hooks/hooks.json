@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/recall.ts",
+        "timeout": 50
+      }
+    ],
+    "beforeSubmitPrompt": [
+      {
+        "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/capture.ts",
+        "timeout": 10
+      }
+    ],
+    "afterAgentResponse": [
+      {
+        "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/capture.ts",
+        "timeout": 10
+      }
+    ],
+    "stop": [
+      {
+        "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/capture.ts",
+        "timeout": 50
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/capture.ts",
+        "timeout": 50
+      }
+    ]
+  }
+}
