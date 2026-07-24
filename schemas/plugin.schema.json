@@ -89,6 +89,24 @@
       ],
       "description": "Path to a hooks configuration file, or an inline hooks object."
     },
+    "variables": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "const": "object"
+        },
+        "properties": {
+          "type": "object"
+        },
+        "required": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      },
+      "description": "JSON Schema for user-configured plugin variables."
+    },
     "mcpServers": {
       "$ref": "#/$defs/mcpServers",
       "description": "MCP server configuration — a path, an inline config object, or an array of either."

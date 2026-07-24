@@ -23,5 +23,24 @@
     "mcp",
     "sales",
     "revenue-intelligence"
-  ]
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "CLIENT_ID": {
+        "type": "string",
+        "title": "Gong Client ID",
+        "description": "OAuth Client ID from Gong Admin → Company Settings → Ecosystem → API → Integrations (MCP integration)."
+      },
+      "CLIENT_SECRET": {
+        "type": "string",
+        "title": "Gong Client Secret",
+        "description": "OAuth Client Secret from the same Gong MCP integration."
+      }
+    },
+    "required": [
+      "CLIENT_ID",
+      "CLIENT_SECRET"
+    ]
+  }
 }
