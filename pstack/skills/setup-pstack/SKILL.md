@@ -44,15 +44,15 @@ judgment and prose: claude-fable-5-thinking-max
 hardest tasks: claude-fable-5-thinking-max
 how explorer: grok-4.5-fast-xhigh
 how explainer: claude-fable-5-thinking-max
-how critics: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh
+how critics: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh, claude-opus-5-thinking-xhigh
 why investigators: grok-4.5-fast-xhigh
 why synthesizer: claude-fable-5-thinking-max
 reflect tooling: gpt-5.6-sol-max
 reflect judgment, divergent, synthesizer: claude-fable-5-thinking-max
-arena runners: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh
-arena cross-judge pool: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh
-architect runners: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh
-interrogate reviewers: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh
+arena runners: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh, claude-opus-5-thinking-xhigh
+arena cross-judge pool: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh, claude-opus-5-thinking-xhigh
+architect runners: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh, claude-opus-5-thinking-xhigh
+interrogate reviewers: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.5-fast-xhigh, claude-opus-5-thinking-xhigh
 ```
 
 ### 6. Confirm
