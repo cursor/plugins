@@ -78,10 +78,10 @@ A time range, as start plus duration:
 type TimeRange = { start: Date; end: Date }; // start <= end
 
 // Do: a negative range can't be written; derive end when needed
-type TimeRange = { start: Date; duration: Milliseconds };
+type TimeRange = { start: Date; durationMs: number };
 ```
 
-`Milliseconds` is a branded number per Branded types. A `Pairs<T>` is an even-length list under the interpretation you give it, the same way `{ start, duration }` is a range. Pick the representation that makes the bad state unconstructable, then expose the reading you need on top (`pairs.flat()`, a `rangeEnd()` helper).
+Keep `durationMs` a plain number. Brand it (per Branded types) only if a raw number could be passed where a duration is expected, not by reflex. A `Pairs<T>` is an even-length list under the interpretation you give it, the same way `{ start, durationMs }` is a range. Pick the representation that makes the bad state unconstructable, then expose the reading you need on top (`pairs.flat()`, a `rangeEnd()` helper).
 
 ## Simplest total type
 
