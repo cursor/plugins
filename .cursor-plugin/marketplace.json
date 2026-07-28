@@ -72,6 +72,11 @@
       "name": "pstack",
       "source": "pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
+    },
+    {
+      "name": "yolfi",
+      "source": "yolfi",
+      "description": "Add crypto checkout, payment links, signed webhooks, and payment verification with Yolfi."
     }
   ]
 }
