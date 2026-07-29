@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "./scripts/gate-check.sh",
+        "matcher": "git push|rm -rf|npm publish|deploy"
+      },
+      {
+        "command": "./scripts/gate-check.sh",
+        "matcher": "@cursor/sdk|cursor-agent|autoCreatePR|create pull request|open PR"
+      }
+    ]
+  }
+}

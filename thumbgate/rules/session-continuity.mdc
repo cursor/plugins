@@ -1,0 +1,28 @@
+---
+description: At session start, recall past context. At session end, hand off state for next session.
+alwaysApply: false
+---
+
+# Session Continuity
+
+Maintain context across coding sessions using the ThumbGate memory system.
+
+## Session start
+
+1. Call the `recall` MCP tool to retrieve:
+   - Recent prevention rules relevant to the current project
+   - Past failure patterns and corrective actions
+   - Active context packs from previous sessions
+2. Summarize recalled context before starting work.
+
+## Session end
+
+1. Capture any new feedback from the session using `capture_feedback`.
+2. Note any unfinished work or pending decisions as context for the next session.
+3. If new failure patterns emerged, flag them for potential prevention rule promotion.
+
+## Between sessions
+
+- Prevention rules persist automatically via the MCP server.
+- Lessons promoted during the session are available in future recalls.
+- Context packs expire based on configured retention policies.

@@ -72,6 +72,11 @@
       "name": "pstack",
       "source": "pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
+    },
+    {
+      "name": "thumbgate",
+      "source": "thumbgate",
+      "description": "Capture thumbs feedback and enforce deterministic pre-action checks so Cursor agents stop repeating mistakes."
     }
   ]
 }
