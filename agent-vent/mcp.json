@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "agent-vent": {
+      "command": "bun",
+      "args": ["run", "--install=fallback", "${CURSOR_PLUGIN_ROOT}/server.ts"],
+      "cwd": "${CURSOR_PLUGIN_ROOT}"
+    }
+  }
+}
