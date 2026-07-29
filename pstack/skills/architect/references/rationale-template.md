@@ -12,7 +12,7 @@ The prose that ships alongside the type sketch. One page. Sentence-case headings
 
 ## Shape
 
-*The recommended architecture. Data structures first; then how data flows through the signatures. Name the load-bearing decisions: which invariants are encoded in types, where validation lives, what the system deliberately does not do. Cite the principle behind each decision (e.g., `per boundary-discipline`); don't restate it.*
+*The recommended architecture. Data structures first; then how data flows through the signatures. Name the load-bearing decisions. State which invariants are encoded in types, where validation lives, and what the system deliberately does not do. Judge interface depth explicitly. State what complexity the public surface hides, what remains exposed to callers, and why the interface is no larger than needed. Cite the principle behind each decision (e.g., `per boundary-discipline`); don't restate it.*
 
 ## Synthesis decision
 
@@ -24,7 +24,7 @@ The prose that ships alongside the type sketch. One page. Sentence-case headings
 
 ## Alternatives considered
 
-*Required. Name at least one concrete alternative shape, with one line on why it lost. Two or three when the design space had real contenders; one is fine when the constraints forced the answer, with the conclusion phrased as "this was the only viable shape because..." Avoid listing flavors of the same shape. Distinct from "Synthesis decision": this section covers design alternatives the chosen shape considered and rejected, not other runner candidates.*
+*Required. Name at least one concrete alternative shape, with one line on why it lost. Judge each alternative on interface depth, not implementation simplicity alone. Name the complexity it exposes to callers and the complexity it hides. Two or three alternatives belong here when the design space had real contenders. One is fine when the constraints forced the answer, with the conclusion phrased as "this was the only viable shape because..." Avoid listing flavors of the same shape. This section covers design alternatives the chosen shape considered and rejected, not other runner candidates.*
 
 ## Open questions and risks
 

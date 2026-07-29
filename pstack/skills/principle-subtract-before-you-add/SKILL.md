@@ -10,6 +10,8 @@ When evolving a system, remove complexity first, then build. Deletion gives you 
 
 **Why:** Adding to a complex system compounds complexity. Removing first cuts the surface area, reveals the essential structure, and usually makes the next design obvious. Default to subtraction.
 
+Make simplification a continual investment. Leave the design slightly simpler and more capable behind the same or smaller surface than you found it.
+
 **The pattern:**
 - Sequence removal before construction
 - Cut before you polish (get to the minimum before investing in quality)
