@@ -7,7 +7,7 @@ Here's what you'll learn:
 1. [Set up pstack](./01-setup.md). Install the plugin and pick your models.
 2. [Route work through `/poteto-mode`](./02-poteto-mode.md). Give it a goal and watch it pick a playbook.
 3. [Understand the code](./03-understand.md). `/how`, `/why`, `/teach`, and `/recall` before you edit anything.
-4. [Design the change](./04-design.md). `/architect`, `/arena`, and `/interrogate` before code locks in a shape.
+4. [Design the change](./04-design.md). `/architect`, `/arena`, `/swarm`, and `/interrogate` before code locks in a shape.
 5. [Build and clean the change](./05-build-and-clean.md). The build playbooks, `/tdd`, and `/unslop`.
 6. [Verify and ship](./06-verify-and-ship.md). Prove behavior on the real app, then open a focused PR.
 7. [Run work while you sleep](./07-overnight.md). An overnight contract and a decision log you can audit.

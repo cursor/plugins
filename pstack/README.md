@@ -159,6 +159,8 @@ architect:         design this instrumentation to be high signal with no false p
                    this first.
 arena:             /arena take my prompt to the arena verbatim. i want to compare their proposals
                    with yours.
+swarm:             /swarm check every package under packages/ against its check.sh. one worker per
+                   package. one report.
 interrogate:       /interrogate review this pr.
 tdd:               /tdd implement
 unslop:            can we unslop and tighten the new changes?

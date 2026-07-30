@@ -1,6 +1,6 @@
 # Design before you write code
 
-One attempt at a hard design locks in the first shape the model thought of. These three skills exist so that doesn't happen. `/architect` settles types and boundaries before implementation. `/arena` runs several attempts in parallel and merges the best parts. `/interrogate` has other models try to break the result.
+One attempt at a hard design locks in the first shape the model thought of. `/architect` settles types and boundaries before implementation. `/arena` runs several attempts at the same brief and merges the best parts. `/interrogate` has other models try to break the result. When the job is coverage rather than design synthesis, `/swarm` fans out slices or races and aggregates their results.
 
 ![Three robots draft competing bridge models at their own tables under /architect, /arena, and /interrogate panels, while a judge robot with a clipboard inspects skeptically.](./images/design.jpg)
 
@@ -24,7 +24,7 @@ By default it proceeds straight from the synthesized design into implementation.
 /arena take my prompt to the arena verbatim. i want to compare their proposals with yours.
 ```
 
-[`/arena`](../../skills/arena/SKILL.md) is the general tool underneath. N subagents attempt the same task in parallel, each writing to its own worktree or directory. A read-only judge, on a different model family when your configuration allows one, scores every candidate against a rubric. The coordinator reads each candidate end to end, picks a base, grafts in the best ideas from the losers, and verifies the result.
+[`/arena`](../../skills/arena/SKILL.md) is the general tool underneath. N subagents attempt the same design or code brief in parallel, each writing to its own worktree or directory. A read-only judge, on a different model family when your configuration allows one, scores every candidate against a rubric. The coordinator reads each candidate end to end, picks a base, grafts in the best ideas from the losers, and verifies the result.
 
 ```mermaid
 flowchart LR
@@ -46,6 +46,16 @@ The panel comes from your [`/setup-pstack`](../../skills/setup-pstack/SKILL.md) 
 /arena this, 5 candidates. the cache key format is expensive to change later.
 ```
 
+## Cover slices and races with `/swarm`
+
+```text
+/swarm check every package under packages/ against its check.sh. one worker per package. one report.
+```
+
+[`/swarm`](../../skills/swarm/SKILL.md) fans N workers across independent slices, coverage matrices, gauntlet lanes, exploration partitions, or declared race arms. Each worker gets its own scope and check, then reports `PASS`, `ISSUES`, or `BLOCKED`. The parent waits for the workers and returns one compact report with any gaps or dropouts.
+
+Reach for it when parallelism buys coverage or lets independent checks race. `/arena` gives every worker the same design or code brief, then picks a base and grafts the best parts. `/swarm` covers slices or runs a race with a selection rule declared up front. It does not use the base-selection and grafting ceremony.
+
 ## Break it with `/interrogate`
 
 ```text
@@ -63,6 +73,7 @@ You might be wondering whether every change needs this. No. Most changes need no
 - A small, finished change you're unsure about needs `/interrogate` alone.
 - A change that crosses function boundaries or moves ownership earns `/architect`, which brings `/arena` with it.
 - A standalone decision where independent attempts would help, like naming, formats, or an algorithm, is `/arena` directly.
+- A coverage matrix, set of parallel checks, or race with declared arms is `/swarm`.
 - A contested design that's expensive to reverse gets `/architect`, then `/interrogate` before shipping.
 
 `/poteto-mode` already applies this ladder. Boundary-crossing work triggers `/architect` on its own, so you reach for these directly mainly when you want more or less scrutiny than the default.
