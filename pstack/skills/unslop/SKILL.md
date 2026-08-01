@@ -69,7 +69,7 @@ Removing patterns is half the job. Sterile, voiceless writing is just as obvious
 
 ### Jargon
 
-26. **Abstract metaphor nouns.** Substrate, wedge, vector, locus, vantage, nexus, primitive (as noun), harness (as metaphor), surface (as in "API surface"), bedrock, scaffolding (as metaphor), modality, paradigm, gold-plating. These read as technical but usually have a plainer concrete word. "Substrate" becomes "base". "Wedge in" becomes "add". "Vector" becomes "way" or "method". "Gold-plating" becomes "more than the job needs". Pick the concrete word.
+26. **Abstract metaphor nouns.** Substrate, wedge, vector, locus, vantage, nexus, primitive (as noun), harness (as metaphor), surface (as in "API surface"), bedrock, scaffolding (as metaphor), modality, paradigm, gold-plating, load-bearing, gate (as metaphor: "gate this", "gating"). These read as technical but usually have a plainer concrete word. "Substrate" becomes "base". "Wedge in" becomes "add". "Vector" becomes "way" or "method". "Gold-plating" becomes "more than the job needs". "Load-bearing" and "gate" are far overused by AI compared to how humans write, and they make text obviously AI generated. "Load-bearing" becomes "critical", "required", or name what depends on it. "Gate" becomes "block", "require approval for", or "hide behind a flag". Pick the concrete word.
 
 ### Plain speech
 
