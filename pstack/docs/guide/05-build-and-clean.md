@@ -58,6 +58,18 @@ For prose, `/unslop` takes a target and any extra rules you have:
 
 You'll develop your own shorthand. The skill reads intent fine from terse prompts like `unslop that, tighten it`.
 
+## Strip the comments with `/no-comments`
+
+Comments need their own pass, and not from the agent that wrote them. An author defends its comments the way you'd defend yours. So before review, hand them to fresh eyes:
+
+```text
+/no-comments the diff
+```
+
+[`/no-comments`](../../skills/no-comments/SKILL.md) spawns [Comment Sicko](../../agents/comment-sicko.md), a read-only reviewer with a short keep list: license headers, doc comments on a public API, links that explain what code can't, behavior forced by an external dependency you can't reshape. Everything else goes. A comment excusing a surprise in your own code doesn't survive as prose either. It comes back as a refactor flag, and `/no-comments` fixes the accepted flags at the root cause. When a comment claims a constraint, "do not remove", the skill offers to encode the claim as a type, test, or lint, and the comment comes out either way.
+
+The division of labor is worth keeping straight. `/deslop` cleans slop out of the code, `/unslop` cleans it out of prose, and `/no-comments` is the comment pass with a reviewer who didn't write them.
+
 **Pitfall:** cleanup is not optional polish. A diff with narrating comments and defensive dead weight reads as unfinished to reviewers, and the extra code is where the next bug hides. If the diff feels padded, say `deslop it` before you commit, not after review calls it out.
 
 Next: [Verify and ship](./06-verify-and-ship.md).
