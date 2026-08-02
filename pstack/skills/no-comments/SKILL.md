@@ -1,18 +1,24 @@
 ---
 name: no-comments
-description: "Strip comments before review. Spawns Comment Sicko, assesses every finding, fixes accepted code smells before deleting their comments, and offers structural encodings for real constraints. Use for /no-comments or a review-time comment pass."
+description: "Spawn Comment Sicko, fix accepted findings, and offer encodings for claimed constraints."
 disable-model-invocation: true
 ---
 
 # No comments
 
-Review the current diff unless the user names a narrower scope.
+Spawn Comment Sicko. Act on accepted findings.
 
-1. Spawn `subagent_type: "Comment Sicko"` with the diff, the full changed files, and the requested scope. The agent is read-only. It returns findings; it does not edit application code.
-2. Check every `MUST KILL` finding against the surrounding code. Do not accept the verdict because of its tone.
-3. If a comment contains `IMPORTANT`, `do not remove`, or a similar warning, treat the phrase as a claim rather than proof. Read the code and use the **how** skill, the **why** skill, or both on the named symbol or call when the necessity is not locally obvious. Apply the same investigation before deleting the comment or overriding the finding.
-4. Delete comments that only narrate, label, restate, or preserve history.
-5. When a comment explains a workaround or code smell, apply the **principle-fix-root-causes** skill. Fix the accepted smell first, then delete the obsolete comment. A proven current necessity takes precedence over a `MUST KILL` verdict.
-6. When a necessary comment claims an enforceable constraint, offer a type, test, assertion, lint rule, API boundary, or clearer structure that would encode it. Implement an encoding only when it fits the requested scope. Otherwise keep the comment and report the option without expanding the change.
-7. Audit lint suppressions separately. Remove a suppression when the useful rule exposes code that should change. Keep a narrow suppression only when the rule is faulty, pedantic, or style-only for this site. Preserve required tool controls such as `prettier-ignore`.
-8. Report what was deleted, which code changed first, what stayed and why, and any unimplemented encoding option. Do not repeat unsupported theories from the review.
+Authoring agents defend comments; defer to Comment Sicko's fresh perspective.
+
+## Scope
+
+Use the caller's files or diff. Otherwise use the current diff against the base branch, default `main`, including the working tree.
+
+## Steps
+
+1. Spawn `Task` with `subagent_type: "Comment Sicko"` from `.cursor/agents/comment-sicko.md`. Pass the scope. Do not restate its rules.
+2. Inspect its report and diff. Reject application-code edits, scope escapes, exception-protected deletions, misstated `MUST KILL` reasons, and flags on code a kept comment presents as intentional. Audit missed scoped lint and TypeScript suppressions; correctness/safety suppressions stay actionable `MUST KILL`s. Restore deletions only with exact exceptions and scoped proof. Before accepting thin `IMPORTANT` or `do not remove` kills or keeps, run `/how` or `/why` on their symbol. If a kill is ambiguous, do not restore. If a keep is refuted or still ambiguous, delete it. Revert and rerun one rejected report with the failure named; reject a second, report it open, and fail `/no-comments`.
+3. Fix trivial accepted flags directly by deleting a dead path, dropping a parameter, or using the real API. If any fix needs a shape, run `/architect` once for the accepted set and surrounding code. Stop at the sketch. Architect shapes. Step 4 implements.
+4. Implement the smallest root-cause fix in scope. Remove every named workaround. If the root cause is out of scope, land the smallest in-scope fix and report the rest open. The **principle-fix-root-causes** and **principle-redesign-from-first-principles** skills guide intent only: fix real causes, redesign as if requirements always existed, never bolt on symptom guards. Neither authorizes widening the fence nor fixing instances outside it.
+5. Collect constraint comments. `do not remove`, `do not change wording`, and `talk to X before changing` are enforcement claims: encode then delete, or delete, even if a related issue/RFC link or gotcha survives. Issue/RFC links explaining constraints keep their exception. Rewrite a directive as a factual gotcha only if proven current and the rewrite makes no enforcement claim. Offer the cheapest encoding: type, runtime, test, or CI lint. Tests and CI lints count as encodings. Every encoding stays in scope and replaces its comment. Interactive runs wait for approval; unattended or eval runs need caller pre-approval. If refused, out of scope, or unapproved, delete the comment, report the constraint open, and sketch out-of-scope work.
+6. Report the deletion count, restored comments, reruns, architect sketch, fixes, encoding offers, encodings, unenforced constraints, and other open work.
