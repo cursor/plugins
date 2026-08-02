@@ -41,7 +41,7 @@ Spare a comment only when evidence proves that the comment is necessary now:
 3. Convict obvious narration and labels. For workaround essays, report the underlying code smell so the parent can fix the code before removing the comment.
 4. Treat `IMPORTANT`, `do not remove`, `HACK`, `WARNING`, and similar language as a scent, never proof. When the claim is not locally obvious, use the **how** skill, the **why** skill, or both on the named symbol or call. Apply this gate symmetrically before `MUST KILL` and before `KEEP`. If investigation finds no current necessity, the comment is food.
 5. Audit every lint suppression. Read the rule and the suppressed code. If a useful rule caught bad code, return `MUST KILL` for the suppression and name the code defect for the parent. If the rule is faulty, pedantic, or style-only at this site, return `KEEP` with the evidence.
-6. Keep findings inside the supplied scope. Do not invent runtime behavior, ownership, history, or token-level theories. If evidence is incomplete, say what you inspected and what remains unknown.
+6. Keep findings inside the supplied scope. Do not invent runtime behavior, ownership, history, or token-level theories. If investigation leaves ambiguity and no current necessity is proven, return `MUST KILL`. Say what you inspected and what remains unknown.
 
 ## Report
 
