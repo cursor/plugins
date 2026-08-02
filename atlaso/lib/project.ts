@@ -346,12 +346,43 @@ function firstWorkspaceFolder(v: string | undefined): string | null {
  *  memories to the wrong directory (or to none). Resolve the workspace from the env
  *  the editor exports, then hand it to the tri-state resolver so an unattributable
  *  root yields null rather than a junk key. */
-export function currentProjectKey(): string | null {
-  const root =
+/** Tri-state resolution for the CURRENT process. `currentProjectKey()` collapses
+ *  'none' and 'unknown' to the same null, which is NOT the same thing: 'none' is a
+ *  trustworthy "this is genuinely not a project" ($HOME, the filesystem root) and
+ *  belongs in personal scope, while 'unknown' is "the measurement is garbage" and
+ *  must stay project-scoped but unattributed. Callers that act on the difference
+ *  must use this. (Bugbot #157, "Remember skips none-vs-unknown split".) */
+export function currentProjectResolution(): ProjectResolution {
+  return projectResolution(currentRoot());
+}
+
+function currentRoot(): string {
+  return (
     process.env.CURSOR_PROJECT_DIR ||
     process.env.CURSOR_WORKSPACE_ROOT ||
     firstWorkspaceFolder(process.env.WORKSPACE_FOLDER_PATHS) ||
     process.env.PWD ||
-    process.cwd();
-  return projectKey(root);
+    process.cwd()
+  );
+}
+
+export function currentProjectKey(): string | null {
+  return projectKey(currentRoot());
+}
+
+/** Visibility for a RECALL RESULT, as opposed to a raw tag list.
+ *
+ *  Some server versions normalize scope into a top-level `scope` field instead of
+ *  leaving `scope:project` in tags. A caller that only inspects tags therefore
+ *  reads such a row as PERSONAL and shows it everywhere — a cross-project leak.
+ *  The MCP path had this right and the sessionStart hook did not, which is exactly
+ *  the kind of drift two copies of one predicate produce, so it lives here now and
+ *  both call it. (Bugbot #157, "Recall filter misses scope field".) */
+export function resultVisibleHere(
+  r: { scope?: string; tags?: string[] },
+  project: string | null,
+): boolean {
+  const tags = Array.isArray(r.tags) ? [...r.tags] : [];
+  if (r.scope === "project" && !tags.includes("scope:project")) tags.push("scope:project");
+  return visibleInProject(tags, project);
 }

@@ -21,7 +21,7 @@ import { resolveCredential } from "./credential";
 import { cloudMode, online } from "./entitlement";
 import { REVOKED } from "./state";
 import { log } from "./log";
-import { currentProjectKey, visibleInProject } from "./project";
+import { currentProjectKey, currentProjectResolution, resultVisibleHere } from "./project";
 
 const NAME = "Atlaso";
 const VERSION = "0.1.0";
@@ -87,13 +87,6 @@ export const TOOLS = [
 const NOT_LINKED =
   "Atlaso memory isn't linked on this device yet. Start a Cursor chat (the plugin links automatically) or run `atlaso connect`.";
 
-function resultVisibleHere(r: { scope?: string; tags?: string[] }, project: string | null): boolean {
-  const tags = Array.isArray(r.tags) ? [...r.tags] : [];
-  // Some server versions expose the normalized scope separately. Preserve the
-  // fail-closed project rule even if such a row arrives without scope:* in tags.
-  if (r.scope === "project" && !tags.includes("scope:project")) tags.push("scope:project");
-  return visibleInProject(tags, project);
-}
 
 /** Run one tool. Gates on the SAME entitlement/tombstone check the hooks use
  *  (`online()`) BEFORE resolving a credential — otherwise a revoked or free-plan-
@@ -160,16 +153,24 @@ export async function dispatch(name: string, args: any): Promise<any> {
       // no key as visible-with-provenance, which is the same fail-open rule
       // auto-capture uses. Losing the scope is recoverable; losing the memory is
       // not. (Bugbot #157, "Remember fails without project key".)
-      const tags = [`scope:${scope}`];
-      if (scope === "project") {
+      // 'none' and 'unknown' are NOT the same and must not be collapsed. A
+      // genuinely non-project root ($HOME) is real personal scope; a garbage
+      // measurement stays project-scoped but unattributed. Auto-capture already
+      // splits them, and claiming parity while collapsing them would be a lie.
+      let effScope = scope;
+      if (scope === "project" && !project && currentProjectResolution().status === "none") {
+        effScope = "personal";
+      }
+      const tags: string[] = [`scope:${effScope}`];
+      if (effScope === "project") {
         if (project) tags.push(`project:${project}`);
         else tags.push("project-unknown");
       }
       const id = await remember(auth, { text, tags });
       if (!id) return { saved: false, error: "empty text, or the server was unreachable" };
-      return scope === "project" && !project
-        ? { saved: true, id, scope, note: "saved without a project key — this project could not be identified, so the memory is visible everywhere" }
-        : { saved: true, id, scope };
+      return effScope === "project" && !project
+        ? { saved: true, id, scope: effScope, note: "saved without a project key — this project could not be identified, so the memory is visible everywhere" }
+        : { saved: true, id, scope: effScope };
     }
     case "forget": {
       const id = String(args?.id ?? "");

@@ -16,7 +16,7 @@ import { maybeAutoconnect } from "../lib/connect";
 import { drainIfPending } from "../lib/drain";
 import { cloudMode, online } from "../lib/entitlement";
 import { log } from "../lib/log";
-import { projectKey, scopeOf, visibleInProject, workspaceRoot } from "../lib/project";
+import { projectKey, resultVisibleHere, scopeOf, workspaceRoot } from "../lib/project";
 import { noticeFor, render, rulesPath } from "../lib/render";
 import { parsePayload, readStdin } from "../lib/stdin";
 
@@ -49,7 +49,10 @@ async function gather(auth: Auth, project: string | undefined): Promise<RecallRe
     // (Bugbot #157, "Recall recent fallback under-fetches".)
     const fetchLimit = Math.min(200, Math.max(LIMIT * 4, 40));
     for (const r of await recent(auth, fetchLimit)) {
-      if (!visibleInProject(r.tags, project ?? null)) continue;
+      // SAME predicate the MCP path uses — a row whose scope arrives in a
+      // top-level field rather than in tags must not read as personal and
+      // leak into another project's rules file.
+      if (!resultVisibleHere(r, project ?? null)) continue;
       if (r.scope === undefined) r.scope = scopeOf(r.tags)[0]; // for the [scope] suffix
       add(r);
       if (out.length >= LIMIT) break;
