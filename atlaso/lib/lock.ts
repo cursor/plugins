@@ -9,13 +9,18 @@
  *  steal, and the lock file is NEVER unlinked (deleting a file another process holds
  *  an fd to is its own race).
  *
- *  Load-bearing invariant (never-brick): if the primitive isn't available on this
- *  platform (e.g. Windows, where flock lives under a different API), the caller must
- *  fall back to the SHARED bearer and NOT mint unlocked — so `withToolLock` yields
- *  `held: false` rather than pretending. Windows keeps running exactly as it does
- *  today (shared bearer); macOS/Linux get per-tool credentials.
+ *  Where flock is unavailable (Windows, or any platform without bun:ffi) we fall back
+ *  to an O_EXCL lockfile — see `withExclusiveFileLock` at the bottom for why that is
+ *  acceptable there and was NOT acceptable as the primary mechanism. Before that
+ *  fallback existed, Windows got `held: false` on every run, which meant it never
+ *  called /v1/device/exchange, never observed `tool_revoked`, and so REMOVING A TOOL
+ *  DID NOT STOP IT SYNCING on Windows. Every platform now mints per-tool credentials.
+ *
+ *  Load-bearing invariant (never-brick): a lock we could not take is never a verdict.
+ *  `held: false` still means "do not mint this run, keep the shared bearer, retry
+ *  next run" — it must never take a tool offline.
  */
-import { closeSync, openSync } from "node:fs";
+import { closeSync, openSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 
 const LOCK_EX = 2;
 const LOCK_NB = 4;
@@ -38,6 +43,12 @@ let _flock: FlockFn | null | undefined;
 
 function resolveFlock(): FlockFn | null {
   if (_flock !== undefined) return _flock;
+  // Escape hatch: exercise the portable path on a machine that HAS flock. Tests use
+  // it, and it makes the Windows behaviour reproducible during support triage.
+  if (process.env.ATLASO_LOCK_NO_FLOCK === "1") {
+    _flock = null;
+    return null;
+  }
   const libs =
     process.platform === "darwin"
       ? ["libSystem.B.dylib"]
@@ -80,7 +91,7 @@ export async function withToolLock<T>(
   fn: (held: boolean) => Promise<T>,
 ): Promise<T> {
   const flock = resolveFlock();
-  if (!flock) return fn(false);
+  if (!flock) return withExclusiveFileLock(lockPath, fn);
 
   let fd: number;
   try {
@@ -117,4 +128,90 @@ export async function withToolLock<T>(
       /* fd already gone */
     }
   }
+}
+
+// ── portable fallback lock (no flock: Windows, or any platform without bun:ffi) ──
+//
+// WHY THIS EXISTS. Yielding `held: false` on Windows looked conservative, but it was
+// not: `resolveCredential` then returns the SHARED bearer without ever calling
+// /v1/device/exchange, so the tool never mints its own credential and never observes
+// a `tool_revoked` verdict. Net effect — on Windows, removing Cursor did not stop it
+// syncing. The per-tool credential guarantee was simply false there.
+// (cursor/plugins#157, Bugbot "Lock miss skips tool revoke", Medium/Security.)
+//
+// The obvious alternative — call exchange without holding a lock — is WRONG: the
+// server's exchange ROTATES the credential in place (mints a new token, deletes the
+// previous), so an un-persisted mint on every hook run would churn a fresh token row
+// per invocation, forever.
+//
+// So: give Windows a real mutex instead. O_EXCL create is atomic on every platform,
+// including Windows. The header above rejects lockfiles because staleness rules are
+// TOCTOU races — that critique is correct, and the reason it is ACCEPTABLE here is
+// the blast radius, not the absence of the race: this lock is held only across one
+// exchange (≤8s), the stale threshold is an order of magnitude beyond that, and if
+// two processes ever did mint concurrently the loser simply holds a rotated-away
+// token, 401s on its next call, clears its own tool file and re-mints. Transient
+// churn that self-heals — not corruption, and not a brick. Weighed against
+// revocation silently not working on an entire operating system, that trade is easy.
+const STALE_MS = 60_000;
+
+function staleMs(): number {
+  const n = parseInt(process.env.ATLASO_LOCK_STALE_MS ?? "", 10);
+  return Number.isFinite(n) && n > 0 ? n : STALE_MS;
+}
+
+/** Separate path from the flock lock file: the two mechanisms must never contend
+ *  on the same inode, and this one is unlinked on release while that one never is. */
+function exclPath(lockPath: string): string {
+  return lockPath + ".excl";
+}
+
+async function withExclusiveFileLock<T>(
+  lockPath: string,
+  fn: (held: boolean) => Promise<T>,
+): Promise<T> {
+  const p = exclPath(lockPath);
+  const deadline = Date.now() + lockTimeoutMs();
+  let held = false;
+
+  while (Date.now() < deadline) {
+    try {
+      // "wx" = O_CREAT|O_EXCL|O_WRONLY — atomic create-or-fail on all platforms.
+      const fd = openSync(p, "wx", 0o600);
+      try {
+        writeFileSync(fd, JSON.stringify({ pid: process.pid, at: Date.now() }));
+      } catch {
+        /* diagnostics only — holding the lock is what matters */
+      }
+      closeSync(fd);
+      held = true;
+      break;
+    } catch {
+      // Someone holds it, or it was orphaned by a process that died mid-exchange.
+      // Reclaim ONLY when far past any legitimate hold.
+      try {
+        if (Date.now() - statSync(p).mtimeMs > staleMs()) unlinkSync(p);
+      } catch {
+        /* vanished or unreadable — the next attempt settles it */
+      }
+      await sleep(SPIN_MS);
+    }
+  }
+
+  try {
+    return await fn(held);
+  } finally {
+    if (held) {
+      try {
+        unlinkSync(p); // release; an O_EXCL lock is held by the file's existence
+      } catch {
+        /* already reclaimed as stale — nothing to release */
+      }
+    }
+  }
+}
+
+/** Reset the cached flock probe. Tests only — lets one process exercise both paths. */
+export function _resetFlockProbeForTests(): void {
+  _flock = undefined;
 }

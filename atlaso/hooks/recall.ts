@@ -13,6 +13,7 @@ import { dirname } from "node:path";
 import { loadAuth, recall, recent, type Auth, type RecallResult } from "../lib/atlaso";
 import { resolveCredential } from "../lib/credential";
 import { maybeAutoconnect } from "../lib/connect";
+import { drainIfPending } from "../lib/drain";
 import { cloudMode, online } from "../lib/entitlement";
 import { log } from "../lib/log";
 import { projectKey, scopeOf, visibleInProject, workspaceRoot } from "../lib/project";
@@ -73,6 +74,12 @@ async function main(): Promise<void> {
       } catch {
         /* fall through to an empty (placeholder) rules file */
       }
+      // THE RECOVERY PATH. If the last session ended while the brain was down (or
+      // mid-deploy, or the laptop was offline), those memories are still sitting in
+      // the outbox. sessionStart is the right place to catch up: the user is opening
+      // a session, not typing, and we already hold a credential. Costs one readdir
+      // when the queue is empty, which is the normal case.
+      await drainIfPending(TOOL, cred);
     }
   }
   // re-load auth: online() may have retired a revoked token mid-run. The notice

@@ -6,7 +6,11 @@
  * endpoints over the global `fetch`. The engine stays on the server; this only
  * knows the URLs — the IP thin-client rule, in TypeScript.
  *
- * v1 is ONLINE-FIRST: no local cache / outbox / sync (deferred — see README).
+ * NO local RECALL cache — reads always go to the brain, keeping the ranking
+ * engine server-side (the IP thin-client rule). WRITES are durable: deposits go
+ * through lib/outbox.ts write-ahead and are retried by lib/drain.ts, so a
+ * timeout, 5xx, 429, WAF block or offline laptop can no longer silently lose a
+ * user's memory the way v1 did.
  * Every call is FAIL-OPEN (memory must never break a Cursor turn): callers get
  * `[]` / `false` on any error — never a throw. A REACHED-but-rejected token
  * (HTTP 401/403) is the one authoritative signal: we retire auth.json so the next
@@ -49,11 +53,6 @@ export interface DepositItem {
   evidence_grade: string;
   scope_note: string | null;
   tags: string[];
-}
-
-export interface RememberOptions {
-  text: string;
-  tags?: string[];
 }
 
 const RECALL_TIMEOUT_MS = 8000;
@@ -196,6 +195,32 @@ async function call(
   body: unknown,
   timeoutMs: number,
 ): Promise<any | null> {
+  return (await callDetailed(auth, method, path, body, timeoutMs)).data;
+}
+
+/** Outcome of one call, with enough detail for the outbox to classify a failure.
+ *  `call()` above collapses this to data-or-null for the many call sites that only
+ *  need "did it work"; the deposit path needs the WHY, because "retry forever",
+ *  "stop retrying", and "this will never succeed" are three different answers and
+ *  guessing wrong either loses a memory or wedges the queue. */
+export interface CallOutcome {
+  data: any | null;
+  /** HTTP status, or 0 when the request never produced a response (timeout,
+   *  DNS failure, connection reset, unparseable body). */
+  status: number;
+  /** True when the response positively identifies as OUR brain rather than an
+   *  edge/WAF page — the same marker that gates credential retirement. */
+  ours: boolean;
+  error?: string;
+}
+
+export async function callDetailed(
+  auth: Auth,
+  method: string,
+  path: string,
+  body: unknown,
+  timeoutMs: number,
+): Promise<CallOutcome> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
@@ -208,15 +233,24 @@ async function call(
       body: body ? JSON.stringify(body) : undefined,
       signal: ctrl.signal,
     });
+    const ours = res.headers?.get("x-atlaso-response") === "1";
     if (res.status === 401 || res.status === 403) {
       // Only OUR server's verdict may retire a credential — an edge/WAF block is not one.
-      if (res.headers?.get("x-atlaso-response") === "1") retireForAuth(auth);
-      return null;
+      if (ours) retireForAuth(auth);
+      return { data: null, status: res.status, ours };
     }
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null; // transport/timeout/parse — transient, leave credentials intact
+    if (!res.ok) return { data: null, status: res.status, ours };
+    try {
+      return { data: await res.json(), status: res.status, ours };
+    } catch {
+      // 2xx with an unreadable body: the write may well have landed. Report it as
+      // a transport-class failure so the caller RETRIES — the deposit is
+      // idempotent on client_id, so a retry cannot duplicate.
+      return { data: null, status: 0, ours, error: "unparseable body" };
+    }
+  } catch (e) {
+    // transport/timeout/abort — transient, leave credentials intact
+    return { data: null, status: 0, ours: false, error: String(e).slice(0, 200) };
   } finally {
     clearTimeout(timer);
   }
@@ -229,8 +263,9 @@ export async function recall(
   limit = 8,
   project?: string,
 ): Promise<RecallResult[]> {
-  // Explicit MCP queries are user-controlled too. Scrub before URL construction so
-  // a pasted token cannot escape through the read path while searching memory.
+  // Explicit MCP queries are user/agent-controlled too. Scrub BEFORE building the
+  // URL so a pasted token cannot escape through the READ path while searching
+  // memory — the write path is not the only way a secret leaves the machine.
   const safeQuery = scrub(query || "")[0];
   const params = new URLSearchParams({ q: safeQuery, limit: String(limit) });
   if (project) params.set("project", project);
@@ -247,12 +282,54 @@ export async function recent(auth: Auth, limit = 8): Promise<RecallResult[]> {
   return Array.isArray(deposits) ? deposits : [];
 }
 
+export interface DepositOutcome {
+  ok: boolean;
+  results: Array<{ client_id?: string; status?: string }>;
+  /** Transport/HTTP detail so the outbox can decide retry vs quarantine. */
+  status: number;
+  ours: boolean;
+  error?: string;
+}
+
+/** Batch deposit exposing the full outcome. The outbox drain uses this; everything
+ *  that only cares "did it work" uses `depositWithResults` below. */
+export async function depositDetailed(
+  auth: Auth,
+  items: DepositItem[],
+  captureStats?: unknown[],
+): Promise<DepositOutcome> {
+  if (!items.length && !(captureStats && captureStats.length)) {
+    return { ok: false, results: [], status: 0, ours: false, error: "empty" };
+  }
+  const body: Record<string, unknown> = { items };
+  if (captureStats && captureStats.length) body.capture_stats = captureStats;
+  const out = await callDetailed(auth, "POST", "/v1/memories/batch", body, DEPOSIT_TIMEOUT_MS);
+  return {
+    ok: !!out.data,
+    results: Array.isArray(out.data?.results) ? out.data.results : [],
+    status: out.status,
+    ours: out.ours,
+    error: out.error,
+  };
+}
+
+/** Batch deposit returning the server's per-item verdicts (added/duplicate) —
+ *  the capture counters need them. `captureStats` is the ADDITIVE content-free
+ *  counter payload (old servers ignore it; items may be [] for a stats-only
+ *  flush, though the connectors currently only piggyback). */
+export async function depositWithResults(
+  auth: Auth,
+  items: DepositItem[],
+  captureStats?: unknown[],
+): Promise<{ ok: boolean; results: Array<{ client_id?: string; status?: string }> }> {
+  const r = await depositDetailed(auth, items, captureStats);
+  return { ok: r.ok, results: r.results };
+}
+
 /** Batch deposit (the server re-scrubs + runs the worth-keeping gate). The
  *  client_id is the server idempotency key, so a retry never duplicates. */
 export async function deposit(auth: Auth, items: DepositItem[]): Promise<boolean> {
-  if (!items.length) return false;
-  const data = await call(auth, "POST", "/v1/memories/batch", { items }, DEPOSIT_TIMEOUT_MS);
-  return !!data;
+  return (await depositWithResults(auth, items)).ok;
 }
 
 /** POST /v1/entitlement — this device's tool policy {active_tool, multi_tool,
@@ -273,11 +350,21 @@ export async function claimToolCall(auth: Auth, tool: string): Promise<any | nul
 // user "remember" is tagged `manual` — the server enricher treats manual memories as
 // untouchable — plus the tool id for attribution. Mirrors the Python do_remember.
 
-/** Deposit ONE memory the user explicitly asked to keep. Client-side scrubbing is
- *  mandatory here too: deliberate MCP saves get the same on-device secret boundary
- *  as automatic capture. Returns the server id (so a later `forget` can target it),
- *  or null on failure. */
+/** Deposit ONE memory the user explicitly asked to keep. Returns the server id
+ *  (so a later `forget` can target it), or null on failure. */
+export interface RememberOptions {
+  text: string;
+  /** Extra tags (e.g. scope:project + project:<key>) so an explicit save is
+   *  scoped like an automatic capture instead of defaulting to personal —
+   *  otherwise repo-specific facts saved via MCP follow the user everywhere. */
+  tags?: string[];
+}
+
 export async function remember(auth: Auth, opts: RememberOptions): Promise<string | null> {
+  // SCRUB BEFORE SENDING. Auto-capture scrubs secrets on-device; this explicit path
+  // did not, so "remember my key is sk-..." shipped the key to the brain in clear —
+  // a hole in the on-device scrubbing guarantee, reachable from the MCP `remember`
+  // tool with arbitrary agent-supplied text. (Bugbot, cursor/plugins#157, HIGH.)
   const t = scrub(opts.text || "")[0].trim();
   if (!t) return null;
   const client_id = randomUUID().replace(/-/g, "");

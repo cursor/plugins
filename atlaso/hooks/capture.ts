@@ -12,7 +12,9 @@
  * ZERO model involvement. Online-first: with no token / not cloud-linked we skip.
  * Never breaks the session (always exits 0).
  */
-import { deposit, loadAuth, type DepositItem } from "../lib/atlaso";
+import { depositDetailed, loadAuth, type DepositItem } from "../lib/atlaso";
+import { drainIfPending } from "../lib/drain";
+import { enqueue, quarantine, settle } from "../lib/outbox";
 import {
   buildContent, classifyScope, heuristicPolarity, messageKey, scrub, shouldDeposit, turnKey,
 } from "../lib/capture";
@@ -22,7 +24,7 @@ import { log } from "../lib/log";
 import {
   clearPending, peekPending, stashCompleted, stashPrompt, stashResponse, takeCompleted,
 } from "../lib/pending";
-import { projectKey, workspaceRoot } from "../lib/project";
+import { projectResolution, workspaceRoot } from "../lib/project";
 import { parsePayload, readStdin } from "../lib/stdin";
 import { exchangeFromPayload, lastExchangeFromFile } from "../lib/transcript";
 
@@ -96,7 +98,23 @@ async function depositTurn(payload: Record<string, any>, event: string): Promise
   // falling back to this payload's workspace_roots — both scope to the same repo.
   const ws = pending?.ws || workspaceRoot(payload);
   let scope = classifyScope(user);
-  let pk = projectKey(ws ?? undefined); // for the project tag AND the idempotency key
+  // TRI-STATE project attribution (in lockstep with the Python client's core.py).
+  // Only resolve a key when the heuristic says "project": 'ok' → tag the key;
+  // 'none' (root is $HOME etc.) → genuinely personal, downgrade; 'unknown' (the
+  // hook's own vendored runtime, a cache dir, an all-garbage workspace chain) →
+  // keep scope:project but attach a bare marker and NEVER a key, so an
+  // unattributable capture is visible-with-provenance instead of silently buried
+  // under a junk project.
+  let pk: string | null = null;
+  let projectUnknown = false;
+  if (scope === "project") {
+    const { status, key } = ws
+      ? projectResolution(ws)
+      : { status: "unknown" as const, key: null };
+    if (status === "none") scope = "personal";
+    else if (status === "unknown") projectUnknown = true;
+    else pk = key;
+  }
   let clientId = turnKey(scrubbedUser, scope, scope === "project" ? pk : null);
   // sessionEnd may reconstruct the same turn from a transcript whose workspace
   // differs from the prompt-time root. Its matching receipt preserves the stop
@@ -107,6 +125,7 @@ async function depositTurn(payload: Record<string, any>, event: string): Promise
     clientId = completed.client_id;
   }
   const tags = ["cursor", "auto", `pol-hint:${heuristicPolarity(user)}`, `scope:${scope}`];
+  if (projectUnknown) tags.push("project-unknown"); // provenance, never a key
   if (scope === "project" && pk) tags.push(`project:${pk}`);
 
   const item: DepositItem = {
@@ -154,12 +173,27 @@ async function depositTurn(payload: Record<string, any>, event: string): Promise
     log("capture", "skip (local-only — no tool credential)");
     return;
   }
+  // WRITE-AHEAD. Persist BEFORE the network call, never after it fails, so a process
+  // killed inside fetch (editor quit, machine sleep, hook timeout, a brain restart
+  // mid-deploy) has already durably recorded the memory. Idempotent on client_id.
+  enqueue(TOOL, item);
+
   try {
-    const saved = await deposit(cred, [item]);
-    log("capture", `saved=${saved} scope=${scope}`);
+    const { ok, results, status } = await depositDetailed(cred, [item]);
+    if (ok) {
+      const verdict = results.find((r) => r.client_id === item.client_id);
+      if (verdict && verdict.status !== "invalid") settle(TOOL, item.client_id);
+      else if (verdict)
+        quarantine(TOOL, { client_id: item.client_id, item, enqueued_at: Date.now(), attempts: 1 },
+                   `server rejected: ${verdict.status}`);
+    }
+    log("capture", `saved=${ok}${ok ? "" : ` queued (${status || "transport"})`} scope=${scope}`);
   } catch (e) {
-    log("capture", `error ${e}`);
+    log("capture", `error ${e} (queued)`); // already on disk; the drain retries it
   }
+
+  // Opportunistic catch-up between turns; one readdir when the queue is empty.
+  await drainIfPending(TOOL, cred);
 }
 
 async function main(): Promise<void> {

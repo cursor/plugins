@@ -59,7 +59,7 @@ async function exchange(shared: Auth, tool: string): Promise<ExchangeResult> {
     });
     const verified = res.headers?.get("x-atlaso-response") === "1";
     if (res.ok) {
-      const data = await res.json().catch(() => null);
+      const data = (await res.json().catch(() => null)) as { token?: unknown } | null;
       if (data && typeof data.token === "string" && data.token) return { kind: "minted", token: data.token };
       return { kind: "unverified" }; // 200 but no token → treat as transient, keep shared
     }
