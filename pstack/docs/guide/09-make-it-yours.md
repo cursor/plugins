@@ -40,6 +40,16 @@ Writing a skill matches the [Authoring or modifying a skill playbook](../../skil
 
 One special case has its own generator. A skill that must drive your app and prove behavior is a verification skill, so use [`/create-verification-skill`](../../skills/create-verification-skill/SKILL.md) and [`/maintain-verification-skill`](../../skills/maintain-verification-skill/SKILL.md) instead. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers both.
 
+## Write docs to a standard with `/technical-writing`
+
+Skills aren't the only prose you ship. For docs, RFCs, readmes, PR descriptions, and commit messages:
+
+```text
+/technical-writing review the readme changes
+```
+
+[`/technical-writing`](../../skills/technical-writing/SKILL.md) applies a layered standard whose goal is prose a tired engineer understands on the first read. It picks the document's mode first (tutorial, how-to, reference, or explanation), then holds every sentence to the reader: who does what, one thought per sentence, nothing readable two ways. Use it to review what you or an agent just wrote, or name it up front when you ask for a doc.
+
 ## Test a skill change blind
 
 A skill edit affects every future session, so test it like the experiment it is:

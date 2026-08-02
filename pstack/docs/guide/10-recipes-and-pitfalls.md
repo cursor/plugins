@@ -70,6 +70,14 @@ apply prove it works. show me the real output, not the build log.
 
 You rarely need more words. You need the right name, and [the principles page](./08-principles.md) is the vocabulary.
 
+## Get the reply in plain words
+
+```text
+/bro
+```
+
+That's the whole prompt. [`/bro`](../../skills/bro/SKILL.md) restates the last message like one human talking to another, no jargon, shorter. Use it when a reply is technically thorough and you still don't know what it said.
+
 ## The pitfalls
 
 - **Enumerating skills in the prompt.** "use /how then /architect then /arena" reorders steps the playbook already sequences. State the goal and constraints. Name a skill only to override a default.
