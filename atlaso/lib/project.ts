@@ -353,17 +353,34 @@ function firstWorkspaceFolder(v: string | undefined): string | null {
  *  must stay project-scoped but unattributed. Callers that act on the difference
  *  must use this. (Bugbot #157, "Remember skips none-vs-unknown split".) */
 export function currentProjectResolution(): ProjectResolution {
-  return projectResolution(currentRoot());
+  // 'none' is a TRUSTWORTHY "this is genuinely not a project", and acting on it
+  // downgrades a memory to personal — visible in every repo forever. It may only
+  // come from a root the editor actually supplied. An MCP server launched without
+  // workspace env vars falls back to cwd, which is frequently $HOME, and $HOME
+  // resolves to 'none': trusting that would file project-specific facts as
+  // personal and follow the user across every repository. Auto-capture already
+  // maps a missing workspace to 'unknown'; this now matches it.
+  // (Bugbot #157, "Remember mis-tags personal scope", HIGH.)
+  const supplied = editorWorkspaceRoot();
+  if (!supplied) return { status: "unknown", key: null };
+  return projectResolution(supplied);
 }
 
-function currentRoot(): string {
+/** The workspace the EDITOR told us about, or null. Deliberately excludes any
+ *  cwd fallback: "the editor said this is the workspace" and "we guessed from the
+ *  process's working directory" are different claims, and only the first can be
+ *  trusted to mean anything. */
+function editorWorkspaceRoot(): string | null {
   return (
     process.env.CURSOR_PROJECT_DIR ||
     process.env.CURSOR_WORKSPACE_ROOT ||
     firstWorkspaceFolder(process.env.WORKSPACE_FOLDER_PATHS) ||
-    process.env.PWD ||
-    process.cwd()
+    null
   );
+}
+
+function currentRoot(): string {
+  return editorWorkspaceRoot() || process.env.PWD || process.cwd();
 }
 
 export function currentProjectKey(): string | null {
