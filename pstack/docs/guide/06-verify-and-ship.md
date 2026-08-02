@@ -1,6 +1,6 @@
 # Verify the result and open a PR
 
-"It compiles" is not evidence. The [Prove It Works principle](../../skills/principle-prove-it-works/SKILL.md) makes the agent check the real artifact before it reports success, and your job is to make "the real artifact" checkable. This page covers stating a finish condition, generating a verification skill for your app, and shipping.
+"It compiles" is not evidence. The [Prove It Works principle](../../skills/principle-prove-it-works/SKILL.md) makes the agent check the real artifact before it reports success, and your job is to make "the real artifact" checkable. This page covers stating a finish condition, generating a verification skill for your app, opening the PR, and driving it to merged.
 
 ![A prototype plane flies a real test course while she times it with a stopwatch and robots film and checklist the run; the terminal reads verify: pass, evidence: captured.](./images/verification.jpg)
 
@@ -50,7 +50,7 @@ Apps change and feature maps rot. When yours drifts, run:
 
 [`/maintain-verification-skill`](../../skills/maintain-verification-skill/SKILL.md) audits the generated skill: one read-only source reader per feature in parallel, then one live pass that drives every mapped feature. It ends in exactly one of three outcomes. `clean` means full coverage and nothing to ship. `changed` means one PR of proven corrections, confined to the verification skill's own directory. `blocked` names the blocker. It never edits product code. If the live pass catches a product regression, it reports the regression instead of papering over it in docs.
 
-## Ship it
+## Open the PR
 
 ```text
 /poteto-mode open the pr. small ordered commits, evidence in the description.
@@ -58,7 +58,30 @@ Apps change and feature maps rot. When yours drifts, run:
 
 The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) works from a worktree, rebases the work into small ordered commits, cleans the diff, unslops the prose, and returns the PR link. Five narrow PRs beat one fat one, and stacked follow-ups beat a growing branch.
 
-> [!NOTE]
-> pstack doesn't bundle PR monitoring or stacked-PR tooling. After the PR opens, use Cursor's built-in PR tools to watch CI and process review comments. Judge each comment against your intent before changing code. Reviewers, human and bot, file real catches and noise in the same list.
+## Drive it to merge-ready with Babysit
+
+An open PR starts collecting blockers immediately. Checks fail, reviewers comment, trunk moves. Hand that churn to the [Babysit playbook](../../skills/poteto-mode/playbooks/babysit.md):
+
+```text
+/poteto-mode babysit this pr. get it green.
+```
+
+Babysit watches the PR with a bundled watcher and takes blockers in the order that wastes the least, conflicts first, then review threads, then CI, batching every known fix into one push so the checks restart once. Review comments get triaged skeptically, because humans and bots file real catches and noise in the same list. A real finding gets a fix, and noise gets dismissed with the disproof posted on the thread. When you only want status, ask smaller and it answers without starting the loop:
+
+```text
+/poteto-mode check on pr 123. anything outstanding?
+```
+
+Babysit stops at merge-ready. It never merges, even with everything green, because merging is a different decision.
+
+## Land the stack with Shipping
+
+Green is not the same as safe. When you're ready to land, say so:
+
+```text
+/poteto-mode land the stack.
+```
+
+The [Shipping playbook](../../skills/poteto-mode/playbooks/shipping.md) verifies each PR independently before arming anything, one fresh agent per PR exercising the real surface, an agent that didn't write the code. Then it lands only the contiguous verified run from the bottom, through Graphite merge-when-ready, and reports the first PR that breaks the chain. A verified PR sitting above an unverified one waits, because merging it would pull the gap in underneath.
 
 Next: [Run work while you sleep](./07-overnight.md).
