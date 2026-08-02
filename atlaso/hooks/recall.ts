@@ -41,7 +41,14 @@ async function gather(auth: Auth, project: string | undefined): Promise<RecallRe
   // per-project visibility rule client-side — project A's notes must never leak
   // into project B's rules file.
   if (out.length < LIMIT) {
-    for (const r of await recent(auth, LIMIT)) {
+    // OVER-FETCH before filtering. /v1/memories is global newest-first, so asking
+    // for exactly LIMIT and then dropping foreign-project rows can return NOTHING
+    // right after switching projects — a short run of other-project deposits
+    // crowds out every visible memory. The MCP `recent` path already over-fetches
+    // before the same filter; this hook did not.
+    // (Bugbot #157, "Recall recent fallback under-fetches".)
+    const fetchLimit = Math.min(200, Math.max(LIMIT * 4, 40));
+    for (const r of await recent(auth, fetchLimit)) {
       if (!visibleInProject(r.tags, project ?? null)) continue;
       if (r.scope === undefined) r.scope = scopeOf(r.tags)[0]; // for the [scope] suffix
       add(r);
@@ -63,7 +70,7 @@ async function main(): Promise<void> {
   let results: RecallResult[] = [];
   // entitlement gate: only recall from the cloud when this tool is cloud-linked
   // (free plan = 1 active tool/device; the brain doesn't enforce it — we do).
-  if (auth && (await online(auth, TOOL, deviceId))) {
+  if (auth && (await online(auth, { tool: TOOL, deviceId: deviceId }))) {
     // Resolve THIS tool's own credential (mint on first run) and recall with it, so
     // the brain attributes the call to Cursor specifically. Null = must stay
     // local-only this run (tombstoned/not-entitled) → empty rules file + a notice.
@@ -84,7 +91,7 @@ async function main(): Promise<void> {
   }
   // re-load auth: online() may have retired a revoked token mid-run. The notice
   // (local-only / upgrade / grace) reaches the user via the rules file.
-  const notice = noticeFor(cloudMode(loadAuth(), TOOL, deviceId));
+  const notice = noticeFor(cloudMode(loadAuth(), { tool: TOOL, deviceId: deviceId }));
   try {
     const p = rulesPath(ws);
     mkdirSync(dirname(p), { recursive: true });

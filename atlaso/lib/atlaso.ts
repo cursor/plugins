@@ -19,7 +19,7 @@
 import {
   closeSync, fsyncSync, mkdirSync, openSync, readFileSync, renameSync, unlinkSync, writeFileSync,
 } from "node:fs";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { scrub } from "./capture";
@@ -367,7 +367,16 @@ export async function remember(auth: Auth, opts: RememberOptions): Promise<strin
   // tool with arbitrary agent-supplied text. (Bugbot, cursor/plugins#157, HIGH.)
   const t = scrub(opts.text || "")[0].trim();
   if (!t) return null;
-  const client_id = randomUUID().replace(/-/g, "");
+  // CONTENT-DERIVED idempotency key, not a random UUID. A random key meant a
+  // timeout AFTER the server committed looked like failure, and the retry minted a
+  // NEW key — so the same fact could be stored twice, or reported unsaved when it
+  // had landed. Auto-capture already derives its key from content; the explicit
+  // path is the higher-intent one and deserves it more, not less.
+  // (Bugbot #157, "Remember lacks durable idempotency".)
+  const client_id = createHash("sha256")
+    .update(`remember\u0000${t}\u0000${(opts.tags || []).slice().sort().join(",")}`)
+    .digest("hex")
+    .slice(0, 32);
   const tags = [...new Set(["cursor", "manual", ...(opts.tags || [])])];
   const item: DepositItem = {
     client_id, text: t, polarity: "open", evidence_grade: "anecdotal",

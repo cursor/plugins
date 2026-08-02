@@ -106,8 +106,8 @@ export async function dispatch(name: string, args: any): Promise<any> {
   const deviceId = shared.device_id ?? null;
   // The verified-verdict gate: revoked → stay down (sticky); free-plan non-active →
   // local-only. Never resurrect a removed tool via the shared bearer.
-  if (!(await online(shared, TOOL, deviceId))) {
-    const mode = cloudMode(shared, TOOL, deviceId);
+  if (!(await online(shared, { tool: TOOL, deviceId: deviceId }))) {
+    const mode = cloudMode(shared, { tool: TOOL, deviceId: deviceId });
     return {
       error:
         mode.reason === REVOKED
@@ -151,13 +151,25 @@ export async function dispatch(name: string, args: any): Promise<any> {
         ? args.scope
         : null;
       const scope = requested ?? classifyScope(text);
-      if (scope === "project" && !project) {
-        return { saved: false, error: "could not identify the current project; retry with scope `personal` if this memory should be global" };
-      }
+      // NEVER refuse a deliberate save because we could not name the project.
+      // classifyScope defaults to "project", and this is a standalone MCP process
+      // with no hook payload and an arbitrary cwd, so currentProjectKey() is null
+      // more often than not — refusing meant "remember this" routinely failed on
+      // the user's highest-intent memory. Instead mark it unattributed and let it
+      // be visible everywhere: the server already treats a project-scoped row with
+      // no key as visible-with-provenance, which is the same fail-open rule
+      // auto-capture uses. Losing the scope is recoverable; losing the memory is
+      // not. (Bugbot #157, "Remember fails without project key".)
       const tags = [`scope:${scope}`];
-      if (scope === "project" && project) tags.push(`project:${project}`);
+      if (scope === "project") {
+        if (project) tags.push(`project:${project}`);
+        else tags.push("project-unknown");
+      }
       const id = await remember(auth, { text, tags });
-      return id ? { saved: true, id } : { saved: false, error: "empty text, or the server was unreachable" };
+      if (!id) return { saved: false, error: "empty text, or the server was unreachable" };
+      return scope === "project" && !project
+        ? { saved: true, id, scope, note: "saved without a project key — this project could not be identified, so the memory is visible everywhere" }
+        : { saved: true, id, scope };
     }
     case "forget": {
       const id = String(args?.id ?? "");

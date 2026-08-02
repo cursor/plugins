@@ -16,7 +16,8 @@ export type { Verdict } from "./state";
 /** Should we attempt a cloud call right now? True = cloud-linked, False =
  *  local-only this turn. Never throws (memory must never break a turn). Hits the
  *  network only on a stale/foreign verdict (cached otherwise). */
-export async function online(auth: Auth | null, tool: string, deviceId: string | null): Promise<boolean> {
+export async function online(auth: Auth | null, id: { tool: string; deviceId: string | null }): Promise<boolean> {
+  const { tool, deviceId } = id;
   if (!auth) return false;
   try {
     const st = state.get();
@@ -67,7 +68,8 @@ async function verify(auth: Auth, tool: string, deviceId: string | null): Promis
 }
 
 /** The current verdict for surfacing a user notice (no network). */
-export function cloudMode(auth: Auth | null, tool: string, deviceId: string | null): state.Verdict {
+export function cloudMode(auth: Auth | null, id: { tool: string; deviceId: string | null }): state.Verdict {
+  const { tool, deviceId } = id;
   if (!auth) return { ...state.defaultState(), mode: state.LOCAL_ONLY, reason: state.NOT_CONNECTED };
   const st = state.get();
   if (!state.matches(st, tool, deviceId)) return state.defaultState(); // foreign → no notice

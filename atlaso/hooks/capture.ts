@@ -162,7 +162,7 @@ async function depositTurn(payload: Record<string, any>, event: string): Promise
   }
   // entitlement gate: don't deposit to the cloud unless this tool is cloud-linked
   // (free plan = 1 active tool/device; enforced client-side).
-  if (!(await online(auth, TOOL, auth.device_id ?? null))) {
+  if (!(await online(auth, { tool: TOOL, deviceId: auth.device_id ?? null }))) {
     log("capture", "skip (not cloud-linked — local-only)");
     return;
   }
