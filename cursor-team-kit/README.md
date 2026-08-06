@@ -47,6 +47,7 @@ Internal-style workflows for CI, code review, shipping, and test reliability. Th
 | `typescript-exhaustive-switch` | Require exhaustive switch handling for unions/enums |
 | `no-inline-imports` | Keep imports at module top-level for readability and consistency |
 | `worktree-cleanup` | Remove sibling git worktrees when their branch merges so parallel-work directories do not accumulate |
+| `one-shot-script-cleanup` | Delete `_tmp-*` helper scripts and temp payload files when the task that created them ships |
 
 ## License
 
