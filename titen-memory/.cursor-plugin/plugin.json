@@ -1,0 +1,21 @@
+{
+  "name": "titen-memory",
+  "displayName": "Titen Memory",
+  "version": "0.2.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Use Titen's evidence-grounded collaborative memory through its existing authenticated MCP server.",
+  "author": {
+    "name": "Titen contributors"
+  },
+  "homepage": "https://github.com/RamaAditya49/titen/blob/main/docs/agent-plugins.md",
+  "repository": "https://github.com/RamaAditya49/titen",
+  "license": "Apache-2.0",
+  "logo": "https://raw.githubusercontent.com/RamaAditya49/titen/main/docs/assets/brand/titen-mark.svg",
+  "keywords": ["agent-memory", "collaboration", "mcp", "titen"],
+  "category": "productivity",
+  "tags": ["memory", "mcp", "collaboration"],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}

@@ -19,6 +19,11 @@
       "description": "Incremental transcript-driven memory updates for AGENTS.md using high-signal bullet points only."
     },
     {
+      "name": "titen-memory",
+      "source": "titen-memory",
+      "description": "Connect Cursor to an operator-selected Titen MCP server for explicit, evidence-grounded collaborative memory."
+    },
+    {
       "name": "cursor-team-kit",
       "source": "cursor-team-kit",
       "description": "Internal team workflows used by Cursor developers for CI, code review, shipping, local automation, and verification."
