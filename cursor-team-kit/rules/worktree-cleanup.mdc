@@ -1,0 +1,68 @@
+---
+description: Clean up git worktrees when their branch merges so parallel-work siblings do not accumulate
+alwaysApply: true
+---
+
+# Worktree cleanup
+
+Applies to any repo where an agent uses `git worktree` to run parallel
+branch work in sibling directories. The same session that adds a
+worktree is responsible for removing it. Pairs with (does not repeat)
+one-writer-per-branch and subagent-isolation guidance covered by rules
+like `parallel-agent-write-discipline`.
+
+## Create
+
+Use short-lived sibling worktrees off the integration branch, and name
+them so it is obvious what work they hold:
+
+```bash
+git -C <repo> worktree add ../<repo>-wt-<task> \
+  -b feature/<task-or-ticket> origin/<integration-branch>
+```
+
+Reach for a worktree when: another session owns the current branch, the
+tree is dirty with edits you did not author, or a subagent needs write
+access without touching the shared checkout.
+
+## Commit before removing
+
+Never `git worktree remove` a dirty tree. Either land the work (its PR
+merges, or push the WIP branch) or get explicit user OK to discard.
+If a session ends mid-flight, commit WIP with a clear message on the
+feature branch first -- uncommitted work in a removed worktree is gone.
+
+## Remove when done
+
+After the worktree's PR merges (or the branch is abandoned), the same
+session that created it must, from the main checkout:
+
+1. `git worktree remove <path>`
+2. `git worktree prune`
+3. `git branch -d feature/<...>` once fully merged. Do not use `-D`
+   without a merge-into-integration proof and a note explaining it.
+
+Never delete long-lived branches: `main`, `master`, `staging`,
+`develop`, or any equivalent release line.
+
+## Report leftovers
+
+An agent's final response must list any worktree it created and either
+state that it has been removed or explain why it stayed (for example,
+`unmerged WIP at <sha> on branch <name>`). Silent orphans defeat the
+whole point.
+
+## Optional housekeeping pass
+
+At session end, an agent may `git worktree list` and remove siblings
+whose branches are already merged to the integration branch upstream,
+but only when the worktree is clean, `git status` shows no changes it
+did not author, and no other running agent owns it. When in doubt,
+leave it.
+
+## Never touch
+
+- Another running agent's worktree.
+- The main repo checkout the shared session is working out of.
+- Unrelated sibling project folders that happen to live next to the
+  repo's worktree siblings.
