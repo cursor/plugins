@@ -16,17 +16,17 @@ installSlackWebApiMock();
 const { AgentManager } = await import("../core/agent-manager.ts");
 
 const ORIGINAL_API_KEY = process.env.CURSOR_API_KEY;
-const ORIGINAL_SLACK_TOKEN = process.env.SLACK_BOT_TOKEN;
+const ORIGINAL_SLACK_TOKEN = process.env.ORCHESTRATE_SLACK_BOT_TOKEN;
 process.env.CURSOR_API_KEY = "test-key";
-process.env.SLACK_BOT_TOKEN = "xoxb-test";
+process.env.ORCHESTRATE_SLACK_BOT_TOKEN = "xoxb-test";
 
 afterAll(() => {
   if (ORIGINAL_API_KEY === undefined) delete process.env.CURSOR_API_KEY;
   else process.env.CURSOR_API_KEY = ORIGINAL_API_KEY;
   if (ORIGINAL_SLACK_TOKEN === undefined) {
-    delete process.env.SLACK_BOT_TOKEN;
+    delete process.env.ORCHESTRATE_SLACK_BOT_TOKEN;
   } else {
-    process.env.SLACK_BOT_TOKEN = ORIGINAL_SLACK_TOKEN;
+    process.env.ORCHESTRATE_SLACK_BOT_TOKEN = ORIGINAL_SLACK_TOKEN;
   }
 });
 
@@ -391,8 +391,8 @@ describe("AgentManager Slack status mirror", () => {
   });
 
   test("No token: load works, slackAdapter undefined, attention log + console.error once", async () => {
-    const original = process.env.SLACK_BOT_TOKEN;
-    delete process.env.SLACK_BOT_TOKEN;
+    const original = process.env.ORCHESTRATE_SLACK_BOT_TOKEN;
+    delete process.env.ORCHESTRATE_SLACK_BOT_TOKEN;
     const errors: string[] = [];
     const originalConsoleError = console.error;
     console.error = ((...args: unknown[]) => {
@@ -428,7 +428,9 @@ describe("AgentManager Slack status mirror", () => {
       expect(mgr.slackAdapter).toBeUndefined();
       expect(slackWebApiCalls()).toHaveLength(0);
       expect(
-        errors.filter(line => line.includes("SLACK_BOT_TOKEN not set"))
+        errors.filter(line =>
+          line.includes("ORCHESTRATE_SLACK_BOT_TOKEN not set")
+        )
       ).toHaveLength(1);
       expect(readState(workspace).attention).toEqual([]);
 
@@ -443,9 +445,9 @@ describe("AgentManager Slack status mirror", () => {
       rmSync(workspace, { recursive: true, force: true });
       console.error = originalConsoleError;
       if (original === undefined) {
-        delete process.env.SLACK_BOT_TOKEN;
+        delete process.env.ORCHESTRATE_SLACK_BOT_TOKEN;
       } else {
-        process.env.SLACK_BOT_TOKEN = original;
+        process.env.ORCHESTRATE_SLACK_BOT_TOKEN = original;
       }
     }
   });

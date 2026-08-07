@@ -1,11 +1,26 @@
-import { describe, expect, test } from "bun:test";
+import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 
 import {
   defaultModelForType,
   isKnownModel,
   MODEL_CATALOG,
+  MODEL_ENV_CATALOG,
   resolveModelSelection,
 } from "../models.ts";
+
+let savedCatalogEnv: string | undefined;
+
+// These assertions describe the built-in catalog, so an env-provided catalog
+// from the surrounding shell must not leak in.
+beforeEach(() => {
+  savedCatalogEnv = process.env[MODEL_ENV_CATALOG];
+  delete process.env[MODEL_ENV_CATALOG];
+});
+
+afterEach(() => {
+  if (savedCatalogEnv === undefined) delete process.env[MODEL_ENV_CATALOG];
+  else process.env[MODEL_ENV_CATALOG] = savedCatalogEnv;
+});
 
 describe("MODEL_CATALOG", () => {
   test("every catalog entry passes isKnownModel", () => {
