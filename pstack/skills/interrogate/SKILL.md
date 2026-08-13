@@ -39,7 +39,7 @@ Launch all reviewers in a single message using the Task tool. Use the `interroga
 |----------|---------------|
 | Reviewer A | `claude-fable-5-thinking-max` |
 | Reviewer B | `gpt-5.6-sol-max` |
-| Reviewer C | `grok-4.5-fast-xhigh` |
+| Reviewer C | `grok-4.6-fast-xhigh` |
 | Reviewer D | `claude-opus-5-thinking-xhigh` |
 
 For each reviewer:
