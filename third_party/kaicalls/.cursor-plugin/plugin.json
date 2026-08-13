@@ -1,0 +1,32 @@
+{
+  "name": "kaicalls",
+  "displayName": "KaiCalls",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Connect to KaiCalls for AI phone agents, call review, and approved calling workflows.",
+  "author": {
+    "name": "KaiCalls",
+    "email": "support@kaicalls.com"
+  },
+  "homepage": "https://www.kaicalls.com/docs/api",
+  "repository": "https://github.com/KaiCalls/kaicalls-plugin",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "kaicalls",
+    "voice-ai",
+    "phone-calls",
+    "mcp",
+    "agents"
+  ],
+  "category": "productivity",
+  "tags": [
+    "voice-ai",
+    "phone-calls",
+    "call-review",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

@@ -79,6 +79,11 @@
       "description": "Connect to Gmail via Google's remote MCP server — search, read, draft, label, and manage email."
     },
     {
+      "name": "kaicalls",
+      "source": "third_party/kaicalls",
+      "description": "Connect to KaiCalls for AI phone agents, call review, and approved calling workflows."
+    },
+    {
       "name": "google-drive",
       "source": "third_party/google-drive",
       "description": "Connect to Google Drive via Google's remote MCP server — search, read, create, share, and manage files."

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="KaiCalls">
+  <rect width="512" height="512" rx="96" fill="#161B1F"/>
+  <path d="M128 96h64v128l104-128h80L256 238l128 178h-78L214 286l-22 26v104h-64V96z" fill="#FFFFFF"/>
+  <circle cx="368" cy="128" r="36" fill="#2563EB"/>
+</svg>

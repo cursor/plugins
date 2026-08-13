@@ -18,6 +18,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `orchestrate` | [Orchestrate](orchestrate/) | Cursor | Developer Tools | Fan large tasks out across parallel cloud agents with planners, workers, verifiers, and structured handoffs. |
 | `pstack` | [pstack](pstack/) | Lauren Tan | Developer Tools | if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence. |
 | `gmail` | [Gmail](third_party/gmail/) | Cursor | Productivity | Connect to Gmail via Google's remote MCP server — search, read, draft, label, and manage email. |
+| `kaicalls` | [KaiCalls](third_party/kaicalls/) | KaiCalls | Productivity | Connect to KaiCalls for AI phone agents, call review, and approved calling workflows. |
 | `google-drive` | [Google Drive](third_party/google-drive/) | Cursor | Productivity | Connect to Google Drive via Google's remote MCP server — search, read, create, share, and manage files. |
 | `google-calendar` | [Google Calendar](third_party/google-calendar/) | Cursor | Productivity | Connect to Google Calendar via Google's remote MCP server — list calendars, search events, and create or update meetings. |
 | `gong` | [Gong](third_party/gong/) | Cursor | Integrations | Gong MCP integration for revenue intelligence — account summaries, deal insights, and call briefs. |
