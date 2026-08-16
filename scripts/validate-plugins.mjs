@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { readFileSync, existsSync, readdirSync, statSync } from "fs";
+import { execFileSync } from "child_process";
 import { resolve, dirname, relative, extname } from "path";
 import { fileURLToPath } from "url";
 import Ajv from "ajv";
@@ -26,6 +27,11 @@ const validatePlugin = ajv.compile(pluginSchema);
 
 let errors = 0;
 let warnings = 0;
+
+// Optional: scope advisory findings to files changed since <base> (used by CI
+// for PR review — unchanged first-party code shouldn't re-warn on every run).
+const baseFlag = process.argv.find((a) => a.startsWith("--base="));
+const baseSha = baseFlag ? baseFlag.slice("--base=".length) : null;
 
 function fail(message) {
   console.error(`ERROR: ${message}`);
@@ -234,6 +240,9 @@ function auditContent(filePath) {
   const lines = buf.toString("utf8").split("\n");
   for (const rule of CONTENT_AUDIT) {
     if (!rule.files.test(ext)) continue;
+    if (rule.severity === "advisory" && changedFiles && !changedFiles.has(filePath)) {
+      continue; // unchanged first-party code — only fresh findings are actionable
+    }
     const cap = rule.severity === "critical" ? 3 : 1; // advisory: one heads-up per file
     let hits = 0;
     for (let i = 0; i < lines.length && hits < cap; i++) {
@@ -244,6 +253,27 @@ function auditContent(filePath) {
         else warn(msg);
       }
     }
+  }
+}
+
+// Compute the set of files changed since baseSha (when provided) so advisory
+// findings can be scoped to fresh changes. Falls back to auditing everything
+// if git can't resolve the base.
+let changedFiles = null;
+if (baseSha) {
+  try {
+    const out = execFileSync("git", ["diff", "--name-only", baseSha, "HEAD", "--"], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    changedFiles = new Set(
+      out
+        .split("\n")
+        .filter(Boolean)
+        .map((p) => resolve(root, p))
+    );
+  } catch {
+    changedFiles = null;
   }
 }
 

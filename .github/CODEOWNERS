@@ -1,0 +1,5 @@
+# Marketplace integrity: new or modified plugins need a human owner's review.
+# CODEOWNERS makes GitHub block merge until someone from this list approves.
+
+.cursor-plugin/marketplace.json    @DevvGwardo
+**/.cursor-plugin/plugin.json      @DevvGwardo

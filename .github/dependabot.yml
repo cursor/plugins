@@ -1,0 +1,9 @@
+# Dependabot keeps the CI toolchain fresh. The repo has no package.json
+# (the validator installs ajv ad-hoc, pinned exact in the workflow), so only
+# GitHub Actions is tracked here.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
