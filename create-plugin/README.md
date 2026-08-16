@@ -39,7 +39,12 @@ Meta workflows for creating Cursor plugins that are marketplace-ready.
 
 1. Use `/create-plugin` with a plugin name, purpose, and target component types.
 2. Generate or update `plugin.json`, then add rules/skills/agents/commands as needed.
-3. Run `review-plugin-submission` before publishing or marketplace submission.
+3. Run the repository validator before publishing or marketplace submission:
+
+   ```bash
+   npm install ajv ajv-formats
+   node scripts/validate-plugins.mjs
+   ```
 
 ## License
 

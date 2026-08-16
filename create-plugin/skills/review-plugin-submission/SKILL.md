@@ -29,6 +29,7 @@ A plugin is implemented and needs a final quality check before submission or rel
 4. Verify repository integration:
    - For marketplace repos, plugin entry exists in `.cursor-plugin/marketplace.json`
    - `source` resolves to plugin directory and names are unique
+   - `node scripts/validate-plugins.mjs` passes after installing `ajv` and `ajv-formats`
 5. Verify documentation quality:
    - `README.md` states purpose, installation, and component coverage
    - optional logo path is valid and repository-hosted

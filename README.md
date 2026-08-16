@@ -4,6 +4,13 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 
 ## Plugins
 
+Run validation locally with:
+
+```bash
+npm install ajv ajv-formats
+node scripts/validate-plugins.mjs
+```
+
 | `name` | Plugin | Author | Category | `description` (from marketplace) |
 |:-------|:-------|:-------|:---------|:-------------------------------------|
 | `continual-learning` | [Continual Learning](continual-learning/) | Cursor | Developer Tools | Incremental transcript-driven memory updates for AGENTS.md using high-signal bullet points only. |
