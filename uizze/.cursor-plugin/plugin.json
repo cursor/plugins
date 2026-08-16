@@ -1,0 +1,27 @@
+{
+  "name": "uizze",
+  "displayName": "UIZZE",
+  "version": "1.0.0",
+  "description": "Free anti-ui-slop skill and UI Slop Gate for coding agents; optional MCP adds 800,000+ real web and iOS screen references, design contracts, validation, audits, and rendered critique.",
+  "author": {
+    "name": "UIZZE"
+  },
+  "homepage": "https://uizze.com/ai-ui-slop",
+  "repository": "https://github.com/uizze/uizze",
+  "license": "MIT",
+  "keywords": [
+    "anti-ui-slop",
+    "ui-review",
+    "design-reference",
+    "coding-agents",
+    "cursor-plugin"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "ui",
+    "design",
+    "quality",
+    "workflow"
+  ],
+  "skills": "./skills/"
+}

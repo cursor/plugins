@@ -164,8 +164,12 @@
       "name": "profound",
       "source": "third_party/profound",
       "description": "Connect to Profound — retrieve AI visibility, sentiment, and citation reports, access agent analytics, and build or run Profound Agents — via Profound's official hosted MCP server."
+    },
+    {
+      "name": "uizze",
+      "source": "uizze",
+      "description": "Free anti-ui-slop skill and UI Slop Gate for coding agents; optional MCP adds 800,000+ real web and iOS screen references, design contracts, validation, audits, and rendered critique."
     }
   ]
 }
-
 
