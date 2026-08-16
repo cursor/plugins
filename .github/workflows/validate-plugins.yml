@@ -1,11 +1,12 @@
 name: Validate plugins
 
+# Run on every PR and every push to main. Deliberately NOT path-filtered:
+# the content audit in scripts/validate-plugins.mjs must see plugin file
+# changes (commands/skills/agents/rules), which a path filter would skip.
 on:
   pull_request:
-    paths:
-      - ".cursor-plugin/marketplace.json"
-      - "**/plugin.json"
-      - "schemas/**"
+  push:
+    branches: [main]
 
 jobs:
   validate:
@@ -18,7 +19,7 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install --no-save ajv ajv-formats
+        run: npm install --no-save --save-exact ajv@8.17.1 ajv-formats@3.0.1
 
-      - name: Validate plugin definitions
+      - name: Validate plugin definitions + content audit
         run: node scripts/validate-plugins.mjs
