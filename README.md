@@ -32,6 +32,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `navan` | [Navan](third_party/navan/) | Cursor | Integrations | Connect to Navan — query expenses, analyze travel bookings, check policies and approvals, and manage cards — via Navan's official remote MCP server. |
 | `profound` | [Profound](third_party/profound/) | Cursor | Integrations | Connect to Profound — retrieve AI visibility, sentiment, and citation reports, access agent analytics, and build or run Profound Agents — via Profound's official hosted MCP server. |
 | `uizze` | [UIZZE](uizze/) | UIZZE | Developer Tools | Free anti-ui-slop skill and UI Slop Gate for coding agents; optional MCP adds 800,000+ real web and iOS screens, design contracts, validation, audits, and rendered critique. |
+| `juicebox` | [Juicebox](third_party/juicebox/) | Cursor | Integrations | Connect to Juicebox — query recruiting analytics, search shortlists, look up projects, and create or manage sourcing agents — via Juicebox's official remote MCP server. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

@@ -169,6 +169,11 @@
       "name": "uizze",
       "source": "uizze",
       "description": "Free anti-ui-slop skill and UI Slop Gate for coding agents; optional MCP adds 800,000+ real web and iOS screens, design contracts, validation, audits, and rendered critique."
+    },
+    {
+      "name": "juicebox",
+      "source": "third_party/juicebox",
+      "description": "Connect to Juicebox — query recruiting analytics, search shortlists, look up projects, and create or manage sourcing agents — via Juicebox's official remote MCP server."
     }
   ]
 }
