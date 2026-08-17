@@ -169,6 +169,11 @@
       "name": "juicebox",
       "source": "third_party/juicebox",
       "description": "Connect to Juicebox — query recruiting analytics, search shortlists, look up projects, and create or manage sourcing agents — via Juicebox's official remote MCP server."
+    },
+    {
+      "name": "invinoveritas",
+      "source": "third_party/invinoveritas",
+      "description": "Independent, signed pre-action verdicts for agent tool calls and merges — a neutral second opinion before an irreversible action, with a recomputable proof after, via invinoveritas's official remote MCP server."
     }
   ]
 }
