@@ -1,0 +1,46 @@
+{
+  "name": "invinoveritas",
+  "displayName": "invinoveritas",
+  "version": "1.0.0",
+  "description": "Independent, signed pre-action verdicts for agent tool calls and merges — a neutral second opinion before an irreversible action, with a recomputable proof after, via invinoveritas's official remote MCP server.",
+  "author": {
+    "name": "invinoveritas",
+    "email": "contact@agents.babyblueviper.com"
+  },
+  "homepage": "https://api.babyblueviper.com",
+  "repository": "https://github.com/babyblueviper1/invinoveritas",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "verification",
+    "review",
+    "safety",
+    "guardrail",
+    "mcp",
+    "agent",
+    "merge",
+    "irreversible-actions"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "review",
+    "verification",
+    "safety",
+    "mcp"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "IVV_API_KEY": {
+        "type": "string",
+        "title": "invinoveritas API key",
+        "description": "Free, instant Bearer token — register with a single POST to https://api.babyblueviper.com/register (no payment required; paid tools bill per call once you fund the account)."
+      }
+    },
+    "required": [
+      "IVV_API_KEY"
+    ]
+  },
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
+}

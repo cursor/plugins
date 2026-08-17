@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "invinoveritas": {
+      "type": "http",
+      "url": "https://api.babyblueviper.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${IVV_API_KEY}"
+      }
+    }
+  }
+}
