@@ -8,6 +8,7 @@ All notable changes to this plugin are documented here.
 
 - Pinned the deterministic scanner to `agent-compatibility@0.1.7`.
 - Added an executable scanner guard that validates the pinned version, scanned path, output shape, and Cloudflare Worker classification signals.
+- Made pinned scanner execution shell-free on Windows by resolving npm's `npx-cli.js` entrypoint through Node.
 - Added a fail-closed result synthesizer as the sole owner of score validation, degraded states, and 70/30 arithmetic.
 - Made the synthesizer reject missing evidence, mismatched targets, and stateful results without isolated execution provenance.
 - Made startup and validation writable only inside isolated copies, with deploy, migration, credential, and paid-test boundaries.

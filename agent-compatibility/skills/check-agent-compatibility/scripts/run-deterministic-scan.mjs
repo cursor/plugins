@@ -9,7 +9,14 @@ import {
   statSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { isAbsolute, join, relative, resolve, sep } from "node:path";
+import {
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+  sep,
+  win32 as windowsPath,
+} from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 
@@ -46,6 +53,45 @@ const cliFrameworkPackages = [
   "sade",
   "yargs",
 ];
+
+export function resolveNpxRunner({
+  platform = process.platform,
+  nodeExecutable = process.execPath,
+  npmExecPath = process.env.npm_execpath ?? null,
+  pathExists = existsSync,
+} = {}) {
+  if (platform !== "win32") {
+    return { command: "npx", prefixArgs: [] };
+  }
+
+  const candidates = [];
+  if (typeof npmExecPath === "string" && npmExecPath.trim() !== "") {
+    candidates.push(
+      windowsPath.join(windowsPath.dirname(npmExecPath), "npx-cli.js"),
+    );
+  }
+  candidates.push(
+    windowsPath.join(
+      windowsPath.dirname(nodeExecutable),
+      "node_modules",
+      "npm",
+      "bin",
+      "npx-cli.js",
+    ),
+  );
+
+  const npxCli = [...new Set(candidates)].find((candidate) => {
+    try {
+      return pathExists(candidate);
+    } catch {
+      return false;
+    }
+  });
+
+  return npxCli === undefined
+    ? null
+    : { command: nodeExecutable, prefixArgs: [npxCli] };
+}
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -291,15 +337,30 @@ function wranglerConfigSignals(targetRoot) {
   return { configs, entrypoints };
 }
 
-export function buildScannerCommands(targetRoot) {
+export function buildScannerCommands(
+  targetRoot,
+  { runner = resolveNpxRunner() } = {},
+) {
+  if (runner === null) {
+    throw new Error(
+      "Unable to locate npm's npx-cli.js for safe Windows execution.",
+    );
+  }
+
   return {
     version: {
-      command: "npx",
-      args: ["-y", SCANNER_SPECIFIER, "--version"],
+      command: runner.command,
+      args: [...runner.prefixArgs, "-y", SCANNER_SPECIFIER, "--version"],
     },
     scan: {
-      command: "npx",
-      args: ["-y", SCANNER_SPECIFIER, "--json", targetRoot],
+      command: runner.command,
+      args: [
+        ...runner.prefixArgs,
+        "-y",
+        SCANNER_SPECIFIER,
+        "--json",
+        targetRoot,
+      ],
     },
   };
 }
@@ -640,7 +701,15 @@ export async function runDeterministicScan(
     });
   }
 
-  const scannerCommands = buildScannerCommands(targetRoot);
+  let scannerCommands;
+  try {
+    scannerCommands = buildScannerCommands(targetRoot);
+  } catch (error) {
+    return unavailableResult({
+      targetRoot,
+      summary: error instanceof Error ? error.message : String(error),
+    });
+  }
   const commands = [];
   const versionRun = await safelyExecute(
     executeCommand,

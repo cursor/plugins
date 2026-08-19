@@ -11,6 +11,7 @@ import {
   buildScannerCommands,
   evaluateScannerOutput,
   inspectRepositorySignals,
+  resolveNpxRunner,
   runDeterministicScan,
 } from "../skills/check-agent-compatibility/scripts/run-deterministic-scan.mjs";
 
@@ -52,6 +53,29 @@ test("pins both scanner commands to agent-compatibility 0.1.7", () => {
     command: "npx",
     args: ["-y", "agent-compatibility@0.1.7", "--json", genuineCliRoot],
   });
+});
+
+test("runs npx through node on Windows without a command shell", () => {
+  const nodeExecutable = "C:\\Program Files\\nodejs\\node.exe";
+  const npxCli =
+    "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npx-cli.js";
+  const runner = resolveNpxRunner({
+    platform: "win32",
+    nodeExecutable,
+    npmExecPath: null,
+    pathExists: (path) => path === npxCli,
+  });
+
+  assert.deepEqual(runner, {
+    command: nodeExecutable,
+    prefixArgs: [npxCli],
+  });
+  const commands = buildScannerCommands(genuineCliRoot, { runner });
+  assert.deepEqual(commands.version, {
+    command: nodeExecutable,
+    args: [npxCli, "-y", "agent-compatibility@0.1.7", "--version"],
+  });
+  assert.equal(Object.hasOwn(commands.version, "shell"), false);
 });
 
 test("rejects a CLI classification for a Cloudflare Worker without a CLI entrypoint", () => {
@@ -196,7 +220,11 @@ test("executes through the documented symlinked plugin install", (t) => {
     "check-agent-compatibility",
   );
   t.after(() => rmSync(temporaryDirectory, { recursive: true, force: true }));
-  symlinkSync(skillRoot, linkedSkillRoot, "dir");
+  symlinkSync(
+    skillRoot,
+    linkedSkillRoot,
+    process.platform === "win32" ? "junction" : "dir",
+  );
 
   const run = spawnSync(
     process.execPath,

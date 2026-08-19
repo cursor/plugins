@@ -61,7 +61,7 @@ Top fixes
 
 Plugin version 1.1.0 pins scanner version 0.1.7. Updating the scanner requires a plugin version change and contract-test update.
 
-The plugin invokes the scanner through `skills/check-agent-compatibility/scripts/run-deterministic-scan.mjs`; direct commands below are for manual inspection. It computes final scores with `scripts/synthesize-results.mjs`, which fails closed on malformed or inconsistent lane results.
+The plugin invokes the scanner through `skills/check-agent-compatibility/scripts/run-deterministic-scan.mjs`; direct commands below are for manual inspection. On Windows, the helper runs npm's JavaScript entrypoint through `node.exe` instead of invoking the `npx.cmd` shell shim. It computes final scores with `scripts/synthesize-results.mjs`, which fails closed on malformed or inconsistent lane results.
 
 Default scan:
 

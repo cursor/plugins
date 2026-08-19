@@ -385,7 +385,11 @@ test("CLI executes through the documented symlinked plugin install", (t) => {
     "check-agent-compatibility",
   );
   t.after(() => rmSync(temporaryDirectory, { recursive: true, force: true }));
-  symlinkSync(skillRoot, linkedSkillRoot, "dir");
+  symlinkSync(
+    skillRoot,
+    linkedSkillRoot,
+    process.platform === "win32" ? "junction" : "dir",
+  );
 
   const run = spawnSync(
     process.execPath,

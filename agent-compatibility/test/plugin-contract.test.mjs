@@ -209,6 +209,7 @@ test("CI runs contract tests whenever the plugin behavior can change", () => {
     workflow,
     /node --test agent-compatibility\/test\/\*\.test\.mjs/,
   );
+  assert.match(workflow, /windows-latest/);
 });
 
 test("release documentation matches the manifest version", () => {
