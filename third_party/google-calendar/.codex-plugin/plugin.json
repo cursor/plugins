@@ -1,0 +1,10 @@
+{
+  "name": "google-calendar",
+  "version": "1.0.0",
+  "description": "Search events and schedule meetings.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

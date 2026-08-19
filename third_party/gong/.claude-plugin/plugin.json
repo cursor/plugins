@@ -1,0 +1,10 @@
+{
+  "name": "gong",
+  "version": "1.0.0",
+  "description": "Pull account summaries, deal insights, and call briefs.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

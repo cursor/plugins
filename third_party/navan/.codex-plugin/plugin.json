@@ -1,0 +1,10 @@
+{
+  "name": "navan",
+  "version": "1.0.0",
+  "description": "Query expenses, travel bookings, policies, and cards.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

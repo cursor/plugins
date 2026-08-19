@@ -1,0 +1,10 @@
+{
+  "name": "juicebox",
+  "version": "1.0.0",
+  "description": "Query recruiting analytics, shortlists, and sourcing agents.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

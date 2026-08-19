@@ -1,0 +1,10 @@
+{
+  "name": "zoom",
+  "version": "1.0.0",
+  "description": "Search meetings, pull transcripts, and work with Zoom Docs.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

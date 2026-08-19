@@ -1,0 +1,10 @@
+{
+  "name": "outreach",
+  "version": "1.0.0",
+  "description": "Search sequences, prospects, and Kaia meetings.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

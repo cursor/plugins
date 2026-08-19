@@ -1,0 +1,9 @@
+{
+  "name": "teaching",
+  "version": "1.0.0",
+  "description": "Skill mapping, practice plans, and learning retrospectives. Builds personalized roadmaps with milestones and practice checkpoints, and runs periodic reviews to adjust based on progress.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  }
+}

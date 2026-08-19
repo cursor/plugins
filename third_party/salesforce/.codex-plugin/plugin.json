@@ -1,0 +1,10 @@
+{
+  "name": "salesforce",
+  "version": "1.0.0",
+  "description": "Query, create, and update records in your org.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

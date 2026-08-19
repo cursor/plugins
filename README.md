@@ -1,5 +1,32 @@
 # Cursor plugins
 
+Fork of [cursor/plugins](https://github.com/cursor/plugins). Each plugin folder is installable on Claude Code, Grok, Codex, and OpenCode. Skill and MCP files stay where they are.
+
+```sh
+claude plugin marketplace add rudironsoni/cursor-plugins-for-all-harnesses
+claude plugin install teaching@cursor-plugins
+
+grok plugin marketplace add rudironsoni/cursor-plugins-for-all-harnesses
+grok plugin install teaching --trust
+
+codex plugin marketplace add rudironsoni/cursor-plugins-for-all-harnesses
+codex plugin install teaching
+```
+
+OpenCode has no marketplace. After you have the plugin folder, add it in `opencode.json`:
+
+```json
+{ "plugins": ["./teaching/opencode.js"] }
+```
+
+Or use the community installer, which reads this repo's Claude catalog:
+
+```sh
+npx opencode-market add rudironsoni/cursor-plugins-for-all-harnesses
+npx opencode-market install teaching@cursor-plugins --opencode
+```
+
+
 Official Cursor plugins for popular developer tools, frameworks, and SaaS products. Each plugin is a standalone directory at the repository root with its own `.cursor-plugin/plugin.json` manifest.
 
 ## Plugins

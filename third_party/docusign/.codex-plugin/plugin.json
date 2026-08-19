@@ -1,0 +1,10 @@
+{
+  "name": "docusign",
+  "version": "1.0.0",
+  "description": "Manage envelopes, templates, workflows, and agreements.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

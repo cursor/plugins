@@ -1,0 +1,10 @@
+{
+  "name": "intercom",
+  "version": "1.0.0",
+  "description": "Search conversations, contacts, and Help Center articles.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

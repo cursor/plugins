@@ -1,0 +1,10 @@
+{
+  "name": "clay",
+  "version": "1.0.0",
+  "description": "Enrich people and companies, run AI research agents.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

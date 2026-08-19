@@ -1,0 +1,10 @@
+{
+  "name": "google-drive",
+  "version": "1.0.0",
+  "description": "Search, read, create, and share files.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "x",
+  "version": "2.0.0",
+  "description": "Search posts, read timelines, pull trends, and manage bookmarks.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

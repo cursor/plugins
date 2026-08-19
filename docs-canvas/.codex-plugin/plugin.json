@@ -1,0 +1,10 @@
+{
+  "name": "docs-canvas",
+  "version": "0.1.0",
+  "description": "Render documentation as a navigable canvas.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "skills": "./skills/"
+}

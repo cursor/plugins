@@ -1,0 +1,10 @@
+{
+  "name": "continual-learning",
+  "version": "1.0.0",
+  "description": "Incrementally learns durable user preferences and workspace facts from transcript changes and keeps AGENTS.md up to date with plain bullet points.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "skills": "./skills/"
+}

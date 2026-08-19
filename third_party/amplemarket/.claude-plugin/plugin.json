@@ -1,0 +1,10 @@
+{
+  "name": "amplemarket",
+  "version": "1.0.0",
+  "description": "Search people and companies, enrich leads, run sequences.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}
