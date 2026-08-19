@@ -1,0 +1,10 @@
+{
+  "name": "github",
+  "version": "1.0.0",
+  "description": "Manage repos, issues, pull requests, and Actions.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

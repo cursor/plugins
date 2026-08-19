@@ -1,0 +1,10 @@
+{
+  "name": "hubspot",
+  "version": "1.0.0",
+  "description": "Search and update contacts, companies, deals, and tickets.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

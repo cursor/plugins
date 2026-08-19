@@ -1,0 +1,9 @@
+{
+  "name": "thermos",
+  "version": "1.0.0",
+  "description": "Thermo-nuclear branch review: deep correctness and security audits plus harsh code-quality rubrics, parallel subagents, thermos orchestration, and optional take-the-wheel and FSD merge-ready flows.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  }
+}

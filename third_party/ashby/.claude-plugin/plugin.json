@@ -1,0 +1,10 @@
+{
+  "name": "ashby",
+  "version": "1.0.0",
+  "description": "Search candidates, prep interviews, and manage pipeline tasks.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

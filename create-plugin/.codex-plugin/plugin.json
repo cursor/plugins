@@ -1,0 +1,10 @@
+{
+  "name": "create-plugin",
+  "version": "1.0.0",
+  "description": "Scaffold and validate new agent plugins. Handles directory setup, manifest generation, and pre-submission quality checks for the marketplace.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "skills": "./skills/"
+}

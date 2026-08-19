@@ -1,0 +1,10 @@
+{
+  "name": "circleback",
+  "version": "1.0.0",
+  "description": "Search meetings, transcripts, action items, and emails.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

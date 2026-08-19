@@ -1,0 +1,10 @@
+{
+  "name": "gmail",
+  "version": "1.0.0",
+  "description": "Search, read, draft, and manage email.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

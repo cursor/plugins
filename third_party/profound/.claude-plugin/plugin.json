@@ -1,0 +1,10 @@
+{
+  "name": "profound",
+  "version": "1.0.0",
+  "description": "Track AI visibility, sentiment, and citations.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}

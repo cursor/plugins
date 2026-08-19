@@ -1,0 +1,10 @@
+{
+  "name": "playwright",
+  "version": "1.0.0",
+  "description": "Navigate, click, screenshot, and test in a real browser.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "mcpServers": "./mcp.json"
+}
