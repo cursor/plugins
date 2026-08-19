@@ -23,7 +23,9 @@ const scoreNames = {
   validation: "Validation Loop Score",
   docs: "Docs Reliability Score",
 };
-const targetRoot = "/workspace/target-repository";
+const targetRoot = resolve(tmpdir(), "target-repository");
+const startupExecutionRoot = resolve(tmpdir(), "startup-isolated-copy");
+const validationExecutionRoot = resolve(tmpdir(), "validation-isolated-copy");
 
 function completeResults(overrides = {}) {
   const results = {
@@ -43,7 +45,7 @@ function completeResults(overrides = {}) {
       scoreName: scoreNames.startup,
       score: 90,
       targetRoot,
-      executionRoot: "/tmp/startup-isolated-copy",
+      executionRoot: startupExecutionRoot,
       isolation: "isolated-copy",
       summary: "Startup completed in isolation.",
       evidence: ["startup command passed"],
@@ -55,7 +57,7 @@ function completeResults(overrides = {}) {
       scoreName: scoreNames.validation,
       score: 80,
       targetRoot,
-      executionRoot: "/tmp/validation-isolated-copy",
+      executionRoot: validationExecutionRoot,
       isolation: "isolated-copy",
       summary: "Validation completed in isolation.",
       evidence: ["validation command passed"],
@@ -261,7 +263,9 @@ test("rejects evidence-free, wrong-target, and non-isolated results", () => {
   assert.throws(
     () =>
       validateResults(
-        completeResults({ docs: { targetRoot: "/workspace/wrong-target" } }),
+        completeResults({
+          docs: { targetRoot: resolve(tmpdir(), "wrong-target") },
+        }),
       ),
     /same targetRoot/,
   );
@@ -283,8 +287,10 @@ test("rejects evidence-free, wrong-target, and non-isolated results", () => {
     () =>
       validateResults(
         completeResults({
-          startup: { executionRoot: "/tmp/shared-isolated-copy" },
-          validation: { executionRoot: "/tmp/shared-isolated-copy/." },
+          startup: { executionRoot: resolve(tmpdir(), "shared-isolated-copy") },
+          validation: {
+            executionRoot: resolve(tmpdir(), "shared-isolated-copy", "."),
+          },
         }),
       ),
     /separate executionRoot/,
@@ -302,10 +308,7 @@ test("retains validated target, evidence, and isolation provenance", () => {
   assert.deepEqual(result.components.docs.evidence, [
     "README.md:10 maps to package.json#scripts.test",
   ]);
-  assert.equal(
-    result.components.startup.executionRoot,
-    "/tmp/startup-isolated-copy",
-  );
+  assert.equal(result.components.startup.executionRoot, startupExecutionRoot);
   assert.equal(result.components.startup.isolation, "isolated-copy");
 });
 

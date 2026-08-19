@@ -686,7 +686,7 @@ function reportedVersion(stdout) {
 
 export async function runDeterministicScan(
   targetRootArgument,
-  { executeCommand = executeScannerCommand } = {},
+  { executeCommand = executeScannerCommand, runner = resolveNpxRunner() } = {},
 ) {
   let targetRoot;
   try {
@@ -703,7 +703,7 @@ export async function runDeterministicScan(
 
   let scannerCommands;
   try {
-    scannerCommands = buildScannerCommands(targetRoot);
+    scannerCommands = buildScannerCommands(targetRoot, { runner });
   } catch (error) {
     return unavailableResult({
       targetRoot,

@@ -22,6 +22,7 @@ const cloudflareWorkerRoot = realpathSync(
 );
 const genuineCliRoot = realpathSync(resolve(fixturesRoot, "genuine-cli"));
 const skillRoot = resolve(testDirectory, "../skills/check-agent-compatibility");
+const unixNpxRunner = { command: "npx", prefixArgs: [] };
 
 function scannerOutput(targetRoot, kind) {
   return {
@@ -43,7 +44,9 @@ function scannerOutput(targetRoot, kind) {
 }
 
 test("pins both scanner commands to agent-compatibility 0.1.7", () => {
-  const commands = buildScannerCommands(genuineCliRoot);
+  const commands = buildScannerCommands(genuineCliRoot, {
+    runner: unixNpxRunner,
+  });
 
   assert.deepEqual(commands.version, {
     command: "npx",
@@ -76,6 +79,18 @@ test("runs npx through node on Windows without a command shell", () => {
     args: [npxCli, "-y", "agent-compatibility@0.1.7", "--version"],
   });
   assert.equal(Object.hasOwn(commands.version, "shell"), false);
+});
+
+test("resolves the real npm JavaScript entrypoint on hosted Windows", (t) => {
+  if (process.platform !== "win32") {
+    t.skip("Windows-only runtime assertion");
+    return;
+  }
+
+  const runner = resolveNpxRunner();
+  assert.ok(runner, "expected npm's npx-cli.js beside the Node installation");
+  assert.equal(runner.command, process.execPath);
+  assert.match(runner.prefixArgs[0], /npx-cli\.js$/i);
 });
 
 test("rejects a CLI classification for a Cloudflare Worker without a CLI entrypoint", () => {
@@ -148,6 +163,7 @@ test("runs the version check before the scan and returns structured JSON", async
 
   const result = await runDeterministicScan(genuineCliRoot, {
     executeCommand,
+    runner: unixNpxRunner,
   });
 
   assert.deepEqual(
@@ -182,6 +198,7 @@ test("normalizes scanner execution failures instead of throwing", async () => {
 
   const result = await runDeterministicScan(genuineCliRoot, {
     executeCommand,
+    runner: unixNpxRunner,
   });
 
   assert.deepEqual(result, {
