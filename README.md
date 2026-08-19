@@ -1,5 +1,16 @@
 # Cursor plugins
 
+Fork of [cursor/plugins](https://github.com/cursor/plugins). Add this repo as a marketplace on Claude Code, Codex, or Grok. Plugin files are unchanged.
+
+```sh
+claude plugin marketplace add rudironsoni/cursor-plugins-for-all-harnesses
+codex plugin marketplace add rudironsoni/cursor-plugins-for-all-harnesses
+grok plugin marketplace add rudironsoni/cursor-plugins-for-all-harnesses
+```
+
+Then: `claude plugin install teaching@cursor-plugins`
+
+
 Official Cursor plugins for popular developer tools, frameworks, and SaaS products. Each plugin is a standalone directory at the repository root with its own `.cursor-plugin/plugin.json` manifest.
 
 ## Plugins
