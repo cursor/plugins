@@ -1,20 +1,23 @@
 ---
 name: automate-me
 description: "Use for \"automate me\", \"create/update/refresh my -mode skill\", \"turn/capture my preferences or working style into a skill\", or wanting agents to follow how the user works. Drafts or revises a personal -mode skill via create-skill + unslop, optionally pulling fresh evidence from recent transcripts."
-disable-model-invocation: true
+metadata:
+  pstack-explicit-invocation: "true"
 ---
+
+**Activation boundary:** execute this skill only when the user or another active pstack skill explicitly routes here.
 
 # Automate me
 
 A guided flow for turning the user's working conventions into a skill agents will follow. The output is one `-mode` skill tailored to them (e.g. `jay-mode`, `priya-mode`).
 
-This skill orchestrates three others: an inline mining pass (see step 1), Cursor's built-in `create-skill` (authoring), and the **unslop** skill (prose discipline). It sequences them; it doesn't replace them.
+This skill orchestrates three parts: an inline mining pass (see step 1), an installed skill-authoring workflow when available, and the **unslop** skill (prose discipline). It sequences them; it doesn't replace them.
 
 ## Flow
 
 ### 0. Check for an existing skill
 
-Look recursively for `.cursor/skills/**/*-mode/SKILL.md` and `~/.cursor/skills/*-mode/SKILL.md` matching the user's handle. Mode skills can live in a personal category directory (`.cursor/skills/<handle>/`), not only at the top level. If one exists, confirm intent with `AskQuestion` (unless they already said "update my skill" or similar):
+Discover the workspace and user skill roots exposed by the host, then look recursively for `*-mode/SKILL.md` matching the user's handle. Include the shared Agent Skills roots `.agents/skills/` and `~/.agents/skills/` when the host does not advertise roots. Mode skills can live in a personal category directory, not only at the top level. If one exists, confirm intent through the host's structured-question feature when available, or one concise chat question otherwise (unless they already said "update my skill" or similar):
 
 - Update the existing skill (default for repeat runs)
 - Start fresh (rare; ask why before doing it)
@@ -26,9 +29,9 @@ Update mode changes the rest of the flow:
 
 ### 1. Mine their history
 
-Locate the active workspace's transcripts before fanning out. The system prompt names the workspace's `agent-transcripts/` directory. Use only that path. Don't glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
+Locate the active workspace's transcript path from host-provided session context before fanning out. Use only that path. If the host exposes no transcript, ask for a path or work from a concise session digest. Never scan sibling workspaces or global conversation stores; that crosses privacy boundaries.
 
-Survey recent agent conversations within that scope for recurring patterns. Run multiple parallel subagents across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). Each slice mining subagent reads transcripts from the workspace-scoped path the parent provides, looks for the signals below, and returns a short structured list of patterns it saw with evidence pointers. Default signals worth hunting:
+Survey recent agent conversations within that scope for recurring patterns. Run multiple delegates concurrently across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). If concurrent delegation is unavailable, process the slices sequentially and keep their findings separate. Each mining delegate reads only the workspace-scoped path the parent provides, looks for the signals below, and returns a short structured list of patterns with evidence pointers. Default signals worth hunting:
 
 - Response preferences (length, tone, format, "dumb it down" corrections)
 - Delegation habits (subagents, models, specialized workflows, parallelism)
@@ -41,9 +44,9 @@ Cross-check across slices before elevating a signal. Patterns seen in 2+ slices 
 
 ### 2. Ask the user directly
 
-Mining misses intent that hasn't come up yet. Use the `AskQuestion` tool (structured multi-choice) rather than asking the user to type from scratch. Lower cognitive load, higher hit rate.
+Mining misses intent that hasn't come up yet. Prefer the host's structured multi-choice question feature. If it is unavailable, ask one concise chat question with numbered options. Lower cognitive load, higher hit rate.
 
-Shape: one or two questions with 4-6 options each, `allow_multiple: true` for category questions. Start broad ("Which areas matter most?"), then follow up on selected areas with specific options. After the structured rounds, one free-form chat question catches anything the options missed.
+Shape: one or two questions with 4-6 options each, allowing multiple selections for category questions when the host supports it. Start broad ("Which areas matter most?"), then follow up on selected areas with specific options. After the structured rounds, one free-form chat question catches anything the options missed.
 
 Don't dump 20 questions. Two structured rounds plus one open question is usually enough.
 
@@ -64,17 +67,17 @@ The **poteto-mode** skill shows the shape. Read it for granularity. Don't copy i
 
 ### 4. Draft the skill
 
-Use Cursor's built-in `create-skill` skill to author the skill. Placement:
+Use an installed skill-authoring workflow when the host provides one; otherwise follow the Agent Skills specification directly and run the available SKILL.md validator. Placement:
 
-- Path: preserve an existing mode skill's category. For a new mode, use `.cursor/skills/<handle>/<handle>-mode/SKILL.md` when the repo has an established personal category for that handle; otherwise default to `.cursor/skills/<handle>-mode/SKILL.md` in the project (or `~/.cursor/skills/<handle>-mode/` if the user prefers a personal skill).
+- Path: preserve an existing mode skill's category. For a new mode, use the host-discovered workspace skill root, falling back to `.agents/skills/<handle>/<handle>-mode/SKILL.md` when the repo has a personal category or `.agents/skills/<handle>-mode/SKILL.md` otherwise. Use the discovered user root, falling back to `~/.agents/skills/`, only when the user prefers a personal skill.
 - Handle: the user's first name or chosen identifier.
 - Frontmatter `description`: trigger on their name + `/<handle>-mode` + "work in their style", not on generic keywords like "write code" or "review PR".
-- Frontmatter formatting: follow `create-skill`'s YAML rules. Keep `description` as one YAML scalar; quote it or use `description: >-` with indented continuation lines when punctuation or wrapping requires it.
-- Frontmatter `disable-model-invocation: true` by default. Mode skills are heavy and opinionated; they should only apply when the user explicitly invokes them (by name or slash command), not auto-trigger on description matching. Opt out only if the user explicitly wants their mode to apply on every turn.
+- Frontmatter formatting: follow the Agent Skills YAML rules. Keep `description` as one YAML scalar; quote it or use `description: >-` with indented continuation lines when punctuation or wrapping requires it.
+- Explicit invocation: make the portable description trigger only on the user's handle, the mode name, or an explicit request to work in that style. Put any host-specific auto-invocation flag in that host's adapter, not the portable skill.
 
 ### 5. Iterate on prose
 
-Apply the **unslop** skill and `create-skill`'s writing guidelines to every line. Both apply to any agent-read prose, not just skills.
+Apply the **unslop** skill and the selected skill-authoring guidance to every line. Both apply to any agent-read prose, not just skills.
 
 Show the draft to the user and take feedback. Expect multiple iterations. Cut ruthlessly; a mode skill is not a manual.
 
@@ -106,4 +109,4 @@ Run a description-optimization loop only if the skill's trigger accuracy turns o
 
 - The **poteto-mode** skill: example of the output shape.
 - The **unslop** skill: prose discipline for every line.
-- Cursor's built-in `create-skill` skill: skill authoring process and writing guidelines.
+- The installed skill-authoring workflow, or the Agent Skills specification when none is installed: authoring process and writing guidelines.

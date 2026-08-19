@@ -1,8 +1,11 @@
 ---
 name: teach
 description: "Explain a body of work plainly so a person actually understands it. Runs the `how` and `why` skills and weaves what they find into one clear explanation. Use for 'teach me this', 'help me really understand X', 'explain this change or subsystem to me'."
-disable-model-invocation: true
+metadata:
+  pstack-explicit-invocation: "true"
 ---
+
+**Activation boundary:** execute this skill only when the user or another active pstack skill explicitly routes here.
 
 # Teach
 

@@ -1,8 +1,11 @@
 ---
 name: arena
 description: "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use for /arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape."
-disable-model-invocation: true
+metadata:
+  pstack-explicit-invocation: "true"
 ---
+
+**Activation boundary:** execute this skill only when the user or another active pstack skill explicitly routes here.
 
 # Arena
 
@@ -10,7 +13,7 @@ Fan out N parallel attempts at the same task. Read every candidate end to end. P
 
 ## Start
 
-Open a todolist with one entry per phase before launching anything. The arena runs autonomously and the list keeps phases from silently disappearing.
+Use the host's task tracker with one entry per phase before launching anything. If no tracker is available, keep the same short checklist in the working response. The arena runs autonomously and the list keeps phases from silently disappearing.
 
 1. Frame
 2. Fan out
@@ -25,12 +28,12 @@ The N candidates will receive the same prompt, so the prompt is the contract. Ge
 
 1. State the artifact each candidate is producing.
 2. Derive the rubric. State what success looks like for *this* task, then turn it into 3-6 concrete gradeable criteria. Concrete: `Adds a --dry-run flag that skips writes`. Vague: `code is correct`. The rubric is the picker's tool in Phase D; candidates only see the task.
-3. Pick the runners. Use `arena runners` from `~/.cursor/rules/pstack-models.mdc` when present. Otherwise default to one each on `claude-fable-5-thinking-max`, `gpt-5.6-sol-max`, `grok-4.6-fast-xhigh`, `claude-opus-5-thinking-xhigh`. Spawn more when the arena covers multiple design directions. Same model N times when the work is generation-bound rather than judgment-sensitive.
+3. Pick the runners. Use confirmed `arena runners` entries from `~/.config/pstack/models.md` when present. Otherwise run four independent candidates inheriting the parent model. If the host cannot select a child model, omit the selector. Spawn more when the arena covers multiple design directions. Repeating one model is valid when the work is generation-bound rather than judgment-sensitive. Never claim model diversity unless distinct configured models actually ran.
 4. Assign output paths. Each candidate writes to its own location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`). N candidates writing to the same path is shared mutable state and fails the the **separate-before-serializing-shared-state** principle skill test.
 
 ## Phase B: Fan out
 
-Spawn all N subagents in one message with `run_in_background: true`, each with the task, the path to the shared grounding, its own output path, and instructions to produce both the artifact and a short rationale.
+Launch all N delegates concurrently through the host's native delegation feature. Give each the task, the shared-grounding path, its own output path, and instructions to produce both the artifact and a short rationale. If concurrent delegation is unavailable, run the candidates sequentially with the same isolated paths and say so in the synthesis note.
 
 The rationale is mandatory. Without it, the parent cannot tell whether a candidate's structure is principled or accidental, which makes Phase E grafting unreliable. Each rationale names the alternatives the candidate considered and what it rejected.
 
@@ -38,7 +41,7 @@ If a candidate fails to produce output, proceed with N-1 and note the dropout in
 
 ## Phase C: Cross-judge
 
-After all Phase B candidates complete, choose one model from the `arena cross-judge pool` in `~/.cursor/rules/pstack-models.mdc` when present. Otherwise use `claude-fable-5-thinking-max`, `gpt-5.6-sol-max`, `grok-4.6-fast-xhigh`, `claude-opus-5-thinking-xhigh`. Prefer a different model family from the parent's. Spawn one readonly judge subagent on that model. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with the parent's reading in Phase D, not with the candidates themselves. Spawning while candidates are still writing means the judge sees partial or empty outputs and reports them as dropouts.
+After all Phase B candidates complete, choose one confirmed entry from `arena cross-judge pool` in `~/.config/pstack/models.md` when present, preferring a model family different from the parent's when the host exposes that information. Otherwise inherit the parent model. Launch one judge delegate with read-only instructions and no write tools when the host supports that restriction. It sees the rubric and candidates by path label, scores each criterion, and recommends a base with rationale. Run it concurrently with the parent's reading in Phase D, not with candidates still writing. If delegation is unavailable, the parent performs the same rubric-based cross-judgment and records that independence was unavailable.
 
 ## Phase D: Pick a base
 

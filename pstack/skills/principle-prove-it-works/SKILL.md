@@ -1,8 +1,11 @@
 ---
 name: principle-prove-it-works
 description: "Apply after completing a task, before declaring done. Verify against the real artifact (run the feature, read the actual value, inspect the diff), not a proxy, self-report, or 'it compiles.'"
-disable-model-invocation: true
+metadata:
+  pstack-explicit-invocation: "true"
 ---
+
+**Activation boundary:** execute this skill only when the user or another active pstack skill explicitly routes here.
 
 # Prove It Works
 

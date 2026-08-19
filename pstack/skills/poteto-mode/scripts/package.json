@@ -1,5 +1,5 @@
 {
-  "name": "@cursor-skill/poteto-mode-tools",
+  "name": "@pstack/poteto-mode-tools",
   "private": true,
   "type": "module",
   "scripts": {

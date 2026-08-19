@@ -1,8 +1,11 @@
 ---
 name: show-me-your-work
 description: "Keep a reviewable decision trail for long-running or unattended work: a TSV log with one row per decision (what, why, evidence, result). Local by default; commit it when a reviewer needs the trail to trust the result. Use for /show-me-your-work, autonomous or multi-phase runs, or work a human reviews after stepping away."
-disable-model-invocation: true
+metadata:
+  pstack-explicit-invocation: "true"
 ---
+
+**Activation boundary:** execute this skill only when the user or another active pstack skill explicitly routes here.
 
 # Show me your work
 
@@ -10,7 +13,7 @@ For work a human reviews after the fact, a decision trail lets them reconstruct 
 
 ## The format
 
-A single TSV file, one row per decision. TSV because GitHub renders it as a sortable table, `column -s$'\t' -t` and spreadsheets read it, and a row appends with one command. Cells stay single-line. Evidence is a pointer, not prose.
+A single TSV file, one row per decision. TSV because common repository browsers and spreadsheets render it as a table, `column -s$'\t' -t` reads it in a terminal, and a row appends with one command. Cells stay single-line. Evidence is a pointer, not prose.
 
 Copy `references/decision-log-template.tsv` (the header row) to start a clean log. Columns:
 
@@ -43,7 +46,7 @@ Log decision points and checkpoints, not every action: a fork chosen, a unit com
 
 By default the log is a working artifact, not committed. Keep it at `decisions.tsv` in the work dir, or `.audit/<task-slug>.tsv` when several efforts run at once, and leave it out of git. Most work doesn't need a committed trail; the local log still keeps the run honest and can be discarded after.
 
-Commit it only when the work is ambitious enough that a reviewer needs the trail to trust the result: a large cross-language port, a multi-week migration, anything where confidence has to be shown rather than assumed. A committed log renders as a table in the PR.
+Commit it only when the work is ambitious enough that a reviewer needs the trail to trust the result: a large cross-language port, a multi-week migration, anything where confidence has to be shown rather than assumed. A committed log stays reviewable with the change.
 
 ## Rules
 
@@ -53,7 +56,7 @@ Commit it only when the work is ambitious enough that a reviewer needs the trail
 
 ## Audit the log against the transcript
 
-At the end of the run, before handing back, check the log told the truth. Read this run's transcript under the active workspace's `agent-transcripts/` directory (the system prompt names the path). Don't glob across `~/.cursor/projects/*/`; that reads unrelated private chats. Walk the log against what actually happened:
+At the end of the run, before handing back, check the log told the truth. Use this run's transcript only when the host exposes its active-workspace path. Never guess a transcript location or scan other workspaces. If no transcript is available, reconcile against the current session and say that the transcript check was unavailable. Walk the log against what actually happened:
 
 - Every row maps to a real action. Cut invented or aspirational entries.
 - Each row's evidence resolves and shows what the row claims.
@@ -62,20 +65,22 @@ At the end of the run, before handing back, check the log told the truth. Read t
 
 Fix the log, not the story. If the work diverged from what a row claims, the row is wrong.
 
-## Cross-model review of the trail
+## Independent review of the trail
 
-Before handing back, you must spawn a subagent on a different model family from the one that did the work. Self-review is not a substitute; the point is fresh eyes you cannot bring yourself. The subagent reads the audit trail and the run's transcript, then flags what the user should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky.
+Before handing back, launch an independent reviewer. Use a confirmed model from a different family when `~/.config/pstack/models.md` and the host make one available; otherwise inherit the parent model in a separate delegate. Independence comes from the separate review context. Claim cross-model evidence only when a distinct confirmed model actually ran. The reviewer reads the audit trail and the run's transcript, then flags what the user should pay attention to. This is not a redo of the work. It is a scan for what is suboptimal or risky.
+
+If the host cannot delegate, complete the self-audit above but mark independent review `UNAVAILABLE`; do not relabel self-review as independent or cross-model evidence. Any enclosing workflow that requires independent review before promotion remains blocked on that gate.
 
 - Decisions logged with weak or absent evidence.
 - Verification steps skipped or claimed without proof in the transcript.
 - Choices that look risky in hindsight (premature, scope-creeping, papering over a symptom).
 - Gaps the user would otherwise miss on a casual skim.
 
-Every reply for a run that produced a trail ends with an "Attention" section. Lead with the reviewer's model on its own line (`reviewed by <model>`), then list each flag pointing to specific rows or moments. "No flags" is a valid value; the model name is not. The self-audit asks if the log told the truth; this asks what the user should still scrutinize even when it did.
+Every reply for a run that produced a trail ends with an "Attention" section. Lead with `reviewed independently, inherited parent`, `reviewed by <confirmed model>`, or `independent review unavailable`, then list each flag pointing to specific rows or moments. "No flags" is valid only after an independent review. The self-audit asks if the log told the truth; this asks what the user should still scrutinize even when it did.
 
 ## Reviewing the trail
 
-Read top to bottom, follow the evidence pointers, spot-check. GitHub renders a committed TSV as a table; `column -s$'\t' -t decisions.tsv` renders it in a terminal. A row whose evidence doesn't resolve, or whose result is unverified, is the audit catching a gap.
+Read top to bottom, follow the evidence pointers, spot-check. Use the repository browser's table view when it has one; `column -s$'\t' -t decisions.tsv` works in a terminal. A row whose evidence doesn't resolve, or whose result is unverified, is the audit catching a gap.
 
 ## Composing this skill
 

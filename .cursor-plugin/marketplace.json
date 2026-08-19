@@ -69,9 +69,9 @@
       "description": "Fan large tasks out across parallel cloud agents with planners, workers, verifiers, and structured handoffs."
     },
     {
-      "name": "pstack",
+      "name": "pstack-generic",
       "source": "pstack",
-      "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
+      "description": "Portable, model-agnostic pstack engineering workflows with optional host adapters."
     },
     {
       "name": "gmail",
@@ -175,5 +175,4 @@
     }
   ]
 }
-
 

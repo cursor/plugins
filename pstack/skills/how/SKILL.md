@@ -10,7 +10,7 @@ Explore the codebase to answer "how does X work?" questions. Produce clear archi
 Two modes:
 
 1. **Explain** (default). Explore the codebase and produce a clear explanation
-2. **Critique.** Explain first, then spawn multiple models to independently identify architectural issues
+2. **Critique.** Explain first, then run multiple independent reviewers to identify architectural issues. Use distinct confirmed models when configured; otherwise inherit the parent model and do not claim cross-model diversity.
 
 ## Explain Mode
 
@@ -42,14 +42,10 @@ Decompose the question into 2-4 parallel exploration angles, each a distinct sli
 
 The right decomposition depends on the question. Use your judgment. Narrow questions: 2 explorers is fine. Broad subsystems: up to 4.
 
-Spawn all explorers in a single message:
-
-- `subagent_type`: `generalPurpose`
-- `model`: your configured how-explorer model (default `grok-4.6-fast-xhigh`)
-- `readonly`: `true`
+Launch all explorers concurrently through the host's native delegation feature. Use the confirmed `how explorer` mapping from `~/.config/pstack/models.md` when present; otherwise inherit the parent model. Give them read-only instructions and withhold write tools when the host supports that restriction. If concurrent delegation is unavailable, run the slices sequentially and preserve their separate findings.
 
 Each explorer gets the same base prompt from `references/explorer-prompt.md` plus a specific exploration angle naming its slice. Each explorer should:
-- Start broad: Glob for relevant directories, Grep for key types/interfaces/class names
+- Start broad: find relevant directories, then search text for key types, interfaces, and class names with the host's filesystem tools
 - Follow the thread: from an entry point, trace the call chain (callers, callees, data flow, type definitions)
 - Read the actual code, don't guess from file names
 - Stop when it can describe the full path from input to output (or trigger to effect) without hand-waving any step
@@ -61,23 +57,15 @@ Then proceed to Step 3.
 
 ### Step 2b. Direct Explain (simple questions)
 
-Spawn a single Task subagent that explores and explains in one pass:
+Launch one delegate that explores and explains in one pass. Use the confirmed `how explainer` mapping from `~/.config/pstack/models.md` when present; otherwise inherit the parent model. Give it read-only instructions and withhold write tools when supported. If delegation is unavailable, the parent performs the same exploration and follows the same output contract.
 
-- `subagent_type`: `generalPurpose`
-- `model`: your configured how-explainer model (default `claude-fable-5-thinking-max`)
-- `readonly`: `true`
-
-The agent does its own exploration (Glob, Grep, Read) and writes the explanation directly. Read `references/explainer-prompt.md` for the communication style and output format. Same structure, just no explorer findings as input.
+The agent finds files, searches text, reads code with host-native tools, and writes the explanation directly. Read `references/explainer-prompt.md` for the communication style and output format. Same structure, just no explorer findings as input.
 
 Proceed to Step 4.
 
 ### Step 3. Synthesize (complex questions only)
 
-Once all explorers return, spawn a single Task subagent to synthesize their findings into one coherent explanation:
-
-- `subagent_type`: `generalPurpose`
-- `model`: your configured how-explainer model (default `claude-fable-5-thinking-max`)
-- `readonly`: `true`
+Once all explorers return, launch one delegate to synthesize their findings into one coherent explanation. Use the confirmed `how explainer` mapping from `~/.config/pstack/models.md` when present; otherwise inherit the parent model. Give it read-only instructions when supported. If delegation is unavailable, the parent performs synthesis itself and records that no independent synthesis ran.
 
 The explainer gets all explorers' findings and writes the human-facing explanation (output format below). Read `references/explainer-prompt.md` for the full prompt template. The explainer reconciles overlapping findings, resolves contradictions, and weaves the slices into a unified picture.
 
@@ -109,12 +97,7 @@ Run the full explain flow above (Steps 1-4). You must understand the architectur
 
 ### Step 2. Spawn Critics
 
-After the explanation is complete, spawn one architectural critic per model in your configured how-critics list (defaults `claude-fable-5-thinking-max`, `gpt-5.6-sol-max`, `grok-4.6-fast-xhigh`, `claude-opus-5-thinking-xhigh`), all in a single message.
-
-For each critic:
-- `subagent_type`: `generalPurpose`
-- `model`: one model from the configured how-critics list. These are minimum reasoning levels. The lead should escalate any model when the architecture warrants deeper analysis.
-- `readonly`: `true`
+After the explanation is complete, launch one architectural critic per confirmed `how critics` entry in `~/.config/pstack/models.md`. When no entries exist, run four independent critics inheriting the parent model. Launch them concurrently when supported, give them read-only instructions, and withhold write tools where possible. If delegation is unavailable, the parent applies the rubric once and reports that independent review was unavailable. Treat agreement as cross-model evidence only when distinct confirmed models actually ran.
 
 Read `references/critic-prompt.md` for the prompt template. Each critic gets:
 1. The explanation from Step 1 (so they don't re-explore)

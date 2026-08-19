@@ -1,12 +1,15 @@
 ---
 name: interrogate
-description: "Use for \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Multiple LLM reviewers challenge changes from independent angles."
-disable-model-invocation: true
+description: "Use for \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Multiple independent reviewers challenge changes from different angles."
+metadata:
+  pstack-explicit-invocation: "true"
 ---
+
+**Activation boundary:** execute this skill only when the user or another active pstack skill explicitly routes here.
 
 # Interrogate
 
-Spawn one reviewer per configured model to adversarially review code changes. Each model gets the same prompt and rubric. The adversarial signal comes from model diversity, not assigned personas. Models differ in blind spots, priors, and reasoning patterns. Agreement across models is high-confidence signal; lone-model findings are worth reading but lower confidence.
+Run one reviewer per configured entry to adversarially review code changes. Every reviewer gets the same prompt and rubric. Distinct confirmed models add diversity; independent runs on the parent model still add review separation but are not cross-model evidence. Agreement across independent reviewers is high-signal; lone-reviewer findings are worth reading but lower confidence.
 
 The deliverable is a synthesized verdict. Do NOT auto-apply changes.
 
@@ -33,21 +36,18 @@ Write one clear paragraph. Reviewers challenge whether the work achieves the int
 
 ## Step 3, Spawn Reviewers
 
-Launch all reviewers in a single message using the Task tool. Use the `interrogate reviewers` list from `~/.cursor/rules/pstack-models.mdc` when present, one reviewer per entry, extending or shrinking the Reviewer A/B/C/D labels below to the configured entry count; otherwise use the table defaults.
+Launch all reviewers concurrently through the host's native delegation feature. Use confirmed `interrogate reviewers` entries from `~/.config/pstack/models.md` when present, one reviewer per entry, extending or shrinking Reviewer A/B/C/D labels to match. Otherwise launch four independent reviewers inheriting the parent model.
 
-| Subagent | Default model |
-|----------|---------------|
-| Reviewer A | `claude-fable-5-thinking-max` |
-| Reviewer B | `gpt-5.6-sol-max` |
-| Reviewer C | `grok-4.6-fast-xhigh` |
-| Reviewer D | `claude-opus-5-thinking-xhigh` |
+| Reviewer | Default execution |
+|----------|-------------------|
+| Reviewer A | Inherit parent |
+| Reviewer B | Inherit parent |
+| Reviewer C | Inherit parent |
+| Reviewer D | Inherit parent |
 
-For each reviewer:
-- `subagent_type`: `generalPurpose`
-- `model`: the configured `interrogate reviewers` entry, or the table default with no configured line
-- `readonly`: `true`
+For each reviewer, supply the same review scope and prompt. Apply its confirmed model mapping when the host supports child-model selection; otherwise omit the selector. Give it read-only instructions and withhold write tools when supported.
 
-If a model slug is rejected as unresolvable when you try to spawn the subagent, check the valid slugs in the Task tool's error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with the valid slug, and open a separate PR to update the configured value or default table. Do not block the review on the slug issue. If the configured value is `inherit-parent` or `auto`, omit `model` instead; never treat those aliases as broken slugs or enter this fallback for them.
+If a configured model identifier is rejected, omit it and inherit the parent model for this run. Report the stale mapping and update it only after the host confirms a replacement. Never guess a replacement identifier. If delegation itself is unavailable, the parent applies the rubric once and reports that independent review was unavailable.
 
 Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent
@@ -55,7 +55,7 @@ Read `references/reviewer-prompt.md` and fill in the template with:
 3. The review rubric from `references/rubric.md`
 4. The code-quality lens from `references/code-quality-review.md`
 
-The same filled template goes to all reviewers, so every model applies the code-quality lens.
+The same filled template goes to all reviewers, so every reviewer applies the code-quality lens.
 
 Each reviewer produces structured findings as described in the prompt template.
 
@@ -64,10 +64,10 @@ Each reviewer produces structured findings as described in the prompt template.
 As results come back, build a unified picture:
 
 1. **Parse all findings** from the reviewers
-2. **Identify consensus**. Findings raised by 2+ models independently are highest signal.
-3. **Identify lone-model findings**. Still worth reading, but weight accordingly.
-4. **Deduplicate**. Different models may describe the same issue differently. Merge these and note which models raised it.
-5. **Note disagreements**. If one model flags something and another explicitly says the opposite, that's useful context for the verdict.
+2. **Identify consensus**. Findings raised by 2+ reviewers independently are highest signal.
+3. **Identify lone-reviewer findings**. Still worth reading, but weight accordingly.
+4. **Deduplicate**. Different reviewers may describe the same issue differently. Merge these and note which reviewers raised it.
+5. **Note disagreements**. If one reviewer flags something and another explicitly says the opposite, that's useful context for the verdict.
 
 ## Step 5, Lead Judgment
 
@@ -83,7 +83,7 @@ Categorize every finding using these buckets:
 - **Dismissed**. Wrong, nitpicky, or missing context. Brief explanation why.
 
 For each finding, include:
-- Which model(s) raised it
+- Which reviewer(s) raised it, plus model names only when the host confirmed them
 - The category (act on / consider / noted / dismissed)
 - A one-line rationale for the categorization
 
@@ -95,13 +95,13 @@ Present the verdict in this structure:
 > [The stated intent paragraph from Step 2]
 
 ### Reviewers
-- Reviewer [label]: [model name], [N findings] (one bullet per reviewer)
+- Reviewer [label]: [confirmed model name or `inherited parent`], [N findings] (one bullet per reviewer)
 
 ### Act On
-[Findings that should be addressed. For each: description, which models raised it, why it matters.]
+[Findings that should be addressed. For each: description, which reviewers raised it, why it matters.]
 
 ### Consider
-[Findings worth thinking about. For each: description, which models raised it, tradeoff involved.]
+[Findings worth thinking about. For each: description, which reviewers raised it, tradeoff involved.]
 
 ### Noted
 [Valid but low-priority. Brief list.]
@@ -110,4 +110,4 @@ Present the verdict in this structure:
 [Rejected findings with brief rationale. This shows the user what was filtered out and why, so they can override your judgment if they disagree.]
 
 ### Agreement Map
-[Where did models agree, where did they diverge, and what does the pattern of agreement/disagreement tell us?]
+[Where did reviewers agree, where did they diverge, and what does the pattern of agreement/disagreement tell us? State whether distinct models actually ran.]

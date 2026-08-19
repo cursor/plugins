@@ -2,7 +2,7 @@
 
 Produce a phased implementation plan grounded in the **Principles** section of the `poteto-mode` skill. The plan is the deliverable. Do not implement.
 
-Open a todolist with one item per step below.
+Use the host's task tracker with one item per step below. If no tracker is available, keep the same checklist in the working response.
 
 ## 0. Triage
 
@@ -16,7 +16,7 @@ Read the **Principles** section of the `poteto-mode` skill end to end, and the l
 
 ## 2. Scope and constraints
 
-State your read of scope and constraints in one paragraph. Use `AskQuestion` only for genuinely ambiguous intent (the **never-block-on-the-human** principle skill); give concrete options with each open question.
+State your read of scope and constraints in one paragraph. Ask the human only for genuinely ambiguous intent (the **never-block-on-the-human** principle skill); prefer the host's structured-question feature and otherwise give concise numbered options in chat.
 
 Resolve what is in scope vs explicitly out, technical or platform constraints, patterns to preserve, and the definition of done.
 
@@ -24,8 +24,8 @@ Resolve what is in scope vs explicitly out, technical or platform constraints, p
 
 Delegate codebase exploration (the **guard-the-context-window** principle skill).
 
-- Prefer `subagent_type: "poteto-agent"`. `generalPurpose` is the fallback. Never use the built-in `plan` subagent_type; it ignores this skill.
-- Pass `model:` explicitly per the configured roles (defaults `grok-4.6-fast-xhigh` for code, `claude-fable-5-thinking-max` for judgment).
+- Use the installed `poteto-agent` role when the host supports named roles. Otherwise launch a general delegate with `pstack/agents/poteto-agent.md` as its instructions. Do not use a host's generic planning role because this skill owns the planning contract.
+- Apply confirmed role mappings from `~/.config/pstack/models.md` when the host supports child-model selection. Otherwise inherit the parent model and never invent an identifier.
 
 Each explorer returns file pointers, conventions, dependencies, test infrastructure, and entry points. No inlined dumps.
 
@@ -73,7 +73,7 @@ Order phases so infrastructure and shared types land first (the **foundational-t
 
 For changes touching existing code, apply the **redesign-from-first-principles** principle skill: if we'd built this with the new requirement on day one, what would it look like? Redesign holistically; deliver incrementally.
 
-If a phase creates or edits a skill, the phase instructs the implementer to use the **create-skill** skill (Cursor's built-in for authoring SKILL.md files).
+If a phase creates or edits a skill, instruct the implementer to use an installed skill-authoring workflow when available, or follow the Agent Skills specification and available validator directly.
 
 ## 5. Verification per phase
 
@@ -83,10 +83,10 @@ Each phase needs both:
 
 **Runtime.** Exercise the feature on the matching surface via the relevant control skill:
 
-- Browser / Electron / Web UIs: the `control-ui` skill from the `cursor-team-kit` plugin.
-- CLIs and TUIs: the `control-cli` skill from the `cursor-team-kit` plugin.
-- Native mobile: whatever simulator-driving skill your team has.
-- No control skill for the touched surface: flag it in the plan.
+- Browser / Electron / Web UIs: an installed browser or UI control skill, otherwise the project's existing integration harness.
+- CLIs and TUIs: an installed terminal control skill, otherwise the real executable driven from the shell.
+- Native mobile: an installed simulator-driving skill or the project's simulator harness.
+- No way to drive the touched surface: flag the resulting observation gap in the plan.
 
 For bug fixes, the loop is reproduce on the surface, fix, verify on the same surface. Unit tests show a branch behaves a certain way; they do not prove the bug is gone (the **prove-it-works** principle skill).
 
@@ -98,7 +98,7 @@ In the overview, name which poteto-mode non-negotiables the implementer must app
 - the **interrogate** skill for adversarial review on contested designs before shipping.
 - `/deslop` over each diff before commit. the **unslop** skill over any prose surface.
 - the **show-me-your-work** skill to keep a decision trail when the plan is large enough to need an auditable record.
-- Cursor's built-in **babysit** skill after opening the PR.
+- The pstack **Babysit** playbook after opening the PR.
 
 ## 7. Hand back
 

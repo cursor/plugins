@@ -1,13 +1,14 @@
 {
-	"name": "pstack",
-	"displayName": "pstack",
-	"version": "0.14.1",
-	"description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence.",
+	"name": "pstack-generic",
+	"displayName": "pstack generic",
+	"version": "0.14.1-generic.1",
+	"description": "Portable, model-agnostic pstack engineering workflows with optional host adapters.",
 	"author": {
 		"name": "Lauren Tan"
 	},
-	"homepage": "https://github.com/cursor/plugins/tree/main/pstack",
-	"repository": "https://github.com/cursor/plugins",
+	"publisher": "praxstack",
+	"homepage": "https://github.com/praxstack/cursor-plugins/tree/pstack-generic/pstack",
+	"repository": "https://github.com/praxstack/cursor-plugins",
 	"license": "MIT",
 	"keywords": [
 		"pstack",
@@ -16,14 +17,20 @@
 		"principles",
 		"agent-style",
 		"subagents",
-		"unslop"
+		"unslop",
+		"agent-skills",
+		"model-agnostic",
+		"multi-harness"
 	],
 	"category": "developer-tools",
 	"tags": [
 		"workflow",
 		"principles",
 		"review",
-		"planning"
+		"planning",
+		"generic",
+		"model-agnostic",
+		"multi-harness"
 	],
 	"skills": "./skills/",
 	"agents": "./agents/"

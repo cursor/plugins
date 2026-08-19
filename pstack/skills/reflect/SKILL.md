@@ -1,8 +1,11 @@
 ---
 name: reflect
 description: Spawn three parallel review subagents over the active transcript, surface learnings, and route each to a concrete edit on an existing skill. Use when the user says reflect.
-disable-model-invocation: true
+metadata:
+  pstack-explicit-invocation: "true"
 ---
+
+**Activation boundary:** execute this skill only when the user or another active pstack skill explicitly routes here.
 
 # Reflect
 
@@ -22,31 +25,29 @@ Skip when the conversation is trivial, off-topic, or already covered by an exist
 
 ### 1. Locate the active transcript
 
-The parent finds its own transcript file before fanning out. The system prompt names the active workspace's `agent-transcripts/` directory; use that path. Do not glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
+The parent locates its transcript through host-provided session context before fanning out. Use only the active workspace's transcript root. If the host exposes no transcript path, write a tight digest of the session and pass that instead. Never scan sibling workspaces or global conversation stores; that crosses privacy boundaries.
 
-```bash
-ls -t <agent-transcripts>/*.jsonl <agent-transcripts>/*/*.jsonl <agent-transcripts>/*/subagents/*.jsonl 2>/dev/null | head -10
-```
+List only recent JSONL candidates under that root, including flat, nested, and child-session layouts.
 
 Three transcript layouts: legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), and subagent (`<parent>/subagents/<child>.jsonl`).
 
 For each candidate, read the first JSONL line and check that `message.content[0].text` contains the conversation's opening user prompt. Take the matching path. If no path resolves, write a tight digest of the session and pass that instead.
 
-### 2. Spawn three reviewers in parallel
+### 2. Run three reviewers in parallel
 
-One message, three `Task` calls, `subagent_type: generalPurpose`, explicit `model:` on each, agent mode (`readonly: false`). Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript); readonly strips MCPs. The prompt forbids file writes; the parent applies edits.
+Launch three delegates concurrently through the host's native delegation feature. Use confirmed mappings from `~/.config/pstack/models.md` when present; otherwise inherit the parent model. Grant each only the connector and read capabilities needed for context lookups. The prompt forbids file writes; the parent applies edits. If concurrent delegation is unavailable, run the three lenses sequentially and keep their outputs separate. If delegation is unavailable entirely, the parent applies each lens in separate passes and reports that review independence was unavailable.
 
-| Lens | `model` | Prompt template |
+| Lens | Configuration role | Prompt template |
 |---|---|---|
-| Judgment | your configured reflect-judgment model (default `claude-fable-5-thinking-max`) | `references/judgment-reviewer.md` |
-| Tooling | your configured reflect-tooling model (default `gpt-5.6-sol-max`) | `references/tooling-reviewer.md` |
-| Divergent | your configured reflect-judgment model (default `claude-fable-5-thinking-max`) | `references/divergent-reviewer.md` |
+| Judgment | `reflect judgment` | `references/judgment-reviewer.md` |
+| Tooling | `reflect tooling` | `references/tooling-reviewer.md` |
+| Divergent | `reflect divergent` | `references/divergent-reviewer.md` |
 
-Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Task` response body.
+Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings through the host's normal delegate result channel.
 
 ### 3. Synthesize
 
-One `Task` call, `subagent_type: generalPurpose`, using your configured reflect-judgment model (default `claude-fable-5-thinking-max`), agent mode (`readonly: false`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access; readonly strips MCPs. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+Launch one synthesizer delegate using the confirmed `reflect synthesizer` mapping when present; otherwise inherit the parent model. Grant only the connector and read capabilities needed to spot-verify citations, and forbid file writes. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. If delegation is unavailable, the parent performs the same synthesis. The result is a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 
@@ -61,9 +62,9 @@ Backlog items file to whatever devex / backlog tracker your team uses automatica
 For each approved Accepted item, follow the Routing field exactly:
 
 - Trivial existing-skill edit (a one-line bullet, a tightened sentence, a stale fact corrected): parent does directly.
-- Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): hand to Cursor's built-in `create-skill` skill and run its draft / test / iterate loop.
-- `tune description: <skill path>` (the skill exists but didn't trigger when it should have): hand to `create-skill` and run its description-optimization loop.
-- `new skill via create-skill: <kebab-name>`: hand creation to `create-skill`. Do not invent the shape ad hoc.
+- Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): use an installed skill-authoring workflow and run its draft / test / iterate loop. If none is installed, follow the Agent Skills specification and available validator directly.
+- `tune description: <skill path>` (the skill exists but didn't trigger when it should have): use the same authoring workflow and run its description-optimization loop.
+- `new skill: <kebab-name>`: use the same authoring workflow. Do not invent the shape ad hoc.
 
 If your environment ships a SKILL.md validator, run it on every touched skill before declaring done. Skip this step if it doesn't.
 

@@ -21,7 +21,7 @@ Walk through what each line buys you:
 - "done means..." turns the goal into checks every iteration can run.
 - "fresh worktree off `<base>`" keeps the run from colliding with anything else you have open.
 - "don't ask me before committing" pre-answers the permission the agent would otherwise block on.
-- `/loop` is Cursor's built-in wake mechanism, not a pstack skill. The [Autonomous run playbook](../../skills/poteto-mode/playbooks/autonomous-run.md) uses it to re-check the finish condition on events or a heartbeat.
+- A host-native recurring or wake mechanism can re-check the finish condition on events or a heartbeat. Without one, the [Autonomous run playbook](../../skills/poteto-mode/playbooks/autonomous-run.md) checkpoints and reports that persistence is unavailable.
 - The escape hatch lets it stop at a genuine dead end and write up why, which beats eight hours of creative goal reinterpretation.
 
 Because you'll review this work after stepping away, `/poteto-mode` routes it through [`/figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases before any code and wires in the decision log.
@@ -52,7 +52,7 @@ When you're back, ask for the run in review form:
 /show-me-your-work catch me up on what you did last night
 ```
 
-Before the skill hands back its summary, it spawns a reviewer on a different model family to read the trail and the transcript, and the reply ends with an Attention section listing what deserves your scrutiny. Read that section first, then the log rows it points at. You're auditing decisions, not re-reading the whole night.
+Before the skill hands back its summary, it asks an independent reviewer to read the trail and the transcript, using a different confirmed model family when available. The reply ends with an Attention section listing what deserves your scrutiny. Read that section first, then the log rows it points at. You're auditing decisions, not re-reading the whole night.
 
 ## When the night holds a queue, not a task
 

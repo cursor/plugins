@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@cursor-skill/poteto-mode-tools",
+      "name": "@pstack/poteto-mode-tools",
       "dependencies": {
         "commander": "14.0.0",
       },
