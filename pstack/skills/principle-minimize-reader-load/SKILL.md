@@ -1,6 +1,6 @@
 ---
 name: principle-minimize-reader-load
-description: "Apply when reviewing or shaping code that's hard to trace. Count layers between question and answer, and hidden state in the reader's head; collapse one-caller wrappers and shrink mutable scope."
+description: "Apply when reviewing or shaping code that's hard to trace. Reduce layers between question and answer and state the reader must remember, including a value's role hidden by vague names."
 disable-model-invocation: true
 ---
 
@@ -18,7 +18,7 @@ Maintainability is the work a reader must do to understand code. Track two axes:
 - **Demand interface compression.** A broad interface that hides little complexity makes readers learn both the surface and the implementation. Prefer boundaries that hide meaningful decisions.
 - **Shrink state scope:** prefer pure functions (returns over mutations), locals over fields, fields over module state, and module state over globals. Derive instead of sync.
 - **Name the invariant at the boundary,** not in every consumer, so the reader learns it once.
-- **Name variables after their domain meaning or role, not the operation's generic outcome.** Prefer `validatedUser`, `pendingRefunds`, or `requester` over `result`, `data`, or `value`. Include provenance or guarantees when they distinguish the value. Short generic names are fine in tight generic scopes; require more explicit names as the distance between declaration and use grows.
+- **Make local names carry meaning instead of reader memory.** Prefer domain roles or guarantees (`requester`, `validatedUser`) over generic outcomes (`result`, `data`). Short names are fine when declaration and use are visible together.
 - Before adding a layer or a piece of state, ask: does this reduce reader load somewhere else by at least as much?
 
-**The test:** Can a new reader answer "where does X come from?" and "what can change X?" in under 30 seconds? If not, cut layers or cut state. Can a reader understand a value's role without rereading its assignment, and distinguish it from similar values in scope? If not, rename it.
+**The test:** Can a new reader answer "where does X come from?", "what can change X?", and "what role does X play?" in under 30 seconds? If not, cut layers, cut state, or rename X.
