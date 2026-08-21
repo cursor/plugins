@@ -8,6 +8,10 @@
 // Known limits (documented, none bite today): Windows-style separators in link
 // targets, reference-style link definitions ([a]: path), and targets inside
 // code fences are not checked.
+// Guards: fails loudly when fewer than 44 skills (SKILL.md each) or zero markdown
+// files are found — an emptied tree must not pass as "0 files, all resolve".
+// CRLF line endings are normalized before matching, so Windows checkouts neither
+// false-fail on frontmatter fences nor slip past link detection.
 
 import { readFileSync, existsSync, readdirSync, statSync } from "fs";
 import { resolve, dirname, join, relative, sep } from "path";
@@ -32,6 +36,20 @@ function skillRootOf(file) {
 const mdFiles = walk(skillsDir).filter((f) => f.endsWith(".md"));
 let errors = 0;
 
+// Vacuous-green guard: the portability gate asserts exactly 44 portable skills;
+// mirror that floor here so a lost or emptied skills tree fails this gate too.
+const skillDirs = readdirSync(skillsDir, { withFileTypes: true })
+  .filter((d) => d.isDirectory() && existsSync(join(skillsDir, d.name, "SKILL.md")))
+  .map((d) => d.name);
+
+if (skillDirs.length < 44 || mdFiles.length === 0) {
+  console.error(
+    `FLOOR: expected >=44 skills (SKILL.md each) and >0 markdown files; ` +
+      `found ${skillDirs.length} skills, ${mdFiles.length} markdown files.`
+  );
+  process.exit(1);
+}
+
 function fail(from, target) {
   console.error(`UNRESOLVED: ${relative(root, from)} -> ${target}`);
   errors++;
@@ -40,7 +58,7 @@ function fail(from, target) {
 for (const file of mdFiles) {
   const base = dirname(file);
   const sroot = skillRootOf(file);
-  const text = readFileSync(file, "utf-8");
+  const text = readFileSync(file, "utf-8").replaceAll("\r\n", "\n");
 
   // 1. Relative markdown links
   for (const m of text.matchAll(/\]\(([^)#\s]+)(?:#[^)]*)?\)/g)) {
