@@ -8,4 +8,4 @@ New durable gate `scripts/check-pstack-references.mjs`: scans all markdown under
 placeholders, not paths.
 
 Result: 100 files checked, **all references resolve**, exit 0. Commit `cb8f935`.
-Evidence: `.agent/evidence/gate3-references.log`.
+Evidence: [verification-evidence.md — Gate 3](../../.agent/evidence/verification-evidence.md). Raw `.log` captures are gitignored; substance is inlined there.

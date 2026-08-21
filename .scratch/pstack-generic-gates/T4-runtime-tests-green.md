@@ -7,4 +7,4 @@ Runtime tests exist at `pstack/skills/poteto-mode/scripts/`:
 
 Full suite: **52 pass / 0 fail / 206 expect() calls across 4 files.**
 
-Evidence: `.agent/evidence/gate2-runtime-tests.log`.
+Evidence: [verification-evidence.md — Gate 2](../../.agent/evidence/verification-evidence.md). Raw `.log` captures are gitignored; substance is inlined there.

@@ -7,4 +7,4 @@ First real run of `node scripts/validate-plugins.mjs` after T1:
 (`pstack/.cursor-plugin/plugin.json`, name `pstack-generic`) passes the upstream
 plugin schema, and every marketplace entry name-matches its plugin manifest.
 
-Evidence: `.agent/evidence/gate-validate-plugins.log`.
+Evidence: [verification-evidence.md — Marketplace validation](../../.agent/evidence/verification-evidence.md). Raw `.log` captures are gitignored; substance is inlined there.
