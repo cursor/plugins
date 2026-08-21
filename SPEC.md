@@ -16,7 +16,10 @@ feature work; not UI work.
 
 ## Non-goals
 
-- No semantic changes to any of the 44 skills' behavior (identity is human-owned per PORTABILITY.md).
+- No semantic changes to any of the 44 skills' behavior (identity is human-owned per PORTABILITY.md),
+  except capability-binding degradation edits required by PORTABILITY gate 5 (allowed by the
+  PORTABILITY.md Identity section). Carve-out recorded 2026-08-21 after post-merge review finding F4;
+  applied to date: maintain-verification-skill (badf6ac), create-verification-skill (this branch).
 - No PRs or issues to `upstream` (cursor/plugins).
 - No new plugins, no marketplace restructuring.
 - No fixes to pre-existing gbrain workspace health gaps outside this repo (surfaced separately).
