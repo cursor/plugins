@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.1.0 — X MCP guide skill
+
+- Added the X MCP guide skill: tells agents how to handle sign-in, onboarding, and out-of-credits errors with simple user-facing messages, plus session-start, search, pagination, and cost-aware workflow rules.
+
 ## 2.0.0 — OAuth user sign-in, no longer read-only
 
 - Replaced the `X_BEARER_TOKEN` app-only route with OAuth user sign-in using X's client ID `NGdZYmo4VVp2T1BnRG55NlExOGQ6MTpjaQ`.
