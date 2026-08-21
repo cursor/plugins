@@ -1,0 +1,13 @@
+{
+	"name": "cursor-plugins",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"validate-plugins": "node scripts/validate-plugins.mjs",
+		"check-pstack-portability": "node scripts/check-pstack-portability.mjs"
+	},
+	"devDependencies": {
+		"ajv": "^8.17.1",
+		"ajv-formats": "^3.0.1"
+	}
+}
