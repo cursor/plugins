@@ -5,6 +5,9 @@
 //   2. backtick paths like `playbooks/x.md`, `references/y.md`, `scripts/z.sh`
 //      -> resolve against the skill root OR the containing file's directory
 // Exit 1 if any reference is unresolved.
+// Known limits (documented, none bite today): Windows-style separators in link
+// targets, reference-style link definitions ([a]: path), and targets inside
+// code fences are not checked.
 
 import { readFileSync, existsSync, readdirSync, statSync } from "fs";
 import { resolve, dirname, join, relative, sep } from "path";
@@ -43,9 +46,16 @@ for (const file of mdFiles) {
   for (const m of text.matchAll(/\]\(([^)#\s]+)(?:#[^)]*)?\)/g)) {
     const target = m[1];
     if (/^[a-z]+:/i.test(target) || target.startsWith("/")) continue;
-    // Bare single words ("url", "placeholder") are prompt-template slots, not paths.
-    if (/^[A-Za-z]+$/.test(target)) continue;
-    if (!existsSync(resolve(base, decodeURIComponent(target)))) {
+    // Bare words and hyphenated words ("url", "feature-name") are prompt-template slots, not paths.
+    if (/^[A-Za-z][A-Za-z0-9-]*$/.test(target)) continue;
+    let decoded = target;
+    try {
+      decoded = decodeURIComponent(target);
+    } catch {
+      fail(file, `${target} (malformed percent-encoding)`);
+      continue;
+    }
+    if (!existsSync(resolve(base, decoded))) {
       fail(file, target);
     }
   }

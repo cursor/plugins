@@ -6,6 +6,9 @@ on:
       - ".cursor-plugin/marketplace.json"
       - "**/plugin.json"
       - "schemas/**"
+      - "pstack/**"
+      - "package.json"
+      - "bun.lock"
 
 jobs:
   validate:
@@ -17,8 +20,16 @@ jobs:
         with:
           node-version: 20
 
+      - uses: oven-sh/setup-bun@v2
+
       - name: Install dependencies
-        run: npm install --no-save ajv ajv-formats
+        run: bun install --frozen-lockfile
 
       - name: Validate plugin definitions
         run: node scripts/validate-plugins.mjs
+
+      - name: Check pstack portability contract
+        run: node scripts/check-pstack-portability.mjs
+
+      - name: Check pstack skill references
+        run: node scripts/check-pstack-references.mjs

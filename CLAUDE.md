@@ -40,7 +40,8 @@ Single-context layout: root `CONTEXT.md` + `docs/adr/` (created lazily). See `do
 
 ## Validation gates
 
-- `node scripts/check-pstack-portability.mjs` — pstack portability contract gate (see `pstack/PORTABILITY.md`).
 - `node scripts/validate-plugins.mjs` — full marketplace manifest/schema validation (requires `ajv`; see root `package.json`).
+- `node scripts/check-pstack-portability.mjs` — pstack portability contract gate (see `pstack/PORTABILITY.md`).
+- `node scripts/check-pstack-references.mjs` — pstack skill reference-resolution gate (PORTABILITY gate 3).
 
-PRs touching any plugin must pass both before merge.
+PRs touching any plugin must pass all three before merge. CI (`.github/workflows/validate-plugins.yml`) runs all three on every PR touching plugins or pstack.

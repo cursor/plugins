@@ -4,7 +4,8 @@
 	"type": "module",
 	"scripts": {
 		"validate-plugins": "node scripts/validate-plugins.mjs",
-		"check-pstack-portability": "node scripts/check-pstack-portability.mjs"
+		"check-pstack-portability": "node scripts/check-pstack-portability.mjs",
+		"check-pstack-references": "node scripts/check-pstack-references.mjs"
 	},
 	"devDependencies": {
 		"ajv": "^8.17.1",

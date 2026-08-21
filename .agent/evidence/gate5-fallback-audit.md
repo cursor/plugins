@@ -29,10 +29,6 @@ capability is unavailable"; acceptance gate 5.
 
 ## Residual
 
-44/44 audited after fix; zero open gaps. Re-audit command:
-
-```sh
-grep -rLn 'unavailable\|fallback\|degrade\|otherwise inherit\|no subagent mechanism' pstack/skills/*/SKILL.md
-```
-
-Remaining hits are vacuous/benign per table above.
+44/44 audited after fix; zero open gaps. The remaining files without fallback
+language are the vacuous/benign rows in the table above — absence of the grep
+pattern there is expected, not a failure.
