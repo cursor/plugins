@@ -17,39 +17,15 @@ class ValidationCache:
                 pass
         return {}
 
-    def get_hash(self, target_path):
-        hasher = hashlib.sha256()
-        
-        if os.path.isfile(target_path):
-            with open(target_path, "rb") as f:
-                while chunk := f.read(8192):
-                    hasher.update(chunk)
-        elif os.path.isdir(target_path):
-            for root, dirs, files in os.walk(target_path):
-                # Ignore .git and .cache folders
-                dirs[:] = [d for d in dirs if not d.startswith(".")]
-                for file in sorted(files):
-                    file_path = os.path.join(root, file)
-                    hasher.update(file.encode("utf-8"))
-                    try:
-                        with open(file_path, "rb") as f:
-                            while chunk := f.read(8192):
-                                hasher.update(chunk)
-                    except Exception:
-                        pass
-                        
-        return hasher.hexdigest()
-
-    def is_cached(self, path):
-        if not os.path.exists(path):
-            return False
-        return self.cache.get(path) == self.get_hash(path)
-
-    def update(self, path):
-        if os.path.exists(path):
-            self.cache[path] = self.get_hash(path)
-
-    def save(self):
-        os.makedirs(os.path.dirname(CACHE_FILE), exist_ok=True)
-        with open(CACHE_FILE, "w", encoding="utf-8") as f:
-            json.dump(self.cache, f, indent=2)
+    def get_hash(directory_path: str) -> str:
+    hasher = hashlib.sha256()
+    for root, dirs, files in os.walk(directory_path):
+        dirs.sort()
+        dirs[:] = [d for d in dirs if d not in {".git", ".cache", "__pycache__"}]
+        for file in sorted(files):
+            full_path = os.path.join(root, file)
+            rel_path = os.path.relpath(full_path, directory_path)
+            hasher.update(rel_path.encode("utf-8"))
+            with open(full_path, "rb") as f:
+                while chunk := f.read(8192): hasher.update(chunk)
+    return hasher.hexdigest()

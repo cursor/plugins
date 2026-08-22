@@ -22,9 +22,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache/plugin_validation.json
-          key: plugin-cache-${{ runner.os }}-${{ github.sha }}
+          key: plugin-cache-${{ runner.os }}-${{ hashFiles('.github/scripts/**') }}-${{ hashFiles('.github/scripts/**') }}-${{ github.sha }}
           restore-keys: |
-            plugin-cache-${{ runner.os }}-
+            plugin-cache-${{ runner.os }}-${{ hashFiles('.github/scripts/**') }}-
 
       - name: Run Plugin Validator
         run: python3 .github/scripts/validate.py

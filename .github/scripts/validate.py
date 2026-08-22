@@ -19,7 +19,7 @@ def validate_plugin(plugin_path):
 
     errors = []
     if os.path.isdir(plugin_path):
-        json_files = glob.glob(os.path.join(plugin_path, "**/*.json"), recursive=True)
+        json_files = glob.glob(os.path.join(plugin_path, "**/*.json"), recursive=True, include_hidden=True)
         for jf in json_files:
             try:
                 with open(jf, "r", encoding="utf-8") as f:
