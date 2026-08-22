@@ -48,8 +48,23 @@ function isAbsoluteUrl(value) {
 // Cursor. Glob patterns are checked against their static directory prefix so
 // a typo in the base directory is still caught.
 function checkReferencedPath(pluginName, pluginDir, field, declared) {
-  if (typeof declared !== "string" || declared.trim().length === 0) return;
-  if (isAbsoluteUrl(declared)) return;
+  if (typeof declared !== "string") return;
+
+  if (declared.trim().length === 0) {
+    fail(`Plugin "${pluginName}": ${field} path must not be empty`);
+    return;
+  }
+
+  // The schema allows `logo` to be an absolute URL; every other component
+  // field is a local path, so a remote-looking value there is a mistake the
+  // existence check would otherwise silently skip.
+  if (isAbsoluteUrl(declared)) {
+    if (field === "logo") return;
+    fail(
+      `Plugin "${pluginName}": ${field} path "${declared}" must be a local path relative to the plugin directory`
+    );
+    return;
+  }
 
   const normalized = declared.replace(/^\.\//, "").replace(/\/+$/, "");
   if (!normalized || normalized.startsWith("/")) {
