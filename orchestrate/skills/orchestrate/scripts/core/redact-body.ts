@@ -2,11 +2,14 @@ const MAX_BODY_CHARS = 2_048;
 const SENSITIVE_KEY_RE = /token|secret|password|api[_-]?key|authorization/i;
 const SENSITIVE_ASSIGNMENT_RE =
   /"?((?:[\w.-]+\/)?(?:token|secret|password|api[_-]?key|authorization)[\w.-]*)"?\s*[:=]\s*/gi;
-// The value is matched lazily up to a separator that ends the assignment:
-// end of line, an unquoted-word boundary followed by `,`/`;`/`}` (JSON-ish
-// contexts), or a closing quote. Everything between belongs to the secret and
-// gets redacted whole — including values with spaces (`Bearer eyJ... sig`).
-const SENSITIVE_VALUE_RE = /[^,;}\n"']*(?:["'][^"']*["']?|[,;}]?)/;
+// The value is matched up to a real assignment boundary and redacted whole:
+//  - a double-quoted value runs to its closing `"` (escaped quotes allowed), so a
+//    quoted value containing an apostrophe is not truncated at it;
+//  - a single-quoted value runs to its closing `'` (escaped quotes allowed);
+//  - an unquoted value runs to `,`/`;`/`}`/end-of-line, consuming one optional
+//    terminator so the assignment ends at a real boundary (Bugbot round 1).
+const SENSITIVE_VALUE_RE =
+  /(?:"(?:\\.|[^"\\])*"?|'(?:\\.|[^'\\])*'?|[^,;}\n]*[,;}]?)/;
 const PATH_PATTERNS = [
   { re: /^\/workspace\/\S*/gm, reason: "contains /workspace path" },
   { re: /^\/Users\/\S*/gm, reason: "contains /Users path" },

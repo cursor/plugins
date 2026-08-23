@@ -68,6 +68,18 @@ describe("redactBody", () => {
     );
   });
 
+  test("does not truncate a quoted value at an inner apostrophe", () => {
+    // Bugbot round 2: the first fix merged `"` and `'` into one character
+    // class, so a double-quoted value containing an apostrophe ended at it and
+    // leaked the secret tail. The opening quote must decide the closing quote.
+    expect(
+      redactBody(`{"password": "it's a secret123"}`).text
+    ).toBe("{password=[redacted]}");
+    expect(redactBody(`{"token": "don't-panic"}`).text).toBe(
+      "{token=[redacted]}"
+    );
+  });
+
   test("allows concise operational context", () => {
     const result = redactBody("blocked: docker rate-limit on redis:7");
 
