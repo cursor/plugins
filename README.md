@@ -61,6 +61,10 @@ plugins/
 └── ...
 ```
 
+## Plugin lifecycle
+
+Install, disable, and uninstall are distinct actions, and a plugin's cached artifacts are not evidence that it is enabled. See [docs/plugin-lifecycle.md](docs/plugin-lifecycle.md).
+
 ## License
 
 MIT
