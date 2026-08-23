@@ -41,6 +41,22 @@ describe("redactBody", () => {
     expect(redactBody(`\`${sha}\``).reasons).toEqual([]);
   });
 
+  test("redacts quoted JSON keys and values containing spaces", () => {
+    // The old pattern used \b around the key, so a quote-adjacent key like
+    // "api_key" in a pasted JSON body never matched and the secret went out
+    // unredacted. It also stopped the value at the first space, leaking
+    // `Bearer <jwt>` tails.
+    expect(
+      redactBody('{"Authorization": "Bearer eyJhbG.sig"}').text
+    ).toContain("Authorization=[redacted]");
+    expect(
+      redactBody('{"api_key": "sk-123", "name": "x"}').text
+    ).not.toContain("sk-123");
+    expect(redactBody('api_key = "super secret value"').text).toBe(
+      'api_key=[redacted]'
+    );
+  });
+
   test("allows concise operational context", () => {
     const result = redactBody("blocked: docker rate-limit on redis:7");
 
