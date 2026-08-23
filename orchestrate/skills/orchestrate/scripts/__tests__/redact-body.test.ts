@@ -57,6 +57,17 @@ describe("redactBody", () => {
     );
   });
 
+  test("redacts unquoted values up to a separator, consuming it", () => {
+    // Cursor Bugbot flagged the first cut: the value pattern stopped at
+    // `,`/`;`/`}` without consuming them, so an unquoted assignment failed to
+    // match entirely and the raw secret passed through.
+    const result = redactBody("password: hunter2, keep");
+    expect(result.text).toBe("password=[redacted] keep");
+    expect(redactBody("token = abc123; next=1").text).toBe(
+      "token=[redacted] next=1"
+    );
+  });
+
   test("allows concise operational context", () => {
     const result = redactBody("blocked: docker rate-limit on redis:7");
 

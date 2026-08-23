@@ -6,7 +6,7 @@ const SENSITIVE_ASSIGNMENT_RE =
 // end of line, an unquoted-word boundary followed by `,`/`;`/`}` (JSON-ish
 // contexts), or a closing quote. Everything between belongs to the secret and
 // gets redacted whole — including values with spaces (`Bearer eyJ... sig`).
-const SENSITIVE_VALUE_RE = /[^,;}\n"']*(?:"[^"]*"?|'[^']*'?|$|\s(?=[\w"'])|$)/;
+const SENSITIVE_VALUE_RE = /[^,;}\n"']*(?:["'][^"']*["']?|[,;}]?)/;
 const PATH_PATTERNS = [
   { re: /^\/workspace\/\S*/gm, reason: "contains /workspace path" },
   { re: /^\/Users\/\S*/gm, reason: "contains /Users path" },
