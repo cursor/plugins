@@ -24,6 +24,8 @@ After these sections, attach videos or screenshots when they prove a claim. Do n
 
 **Readiness.** Open every PR ready, never as a draft. Cloud-agent PR tools default to draft, so set `draft: false` on every PR creation call. If a PR still opens as a draft, run the host's ready command, such as `gh pr ready <number>`. Run `gh pr view <number>` before you refer to PR status.
 
+**Lab gate.** If the change matches the lab-risk trigger in **Non-negotiables**, post a pending Lab Validation Receipt after the PR opens. Wait for prerequisite CI and preview artifacts. Then run **Local Lab Validation** against the exact pushed head and update the receipt. A `FAIL` or `BLOCKED` receipt leaves the PR open for collaboration, but stops a production-ready claim and **Shipping**. Any content, build, migration, or lab-configuration change invalidates the affected receipt rows and requires a rerun.
+
 **Babysit.** Opening a PR does not start a babysit. Post the URL and keep building. Finish the phase or stack first. Run a separate babysit pass only when the user asks for one after the whole stack exists. A babysit for each new PR stalls the build and spends checks on commits that later waves restart. Push back when feedback drifts from intent.
 
-A subagent that opens a PR runs `interrogate`, `/deslop`, and `/no-comments`. It returns the URL and does not babysit. Return to the parent.
+A subagent that opens a PR runs `interrogate`, `/deslop`, and `/no-comments`. It returns the URL and, when applicable, the pending lab status. It does not run the lab or babysit. Return to the parent.

@@ -86,6 +86,7 @@ Each phase needs both:
 - Browser / Electron / Web UIs: the `control-ui` skill from the `cursor-team-kit` plugin.
 - CLIs and TUIs: the `control-cli` skill from the `cursor-team-kit` plugin.
 - Native mobile: whatever simulator-driving skill your team has.
+- Cross-service, upgrade-sensitive, or hardware work: the **Local Lab Validation** playbook. Name the affected seams, scenario matrix, project-local controls, Lab Validation Receipt, and any missing lab surface before implementation.
 - No control skill for the touched surface: flag it in the plan.
 
 For bug fixes, the loop is reproduce on the surface, fix, verify on the same surface. Unit tests show a branch behaves a certain way; they do not prove the bug is gone (the **prove-it-works** principle skill).
