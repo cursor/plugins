@@ -4,7 +4,6 @@ import type { Dirent } from "node:fs";
 import {
   access,
   mkdir,
-  open,
   readFile,
   readdir,
   rename,
@@ -385,9 +384,7 @@ async function acquireLock(
   const path = join(store, LOCK_FILE);
   const pid = String(process.pid);
   const create = async (): Promise<void> => {
-    const handle = await open(path, "wx");
-    await handle.writeFile(`${pid}\n`);
-    await handle.close();
+    await writeFile(path, `${pid}\n`, { flag: "wx" });
   };
 
   const takeOver = async (): Promise<void> => {
