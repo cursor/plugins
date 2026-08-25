@@ -16,7 +16,7 @@ Pick one, and say which:
 
 - **clean** — every feature got source coverage and either a live drive or a `verified-unreachable` with named prerequisite and route attempted; nothing worth shipping in the verification skill. No branch, no PR. A product gap named in the report does not by itself make the pass `changed` or `blocked`.
 - **changed** — one PR ships proven doc, harness, or map corrections.
-- **blocked** — a feature was neither driven nor classified `verified-unreachable`, or a proven fix could not ship safely. Say exactly what blocked it.
+- **blocked** — a feature lacked a source-wave return, was neither driven nor classified `verified-unreachable`, or a proven fix could not ship safely. Say exactly what blocked it.
 
 ## Edit scope
 
@@ -24,7 +24,7 @@ Only edit the verification skill's own directory (its SKILL.md, features/, and a
 
 ## Pass
 
-0. **Locate the target.** Find the verification skill to maintain: the project-local skill whose body has launch/drive sections and a feature map (usually `.cursor/skills/verify-*/`). If several match, pick the directory that matches the current diff, else the one touched last. Ask only if those still tie. If none match, stop and point at `/create-verification-skill` instead of inventing a target.
+0. **Locate the target.** Find the verification skill to maintain: the project-local skill whose body has launch/drive sections and a feature map (usually `.cursor/skills/verify-*/`). If several match, pick the one whose path appears in the current diff. If that does not uniquely identify one skill, stop. Name the candidates. Do not guess. If none match, stop and point at `/create-verification-skill` instead of inventing a target.
 
 1. **Index hygiene.** Read the feature map README and glob its sibling files. Fix missing, extra, duplicate, or dead entries. Lightweight; no generated inventory.
 
