@@ -38,8 +38,6 @@ It writes `.cursor/skills/verify-<app>/`, agent-facing instructions with exact L
 
 From then on, "verify it in the app" is a step any agent can execute, in this repo, with no setup conversation.
 
-Once the verify skill works, a [`/swarm`](../../skills/swarm/SKILL.md) can split a full pass by feature-map entry and aggregate the results.
-
 ## Keep the verification skill honest
 
 Apps change and feature maps rot. When yours drifts, run:
@@ -48,7 +46,7 @@ Apps change and feature maps rot. When yours drifts, run:
 /maintain-verification-skill
 ```
 
-[`/maintain-verification-skill`](../../skills/maintain-verification-skill/SKILL.md) audits the generated skill: one read-only source reader per feature in parallel, then one live pass that drives every mapped feature. It ends in exactly one of three outcomes. `clean` means full coverage and nothing to ship. `changed` means one PR of proven corrections, confined to the verification skill's own directory. `blocked` names the blocker. It never edits product code. If the live pass catches a product regression, it reports the regression instead of papering over it in docs.
+[`/maintain-verification-skill`](../../skills/maintain-verification-skill/SKILL.md) audits the generated skill: one read-only `maintain source readers` child per feature in parallel, then one live pass that drives every mapped feature. It ends in exactly one of three outcomes. `clean` means every feature got source coverage and a live drive or a `verified-unreachable` classification, and nothing to ship. `changed` means one PR of proven corrections, confined to the verification skill's own directory. `blocked` names the blocker. It never edits product code. If the live pass catches a product regression, it reports the regression instead of papering over it in docs. Do not wrap that pass in `/swarm`.
 
 ## Open the PR
 
