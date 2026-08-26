@@ -1,0 +1,29 @@
+{
+  "name": "ai-prompt-snippets",
+  "displayName": "AI Prompt Snippets",
+  "version": "1.0.0",
+  "description": "Reusable AI prompt commands for common coding workflows in Cursor.",
+  "author": {
+    "name": "sarathkumar1207"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "ai",
+    "prompts",
+    "commands",
+    "code-review",
+    "testing",
+    "documentation"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "ai",
+    "prompts",
+    "productivity"
+  ],
+  "commands": "./commands/",
+  "skills": "./skills/"
+}
