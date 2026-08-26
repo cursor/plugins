@@ -56,7 +56,7 @@ Apps change and feature maps rot. When yours drifts, run:
 /poteto-mode open the pr. small ordered commits, evidence in the description.
 ```
 
-The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) works from a worktree, rebases the work into small ordered commits, cleans the diff, unslops the prose, and runs a Greptile pass on the current head. It returns the PR link after every Greptile finding has a fix, a dismissal reason, or an escalation. A failed or timed-out review returns `BLOCKED` instead of claiming clearance. Five narrow PRs beat one fat one, and stacked follow-ups beat a growing branch.
+The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) works from a worktree, rebases the work into small ordered commits, cleans the diff, unslops the prose, checks repository, branch, and PR eligibility, then binds an eligible review to the current head. An eligible PR returns after every Greptile finding has a fix, a dismissal reason, or an escalation. A proven unconfigured repository or policy-excluded branch or PR returns `NOT_APPLICABLE` with evidence and continues without claiming clearance. Any unresolved eligibility or review failure returns `BLOCKED`, including authentication, permission, outage, ambiguity, and timeout failures. Five narrow PRs beat one fat one, and stacked follow-ups beat a growing branch.
 
 ## Drive the PR to merge-ready with Babysit
 
