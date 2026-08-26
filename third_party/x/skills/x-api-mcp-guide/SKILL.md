@@ -3,16 +3,19 @@ name: X MCP guide
 description: >-
   ALWAYS read this when a user connects the X plugin or any X MCP, before using
   any X connection, and again on any X error. Do not call an X tool until this
-  file has been read in the current turn. On first connect, fetch the credit
-  balance, send the capabilities message defined here, and suggest work that
-  fits their balance. Estimate the cost of every X call before making it and
-  confirm with the user before anything expensive.
+  file has been read in the current turn. On first connect, fetch get_usage_credits
+  BEFORE any user-facing text, then send the capabilities message. Never tell the
+  user to buy credits until that check returns ~$0 or a job would exceed the
+  balance. Estimate the cost of every X call before making it and confirm with
+  the user before anything expensive.
 ---
 # X MCP guide
 
 This plugin uses **X MCP**. The user taps Connect and signs in with X. They are not setting up an API app.
 
 Probe the current user and their credit balance before search, timeline, bookmarks, or news. On a core error, stop. Name the simple issue, then the next step. Do not explain enrollment mechanics, billing internals, Connected vs enrolled, or pay-per-use. Never retry 401 / 403-enrollment / credits-blocked unchanged. Never ask for keys. Never tell them to create an app, Project, or Production env.
+
+**Never tell the user to buy, purchase, or add credits until `get_usage_credits` has returned and `{credits}` is ~$0 or the planned job would exceed it.** Do not use the legacy line “you’ll need to purchase credits at https://console.x.com” (or any “buy credits first” variant) on connect or before that check.
 
 ## Credit balance
 
@@ -36,9 +39,9 @@ Response (values are **USD dollars and cents**; `20.0` = $20.00):
 
 Use **`data.total_balance`** only. Cache it as `{credits}`. Quote it to the user in dollars (`$20.00`). Ignore `free_balance`, `free_grants`, and `prepaid_balance` — do not explain them or choose what to spend.
 
-Fetch it:
+Fetch it **before any user-facing X message** in these cases:
 
-1. **On connect** — before the capabilities message.
+1. **On connect** — first X tool call, before the capabilities message. Do not greet, list capabilities, or mention buying credits until this returns.
 2. **When a session starts and X calls are required** — alongside `get_users_me`.
 3. **When the user asks what they can do** — ideas, a setup, a budget, “what’s possible,” and similar.
 
@@ -46,7 +49,7 @@ Do not fetch on every message. If this call hits error 1, 2, or 3, stop and say 
 
 ## On connect
 
-The first time the user connects X — or on their first X interaction in a session — fetch `{credits}`, then send this capabilities message once. Adapt the wording to your voice. Keep every capability bullet. Then state their balance and suggest **2–3** things from the matching [By budget](#by-budget) row (plus a cheaper starter if useful). Do not pitch work above `{credits}`.
+The first time the user connects X — or on their first X interaction in a session — call `get_usage_credits` first (and `get_users_me`). Do not send the capabilities message until `{credits}` is cached. Then send it once. Adapt the wording to your voice. Keep every capability bullet. Then state their balance and suggest **2–3** things from the matching [By budget](#by-budget) row (plus a cheaper starter if useful). Do not pitch work above `{credits}`. Do not mention purchasing or console.x.com unless `{credits}` is ~$0.
 
 > You're connected to X. Here's what I can do:
 >
@@ -61,9 +64,9 @@ The first time the user connects X — or on their first X interaction in a sess
 >
 > With that, we could: (2–3 ideas from the matching budget row).
 >
-> I'll show a cost estimate before anything expensive. Add credits anytime at https://console.x.com.
+> I'll show a cost estimate before anything expensive.
 
-If `{credits}` is ~$0, keep the bullets, say they have $0.00, suggest only free lookups, and send them to https://console.x.com — skip “With that, we could.”
+If `{credits}` is ~$0, keep the bullets, say they have $0.00, suggest only free lookups, and **then** send them to https://console.x.com to add credits — skip “With that, we could.” If `{credits}` is above $0, do not mention buying or console.x.com.
 
 Send it once per session, not on every message. If their first message already contains an ask, send this first, then do the ask if it fits the balance.
 
@@ -241,4 +244,5 @@ When they ask what they can do, re-fetch `{credits}`, then give 2–3 ideas from
 - Ask for secrets.
 - Retry 403 or credits-blocked in a loop.
 - Pitch or run work above `{credits}`. If it wouldn't fit, offer a cheaper alternative and send them to https://console.x.com.
+- Tell the user to buy / purchase / add credits, or send them to console.x.com to pay, before `get_usage_credits` has returned. Never use “you’ll need to purchase credits at https://console.x.com” unless the check showed ~$0 or a job would exceed `{credits}`.
 - Run an expensive request (over ~$0.25, pagination loops, bulk lookups) without giving an estimate and getting a yes.

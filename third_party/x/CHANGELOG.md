@@ -6,6 +6,7 @@ All notable changes to this plugin will be documented here.
 
 - Agents fetch `GET /2/usage/credits` on connect, at session start when X calls are needed, and when the user asks what they can do. The capabilities message now includes the dollar balance and 2–3 ideas that fit it.
 - Added budget-tier workflows (from $0 through $1,000+) so suggestions scale with remaining credits. If a job would exceed the balance, offer a cheaper alternative and send the user to https://console.x.com.
+- Never tell the user to buy credits until after `get_usage_credits` returns. The on-connect message states the balance; console.x.com is only mentioned when the balance is ~$0 or a job would not fit.
 
 ## 2.1.0 — X MCP guide skill
 
