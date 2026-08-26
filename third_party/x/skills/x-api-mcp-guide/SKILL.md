@@ -66,7 +66,7 @@ The first time the user connects X — or on their first X interaction in a sess
 >
 > I'll show a cost estimate before anything expensive.
 
-If `{credits}` is ~$0, keep the bullets, say they have $0.00, suggest only free lookups, and **then** send them to https://console.x.com to add credits — skip “With that, we could.” If `{credits}` is above $0, do not mention buying or console.x.com.
+If `{credits}` is ~$0, keep the bullets, say they have $0.00, suggest only free lookups, and **then** send them to https://console.x.com to add credits — skip “With that, we could.” Do **not** use the error-3 quote; a successful ~$0 read is not error 3. If `{credits}` is above $0, do not mention buying or console.x.com.
 
 Send it once per session, not on every message. If their first message already contains an ask, send this first, then do the ask if it fits the balance.
 
@@ -96,7 +96,7 @@ Do not retry. Do not search. Do not mention apps, projects, or pay-per-use. If t
 
 ### 3. Out of credits
 
-**When:** no credits; balance zero or negative; “does not have any credits”; requests blocked until credits are added.
+**When:** a billed request is blocked until credits are added; “does not have any credits”; credits-blocked. **Not** a successful `get_usage_credits` with `total_balance` ~$0 — that uses the [On connect](#on-connect) $0 copy (or the ~$0 [By budget](#by-budget) row).
 
 **Say:**
 
@@ -148,7 +148,7 @@ When X calls are required this session, resolve the current user (`user.fields=i
 
 | Result           | Next                                                                                 |
 | ---------------- | ------------------------------------------------------------------------------------ |
-| Success          | Cache `id` as `{me}` and `total_balance` as `{credits}`. Do their ask if it fits. Prefer `{me}` for timeline, mentions, bookmarks. |
+| Success          | Cache `id` as `{me}` and `total_balance` as `{credits}`. If `{credits}` is ~$0, use the [On connect](#on-connect) $0 copy (or the ~$0 budget row if they asked what they can do) — not error 3. Otherwise do their ask if it fits. Prefer `{me}` for timeline, mentions, bookmarks. |
 | Error 1 or 2     | Stop. Say that error's line. Nothing else. Do not search.                            |
 | Error 3          | Follow [Out of credits](#3-out-of-credits): quoted line, cache `{credits}` as $0, free lookups only. Do not search. |
 | 200 + `errors[]` | Keep `data`.                                                                         |
@@ -174,7 +174,7 @@ Estimate = (resources requested × per-resource price) + per-request price. `max
 
 Wait for a yes. Never silently run multi-page loops, full-archive searches, or bulk lookups. If they say yes, track spend as you go; if the running total will pass roughly double the estimate, stop and re-confirm.
 
-**Estimate larger than `{credits}`:** do not run it. If `{credits}` is ~$0, follow [Out of credits](#3-out-of-credits) (quoted line + free lookups only). If they still have some balance, offer a cheaper alternative from [By budget](#by-budget) that **fits `{credits}`**, and send them to https://console.x.com only if they still want the larger job. After they top up, re-fetch `{credits}` before retrying.
+**Estimate larger than `{credits}`:** do not run it. If `{credits}` is ~$0, use the ~$0 [By budget](#by-budget) row (free lookups, then console.x.com). Do not use the error-3 quote unless a billed call was actually blocked. If they still have some balance, offer a cheaper alternative from [By budget](#by-budget) that **fits `{credits}`**, and send them to https://console.x.com only if they still want the larger job. After they top up, re-fetch `{credits}` before retrying.
 
 ## Fields, pagination
 
@@ -207,7 +207,7 @@ Spaces = AND. Recent query max 512 characters; full-archive 1,024. Use `min_like
 
 ## Workflows
 
-Current user first. Stop on errors 1–2 with the quoted line only. On error 3 or `{credits}` ~$0, quoted line plus free lookups only. Tailor suggestions to `{credits}`.
+Current user first. Stop on errors 1–2 with the quoted line only. On **API error 3** (billed calls blocked), quoted line plus free lookups only. A successful `{credits}` of ~$0 is **not** error 3 — use the [On connect](#on-connect) $0 copy, or the ~$0 [By budget](#by-budget) row if they asked what they can do. Tailor suggestions to `{credits}`.
 
 ### By budget
 
