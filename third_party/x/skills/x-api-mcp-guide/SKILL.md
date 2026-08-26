@@ -45,7 +45,7 @@ Fetch it **before any user-facing X message** in these cases:
 2. **When a session starts and X calls are required** — alongside `get_users_me`.
 3. **When the user asks what they can do** — ideas, a setup, a budget, “what’s possible,” and similar.
 
-Do not fetch on every message. If this call hits error 1, 2, or 3, stop and say that error’s line.
+Do not fetch on every message. If this call hits error 1 or 2, stop and say that error’s line. If it hits error 3, follow [Out of credits](#3-out-of-credits).
 
 ## On connect
 
@@ -72,7 +72,7 @@ Send it once per session, not on every message. If their first message already c
 
 ## The three errors
 
-Match `type`, `reason`, `title`, `detail`. Then say the quoted line. Nothing else.
+Match `type`, `reason`, `title`, `detail`. Then say the quoted line. For **#1 and #2**, nothing else. For **#3**, the quoted line plus the free-only follow-up below.
 
 ### 1. Sign-in failed
 
@@ -102,7 +102,7 @@ Do not retry. Do not search. Do not mention apps, projects, or pay-per-use. If t
 
 > You're out of credits. Go to https://console.x.com and add credits, then I'll retry.
 
-Stop. Do not retry. Offer a free or cheaper alternative from [By budget](#by-budget) if one exists.
+Stop. Do not retry billed calls. Cache `{credits}` as $0. After the quoted line, you may offer **only free lookups** from the ~$0 [By budget](#by-budget) row: `{me}`, likers of a post, bookmark folders. Do not offer a cheaper paid search, timeline, or anything else from a higher budget row — those fail too. After they add credits, re-fetch `{credits}` before retrying.
 
 If the payload is only `usage-capped` (no enrollment reason):
 
@@ -149,7 +149,8 @@ When X calls are required this session, resolve the current user (`user.fields=i
 | Result           | Next                                                                                 |
 | ---------------- | ------------------------------------------------------------------------------------ |
 | Success          | Cache `id` as `{me}` and `total_balance` as `{credits}`. Do their ask if it fits. Prefer `{me}` for timeline, mentions, bookmarks. |
-| Error 1, 2, or 3 | Stop. Say that error's line. Do not search.                                          |
+| Error 1 or 2     | Stop. Say that error's line. Nothing else. Do not search.                            |
+| Error 3          | Follow [Out of credits](#3-out-of-credits): quoted line, cache `{credits}` as $0, free lookups only. Do not search. |
 | 200 + `errors[]` | Keep `data`.                                                                         |
 
 
@@ -173,7 +174,7 @@ Estimate = (resources requested × per-resource price) + per-request price. `max
 
 Wait for a yes. Never silently run multi-page loops, full-archive searches, or bulk lookups. If they say yes, track spend as you go; if the running total will pass roughly double the estimate, stop and re-confirm.
 
-**Estimate larger than `{credits}`:** do not run it. Offer a cheaper alternative from [By budget](#by-budget) that fits. Tell them this would run them out, and send them to https://console.x.com to add credits. If they top up, re-fetch `{credits}` before retrying.
+**Estimate larger than `{credits}`:** do not run it. If `{credits}` is ~$0, follow [Out of credits](#3-out-of-credits) (quoted line + free lookups only). If they still have some balance, offer a cheaper alternative from [By budget](#by-budget) that **fits `{credits}`**, and send them to https://console.x.com only if they still want the larger job. After they top up, re-fetch `{credits}` before retrying.
 
 ## Fields, pagination
 
@@ -206,7 +207,7 @@ Spaces = AND. Recent query max 512 characters; full-archive 1,024. Use `min_like
 
 ## Workflows
 
-Current user first. Stop on errors 1–3. Tailor suggestions to `{credits}`.
+Current user first. Stop on errors 1–2 with the quoted line only. On error 3 or `{credits}` ~$0, quoted line plus free lookups only. Tailor suggestions to `{credits}`.
 
 ### By budget
 
@@ -243,6 +244,6 @@ When they ask what they can do, re-fetch `{credits}`, then give 2–3 ideas from
 - Say pay-per-use, Project, Production, or "create an app".
 - Ask for secrets.
 - Retry 403 or credits-blocked in a loop.
-- Pitch or run work above `{credits}`. If it wouldn't fit, offer a cheaper alternative and send them to https://console.x.com.
+- Pitch or run work above `{credits}`. If `{credits}` is ~$0, only free lookups. If they have some balance, offer a cheaper alternative that fits; send them to https://console.x.com only for the job that still would not fit.
 - Tell the user to buy / purchase / add credits, or send them to console.x.com to pay, before `get_usage_credits` has returned. Never use “you’ll need to purchase credits at https://console.x.com” unless the check showed ~$0 or a job would exceed `{credits}`.
 - Run an expensive request (over ~$0.25, pagination loops, bulk lookups) without giving an estimate and getting a yes.
