@@ -1,7 +1,7 @@
 {
-  "name": "mida",
+  "name": "mida-abtesting",
   "displayName": "Mida",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create A/B tests, check results, and roll out winners on your site.",
   "author": {
     "name": "Mida"

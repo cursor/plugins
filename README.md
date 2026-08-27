@@ -66,7 +66,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `readwise` | [Readwise](third_party/readwise/) | Cursor | Integrations | Search highlights and Reader documents, save articles. |
 | `similarweb` | [Similarweb](third_party/similarweb/) | Cursor | Integrations | Analyze website traffic, audiences, and competitors. |
 | `xero` | [Xero](third_party/xero/) | Cursor | Integrations | Read and write invoices, contacts, reports, and payroll. |
-| `mida` | [Mida](third_party/mida/) | Mida | Integrations | Create A/B tests, check results, and roll out winners on your site. |
+| `mida-abtesting` | [Mida](third_party/mida-abtesting/) | Mida | Integrations | Create A/B tests, check results, and roll out winners on your site. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
