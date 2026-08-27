@@ -3,19 +3,53 @@ name: X MCP guide
 description: >-
   ALWAYS read this when a user connects the X plugin or any X MCP, before using
   any X connection, and again on any X error. Do not call an X tool until this
-  file has been read in the current turn. On first connect, send the user the
-  capabilities message defined here. Estimate the cost of every X call before
-  making it and confirm with the user before anything expensive.
+  file has been read in the current turn. On first connect, fetch get_usage_credits
+  BEFORE any user-facing text, then send the capabilities message. Never tell the
+  user to buy credits until that check returns ~$0 or a job would exceed the
+  balance. Estimate the cost of every X call before making it and confirm with
+  the user before anything expensive.
 ---
 # X MCP guide
 
 This plugin uses **X MCP**. The user taps Connect and signs in with X. They are not setting up an API app.
 
-Probe the current user before search, timeline, bookmarks, or news. On a core error, stop. Name the simple issue, then the next step. Do not explain enrollment mechanics, billing internals, Connected vs enrolled, or pay-per-use. Never retry 401 / 403-enrollment / credits-blocked unchanged. Never ask for keys. Never tell them to create an app, Project, or Production env.
+Probe the current user and their credit balance before search, timeline, bookmarks, or news. On a core error, stop. Name the simple issue, then the next step. Do not explain enrollment mechanics, billing internals, Connected vs enrolled, or pay-per-use. Never retry 401 / 403-enrollment / credits-blocked unchanged. Never ask for keys. Never tell them to create an app, Project, or Production env.
+
+**Never tell the user to buy, purchase, or add credits until `get_usage_credits` has returned and `{credits}` is ~$0 or the planned job would exceed it.** Do not use the legacy line “you’ll need to purchase credits at https://console.x.com” (or any “buy credits first” variant) on connect or before that check.
+
+## Credit balance
+
+Call **`get_usage_credits`** (`GET /2/usage/credits`). It is free.
+
+Response (values are **USD dollars and cents**; `20.0` = $20.00):
+
+```json
+{
+  "data": {
+    "free_balance": 20.0,
+    "free_grants": [
+      { "amount": 10.0, "expires_at": "2026-11-19T02:14:28.000Z" },
+      { "amount": 10.0, "expires_at": "2026-11-19T16:02:51.000Z" }
+    ],
+    "prepaid_balance": 0.0,
+    "total_balance": 20.0
+  }
+}
+```
+
+Use **`data.total_balance`** only. Cache it as `{credits}`. Quote it to the user in dollars (`$20.00`). Ignore `free_balance`, `free_grants`, and `prepaid_balance` — do not explain them or choose what to spend.
+
+Fetch it **before any user-facing X message** in these cases:
+
+1. **On connect** — first X tool call, before the capabilities message. Do not greet, list capabilities, or mention buying credits until this returns.
+2. **When a session starts and X calls are required** — alongside `get_users_me`.
+3. **When the user asks what they can do** — ideas, a setup, a budget, “what’s possible,” and similar.
+
+Do not fetch on every message. If this call hits error 1 or 2, stop and say that error’s line. If it hits error 3, follow [Out of credits](#3-out-of-credits).
 
 ## On connect
 
-The first time the user connects X — or on their first X interaction in a session — send this capabilities message once. Adapt the wording to your voice, keep every line of content:
+The first time the user connects X — or on their first X interaction in a session — call `get_usage_credits` first (and `get_users_me`). Do not send the capabilities message until `{credits}` is cached. Then send it once. Adapt the wording to your voice. Keep every capability bullet. Then state their balance and suggest **2–3** things from the matching [By budget](#by-budget) row (plus a cheaper starter if useful). Do not pitch work above `{credits}`. Do not mention purchasing or console.x.com unless `{credits}` is ~$0.
 
 > You're connected to X. Here's what I can do:
 >
@@ -26,13 +60,19 @@ The first time the user connects X — or on their first X interaction in a sess
 > - **News & trends** — search X news stories and get trends by location
 > - **Bookmarks** — list, add, and remove bookmarks, and organize them into folders
 >
-> Requests use credits: you'll need to purchase credits at https://console.x.com for this to work. I'll show you a cost estimate before anything expensive.
+> You have about $X.XX in credits.
+>
+> With that, we could: (2–3 ideas from the matching budget row).
+>
+> I'll show a cost estimate before anything expensive.
 
-Send it once per session, not on every message. If their first message already contains an ask, send this first, then do the ask.
+If `{credits}` is ~$0, keep the bullets, say they have $0.00, suggest only free lookups, and **then** send them to https://console.x.com to add credits — skip “With that, we could.” Do **not** use the error-3 quote; a successful ~$0 read is not error 3. If `{credits}` is above $0, do not mention buying or console.x.com.
+
+Send it once per session, not on every message. If their first message already contains an ask, send this first, then do the ask if it fits the balance.
 
 ## The three errors
 
-Match `type`, `reason`, `title`, `detail`. Then say the quoted line. Nothing else.
+Match `type`, `reason`, `title`, `detail`. Then say the quoted line. For **#1 and #2**, nothing else. For **#3**, the quoted line plus the free-only follow-up below.
 
 ### 1. Sign-in failed
 
@@ -56,13 +96,13 @@ Do not retry. Do not search. Do not mention apps, projects, or pay-per-use. If t
 
 ### 3. Out of credits
 
-**When:** no credits; balance zero or negative; “does not have any credits”; requests blocked until credits are added.
+**When:** a billed request is blocked until credits are added; “does not have any credits”; credits-blocked. **Not** a successful `get_usage_credits` with `total_balance` ~$0 — that uses the [On connect](#on-connect) $0 copy (or the ~$0 [By budget](#by-budget) row).
 
 **Say:**
 
 > You're out of credits. Go to https://console.x.com and add credits, then I'll retry.
 
-Stop. Do not retry.
+Stop. Do not retry billed calls. Cache `{credits}` as $0. After the quoted line, you may offer **only free lookups** from the ~$0 [By budget](#by-budget) row: `{me}`, likers of a post, bookmark folders. Do not offer a cheaper paid search, timeline, or anything else from a higher budget row — those fail too. After they add credits, re-fetch `{credits}` before retrying.
 
 If the payload is only `usage-capped` (no enrollment reason):
 
@@ -103,16 +143,15 @@ If `user-not-enrolled` or `client-not-enrolled` is present, that is #2, not this
 
 ## Session start
 
-Resolve the current user (`user.fields=id,name,username,description,public_metrics`).
+When X calls are required this session, resolve the current user (`user.fields=id,name,username,description,public_metrics`) and fetch `{credits}`.
 
 
 | Result           | Next                                                                                 |
 | ---------------- | ------------------------------------------------------------------------------------ |
-| Success          | Cache `id` as `{me}`. Do their ask. Prefer `{me}` for timeline, mentions, bookmarks. |
-| Error 1, 2, or 3 | Stop. Say that error's line. Do not search.                                          |
+| Success          | Cache `id` as `{me}` and `total_balance` as `{credits}`. If `{credits}` is ~$0, use the [On connect](#on-connect) $0 copy (or the ~$0 budget row if they asked what they can do) — not error 3. Otherwise do their ask if it fits. Prefer `{me}` for timeline, mentions, bookmarks. |
+| Error 1 or 2     | Stop. Say that error's line. Nothing else. Do not search.                            |
+| Error 3          | Follow [Out of credits](#3-out-of-credits): quoted line, cache `{credits}` as $0, free lookups only. Do not search. |
 | 200 + `errors[]` | Keep `data`.                                                                         |
-
-
 
 
 ## Cost awareness
@@ -123,17 +162,19 @@ The live payload:
 
 - `eventTypePricing` — price **per resource returned** (each post, user, news story…).
 - `requestTypePricing` — price **per request** (writes, counts, trends…).
-- All prices are **USD dollars**: `0.005` = $0.005 = half a cent. Fractional cents to 3 decimal places are normal. $1.00 = 1,000 credits — that conversion is for your own math; quote costs to the user in dollars only.
+- All prices are **USD dollars**: `0.005` = $0.005 = half a cent. Fractional cents to 3 decimal places are normal. $1.00 = 1,000 credits — that conversion is for your own math; quote costs to the user in dollars only. `{credits}` from `/2/usage/credits` is already dollars.
 
 Estimate = (resources requested × per-resource price) + per-request price. `max_results` bounds a read: a search with `max_results=100` returning posts + expanded authors can cost ~100 × $0.005 + 100 × $0.01. Each pagination page bills again. Only request expansions you'll use — expanded objects bill too.
 
-**Under ~$0.25:** just do it — don't nag about pennies. Keep `max_results` small (10–25) unless they asked for more.
+**Under ~$0.25, and it fits `{credits}`:** just do it — don't nag about pennies. Keep `max_results` small (10–25) unless they asked for more.
 
 **Over ~$0.25, or any pagination loop / bulk job:** stop first. Give a one-line estimate and ask:
 
 > This will cost about $X.XX. Want me to continue?
 
 Wait for a yes. Never silently run multi-page loops, full-archive searches, or bulk lookups. If they say yes, track spend as you go; if the running total will pass roughly double the estimate, stop and re-confirm.
+
+**Estimate larger than `{credits}`:** do not run it. If `{credits}` is ~$0, use the ~$0 [By budget](#by-budget) row (free lookups, then console.x.com). Do not use the error-3 quote unless a billed call was actually blocked. If they still have some balance, offer a cheaper alternative from [By budget](#by-budget) that **fits `{credits}`**, and send them to https://console.x.com only if they still want the larger job. After they top up, re-fetch `{credits}` before retrying.
 
 ## Fields, pagination
 
@@ -166,7 +207,30 @@ Spaces = AND. Recent query max 512 characters; full-archive 1,024. Use `min_like
 
 ## Workflows
 
-Current user first. Stop on errors 1–3.
+Current user first. Stop on errors 1–2 with the quoted line only. On **API error 3** (billed calls blocked), quoted line plus free lookups only. A successful `{credits}` of ~$0 is **not** error 3 — use the [On connect](#on-connect) $0 copy, or the ~$0 [By budget](#by-budget) row if they asked what they can do. Tailor suggestions to `{credits}`.
+
+### By budget
+
+Pick from the **matching row**, not above it. Larger jobs still need an estimate and a yes. `$0.005`/post, `$0.01`/user, expansions bill too.
+
+
+| `{credits}` | Suggest |
+| ----------- | ------- |
+| ~$0 | `{me}` (free). Likers of a post (free). Bookmark folders (free). Then: add credits at https://console.x.com. |
+| under ~$0.25 | One post from a link. One user by handle. Recent post counts on a topic. |
+| ~$0.25–$1 | A small search (10–25 posts). One page of home or mentions. |
+| ~$1–$5 | A few targeted searches. News on a topic plus trends for a location. Tidy bookmarks. |
+| ~$5–$20 | Compare 2–3 accounts (profile + recent posts). A short research pass: counts, then a couple of search angles. |
+| ~$20–$50 | Deeper research: several angles, a handful of accounts, news on the topic. One account’s recent posts across a few pages (confirm). |
+| ~$50–$100 | A full-archive slice on one query. A competitive set of ~5–10 accounts. Paginated timelines (confirm). |
+| ~$100–$500 | Large archive jobs. Many queries or many accounts. Broad topic monitoring across pages — always confirm. |
+| ~$500–$1,000 | Org-scale historical pulls. Multi-query archive. Large comparative studies — confirm each large chunk. |
+| $1,000+ | Very large archive / bulk historical. Long-running research. Never silent pagination; confirm every large chunk. |
+
+
+When they ask what they can do, re-fetch `{credits}`, then give 2–3 ideas from the matching row.
+
+### Common tasks
 
 - Home / mentions / my posts: `{me}`, modest `max_results`. Paginate only if asked.
 - Handle: username → posts. Else user search, then ask.
@@ -174,13 +238,12 @@ Current user first. Stop on errors 1–3.
 - Bookmarks: list `{me}`. Save: parse status id, create bookmark.
 - One post: parse status id, lookup.
 
-
-
 ## Don't
 
-- Explain deep details (pay-per-use, Connected vs enrolled, billing internals). Do name the simple issue.
+- Explain deep details (pay-per-use, Connected vs enrolled, billing internals, free vs prepaid grants). Do name the simple issue.
 - Say pay-per-use, Project, Production, or "create an app".
 - Ask for secrets.
 - Retry 403 or credits-blocked in a loop.
+- Pitch or run work above `{credits}`. If `{credits}` is ~$0, only free lookups. If they have some balance, offer a cheaper alternative that fits; send them to https://console.x.com only for the job that still would not fit.
+- Tell the user to buy / purchase / add credits, or send them to console.x.com to pay, before `get_usage_credits` has returned. Never use “you’ll need to purchase credits at https://console.x.com” unless the check showed ~$0 or a job would exceed `{credits}`.
 - Run an expensive request (over ~$0.25, pagination loops, bulk lookups) without giving an estimate and getting a yes.
-
