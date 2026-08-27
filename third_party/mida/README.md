@@ -64,6 +64,7 @@ can actually prove rather than take on faith.
 - [Mida](https://www.mida.so), A/B testing on any site, with a tag that loads in about 20ms
 - [Mida dashboard](https://app.mida.so) for results, goals, and rollouts
 - [Public API docs](https://github.com/mida-so/api-docs)
+- [MCP setup guide](https://www.mida.so/mcp) for every client
 - [Plugin source](https://github.com/mida-so/mida-plugin)
 
 ## License
