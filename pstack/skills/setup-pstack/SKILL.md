@@ -36,24 +36,24 @@ alwaysApply: true
 ---
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
 # `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit Task `model`). Alias entries in a panel list still count toward its fan-out.
-feature, refactoring: grok-4.6-fast-xhigh
+feature, refactoring: cursor-grok-4.6-xhigh-fast
 bug-fix: gpt-5.6-sol-max
 perf-issue: gpt-5.6-sol-max
 hillclimb: gpt-5.6-sol-max
 judgment and prose: claude-fable-5-thinking-max
 hardest tasks: claude-fable-5-thinking-max
-how explorer: grok-4.6-fast-xhigh
+how explorer: cursor-grok-4.6-xhigh-fast
 how explainer: claude-fable-5-thinking-max
-how critics: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.6-fast-xhigh, claude-opus-5-thinking-xhigh
-why investigators: grok-4.6-fast-xhigh
+how critics: claude-fable-5-thinking-max, gpt-5.6-sol-max, cursor-grok-4.6-xhigh-fast, claude-opus-5-thinking-xhigh
+why investigators: cursor-grok-4.6-xhigh-fast
 why synthesizer: claude-fable-5-thinking-max
 reflect tooling: gpt-5.6-sol-max
 reflect judgment, divergent, synthesizer: claude-fable-5-thinking-max
-arena runners: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.6-fast-xhigh, claude-opus-5-thinking-xhigh
-arena cross-judge pool: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.6-fast-xhigh, claude-opus-5-thinking-xhigh
-swarm workers: grok-4.6-fast-xhigh
-architect runners: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.6-fast-xhigh, claude-opus-5-thinking-xhigh
-interrogate reviewers: claude-fable-5-thinking-max, gpt-5.6-sol-max, grok-4.6-fast-xhigh, claude-opus-5-thinking-xhigh
+arena runners: claude-fable-5-thinking-max, gpt-5.6-sol-max, cursor-grok-4.6-xhigh-fast, claude-opus-5-thinking-xhigh
+arena cross-judge pool: claude-fable-5-thinking-max, gpt-5.6-sol-max, cursor-grok-4.6-xhigh-fast, claude-opus-5-thinking-xhigh
+swarm workers: cursor-grok-4.6-xhigh-fast
+architect runners: claude-fable-5-thinking-max, gpt-5.6-sol-max, cursor-grok-4.6-xhigh-fast, claude-opus-5-thinking-xhigh
+interrogate reviewers: claude-fable-5-thinking-max, gpt-5.6-sol-max, cursor-grok-4.6-xhigh-fast, claude-opus-5-thinking-xhigh
 ```
 
 ### 6. Confirm
