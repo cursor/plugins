@@ -1,11 +1,11 @@
 {
   "name": "x",
   "displayName": "X",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Connect to the X API — search posts and users, read timelines and mentions, pull trends and news, and manage lists, bookmarks, blocks, and mutes — via X's official hosted MCP server.",
+  "description": "Search posts, read timelines, pull trends, and manage bookmarks.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -33,5 +33,6 @@
     "search",
     "mcp"
   ],
-  "mcpServers": "./mcp.json"
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
 }

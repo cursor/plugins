@@ -2,7 +2,7 @@
   "name": "zoom",
   "displayName": "Zoom",
   "version": "1.0.0",
-  "description": "Zoom MCP integration — search meetings and recordings, pull summaries and transcripts, and work with Zoom Docs.",
+  "description": "Search meetings, pull transcripts, and work with Zoom Docs.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

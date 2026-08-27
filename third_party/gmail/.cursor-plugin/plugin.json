@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Connect to Gmail via Google's remote MCP server — search, read, draft, label, and manage email.",
+  "description": "Search, read, draft, and manage email.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

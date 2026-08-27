@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Connect to Profound — retrieve AI visibility, sentiment, and citation reports, access agent analytics, and build or run Profound Agents — via Profound's official hosted MCP server.",
+  "description": "Track AI visibility, sentiment, and citations.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "xero": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@xeroapi/xero-mcp-server@latest"
+      ],
+      "env": {
+        "XERO_CLIENT_ID": "${XERO_CLIENT_ID}",
+        "XERO_CLIENT_SECRET": "${XERO_CLIENT_SECRET}"
+      }
+    }
+  }
+}

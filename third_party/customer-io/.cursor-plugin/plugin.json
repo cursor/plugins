@@ -1,0 +1,34 @@
+{
+  "name": "customer-io",
+  "displayName": "Customer.io",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Build campaigns, manage segments, and query people.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://docs.customer.io/ai/mcp/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "customer.io",
+    "customerio",
+    "marketing",
+    "campaigns",
+    "segments",
+    "messaging",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "customer-io",
+    "marketing",
+    "mcp",
+    "campaigns"
+  ],
+  "mcpServers": "./mcp.json"
+}

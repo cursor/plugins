@@ -1,0 +1,33 @@
+{
+  "name": "readwise",
+  "displayName": "Readwise",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Search highlights and Reader documents, save articles.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://docs.readwise.io/tools/mcp",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "readwise",
+    "reader",
+    "highlights",
+    "reading",
+    "notes",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "readwise",
+    "reading",
+    "mcp",
+    "highlights"
+  ],
+  "mcpServers": "./mcp.json"
+}

@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Connect to Circleback — search meetings, transcripts, action items, calendar events, and emails, and look up people and companies — via Circleback's official remote MCP server.",
+  "description": "Search meetings, transcripts, action items, and emails.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

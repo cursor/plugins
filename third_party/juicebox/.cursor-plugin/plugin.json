@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Connect to Juicebox — query recruiting analytics, search shortlists, look up projects, and create or manage sourcing agents — via Juicebox's official remote MCP server.",
+  "description": "Query recruiting analytics, shortlists, and sourcing agents.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Connect to Intercom — search conversations and contacts, look up companies, and manage Help Center articles — via Intercom's official remote MCP server.",
+  "description": "Search conversations, contacts, and Help Center articles.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

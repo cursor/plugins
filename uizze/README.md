@@ -8,4 +8,4 @@ Install the skill directly from UIZZE:
 npx skills add https://uizze.com --skill anti-ui-slop
 ```
 
-The free preview MCP exposes a deterministic `check_ui_slop` tool at `https://uizze.com/mcp/preview`. See the [UIZZE repository](https://github.com/uizze/uizze) for full setup and privacy details.
+The optional hosted MCP and current setup are documented in the [UIZZE repository](https://github.com/uizze/uizze).

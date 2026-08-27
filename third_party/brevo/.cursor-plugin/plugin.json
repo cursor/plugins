@@ -1,0 +1,47 @@
+{
+  "name": "brevo",
+  "displayName": "Brevo",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Manage contacts, email and SMS campaigns, and CRM deals.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://developers.brevo.com/docs/mcp-protocol",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "brevo",
+    "sendinblue",
+    "email",
+    "sms",
+    "marketing",
+    "crm",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "brevo",
+    "email",
+    "mcp",
+    "marketing"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "BREVO_MCP_TOKEN": {
+        "type": "string",
+        "title": "Brevo MCP token",
+        "description": "API key created in Brevo under Account \u2192 SMTP & API \u2192 API Keys with \"Create MCP server API key\" enabled."
+      }
+    },
+    "required": [
+      "BREVO_MCP_TOKEN"
+    ]
+  },
+  "mcpServers": "./mcp.json"
+}

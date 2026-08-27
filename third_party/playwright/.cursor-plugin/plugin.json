@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Drive a real browser for agents — navigate pages, click and fill elements, take snapshots and screenshots, and run end-to-end checks — via Microsoft's Playwright MCP server.",
+  "description": "Navigate, click, screenshot, and test in a real browser.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

@@ -2,7 +2,7 @@
   "name": "docs-canvas",
   "displayName": "Docs Canvas",
   "version": "0.1.0",
-  "description": "Render documentation — architecture notes, API references, runbooks, and codebase walkthroughs — as a navigable canvas with sections, table of contents, diagrams, and cross-references.",
+  "description": "Render documentation as a navigable canvas.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

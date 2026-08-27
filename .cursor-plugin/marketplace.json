@@ -51,17 +51,17 @@
     {
       "name": "pr-review-canvas",
       "source": "pr-review-canvas",
-      "description": "Render PR diffs as interactive canvases organized for reviewer comprehension — groups changes by importance, separates boilerplate from core logic, and highlights tricky or unexpected code."
+      "description": "Render PR diffs as review canvases grouped by importance."
     },
     {
       "name": "docs-canvas",
       "source": "docs-canvas",
-      "description": "Render documentation — architecture notes, API references, runbooks, and codebase walkthroughs — as a navigable canvas with sections, table of contents, diagrams, and cross-references."
+      "description": "Render documentation as a navigable canvas."
     },
     {
       "name": "cursor-sdk",
       "source": "cursor-sdk",
-      "description": "Build apps, scripts, CI pipelines, and automations on top of the Cursor TypeScript SDK (@cursor/sdk) — runtime selection, auth, streaming, MCP, error handling, and ready-to-extend integration patterns."
+      "description": "Build apps, scripts, and automations with the TypeScript SDK."
     },
     {
       "name": "orchestrate",
@@ -76,94 +76,87 @@
     {
       "name": "gmail",
       "source": "third_party/gmail",
-      "description": "Connect to Gmail via Google's remote MCP server — search, read, draft, label, and manage email."
+      "description": "Search, read, draft, and manage email."
     },
     {
       "name": "google-drive",
       "source": "third_party/google-drive",
-      "description": "Connect to Google Drive via Google's remote MCP server — search, read, create, share, and manage files."
+      "description": "Search, read, create, and share files."
     },
     {
       "name": "google-calendar",
       "source": "third_party/google-calendar",
-      "description": "Connect to Google Calendar via Google's remote MCP server — list calendars, search events, and create or update meetings."
+      "description": "Search events and schedule meetings."
     },
     {
       "name": "gong",
       "source": "third_party/gong",
-      "description": "Gong MCP integration for revenue intelligence — account summaries, deal insights, and call briefs."
+      "description": "Pull account summaries, deal insights, and call briefs."
     },
     {
       "name": "salesforce",
       "source": "third_party/salesforce",
-      "description": "Connect to Salesforce via Salesforce Hosted MCP — query, search, create, update, and traverse records in your org."
+      "description": "Query, create, and update records in your org."
     },
     {
       "name": "playwright",
       "source": "third_party/playwright",
-      "description": "Drive a real browser for agents — navigate pages, click and fill elements, take snapshots and screenshots, and run end-to-end checks — via Microsoft's Playwright MCP server."
+      "description": "Navigate, click, screenshot, and test in a real browser."
     },
     {
       "name": "github",
       "source": "third_party/github",
-      "description": "Connect to GitHub — repositories, issues, pull requests, code search, and Actions — via GitHub's official remote MCP server."
-    },
-    {
-      "name": "apollo-io",
-      "source": "third_party/apollo-io",
-      "description": "Connect to Apollo.io — prospect search, contact and company enrichment, lists, sequences, and one-off emails — via Apollo's official remote MCP server."
+      "description": "Manage repos, issues, pull requests, and Actions."
     },
     {
       "name": "ashby",
       "source": "third_party/ashby",
-      "description": "Connect to Ashby — search candidates and jobs, prep for interviews, manage pipeline tasks, and take recruiting actions — via Ashby's official remote MCP server."
+      "description": "Search candidates, prep interviews, and manage pipeline tasks."
     },
     {
       "name": "hubspot",
       "source": "third_party/hubspot",
-      "description": "Connect to HubSpot CRM — search and update contacts, companies, deals, and tickets; work with activities, conversations, and marketing emails — via HubSpot's official remote MCP server."
+      "description": "Search and update contacts, companies, deals, and tickets."
     },
     {
       "name": "intercom",
       "source": "third_party/intercom",
-      "description": "Connect to Intercom — search conversations and contacts, look up companies, and manage Help Center articles — via Intercom's official remote MCP server."
+      "description": "Search conversations, contacts, and Help Center articles."
     },
-
-
     {
       "name": "zoom",
       "source": "third_party/zoom",
-      "description": "Zoom MCP integration — search meetings and recordings, pull summaries and transcripts, and work with Zoom Docs."
+      "description": "Search meetings, pull transcripts, and work with Zoom Docs."
     },
     {
       "name": "x",
       "source": "third_party/x",
-      "description": "Read-only access to the X API — search posts and users, read timelines and mentions, and pull trends and news — via X's official hosted MCP server."
+      "description": "Search posts, read timelines, pull trends, and manage bookmarks."
     },
     {
       "name": "clay",
       "source": "third_party/clay",
-      "description": "Connect to Clay — find and enrich people and companies across 150+ data providers, run AI research agents, and trigger your team's approved Clay workflows — via Clay's official hosted MCP server."
+      "description": "Enrich people and companies, run AI research agents."
     },
     {
       "name": "circleback",
       "source": "third_party/circleback",
-      "description": "Connect to Circleback — search meetings, transcripts, action items, calendar events, and emails, and look up people and companies — via Circleback's official remote MCP server."
+      "description": "Search meetings, transcripts, action items, and emails."
     },
     {
       "name": "docusign",
       "source": "third_party/docusign",
-      "description": "Connect to Docusign — work with eSignature envelopes and templates, Maestro workflows, and Navigator agreements — via Docusign's official remote MCP server (beta)."
+      "description": "Manage envelopes, templates, workflows, and agreements."
     },
     {
       "name": "navan",
       "source": "third_party/navan",
-      "description": "Connect to Navan — query expenses, analyze travel bookings, check policies and approvals, and manage cards — via Navan's official remote MCP server."
+      "description": "Query expenses, travel bookings, policies, and cards."
     },
     {
       "name": "profound",
       "source": "third_party/profound",
-      "description": "Connect to Profound — retrieve AI visibility, sentiment, and citation reports, access agent analytics, and build or run Profound Agents — via Profound's official hosted MCP server."
+      "description": "Track AI visibility, sentiment, and citations."
     },
     {
       "name": "uizze",
@@ -173,7 +166,152 @@
     {
       "name": "juicebox",
       "source": "third_party/juicebox",
-      "description": "Connect to Juicebox — query recruiting analytics, search shortlists, look up projects, and create or manage sourcing agents — via Juicebox's official remote MCP server."
+      "description": "Query recruiting analytics, shortlists, and sourcing agents."
+    },
+    {
+      "name": "outreach",
+      "source": "third_party/outreach",
+      "description": "Search sequences, prospects, and Kaia meetings."
+    },
+    {
+      "name": "amplemarket",
+      "source": "third_party/amplemarket",
+      "description": "Search people and companies, enrich leads, run sequences."
+    },
+    {
+      "name": "klaviyo",
+      "source": "third_party/klaviyo",
+      "description": "Manage profiles, segments, campaigns, and flows."
+    },
+    {
+      "name": "customer-io",
+      "source": "third_party/customer-io",
+      "description": "Build campaigns, manage segments, and query people."
+    },
+    {
+      "name": "mailerlite",
+      "source": "third_party/mailerlite",
+      "description": "Manage subscribers, groups, campaigns, and automations."
+    },
+    {
+      "name": "brevo",
+      "source": "third_party/brevo",
+      "description": "Manage contacts, email and SMS campaigns, and CRM deals."
+    },
+    {
+      "name": "typeform",
+      "source": "third_party/typeform",
+      "description": "Build forms, analyze responses, and manage contacts."
+    },
+    {
+      "name": "jotform",
+      "source": "third_party/jotform",
+      "description": "Create and edit forms, then read submissions."
+    },
+    {
+      "name": "semrush",
+      "source": "third_party/semrush",
+      "description": "Research keywords, backlinks, traffic, and competitors."
+    },
+    {
+      "name": "ahrefs",
+      "source": "third_party/ahrefs",
+      "description": "Research keywords, backlinks, rankings, and site health."
+    },
+    {
+      "name": "godaddy",
+      "source": "third_party/godaddy",
+      "description": "Brainstorm domain names and check availability."
+    },
+    {
+      "name": "upwork",
+      "source": "third_party/upwork",
+      "description": "Search talent, post jobs, and manage contracts."
+    },
+    {
+      "name": "workable",
+      "source": "third_party/workable",
+      "description": "Search candidates, move pipelines, and manage HR records."
+    },
+    {
+      "name": "brex",
+      "source": "third_party/brex",
+      "description": "Query expenses, receipts, bills, cards, and travel."
+    },
+    {
+      "name": "mercury",
+      "source": "third_party/mercury",
+      "description": "Read balances, transactions, statements, and cards."
+    },
+    {
+      "name": "todoist",
+      "source": "third_party/todoist",
+      "description": "Create, find, and complete tasks and projects."
+    },
+    {
+      "name": "calendly",
+      "source": "third_party/calendly",
+      "description": "Check availability and book, cancel, or reschedule."
+    },
+    {
+      "name": "smartsheet",
+      "source": "third_party/smartsheet",
+      "description": "Query and update sheets, rows, and workspaces."
+    },
+    {
+      "name": "wrike",
+      "source": "third_party/wrike",
+      "description": "Search projects, create tasks, and post comments."
+    },
+    {
+      "name": "coda",
+      "source": "third_party/coda",
+      "description": "Search docs, read pages, and update tables."
+    },
+    {
+      "name": "guru",
+      "source": "third_party/guru",
+      "description": "Search company knowledge and draft verified answers."
+    },
+    {
+      "name": "fireflies",
+      "source": "third_party/fireflies",
+      "description": "Search meeting transcripts, summaries, and action items."
+    },
+    {
+      "name": "otter",
+      "source": "third_party/otter",
+      "description": "Search meeting history and pull full transcripts."
+    },
+    {
+      "name": "fathom",
+      "source": "third_party/fathom",
+      "description": "Search meetings and pull transcripts and summaries."
+    },
+    {
+      "name": "craft",
+      "source": "third_party/craft",
+      "description": "Search, create, and update documents and daily notes."
+    },
+    {
+      "name": "mem",
+      "source": "third_party/mem",
+      "description": "Capture, search, and organize notes and collections."
+    },
+    {
+      "name": "readwise",
+      "source": "third_party/readwise",
+      "description": "Search highlights and Reader documents, save articles."
+    },
+    {
+      "name": "similarweb",
+      "source": "third_party/similarweb",
+      "description": "Analyze website traffic, audiences, and competitors."
+    },
+    {
+      "name": "xero",
+      "source": "third_party/xero",
+      "description": "Read and write invoices, contacts, reports, and payroll."
     }
   ]
 }

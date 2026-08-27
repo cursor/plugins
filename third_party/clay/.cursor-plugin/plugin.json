@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Connect to Clay — find and enrich people and companies across 150+ data providers, run AI research agents, and trigger your team's approved Clay workflows — via Clay's official hosted MCP server.",
+  "description": "Enrich people and companies, run AI research agents.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

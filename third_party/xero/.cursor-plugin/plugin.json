@@ -1,0 +1,53 @@
+{
+  "name": "xero",
+  "displayName": "Xero",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Read and write invoices, contacts, reports, and payroll.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/XeroAPI/xero-mcp-server",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "xero",
+    "accounting",
+    "invoices",
+    "payroll",
+    "bookkeeping",
+    "finance",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "xero",
+    "accounting",
+    "mcp",
+    "finance"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "XERO_CLIENT_ID": {
+        "type": "string",
+        "title": "Xero client ID",
+        "description": "Client ID of the Custom Connection you created at developer.xero.com. A Custom Connection is bound to a single Xero organisation."
+      },
+      "XERO_CLIENT_SECRET": {
+        "type": "string",
+        "title": "Xero client secret",
+        "description": "Client secret generated alongside the Custom Connection's client ID at developer.xero.com."
+      }
+    },
+    "required": [
+      "XERO_CLIENT_ID",
+      "XERO_CLIENT_SECRET"
+    ]
+  },
+  "mcpServers": "./mcp.json"
+}
