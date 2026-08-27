@@ -309,8 +309,8 @@
       "description": "Read and write invoices, contacts, reports, and payroll."
     },
     {
-      "name": "mida-abtesting",
-      "source": "third_party/mida-abtesting",
+      "name": "mida-so",
+      "source": "third_party/mida-so",
       "description": "Create A/B tests, check results, and roll out winners on your site."
     }
   ]
