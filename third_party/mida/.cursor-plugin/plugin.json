@@ -1,0 +1,30 @@
+{
+  "name": "mida",
+  "displayName": "Mida",
+  "version": "1.0.0",
+  "description": "Create A/B tests, check results, and roll out winners on your site.",
+  "author": {
+    "name": "Mida"
+  },
+  "homepage": "https://www.mida.so",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "mida",
+    "ab-testing",
+    "experimentation",
+    "personalization",
+    "cro",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "mida",
+    "ab-testing",
+    "experimentation",
+    "analytics"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}

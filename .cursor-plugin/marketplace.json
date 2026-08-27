@@ -307,6 +307,11 @@
       "name": "xero",
       "source": "third_party/xero",
       "description": "Read and write invoices, contacts, reports, and payroll."
+    },
+    {
+      "name": "mida",
+      "source": "third_party/mida",
+      "description": "Create A/B tests, check results, and roll out winners on your site."
     }
   ]
 }

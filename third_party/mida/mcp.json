@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mida": {
+      "type": "http",
+      "url": "https://mcp.mida.so/mcp"
+    }
+  }
+}
