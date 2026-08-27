@@ -2,6 +2,11 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.2.0 — Credit balance on connect
+
+- Agents fetch `GET /2/usage/credits` on connect, at session start when X calls are needed, and when the user asks what they can do. The capabilities message now includes the dollar balance and 2–3 ideas that fit it.
+- Added budget-tier workflows (from $0 through $1,000+) so suggestions scale with remaining credits. If a job would exceed the balance, offer a cheaper alternative and send the user to https://console.x.com.
+
 ## 2.1.0 — X MCP guide skill
 
 - Added the X MCP guide skill: tells agents how to handle sign-in, onboarding, and out-of-credits errors with simple user-facing messages, plus session-start, search, pagination, and cost-aware workflow rules.
