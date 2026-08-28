@@ -37,7 +37,17 @@ if [[ -z "$RESPONSE_TEXT" ]]; then
 fi
 
 # Check for <promise>TEXT</promise> in the response
-PROMISE_TEXT=$(echo "$RESPONSE_TEXT" | perl -0777 -pe 's/.*?<promise>(.*?)<\/promise>.*/$1/s; s/^\s+|\s+$//g; s/\s+/ /g' 2>/dev/null || echo "")
+PROMISE_TEXT=$(
+  printf '%s' "$RESPONSE_TEXT" |
+    perl -0777 -ne '
+      if (/<promise>(.*?)<\/promise>/s) {
+        my $promise = $1;
+        $promise =~ s/^\s+|\s+$//g;
+        $promise =~ s/\s+/ /g;
+        print $promise;
+      }
+    ' 2>/dev/null || true
+)
 
 if [[ -n "$PROMISE_TEXT" ]] && [[ "$PROMISE_TEXT" = "$COMPLETION_PROMISE" ]]; then
   touch "$DONE_FLAG"
