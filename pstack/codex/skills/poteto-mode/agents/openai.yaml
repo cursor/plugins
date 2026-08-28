@@ -1,0 +1,6 @@
+interface:
+  display_name: "Poteto Mode"
+  short_description: "Use deliberate playbooks for concise prose, minimal code, evidence-led verification, and..."
+  default_prompt: "Use $pstack:poteto-mode for this task."
+policy:
+  allow_implicit_invocation: false

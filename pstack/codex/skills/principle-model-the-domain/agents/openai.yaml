@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Model The Domain"
+  short_description: "Apply when writing stateful logic, or when code branches a lot or repeats a shape assumption..."
+  default_prompt: "Use $pstack:principle-model-the-domain for this task."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Architect"
+  short_description: "Sketch types, signatures, and module boundaries before implementing non-trivial work, then..."
+  default_prompt: "Use $pstack:architect for this task."
+policy:
+  allow_implicit_invocation: false

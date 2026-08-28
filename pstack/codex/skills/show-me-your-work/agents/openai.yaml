@@ -1,0 +1,6 @@
+interface:
+  display_name: "Show Me Your Work"
+  short_description: "Explicitly keep a reviewable TSV decision trail for long-running, multi-phase, or unattended..."
+  default_prompt: "Use $pstack:show-me-your-work for this task."
+policy:
+  allow_implicit_invocation: false

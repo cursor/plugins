@@ -1,0 +1,6 @@
+interface:
+  display_name: "Recall"
+  short_description: "Reconstruct recent working context from Codex threads, live repository state, and relevant..."
+  default_prompt: "Use $pstack:recall for this task."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Figure It Out"
+  short_description: "Design and run an auditable playbook for a large migration, ambitious multi-part change, or..."
+  default_prompt: "Use $pstack:figure-it-out for this task."
+policy:
+  allow_implicit_invocation: false

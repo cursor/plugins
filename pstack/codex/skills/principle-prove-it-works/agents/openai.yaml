@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Prove It Works"
+  short_description: "Apply after completing a task, before declaring done"
+  default_prompt: "Use $pstack:principle-prove-it-works for this task."
+policy:
+  allow_implicit_invocation: false

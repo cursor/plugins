@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Subtract Before You Add"
+  short_description: "Apply when sequencing an addition, refactor, or rewrite"
+  default_prompt: "Use $pstack:principle-subtract-before-you-add for this task."
+policy:
+  allow_implicit_invocation: false

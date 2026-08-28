@@ -1,0 +1,6 @@
+interface:
+  display_name: "No Comments"
+  short_description: "Explicitly run the read-only Comment Sicko reviewer, fix accepted comment findings, and..."
+  default_prompt: "Use $pstack:no-comments for this task."
+policy:
+  allow_implicit_invocation: false

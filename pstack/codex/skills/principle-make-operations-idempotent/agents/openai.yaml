@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Make Operations Idempotent"
+  short_description: "Apply when designing commands, lifecycle steps, or processing loops that run amid crashes,..."
+  default_prompt: "Use $pstack:principle-make-operations-idempotent for this task."
+policy:
+  allow_implicit_invocation: false

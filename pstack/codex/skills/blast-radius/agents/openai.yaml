@@ -1,0 +1,6 @@
+interface:
+  display_name: "Blast Radius"
+  short_description: "Find what a change could break somewhere else before it ships, beyond the diff, and prove..."
+  default_prompt: "Use $pstack:blast-radius for this task."
+policy:
+  allow_implicit_invocation: false

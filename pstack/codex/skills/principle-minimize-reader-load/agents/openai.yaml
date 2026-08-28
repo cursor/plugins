@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Minimize Reader Load"
+  short_description: "Apply when reviewing or shaping code that's hard to trace"
+  default_prompt: "Use $pstack:principle-minimize-reader-load for this task."
+policy:
+  allow_implicit_invocation: false

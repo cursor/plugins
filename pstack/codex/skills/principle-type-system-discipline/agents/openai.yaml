@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Type System Discipline"
+  short_description: "Apply when designing types, reviewing a function signature, or writing code in any..."
+  default_prompt: "Use $pstack:principle-type-system-discipline for this task."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Triage Issue Reports"
+  short_description: "Run a thread-safe Benny Slack triage pass from its configured Codex cron"
+  default_prompt: "Use $pstack:triage-issue-reports for this task."
+policy:
+  allow_implicit_invocation: false

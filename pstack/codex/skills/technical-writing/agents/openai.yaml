@@ -1,0 +1,6 @@
+interface:
+  display_name: "Technical Writing"
+  short_description: "Layered technical-writing standard: Di\u00e1taxis structure, Google developer style sentences,..."
+  default_prompt: "Use $pstack:technical-writing for this task."
+policy:
+  allow_implicit_invocation: false

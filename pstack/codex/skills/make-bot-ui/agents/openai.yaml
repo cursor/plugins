@@ -1,0 +1,4 @@
+interface:
+  display_name: "Make Bot Ui"
+  short_description: "Build a small UI that sends actions through a local server to a user-provided supported..."
+  default_prompt: "Use $pstack:make-bot-ui for this task."

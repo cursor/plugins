@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Migrate Callers Then Delete Legacy Apis"
+  short_description: "Apply when introducing a new internal API while old callers still exist"
+  default_prompt: "Use $pstack:principle-migrate-callers-then-delete-legacy-apis for this task."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Sequence Verifiable Units"
+  short_description: "Apply to multi-step work (sweeps, migrations, runs of similar edits) and to how you stack..."
+  default_prompt: "Use $pstack:principle-sequence-verifiable-units for this task."
+policy:
+  allow_implicit_invocation: false

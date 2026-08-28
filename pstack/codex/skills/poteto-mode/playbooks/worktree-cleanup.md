@@ -1,0 +1,14 @@
+### Worktree and simulator cleanup
+
+**You own the disk and the safety gate.** Prune merged or abandoned git worktrees and stale iOS simulators to reclaim space. Deletion is irreversible, so every step guards against deleting something in use or holding uncommitted work.
+
+1. Snapshot and audit. Record `df -h /`, then run `scripts/worktree-audit.sh` (principle-build-the-lever). It reads paths from `git worktree list`, never hand-typed, since a hand-typed path can miss a registered worktree (principle-encode-lessons-in-structure). It classifies each worktree by size, age, merge state, uncommitted work, and PR state. Pass a transcript directory only when the user explicitly puts it in scope, as `scripts/worktree-audit.sh <repo> <transcripts-dir>` or `POTETO_TRANSCRIPTS_DIR=<transcripts-dir> scripts/worktree-audit.sh <repo>`; transcript lookup is optional and may be slow.
+2. The bucket is advice, not permission. The active Codex agents and user-pinned work are the real artifact (principle-prove-it-works). Call `list_agents`, get any pinned set from the user, and cross-check every candidate. The pinned set wins.
+3. Verify usage before deleting. For every `verify-recent-chat` row, or anything you doubt, inspect only explicitly supplied transcripts and report whether the work remains active and which worktrees it touches (principle-guard-the-context-window, transcripts are bulk). An active task can create sibling worktrees, and those are in use even when their names are not visible in the sidebar.
+4. Pause on irreversible loss. `wip:N` is N tracked uncommitted edits. Show the diff and get a decision first, since removing a clean worktree is recoverable from its branch but uncommitted work is gone. `scratch:N` is untracked throwaway, safe to drop, but name the files. Per Autonomy, clean and merged and not-in-use proceeds; `wip` and in-use pause.
+5. Prune the confirmed set. Per path, `git worktree remove --force <path>`; if the dir survives on ignored build artifacts, `rm -rf` it, then `git worktree prune`. Branch refs survive, so no commits are lost. Confirm with `df -h /` and re-list.
+6. Simulators and other reclaimers. Simulators are usually the next-biggest win. `xcrun simctl --set testing delete all` (XCTestDevices clones), `xcrun simctl delete unavailable`, and `xcrun simctl runtime list` then `runtime delete <id>` for old runtimes. More when needed: Xcode `DerivedData` and `iOS DeviceSupport`; explicitly identified Codex local data; package caches (pnpm, uv, brew, yarn). Clear only caches the user has not said to keep.
+
+This is the one playbook that deletes user state with no code review to catch a slip, so the gates above are the review.
+
+**Reply:** `df -h /` before and after with space reclaimed, the worktrees pruned, and a one-line reason for each held back (in-use by which chat, or uncommitted work).

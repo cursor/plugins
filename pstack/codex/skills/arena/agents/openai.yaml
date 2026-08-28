@@ -1,0 +1,6 @@
+interface:
+  display_name: "Arena"
+  short_description: "Run parallel candidates on the same non-trivial artifact, select a base, graft the strongest..."
+  default_prompt: "Use $pstack:arena for this task."
+policy:
+  allow_implicit_invocation: false

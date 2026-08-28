@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Fix Root Causes"
+  short_description: "Apply when debugging"
+  default_prompt: "Use $pstack:principle-fix-root-causes for this task."
+policy:
+  allow_implicit_invocation: false

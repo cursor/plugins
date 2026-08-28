@@ -1,0 +1,4 @@
+interface:
+  display_name: "TypeScript Best Practices"
+  short_description: "TypeScript best practices"
+  default_prompt: "Use $pstack:typescript-best-practices for this task."

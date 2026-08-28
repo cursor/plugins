@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unslop"
+  short_description: "Cut AI tells from any writing"
+  default_prompt: "Use $pstack:unslop for this task."

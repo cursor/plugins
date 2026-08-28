@@ -18,6 +18,19 @@ fork it. improve it. make it yours. PRs are welcome!
 /add-plugin pstack
 ```
 
+### Codex
+
+The native Codex package lives at [`pstack/codex`](./codex/). It keeps the
+Cursor package above unchanged while porting all skills, playbooks, agents,
+tools, guides, and the dormant Benny pack to supported Codex surfaces.
+
+Install `pstack/codex/` as the plugin root, start a new Codex thread, then run
+[`$setup-pstack`](./codex/skills/setup-pstack/SKILL.md) to review and install the
+six optional global custom-agent profiles and the marked global `AGENTS.md`
+routing block. All Spark, Luna, Terra, and Sol routes use `xhigh`; see the
+[Codex README](./codex/README.md) for the exact bindings, lifecycle-hook trust,
+compatibility limits, and validation flow.
+
 ## get started
 
 two steps:

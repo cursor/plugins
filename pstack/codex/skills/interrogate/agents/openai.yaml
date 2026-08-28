@@ -1,0 +1,6 @@
+interface:
+  display_name: "Interrogate"
+  short_description: "Run an explicit adversarial multi-model review of code changes, find blind spots, and return..."
+  default_prompt: "Use $pstack:interrogate for this task."
+policy:
+  allow_implicit_invocation: false

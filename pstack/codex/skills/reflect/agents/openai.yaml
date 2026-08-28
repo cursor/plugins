@@ -1,0 +1,6 @@
+interface:
+  display_name: "Reflect"
+  short_description: "Review the active Codex conversation for durable workflow learnings and propose concrete..."
+  default_prompt: "Use $pstack:reflect for this task."
+policy:
+  allow_implicit_invocation: false

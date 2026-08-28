@@ -1,0 +1,6 @@
+interface:
+  display_name: "Automate Me"
+  short_description: "Turn the user's recurring preferences and working style into a personal Codex mode skill, or..."
+  default_prompt: "Use $pstack:automate-me for this task."
+policy:
+  allow_implicit_invocation: false

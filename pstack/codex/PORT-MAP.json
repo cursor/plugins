@@ -1,0 +1,1425 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "397c8660da6d3d873a91e18c2ca2f22cac1f0ac1",
+  "sourceBase": "pstack/",
+  "destinationBase": "pstack/",
+  "entries": [
+    {
+      "source": ".cursor-plugin/plugin.json",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/.codex-plugin/plugin.json"
+      ],
+      "status": "replaced",
+      "note": "Native Codex manifest; Cursor manifest remains unchanged."
+    },
+    {
+      "source": ".gitignore",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [],
+      "status": "preserved",
+      "note": "Packaging ignore rules remain at the dual-target plugin root."
+    },
+    {
+      "source": "LICENSE",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/LICENSE"
+      ],
+      "status": "copied",
+      "note": "MIT license retained verbatim in the Codex layer."
+    },
+    {
+      "source": "README.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "README.md",
+        "codex/README.md"
+      ],
+      "status": "adapted",
+      "note": "Root README gains a Codex entry point; the full guide is separate."
+    },
+    {
+      "source": "agents/comment-sicko.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/companion/agents/pstack_comment_sicko.toml",
+        "codex/skills/no-comments/SKILL.md"
+      ],
+      "status": "replaced",
+      "note": "Procedure is available as a native companion agent and skill flow."
+    },
+    {
+      "source": "agents/poteto-agent.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/companion/agents/pstack_poteto.toml",
+        "codex/skills/poteto-mode/SKILL.md"
+      ],
+      "status": "replaced",
+      "note": "Procedure is available as a native companion agent and skill flow."
+    },
+    {
+      "source": "automations/benny/FOR_AGENTS.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/automations/benny/FOR_AGENTS.md"
+      ],
+      "status": "adapted",
+      "note": "Cursor automation semantics replaced by authorized Codex cron polling."
+    },
+    {
+      "source": "automations/benny/README.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/automations/benny/README.md"
+      ],
+      "status": "adapted",
+      "note": "Cursor automation semantics replaced by authorized Codex cron polling."
+    },
+    {
+      "source": "automations/benny/skills/reproduce-and-fix-issues/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/automations/benny/skills/reproduce-and-fix-issues/SKILL.md",
+        "codex/skills/reproduce-and-fix-issues/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Benny remains a dormant pack and is also discoverable as Codex skills."
+    },
+    {
+      "source": "automations/benny/skills/reproduce-and-fix-issues/references/control-adapter.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/automations/benny/skills/reproduce-and-fix-issues/references/control-adapter.md"
+      ],
+      "status": "adapted",
+      "note": "Benny remains a dormant pack and is also discoverable as Codex skills."
+    },
+    {
+      "source": "automations/benny/skills/reproduce-and-fix-issues/references/feature-map.example.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/automations/benny/skills/reproduce-and-fix-issues/references/feature-map.example.md"
+      ],
+      "status": "adapted",
+      "note": "Benny remains a dormant pack and is also discoverable as Codex skills."
+    },
+    {
+      "source": "automations/benny/skills/reproduce-and-fix-issues/references/verify-existing-fix.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/automations/benny/skills/reproduce-and-fix-issues/references/verify-existing-fix.md"
+      ],
+      "status": "adapted",
+      "note": "Benny remains a dormant pack and is also discoverable as Codex skills."
+    },
+    {
+      "source": "automations/benny/skills/setup-benny/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/automations/benny/skills/setup-benny/SKILL.md",
+        "codex/skills/setup-benny/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Benny remains a dormant pack and is also discoverable as Codex skills."
+    },
+    {
+      "source": "automations/benny/skills/triage-issue-reports/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/automations/benny/skills/triage-issue-reports/SKILL.md",
+        "codex/skills/triage-issue-reports/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Benny remains a dormant pack and is also discoverable as Codex skills."
+    },
+    {
+      "source": "automations/benny/skills/triage-issue-reports/references/routing.example.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/automations/benny/skills/triage-issue-reports/references/routing.example.md"
+      ],
+      "status": "adapted",
+      "note": "Benny remains a dormant pack and is also discoverable as Codex skills."
+    },
+    {
+      "source": "automations/benny/templates/configuration.example.yaml",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/automations/benny/templates/configuration.example.yaml"
+      ],
+      "status": "adapted",
+      "note": "Cursor automation semantics replaced by authorized Codex cron polling."
+    },
+    {
+      "source": "automations/benny/templates/reproduce-automation-prompt.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/automations/benny/templates/reproduce-automation-prompt.md"
+      ],
+      "status": "adapted",
+      "note": "Cursor automation semantics replaced by authorized Codex cron polling."
+    },
+    {
+      "source": "automations/benny/templates/triage-automation-prompt.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/automations/benny/templates/triage-automation-prompt.md"
+      ],
+      "status": "adapted",
+      "note": "Cursor automation semantics replaced by authorized Codex cron polling."
+    },
+    {
+      "source": "docs/guide/01-setup.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/01-setup.md"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/02-poteto-mode.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/02-poteto-mode.md"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/03-understand.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/03-understand.md"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/04-design.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/04-design.md"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/05-build-and-clean.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/05-build-and-clean.md"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/06-verify-and-ship.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/06-verify-and-ship.md"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/07-overnight.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/07-overnight.md"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/08-principles.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/08-principles.md"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/09-make-it-yours.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/09-make-it-yours.md"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/10-recipes-and-pitfalls.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/10-recipes-and-pitfalls.md"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/README.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/README.md"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/images/design.jpg",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/images/design.jpg"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/images/overnight.jpg",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/images/overnight.jpg"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/images/recipes.jpg",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/images/recipes.jpg"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/images/router.jpg",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/images/router.jpg"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/images/understanding.jpg",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/images/understanding.jpg"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "docs/guide/images/verification.jpg",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/docs/guide/images/verification.jpg"
+      ],
+      "status": "adapted",
+      "note": "Guide rewritten for native Codex invocation and runtime surfaces."
+    },
+    {
+      "source": "skills/architect/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/architect/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/architect/references/design-red-flags.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/architect/references/design-red-flags.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/architect/references/rationale-template.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/architect/references/rationale-template.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/architect/references/runner-prompt.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/architect/references/runner-prompt.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/arena/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/arena/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/automate-me/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/automate-me/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/blast-radius/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/blast-radius/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/bro/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/bro/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/create-verification-skill/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/create-verification-skill/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/create-verification-skill/references/feature-map-example/README.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/create-verification-skill/references/feature-map-example/README.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/create-verification-skill/references/feature-map-example/create-note.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/create-verification-skill/references/feature-map-example/create-note.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/create-verification-skill/references/feature-map-example/search.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/create-verification-skill/references/feature-map-example/search.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/figure-it-out/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/figure-it-out/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/how/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/how/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/how/references/critic-prompt.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/how/references/critic-prompt.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/how/references/critique-rubric.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/how/references/critique-rubric.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/how/references/explainer-prompt.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/how/references/explainer-prompt.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/how/references/explorer-prompt.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/how/references/explorer-prompt.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/interrogate/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/interrogate/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/interrogate/references/code-quality-review.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/interrogate/references/code-quality-review.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/interrogate/references/lead-judgment.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/interrogate/references/lead-judgment.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/interrogate/references/reviewer-prompt.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/interrogate/references/reviewer-prompt.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/interrogate/references/rubric.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/interrogate/references/rubric.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/maintain-verification-skill/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/maintain-verification-skill/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/make-bot-ui/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/make-bot-ui/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/no-comments/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/no-comments/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/authoring-a-skill.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/authoring-a-skill.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/autonomous-run.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/autonomous-run.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/autopilot-full.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/autopilot-full.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/autopilot-stack.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/autopilot-stack.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/babysit.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/babysit.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/bug-fix.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/bug-fix.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/eval.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/eval.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/feature.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/feature.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/hillclimb.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/hillclimb.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/investigation.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/investigation.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/multi-phase-plan.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/multi-phase-plan.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/opening-a-pr.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/opening-a-pr.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/orchestrate.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/orchestrate.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/pause-safely.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/pause-safely.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/perf-issue.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/perf-issue.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/prototype.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/prototype.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/refactoring.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/refactoring.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/runtime-forensics.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/runtime-forensics.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/session-pickup.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/session-pickup.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/shipping.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/shipping.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/trace-forensics.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/trace-forensics.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/visual-parity.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/visual-parity.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/playbooks/worktree-cleanup.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/playbooks/worktree-cleanup.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/references/bugbot-triage.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/references/bugbot-triage.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/bootstrap.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/bootstrap.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/bun.lock",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/bun.lock"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/check-plan.mjs",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/check-plan.mjs"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/orch/orch.test.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/orch/orch.test.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/orch/orch.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/orch/orch.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/orch/store.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/orch/store.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/package.json",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/package.json"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/watch-pr/cli.test.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/watch-pr/cli.test.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/watch-pr/cli.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/watch-pr/cli.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/watch-pr/fakes.test-helper.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/watch-pr/fakes.test-helper.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/watch-pr/github.test.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/watch-pr/github.test.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/watch-pr/github.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/watch-pr/github.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/watch-pr/policy.test.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/watch-pr/policy.test.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/watch-pr/policy.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/watch-pr/policy.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/watch-pr/render.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/watch-pr/render.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/watch-pr/tsconfig.json",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/watch-pr/tsconfig.json"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/watch-pr/types.compile.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/watch-pr/types.compile.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/watch-pr/types.ts",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/watch-pr/types.ts"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/watch-pr/watch-pr",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/watch-pr/watch-pr"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/poteto-mode/scripts/worktree-audit.sh",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/poteto-mode/scripts/worktree-audit.sh"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-boundary-discipline/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-boundary-discipline/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-build-the-lever/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-build-the-lever/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-encode-lessons-in-structure/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-encode-lessons-in-structure/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-exhaust-the-design-space/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-exhaust-the-design-space/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-experience-first/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-experience-first/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-fix-root-causes/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-fix-root-causes/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-foundational-thinking/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-foundational-thinking/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-guard-the-context-window/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-guard-the-context-window/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-laziness-protocol/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-laziness-protocol/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-make-operations-idempotent/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-make-operations-idempotent/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-minimize-reader-load/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-minimize-reader-load/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-model-the-domain/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-model-the-domain/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-never-block-on-the-human/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-never-block-on-the-human/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-outcome-oriented-execution/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-outcome-oriented-execution/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-prove-it-works/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-prove-it-works/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-redesign-from-first-principles/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-redesign-from-first-principles/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-separate-before-serializing-shared-state/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-separate-before-serializing-shared-state/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-sequence-verifiable-units/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-sequence-verifiable-units/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-subtract-before-you-add/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-subtract-before-you-add/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/principle-type-system-discipline/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/principle-type-system-discipline/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/recall/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/recall/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/reflect/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/reflect/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/reflect/references/divergent-reviewer.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/reflect/references/divergent-reviewer.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/reflect/references/judgment-reviewer.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/reflect/references/judgment-reviewer.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/reflect/references/synthesizer.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/reflect/references/synthesizer.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/reflect/references/tooling-reviewer.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/reflect/references/tooling-reviewer.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/setup-pstack/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/setup-pstack/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/show-me-your-work/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/show-me-your-work/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/show-me-your-work/references/decision-log-template.tsv",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/show-me-your-work/references/decision-log-template.tsv"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/show-me-your-work/scripts/log.sh",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/show-me-your-work/scripts/log.sh"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/swarm/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/swarm/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/tdd/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/tdd/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/teach/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/teach/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/technical-writing/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/technical-writing/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/typescript-best-practices/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/typescript-best-practices/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/typescript-best-practices/references/patterns.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/typescript-best-practices/references/patterns.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/unslop/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/unslop/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/SKILL.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/SKILL.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/references/epistemics.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/references/epistemics.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/references/investigator-prompt.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/references/investigator-prompt.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/references/source-playbook.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/references/source-playbook.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/references/sources/code-archaeology.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/references/sources/code-archaeology.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/references/sources/databricks.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/references/sources/databricks.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/references/sources/datadog.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/references/sources/datadog.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/references/sources/incident-postmortem.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/references/sources/incident-postmortem.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/references/sources/linear.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/references/sources/linear.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/references/sources/notion.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/references/sources/notion.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/references/sources/sentry.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/references/sources/sentry.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/references/sources/slack.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/references/sources/slack.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    },
+    {
+      "source": "skills/why/references/synthesizer-prompt.md",
+      "upstreamDisposition": "preserved",
+      "codexDestinations": [
+        "codex/skills/why/references/synthesizer-prompt.md"
+      ],
+      "status": "adapted",
+      "note": "Skill and colocated resources ported without flattening the tree."
+    }
+  ]
+}

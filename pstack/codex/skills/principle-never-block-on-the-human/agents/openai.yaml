@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Never Block On The Human"
+  short_description: "Apply when tempted to ask 'should I do X?' on reversible work"
+  default_prompt: "Use $pstack:principle-never-block-on-the-human for this task."
+policy:
+  allow_implicit_invocation: false

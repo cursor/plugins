@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Redesign From First Principles"
+  short_description: "Apply when integrating a new requirement into an existing design"
+  default_prompt: "Use $pstack:principle-redesign-from-first-principles for this task."
+policy:
+  allow_implicit_invocation: false

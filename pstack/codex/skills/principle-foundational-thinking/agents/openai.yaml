@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Foundational Thinking"
+  short_description: "Apply before writing logic: choosing core types and data structures, sequencing..."
+  default_prompt: "Use $pstack:principle-foundational-thinking for this task."
+policy:
+  allow_implicit_invocation: false

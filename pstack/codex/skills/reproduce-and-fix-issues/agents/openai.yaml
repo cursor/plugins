@@ -1,0 +1,6 @@
+interface:
+  display_name: "Reproduce And Fix Issues"
+  short_description: "Reproduce a triaged Benny report through the real UI and prove one bounded draft fix"
+  default_prompt: "Use $pstack:reproduce-and-fix-issues for this task."
+policy:
+  allow_implicit_invocation: false

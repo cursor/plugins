@@ -1,0 +1,6 @@
+interface:
+  display_name: "Swarm"
+  short_description: "Explicitly fan out parallel Codex workers across slices or race arms, drain them, and return..."
+  default_prompt: "Use $pstack:swarm for this task."
+policy:
+  allow_implicit_invocation: false

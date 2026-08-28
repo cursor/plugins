@@ -1,0 +1,6 @@
+interface:
+  display_name: "Setup Benny"
+  short_description: "Configure native Codex cron workflows for Benny Slack triage and verified bug reproduction"
+  default_prompt: "Use $pstack:setup-benny for this task."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,6 @@
+interface:
+  display_name: "TDD"
+  short_description: "Use only when the user explicitly asks for TDD, a failing test, or a regression test, OR..."
+  default_prompt: "Use $pstack:tdd for this task."
+policy:
+  allow_implicit_invocation: false

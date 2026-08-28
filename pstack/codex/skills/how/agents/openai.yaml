@@ -1,0 +1,4 @@
+interface:
+  display_name: "How"
+  short_description: "Explain how a code subsystem works, trace runtime flow, or answer placement, ownership, and..."
+  default_prompt: "Use $pstack:how for this task."

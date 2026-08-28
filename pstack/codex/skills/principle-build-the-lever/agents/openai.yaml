@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Build The Lever"
+  short_description: "Apply to any non-trivial work, not just bulk work: edits, migrations, analyses, checks"
+  default_prompt: "Use $pstack:principle-build-the-lever for this task."
+policy:
+  allow_implicit_invocation: false

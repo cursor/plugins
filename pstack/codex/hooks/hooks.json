@@ -1,0 +1,30 @@
+{
+  "description": "Preserve explicitly activated Poteto Mode within a Codex session.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 \"$PLUGIN_ROOT/hooks/poteto_mode.py\"",
+            "timeout": 5,
+            "additionalContextLimit": 256
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 \"$PLUGIN_ROOT/hooks/poteto_mode.py\"",
+            "timeout": 5,
+            "additionalContextLimit": 256
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Boundary Discipline"
+  short_description: "Apply when wiring validation, error handling, or framework adapters"
+  default_prompt: "Use $pstack:principle-boundary-discipline for this task."
+policy:
+  allow_implicit_invocation: false

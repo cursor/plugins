@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup Pstack"
+  short_description: "Configure or verify pstack's Codex model routing in the global AGENTS.md after showing the..."
+  default_prompt: "Use $pstack:setup-pstack for this task."

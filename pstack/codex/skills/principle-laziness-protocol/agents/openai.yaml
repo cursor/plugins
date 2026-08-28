@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Laziness Protocol"
+  short_description: "Apply when refactoring, evaluating diff size, or tempted to add abstractions, layers, or..."
+  default_prompt: "Use $pstack:principle-laziness-protocol for this task."
+policy:
+  allow_implicit_invocation: false

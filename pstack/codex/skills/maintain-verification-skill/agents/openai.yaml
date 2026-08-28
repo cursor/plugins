@@ -1,0 +1,6 @@
+interface:
+  display_name: "Maintain Verification Skill"
+  short_description: "Periodic pass that keeps a project's verification skill and feature map honest: parallel..."
+  default_prompt: "Use $pstack:maintain-verification-skill for this task."
+policy:
+  allow_implicit_invocation: false

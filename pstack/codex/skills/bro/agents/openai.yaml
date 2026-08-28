@@ -1,0 +1,6 @@
+interface:
+  display_name: "Bro"
+  short_description: "Restate the last message in plain human language, with no jargon"
+  default_prompt: "Use $pstack:bro for this task."
+policy:
+  allow_implicit_invocation: false

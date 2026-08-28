@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Experience First"
+  short_description: "Apply when product, UX, or feature-scope tradeoffs come up"
+  default_prompt: "Use $pstack:principle-experience-first for this task."
+policy:
+  allow_implicit_invocation: false

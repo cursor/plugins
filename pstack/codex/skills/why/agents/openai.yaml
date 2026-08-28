@@ -1,0 +1,4 @@
+interface:
+  display_name: "Why"
+  short_description: "Investigate why code or a design has its current shape by searching available historical..."
+  default_prompt: "Use $pstack:why for this task."

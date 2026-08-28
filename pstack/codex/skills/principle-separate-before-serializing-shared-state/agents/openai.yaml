@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Separate Before Serializing Shared State"
+  short_description: "Apply when concurrent actors might write to the same file, branch, key, or state object"
+  default_prompt: "Use $pstack:principle-separate-before-serializing-shared-state for this task."
+policy:
+  allow_implicit_invocation: false
