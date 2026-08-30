@@ -134,6 +134,11 @@
       "description": "Search posts, read timelines, pull trends, and manage bookmarks."
     },
     {
+      "name": "xquik",
+      "source": "third_party/xquik",
+      "description": "Search and monitor X/Twitter data, export results, and publish from connected accounts."
+    },
+    {
       "name": "clay",
       "source": "third_party/clay",
       "description": "Enrich people and companies, run AI research agents."
@@ -325,5 +330,4 @@
     }
   ]
 }
-
 

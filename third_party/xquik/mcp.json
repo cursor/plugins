@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "xquik": {
+      "type": "http",
+      "url": "https://xquik.com/mcp"
+    }
+  }
+}
