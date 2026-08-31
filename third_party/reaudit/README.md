@@ -48,7 +48,11 @@ Visibility gauges, citation donuts, crawl monitors, readiness scorecards, and re
 
 ## Auth
 
-API key from [reaudit.io/dashboard/tools](https://reaudit.io/dashboard/tools) or OAuth on first connect.
+On first connect, Cursor opens **OAuth 2.0 with PKCE** in your browser — sign in to Reaudit and authorize. No API key setup required.
+
+**Alternative (manual MCP config):** generate an API key at [reaudit.io/dashboard/tools](https://reaudit.io/dashboard/tools) and use either:
+- Streamable HTTP: `https://mcp.reaudit.io/mcp` with `Authorization: Bearer rau_...`
+- SSE (legacy): `https://mcp.reaudit.io/sse?apiKey=rau_...` via `mcp-remote`
 
 ## Docs
 

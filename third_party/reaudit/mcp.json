@@ -2,10 +2,7 @@
   "mcpServers": {
     "reaudit": {
       "type": "http",
-      "url": "https://mcp.reaudit.io/mcp",
-      "headers": {
-        "Authorization": "Bearer ${REAUDIT_API_KEY}"
-      }
+      "url": "https://mcp.reaudit.io/mcp"
     }
   }
 }

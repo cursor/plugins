@@ -51,16 +51,5 @@
     "content",
     "paid-intelligence"
   ],
-  "variables": {
-    "type": "object",
-    "properties": {
-      "REAUDIT_API_KEY": {
-        "type": "string",
-        "title": "Reaudit API key",
-        "description": "Generate at reaudit.io/dashboard/tools (Tools > MCP Server). Starts with rau_."
-      }
-    },
-    "required": ["REAUDIT_API_KEY"]
-  },
   "mcpServers": "./mcp.json"
 }
