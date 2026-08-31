@@ -322,6 +322,11 @@
       "name": "onedrive",
       "source": "third_party/onedrive",
       "description": "Browse, search, and read files."
+    },
+    {
+      "name": "accountsos",
+      "source": "third_party/accountsos",
+      "description": "Track transactions, VAT, HMRC deadlines, expenses, and invoices."
     }
   ]
 }
