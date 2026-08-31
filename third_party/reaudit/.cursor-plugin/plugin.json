@@ -1,0 +1,66 @@
+{
+  "name": "reaudit",
+  "displayName": "Reaudit",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "AI visibility, GTM strategy, GEO content, social automation, and paid intel across 8 AI engines — 220+ tools.",
+  "author": {
+    "name": "Reaudit",
+    "email": "support@reaudit.io"
+  },
+  "homepage": "https://docs.reaudit.io",
+  "repository": "https://github.com/RoseSamaras/reaudit-ai-plugin",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "reaudit",
+    "mcp",
+    "ai-visibility",
+    "ai-search",
+    "geo",
+    "aeo",
+    "seo",
+    "gtm",
+    "go-to-market",
+    "content-generation",
+    "social-media",
+    "social-automation",
+    "social-publishing",
+    "paid-ads",
+    "chatgpt-ads",
+    "cro",
+    "analytics",
+    "citations",
+    "brand-monitoring",
+    "competitor-intelligence",
+    "chatgpt",
+    "perplexity",
+    "claude",
+    "gemini",
+    "copilot"
+  ],
+  "category": "integrations",
+  "tags": [
+    "reaudit",
+    "mcp",
+    "ai-visibility",
+    "gtm",
+    "social-media",
+    "content",
+    "paid-intelligence"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "REAUDIT_API_KEY": {
+        "type": "string",
+        "title": "Reaudit API key",
+        "description": "Generate at reaudit.io/dashboard/tools (Tools > MCP Server). Starts with rau_."
+      }
+    },
+    "required": ["REAUDIT_API_KEY"]
+  },
+  "mcpServers": "./mcp.json"
+}
