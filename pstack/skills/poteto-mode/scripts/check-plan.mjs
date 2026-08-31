@@ -4,7 +4,7 @@ import process from "node:process";
 
 const RULE =
 	"Tests alone are not sufficient verification. A PR is verified only when its unit, live, and perf boxes are all checked.";
-const LANES = "Ten lanes on `grok-4.6-fast-xhigh` at the PR head";
+const LANES = "Ten lanes on `cursor-grok-4.6-xhigh-fast` at the PR head";
 const SUB_BLOCKS = [
 	"Depends on.",
 	"Files.",
