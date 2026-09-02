@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mermail": {
+      "type": "http",
+      "url": "https://console.mermail.app/mcp"
+    }
+  }
+}
