@@ -18,7 +18,9 @@ Invoked at the end of every other playbook.
 - `## Blast Radius`. State who and what the change touches. Explain why the change is safe or risky. If main is red without the fix, name the continuing cost.
 - `## Verification`. State how you ran each check and its rigor. Name the real path, such as `control-cli`, `control-ui`, or the targeted tests. State the outcome of each check, not only the command name.
 
-**Media.** For a visual UI change, `gh pr create` (or `gh pr edit`) must pass `--attach` for before and after. Dump numbers and local artifact paths do not count. Before you paste the PR URL, `gh pr view --json body` must contain `user-attachments`. If it does not, the PR is not open. Do not use `## Summary` or `## Test plan` boilerplate. A commit body does not restate its subject.
+**Media.** For a visual UI change, `gh pr create` (or `gh pr edit`) must pass `--attach` for before and after. Dump numbers and local artifact paths do not count. Before you paste the PR URL, `gh pr view --json body` must contain `user-attachments`. If it does not, the PR is not open.
+
+Do not use `## Summary` or `## Test plan` boilerplate. A commit body does not restate its subject.
 
 **Forge.** Resolve the forge before the first PR operation and keep that choice for create, edit, view, watch, and merge. GitHub CLI (`gh`) is the default. If `command -v origin` succeeds and Origin can resolve the repository, prefer `origin pr ...`; if Origin is absent or cannot resolve the repository, stay on `gh` and record the fallback. Do not require Graphite (`gt`).
 
