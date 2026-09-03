@@ -22,7 +22,7 @@ A plugin is implemented and needs a final quality check before submission or rel
    - Commands in `commands/` markdown or text files
    - Hooks in `hooks/hooks.json`
    - MCP config in `mcp.json` (or `mcpServers` override in `plugin.json`)
-   - If `.mcp.json` also exists (common in dual Cursor + Claude Code repos), verify MCP filename precedence (see below)
+   - If `.mcp.json` also exists (common in dual Cursor + Claude Code repos), verify MCP filename handling (see below)
 3. Verify component metadata:
    - Skills include `name` and `description` frontmatter
    - Rules include valid frontmatter and clear guidance
@@ -34,16 +34,16 @@ A plugin is implemented and needs a final quality check before submission or rel
    - `README.md` states purpose, installation, and component coverage
    - optional logo path is valid and repository-hosted
 
-## MCP filename precedence
+## MCP filename handling
 
-Cursor plugins auto-discover MCP servers from `mcp.json` at the plugin root. The dotfile `.mcp.json` is Claude Code's default — not Cursor's.
+The plugins reference documents `mcp.json` at the plugin root as the default MCP config filename. Claude Code's default is `.mcp.json`.
 
-When both `mcp.json` and `.mcp.json` exist, Cursor loads `mcp.json`. To override this, set `mcpServers` in `plugin.json` to an explicit path (e.g. `"mcpServers": "./.mcp.json"`).
+When both `mcp.json` and `.mcp.json` exist at the plugin root with different contents, a Marketplace clone can start the unintended server. To control which file is used, set `mcpServers` in `plugin.json` to an explicit path (e.g. `"mcpServers": "./mcp.json"`).
 
-**Dual Cursor + Claude Code repos.** Shipping both filenames is the natural layout when one repository is published as a plugin for both clients. If the two files contain different server configs (e.g. hosted HTTP for Cursor, local stdio for Claude Code), a Marketplace clone can start the wrong server when precedence is not pinned. Authors should either:
+**Dual Cursor + Claude Code repos.** Shipping both filenames is the natural layout when one repository is published as a plugin for both clients. If the two files contain different server configs (e.g. hosted HTTP for Cursor, local stdio for Claude Code), the Marketplace clone may load the wrong one. Authors should either:
 
 - Keep a single shared file and point both clients at it, or
-- Pin `mcpServers` in `.cursor-plugin/plugin.json` to the intended file so Cursor never falls back to `.mcp.json`.
+- Pin `mcpServers` in `.cursor-plugin/plugin.json` to the intended file.
 
 ## Checklist
 

@@ -48,8 +48,8 @@ This path makes the plugin immediately available to Cursor without any install s
    - Agents: `agents/*.md` with `name`, `description`
    - Commands: `commands/*.(md|txt)` with `name`, `description`
 6. If the component set includes `mcpServers`, create `mcp.json` at the plugin root with the server definitions.
-   - Cursor auto-discovers `mcp.json` (no dot prefix). `.mcp.json` is Claude Code's default and is not auto-discovered by Cursor.
-   - If the repo also ships a `.mcp.json` for Claude Code with different server config, pin `mcpServers` in `plugin.json` to the intended file (e.g. `"mcpServers": "./mcp.json"`) so Cursor never loads the wrong one.
+   - The plugins reference documents `mcp.json` as the default MCP config filename. Claude Code's default is `.mcp.json`.
+   - If the repo also ships a `.mcp.json` for Claude Code with different server config, pin `mcpServers` in `plugin.json` to the intended file (e.g. `"mcpServers": "./mcp.json"`) so the Marketplace clone uses the correct one.
 7. If repository uses `.cursor-plugin/marketplace.json`, add plugin entry:
    - `name`
    - `source`
