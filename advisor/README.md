@@ -78,7 +78,7 @@ Each consult is one call to the advisor model with a briefing of a few thousand 
 
 ## Limitations
 
-- State is per project, bound to the conversation that enabled it. Running `/advisor` in a second conversation on the same project rebinds the mode there.
+- State is per project, bound to the conversation that enabled it. Running `/advisor` in a second conversation on the same project re-binds the mode there (model and nudge settings carry over; the consult history and advisor context start fresh). Use `/advisor status` to look without re-binding.
 - The transcript path is recorded by hooks, so the advisor only reads the full transcript when hooks run and transcripts are enabled. It always receives the briefing.
 - The end-of-turn nudge relies on the plugin's hooks; where hooks do not run, the skill still performs the pre-completion consult on its own.
 

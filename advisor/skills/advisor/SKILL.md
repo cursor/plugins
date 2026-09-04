@@ -22,10 +22,10 @@ The text after `/advisor` selects the action.
 
 | Input | Action |
 | --- | --- |
-| `/advisor` | Enable with the default advisor: the latest Grok at its highest reasoning effort. If already enabled, report status instead. |
-| `/advisor <model>` | Enable, or switch models, using any model available to subagents: `/advisor cursor-grok-4.6-xhigh-fast`, `/advisor composer-2.5`. |
+| `/advisor` | Enable for this conversation with the default advisor: the latest Grok at its highest reasoning effort. If a state file already exists, from this or another conversation, re-bind it here, keeping its `model` and `nudge` settings. |
+| `/advisor <model>` | Same, with the given model. Any model available to subagents works: `/advisor cursor-grok-4.6-xhigh-fast`, `/advisor composer-2.5`. |
 | `/advisor off` | Disable: delete `.cursor/advisor/`. |
-| `/advisor status` | Report model, consult count, and whether the end-of-turn nudge is on. |
+| `/advisor status` | Report model, consult count, and whether the end-of-turn nudge is on. Changes nothing. |
 | `/advisor ask <question>` | Consult now about the current work, regardless of checkpoint. |
 | `/advisor nudge on` / `off` | Toggle the end-of-turn reminder posted by the plugin's stop hook (default on). |
 
@@ -46,7 +46,7 @@ If the Task tool rejects a slug, read the valid slugs from its error message, pi
 ## Enabling
 
 1. Resolve the model as described above.
-2. Write `.cursor/advisor/state.json` with the file-writing tool (not a shell redirect), creating the directory if needed. Overwrite any existing file; a fresh `/advisor` re-binds the mode to this conversation.
+2. Write `.cursor/advisor/state.json` with the file-writing tool (not a shell redirect), creating the directory if needed. If a state file already exists, carry over its `model` (unless this command names one) and `nudge`, and reset every other field to the values below. You cannot see which conversation an existing file belongs to, so always rewrite it: that re-binds the mode to this conversation, the hooks re-fill `conversation_id` and `transcript_path`, and the next consult starts a fresh advisor instead of resuming another chat's.
 
    ```json
    {
@@ -80,7 +80,7 @@ Do not consult for routine steps, for things you can verify yourself (run the te
 
 ## How to consult
 
-1. Read `.cursor/advisor/state.json`. If it is missing or `enabled` is false, advisor mode is off: do not consult. Exception: the user explicitly asks in this message, in which case run a one-off consult with the default model and do not create the state file.
+1. Read `.cursor/advisor/state.json`. If it is missing or `enabled` is false, advisor mode is off: do not consult. Exception: the user explicitly asks in this message, in which case run a one-off consult with the default model and do not create the state file. If the file exists but you did not run the Enabling steps in this conversation, it belongs to another chat: run them now (that is what a bare `/advisor` does), then continue. Never `resume` an `advisor_agent_id` you did not save yourself in this conversation.
 2. Build the briefing from `references/briefing-template.md`. Give the advisor everything it needs to disagree with you:
    - The user's request verbatim, plus constraints or corrections they added later.
    - What has happened so far, in order: what you investigated, decided, changed, tried, and ruled out.
