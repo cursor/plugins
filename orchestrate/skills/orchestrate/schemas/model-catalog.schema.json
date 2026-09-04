@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cursor/orchestrate/model-catalog.schema.json",
+  "title": "orchestrate ORCHESTRATE_MODEL_CATALOG",
+  "description": "Optional operator-authored model catalog. When ORCHESTRATE_MODEL_CATALOG is set, it replaces the built-in catalog planners choose `tasks[].model` from.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "slug": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Authoring name planners write into `tasks[].model`."
+      },
+      "selection": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Model id as accepted by the Cursor API."
+          },
+          "params": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Model parameters, e.g. reasoning, effort, thinking, fast."
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "description": "Canonical SDK selection passed to `Agent.create({ model })`."
+      },
+      "summary": {
+        "type": "string",
+        "description": "One-line description planners read."
+      },
+      "strengths": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Capability keywords planners match a task against."
+      },
+      "speed": {
+        "type": "string",
+        "description": "Relative latency, e.g. fast, medium, slow."
+      },
+      "use": {
+        "type": "string",
+        "description": "When a planner should pick this model."
+      },
+      "defaultFor": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "worker",
+            "subplanner",
+            "verifier"
+          ]
+        },
+        "description": "Task types that use this model when `tasks[].model` is omitted."
+      }
+    },
+    "required": [
+      "slug",
+      "selection",
+      "summary",
+      "strengths",
+      "speed",
+      "use"
+    ],
+    "additionalProperties": false
+  }
+}

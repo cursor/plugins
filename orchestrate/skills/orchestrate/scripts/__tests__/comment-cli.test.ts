@@ -18,7 +18,7 @@ describe("comment CLI", () => {
       encoding: "utf8",
       env: {
         ...process.env,
-        SLACK_BOT_TOKEN: "xoxb-test",
+        ORCHESTRATE_SLACK_BOT_TOKEN: "xoxb-test",
       },
     });
 
@@ -73,7 +73,7 @@ describe("comment CLI", () => {
           encoding: "utf8",
           env: {
             ...process.env,
-            SLACK_BOT_TOKEN: "xoxb-test",
+            ORCHESTRATE_SLACK_BOT_TOKEN: "xoxb-test",
           },
         }
       );
@@ -130,7 +130,7 @@ describe("comment CLI", () => {
           encoding: "utf8",
           env: {
             ...process.env,
-            SLACK_BOT_TOKEN: "xoxb-test",
+            ORCHESTRATE_SLACK_BOT_TOKEN: "xoxb-test",
           },
         }
       );
@@ -187,7 +187,7 @@ describe("comment CLI", () => {
           encoding: "utf8",
           env: {
             ...process.env,
-            SLACK_BOT_TOKEN: "xoxb-test",
+            ORCHESTRATE_SLACK_BOT_TOKEN: "xoxb-test",
           },
         }
       );
