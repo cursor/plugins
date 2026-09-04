@@ -164,6 +164,11 @@
       "description": "Track AI visibility, sentiment, and citations."
     },
     {
+      "name": "uizze",
+      "source": "uizze",
+      "description": "Free anti-ui-slop skill and UI Slop Gate for coding agents; optional MCP adds 800,000+ real web and iOS screens, design contracts, validation, audits, and rendered critique."
+    },
+    {
       "name": "juicebox",
       "source": "third_party/juicebox",
       "description": "Query recruiting analytics, shortlists, and sourcing agents."
@@ -335,5 +340,3 @@
     }
   ]
 }
-
-
