@@ -22,8 +22,8 @@ The text after `/advisor` selects the action.
 
 | Input | Action |
 | --- | --- |
-| `/advisor` | Enable with the default advisor (`opus`). If already enabled, report status instead. |
-| `/advisor <model>` | Enable, or switch models, using an alias or a full model slug: `/advisor gpt`, `/advisor claude-opus-5-thinking-max`. |
+| `/advisor` | Enable with the default advisor (`grok`: Grok 4.6 at xhigh effort). If already enabled, report status instead. |
+| `/advisor <model>` | Enable, or switch models, using an alias or a full model slug: `/advisor opus`, `/advisor claude-opus-5-thinking-max`. |
 | `/advisor off` | Disable: delete `.cursor/advisor/`. |
 | `/advisor status` | Report model, consult count, and whether the end-of-turn nudge is on. |
 | `/advisor ask <question>` | Consult now about the current work, regardless of checkpoint. |
@@ -35,12 +35,14 @@ If the message also contains a task (`/advisor gpt, then refactor the cache laye
 
 | Alias | Model slug |
 | --- | --- |
-| `opus` (default) | `claude-opus-5-thinking-xhigh` |
+| `grok` (default) | `cursor-grok-4.6-xhigh` |
+| `opus` | `claude-opus-5-thinking-xhigh` |
 | `sonnet` | `claude-sonnet-5-thinking-xhigh` |
 | `gpt` | `gpt-5.6-sol-xhigh` |
 | `gemini` | `gemini-3.6-flash-high` |
-| `grok` | `cursor-grok-4.6-xhigh` |
 | `composer` | `composer-2.5` |
+
+The default is the latest Grok at its highest reasoning effort. Keep the highest effort tier when the user names a family without one (`/advisor gpt` means `gpt-5.6-sol-xhigh`, not a lower tier).
 
 Anything else is passed through as a full slug.
 
@@ -54,8 +56,8 @@ If the Task tool rejects a slug, read the valid slugs from its error message, pi
    ```json
    {
      "enabled": true,
-     "model": "claude-opus-5-thinking-xhigh",
-     "alias": "opus",
+     "model": "cursor-grok-4.6-xhigh",
+     "alias": "grok",
      "nudge": true,
      "advisor_agent_id": null,
      "conversation_id": null,
