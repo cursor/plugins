@@ -1,7 +1,9 @@
 const MAX_BODY_CHARS = 2_048;
 const SENSITIVE_KEY_RE = /token|secret|password|api[_-]?key|authorization/i;
+// Value runs to end of line: `\S+` stopped at the first space, which left the
+// credential behind in `Authorization: Bearer <jwt>` and in quoted values.
 const SENSITIVE_ASSIGNMENT_RE =
-  /\b(token|secret|password|api[_-]?key|authorization)\b\s*[:=]\s*\S+/gi;
+  /\b(token|secret|password|api[_-]?key|authorization)\b\s*[:=]\s*\S.*/gi;
 const PATH_PATTERNS = [
   { re: /^\/workspace\/\S*/gm, reason: "contains /workspace path" },
   { re: /^\/Users\/\S*/gm, reason: "contains /Users path" },
