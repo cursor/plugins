@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "google-analytics": {
+      "type": "http",
+      "url": "https://analyticsdata.googleapis.com/mcp/v1"
+    }
+  }
+}

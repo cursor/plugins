@@ -94,6 +94,11 @@
       "description": "Search events and schedule meetings."
     },
     {
+      "name": "google-analytics",
+      "source": "third_party/google-analytics",
+      "description": "Run reports, realtime queries, and metadata lookups on GA4 properties."
+    },
+    {
       "name": "gong",
       "source": "third_party/gong",
       "description": "Pull account summaries, deal insights, and call briefs."
