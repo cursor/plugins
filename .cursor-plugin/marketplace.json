@@ -332,6 +332,11 @@
       "name": "x-ads",
       "source": "third_party/x-ads",
       "description": "Manage ad campaigns, create ads, track conversions, and pull performance stats."
+    },
+    {
+      "name": "plaid",
+      "source": "third_party/plaid",
+      "description": "Debug Items, review Link conversion, and check usage metrics."
     }
   ]
 }
