@@ -22,42 +22,36 @@ The text after `/advisor` selects the action.
 
 | Input | Action |
 | --- | --- |
-| `/advisor` | Enable with the default advisor (`grok`: Grok 4.6 at xhigh effort). If already enabled, report status instead. |
-| `/advisor <model>` | Enable, or switch models, using an alias or a full model slug: `/advisor opus`, `/advisor claude-opus-5-thinking-max`. |
+| `/advisor` | Enable with the default advisor: the latest Grok at its highest reasoning effort. If already enabled, report status instead. |
+| `/advisor <model>` | Enable, or switch models, using any model available to subagents: `/advisor cursor-grok-4.6-xhigh-fast`, `/advisor composer-2.5`. |
 | `/advisor off` | Disable: delete `.cursor/advisor/`. |
 | `/advisor status` | Report model, consult count, and whether the end-of-turn nudge is on. |
 | `/advisor ask <question>` | Consult now about the current work, regardless of checkpoint. |
 | `/advisor nudge on` / `off` | Toggle the end-of-turn reminder posted by the plugin's stop hook (default on). |
 
-If the message also contains a task (`/advisor gpt, then refactor the cache layer`), enable first, then do the task under advisor mode.
+If the message also contains a task (`/advisor, then refactor the cache layer`), enable first, then do the task under advisor mode.
 
-### Model aliases
+### Choosing the model
 
-| Alias | Model slug |
-| --- | --- |
-| `grok` (default) | `cursor-grok-4.6-xhigh` |
-| `opus` | `claude-opus-5-thinking-xhigh` |
-| `sonnet` | `claude-sonnet-5-thinking-xhigh` |
-| `gpt` | `gpt-5.6-sol-xhigh` |
-| `gemini` | `gemini-3.6-flash-high` |
-| `composer` | `composer-2.5` |
+The default is the latest Grok model at its highest reasoning effort, currently `cursor-grok-4.6-xhigh`. If a newer Grok or a higher effort tier appears in the subagent model list available to you, prefer it and say so.
 
-The default is the latest Grok at its highest reasoning effort. Keep the highest effort tier when the user names a family without one (`/advisor gpt` means `gpt-5.6-sol-xhigh`, not a lower tier).
+For `/advisor <model>`, resolve the request against the subagent model slugs available to you:
 
-Anything else is passed through as a full slug.
+- An exact slug: use it as is.
+- A family or version name (`grok fast`, `composer`): that family's latest model at its highest reasoning tier.
+- No match: say so, name two or three close options, and keep the current model.
 
-If the Task tool rejects a slug, read the valid slugs from its error message, pick the closest one (same family, highest reasoning tier below `max`), save it to `state.json`, and tell the user in one line. Do not block the consult on the slug.
+If the Task tool rejects a slug, read the valid slugs from its error message, pick the closest one (same family, highest reasoning tier), save it to `state.json`, and tell the user in one line. Do not block the consult on the slug.
 
 ## Enabling
 
-1. Resolve the model from the alias table.
+1. Resolve the model as described above.
 2. Write `.cursor/advisor/state.json` with the file-writing tool (not a shell redirect), creating the directory if needed. Overwrite any existing file; a fresh `/advisor` re-binds the mode to this conversation.
 
    ```json
    {
      "enabled": true,
      "model": "cursor-grok-4.6-xhigh",
-     "alias": "grok",
      "nudge": true,
      "advisor_agent_id": null,
      "conversation_id": null,
@@ -120,7 +114,7 @@ When files changed since the last consult and a turn ends without one, the plugi
 
 ## Guardrails
 
-- Never enable advisor mode unasked. "What would Opus think of this?" is a one-off consult, not a mode change.
+- Never enable advisor mode unasked. "Get a second opinion on this" is a one-off consult, not a mode change.
 - The advisor is read-only. Never ask it to edit files or do the task.
 - Never loop on the advisor: at most one follow-up per checkpoint.
 - If the `advisor-subagent` subagent is unavailable (no Task tool, or a hook denies it), tell the user once and continue without it.

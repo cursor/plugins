@@ -2,7 +2,7 @@
 
 Advisor gives Cursor's agent a stronger second model to consult at key points: before a major decision, when it is stuck on an error, and before it declares a task done. The main model keeps doing the work; the advisor reads a full briefing (and the conversation transcript when available), thinks hard, and returns a verdict with concrete guidance. You get higher quality on complex tasks while paying for the strong model only where it matters.
 
-This is the Cursor counterpart of Claude Code's `/advisor`. The default advisor is the latest Grok (Grok 4.6) at its highest reasoning effort, and because the advisor is just a subagent with its own model, the two models do not have to be from the same family: run Claude with a Grok advisor, or Grok with an Opus advisor.
+The default advisor is the latest Grok (Grok 4.6) at its highest reasoning effort. Because the advisor is a subagent with its own model, it does not have to be the model you are chatting with: any model available to subagents works, so a second opinion can come from a different model family.
 
 ## Installation
 
@@ -14,8 +14,7 @@ This is the Cursor counterpart of Claude Code's `/advisor`. The default advisor 
 
 ```text
 /advisor                     turn on with the default advisor (Grok 4.6, xhigh effort)
-/advisor opus                turn on with an Opus advisor
-/advisor claude-opus-5-thinking-max   any full model slug works
+/advisor composer-2.5        turn on with a different model (any subagent model slug)
 /advisor ask is this migration safe to run twice?
 /advisor status
 /advisor off
@@ -58,16 +57,7 @@ The skill caps this at roughly four consults per task and never consults for rou
 
 ## Models
 
-| Alias | Model slug |
-| --- | --- |
-| `grok` (default) | `cursor-grok-4.6-xhigh` |
-| `opus` | `claude-opus-5-thinking-xhigh` |
-| `sonnet` | `claude-sonnet-5-thinking-xhigh` |
-| `gpt` | `gpt-5.6-sol-xhigh` |
-| `gemini` | `gemini-3.6-flash-high` |
-| `composer` | `composer-2.5` |
-
-Every alias resolves to that family's highest reasoning tier. Any other value is passed through as a full slug. If Cursor rejects a slug, the skill picks the closest valid one from the error, saves it, and tells you. Team model restrictions and plan limits apply to the advisor like any subagent.
+The default is the latest Grok model at its highest reasoning effort (currently `cursor-grok-4.6-xhigh`). `/advisor <model>` accepts any model slug available to subagents; a family name such as `grok fast` or `composer` resolves to that family's latest model at its highest reasoning tier. If Cursor rejects a slug, the skill picks the closest valid one from the error, saves it, and tells you. Team model restrictions and plan limits apply to the advisor like any subagent.
 
 ## State
 
@@ -84,7 +74,7 @@ Add `.cursor/advisor/` to your `.gitignore` if you do not want it in the reposit
 
 ## Cost
 
-Each consult is one call to the advisor model with a briefing of a few thousand tokens plus whatever the advisor chooses to read. Selective use is the point: a typical feature takes one to three consults. The default advisor, Grok 4.6, draws from the Cursor Models usage pool, so it is the cheapest of the strong options; pick another alias when you want a different family's perspective.
+Each consult is one call to the advisor model with a briefing of a few thousand tokens plus whatever the advisor chooses to read. Selective use is the point: a typical feature takes one to three consults. The default advisor, Grok 4.6, draws from the Cursor Models usage pool, so it is the cheapest of the strong options; switch models when you want a different family's perspective.
 
 ## Limitations
 
