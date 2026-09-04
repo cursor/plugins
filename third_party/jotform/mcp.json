@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "jotform": {
+      "type": "http",
+      "url": "https://mcp.jotform.com"
+    }
+  }
+}

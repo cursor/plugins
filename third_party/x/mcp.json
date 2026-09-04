@@ -18,7 +18,8 @@
           "block.write",
           "bookmark.read",
           "bookmark.write",
-          "billing.write",
+          "developer.billing.write",
+          "developer.write",
           "offline.access"
         ]
       }

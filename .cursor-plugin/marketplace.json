@@ -74,6 +74,11 @@
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
     },
     {
+      "name": "advisor",
+      "source": "advisor",
+      "description": "Consult a stronger model before major decisions, when stuck, and before declaring done."
+    },
+    {
       "name": "gmail",
       "source": "third_party/gmail",
       "description": "Search, read, draft, and manage email."
@@ -172,6 +177,161 @@
       "name": "amplemarket",
       "source": "third_party/amplemarket",
       "description": "Search people and companies, enrich leads, run sequences."
+    },
+    {
+      "name": "klaviyo",
+      "source": "third_party/klaviyo",
+      "description": "Manage profiles, segments, campaigns, and flows."
+    },
+    {
+      "name": "customer-io",
+      "source": "third_party/customer-io",
+      "description": "Build campaigns, manage segments, and query people."
+    },
+    {
+      "name": "mailerlite",
+      "source": "third_party/mailerlite",
+      "description": "Manage subscribers, groups, campaigns, and automations."
+    },
+    {
+      "name": "brevo",
+      "source": "third_party/brevo",
+      "description": "Manage contacts, email and SMS campaigns, and CRM deals."
+    },
+    {
+      "name": "typeform",
+      "source": "third_party/typeform",
+      "description": "Build forms, analyze responses, and manage contacts."
+    },
+    {
+      "name": "jotform",
+      "source": "third_party/jotform",
+      "description": "Create and edit forms, then read submissions."
+    },
+    {
+      "name": "semrush",
+      "source": "third_party/semrush",
+      "description": "Research keywords, backlinks, traffic, and competitors."
+    },
+    {
+      "name": "ahrefs",
+      "source": "third_party/ahrefs",
+      "description": "Research keywords, backlinks, rankings, and site health."
+    },
+    {
+      "name": "godaddy",
+      "source": "third_party/godaddy",
+      "description": "Brainstorm domain names and check availability."
+    },
+    {
+      "name": "upwork",
+      "source": "third_party/upwork",
+      "description": "Search talent, post jobs, and manage contracts."
+    },
+    {
+      "name": "workable",
+      "source": "third_party/workable",
+      "description": "Search candidates, move pipelines, and manage HR records."
+    },
+    {
+      "name": "brex",
+      "source": "third_party/brex",
+      "description": "Query expenses, receipts, bills, cards, and travel."
+    },
+    {
+      "name": "mercury",
+      "source": "third_party/mercury",
+      "description": "Read balances, transactions, statements, and cards."
+    },
+    {
+      "name": "todoist",
+      "source": "third_party/todoist",
+      "description": "Create, find, and complete tasks and projects."
+    },
+    {
+      "name": "calendly",
+      "source": "third_party/calendly",
+      "description": "Check availability and book, cancel, or reschedule."
+    },
+    {
+      "name": "smartsheet",
+      "source": "third_party/smartsheet",
+      "description": "Query and update sheets, rows, and workspaces."
+    },
+    {
+      "name": "wrike",
+      "source": "third_party/wrike",
+      "description": "Search projects, create tasks, and post comments."
+    },
+    {
+      "name": "coda",
+      "source": "third_party/coda",
+      "description": "Search docs, read pages, and update tables."
+    },
+    {
+      "name": "guru",
+      "source": "third_party/guru",
+      "description": "Search company knowledge and draft verified answers."
+    },
+    {
+      "name": "fireflies",
+      "source": "third_party/fireflies",
+      "description": "Search meeting transcripts, summaries, and action items."
+    },
+    {
+      "name": "otter",
+      "source": "third_party/otter",
+      "description": "Search meeting history and pull full transcripts."
+    },
+    {
+      "name": "fathom",
+      "source": "third_party/fathom",
+      "description": "Search meetings and pull transcripts and summaries."
+    },
+    {
+      "name": "craft",
+      "source": "third_party/craft",
+      "description": "Search, create, and update documents and daily notes."
+    },
+    {
+      "name": "mem",
+      "source": "third_party/mem",
+      "description": "Capture, search, and organize notes and collections."
+    },
+    {
+      "name": "readwise",
+      "source": "third_party/readwise",
+      "description": "Search highlights and Reader documents, save articles."
+    },
+    {
+      "name": "similarweb",
+      "source": "third_party/similarweb",
+      "description": "Analyze website traffic, audiences, and competitors."
+    },
+    {
+      "name": "xero",
+      "source": "third_party/xero",
+      "description": "Read and write invoices, contacts, reports, and payroll."
+    },
+    {
+      "name": "outlook",
+      "source": "third_party/outlook",
+      "description": "Search, read, and send Microsoft Outlook email, and look up contacts."
+    },
+    {
+      "name": "outlook-calendar",
+      "source": "third_party/outlook-calendar",
+      "description": "List, create, update, and cancel Microsoft Outlook calendar events."
+    },
+    {
+      "name": "onedrive",
+      "source": "third_party/onedrive",
+      "description": "Browse, search, and read Microsoft OneDrive files."
+    },
+    {
+      "name": "x-ads",
+      "source": "third_party/x-ads",
+      "description": "Manage ad campaigns, create ads, track conversions, and pull performance stats."
     }
   ]
 }

@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": "bash \"${CURSOR_PLUGIN_ROOT}/hooks/mark-pending.sh\""
+      }
+    ],
+    "afterAgentResponse": [
+      {
+        "command": "bash \"${CURSOR_PLUGIN_ROOT}/hooks/capture-response.sh\""
+      }
+    ],
+    "subagentStop": [
+      {
+        "command": "bash \"${CURSOR_PLUGIN_ROOT}/hooks/record-consult.sh\"",
+        "matcher": "^advisor-subagent$"
+      }
+    ],
+    "stop": [
+      {
+        "command": "bash \"${CURSOR_PLUGIN_ROOT}/hooks/stop-hook.sh\"",
+        "loop_limit": 3
+      }
+    ]
+  }
+}

@@ -14,6 +14,7 @@ Reference prices for cost estimates. May drift; the live endpoint https://consol
 | Tool | Wraps | Cost |
 |---|---|---|
 | `get_users_me` | `GET /2/users/me` | free |
+| `get_usage_credits` | `GET /2/usage/credits` | free |
 | `get_users_by_id` / `get_users_by_username` / `get_users_by_usernames` / `search_users` | user lookup/search | $0.01/user |
 | `get_posts_by_id` / `get_posts_by_ids` / `search_posts_all` / `get_posts_quoted_posts` | post lookup/search | $0.005/post |
 | `get_users_posts` / `get_users_mentions` / `get_users_timeline` / `get_users_bookmarks` | user timelines | $0.005/post ($0.001 own data) |
@@ -116,6 +117,7 @@ Reference prices for cost estimates. May drift; the live endpoint https://consol
 ## Free endpoints (no per-use charge)
 
 - `GET /2/users/me`
+- `GET /2/usage/credits` (MCP: `get_usage_credits`)
 - `GET /2/tweets/:id/liking_users`
 - `GET /2/media` · `GET /2/media/:media_key`
 - Bookmark folders: `GET /2/users/:id/bookmarks/folders` (and by folder id) · folder create

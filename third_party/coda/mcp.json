@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "coda": {
+      "type": "http",
+      "url": "https://docs.superhuman.com/apis/mcp"
+    }
+  }
+}

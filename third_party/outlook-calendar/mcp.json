@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "outlook-calendar": {
+      "type": "http",
+      "url": "https://api.cursor.com/rest-mcp/outlook-calendar/mcp"
+    }
+  }
+}
