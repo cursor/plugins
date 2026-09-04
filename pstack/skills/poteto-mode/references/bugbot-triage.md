@@ -140,3 +140,11 @@ Append new candidate learnings here during or after babysitting when they look t
   exists for a missing dependency rather than a failed operation.
 - Source: one CLI-rename PR whose fallback existed for a missing binary rather
   than a failed command.
+
+### Outside-diff token-format complaints against catalog CSS strings
+
+- Confidence: candidate
+- Skip when: A review-automation comment asks to convert dimension or shadow tokens from CSS strings (`"0.25rem"`, `"2px 2px 4px rgba(...)"`) to structured DTCG objects, the cited tokens are outside the PR hunk or byte-identical on the base branch, and sibling tokens in the same catalog already use CSS strings for those types.
+- Do not skip when: This PR added a token in a shape no sibling uses, token validation or generation fails on the tip, or the pipeline for this type cannot emit a CSS string.
+- Example signal: "Use structured DTCG values" or "tooltip-radius and tooltip-shadow use CSS strings instead of the required DTCG dimension and shadow objects", posted outside the diff after a merge that only inserted neighboring tokens.
+- Source: one design-token theme-bridge PR. CodeRabbit flagged landed tooltip radius and shadow CSS strings that already existed on the base branch in the same shape as the rest of the catalog.
