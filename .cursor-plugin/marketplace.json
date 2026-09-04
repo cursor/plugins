@@ -332,6 +332,11 @@
       "name": "x-ads",
       "source": "third_party/x-ads",
       "description": "Manage ad campaigns, create ads, track conversions, and pull performance stats."
+    },
+    {
+      "name": "google-ads",
+      "source": "third_party/google-ads",
+      "description": "Query ad accounts, campaigns, and performance reports with GAQL."
     }
   ]
 }
