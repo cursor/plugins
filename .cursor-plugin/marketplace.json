@@ -304,6 +304,11 @@
       "description": "Search highlights and Reader documents, save articles."
     },
     {
+      "name": "reaudit",
+      "source": "third_party/reaudit",
+      "description": "AI visibility, GTM strategy, GEO content, social automation, and paid intel across 8 AI engines — 220+ tools."
+    },
+    {
       "name": "similarweb",
       "source": "third_party/similarweb",
       "description": "Analyze website traffic, audiences, and competitors."
