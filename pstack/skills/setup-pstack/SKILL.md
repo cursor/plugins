@@ -5,7 +5,7 @@ description: Configure which models pstack uses per role. Detects your available
 
 # Setup pstack
 
-Write `~/.cursor/rules/pstack-models.mdc`, an always-applied rule that sets pstack's model per role. The skills read it and fall back to their inline defaults when a line is absent, so this is an override layer, not a requirement.
+Write `.cursor/rules/pstack-models.mdc` in the workspace repo. It is an always-applied rule that sets pstack's model per role. The skills read it and fall back to their inline defaults when a line is absent, so this is an override layer, not a requirement. Do not write this rule under the home `.cursor` directory. That copy dies with the cloud agent VM.
 
 ## Steps
 
@@ -15,7 +15,7 @@ Enumerate the model slugs you can pass to a `Task` subagent in this session; tha
 
 ### 2. Load current state
 
-The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.cursor/rules/pstack-models.mdc` already exists, read it and treat its values as the current choices. Otherwise start from those defaults.
+The default role-to-model mapping is the rule shape shown in step 5 below. If `.cursor/rules/pstack-models.mdc` already exists, read it and treat its values as the current choices. If it does not, and a leftover rule exists under the home `.cursor/rules` directory, read that as the current choices. Otherwise start from those defaults.
 
 ### 3. Map and confirm
 
@@ -27,7 +27,7 @@ Every real slug written must be in the detected set; `inherit-parent` and `auto`
 
 ### 5. Write the rule
 
-Write `~/.cursor/rules/pstack-models.mdc` with `alwaysApply: true` and one line per role, using the same labels poteto-mode uses. Overwrite the whole file so re-runs stay idempotent. Shape:
+Write `.cursor/rules/pstack-models.mdc` with `alwaysApply: true` and one line per role, using the same labels poteto-mode uses. Create `.cursor/rules` if it is missing. Overwrite the whole file so re-runs stay idempotent. Shape:
 
 ```
 ---
@@ -58,7 +58,7 @@ interrogate reviewers: claude-fable-5-1-thinking-max, gpt-5.6-sol-max, grok-4.6-
 
 ### 6. Confirm
 
-Tell the user the rule was written and that it applies to new sessions. Re-running this skill updates it.
+Tell the user the rule was written to `.cursor/rules/pstack-models.mdc`. It applies to new sessions, including cloud agents, once the file is committed. Do not gitignore it. Re-running this skill updates it.
 
 ### 7. Offer a verification skill (optional)
 
