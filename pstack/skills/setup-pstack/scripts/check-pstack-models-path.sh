@@ -4,7 +4,7 @@ set -eu
 root=$(git rev-parse --show-toplevel)
 cd "$root"
 
-forbidden=$(printf '%s%s' '~/' '.cursor/rules/pstack-models.mdc')
+forbidden='~/.cursor/rules/pstack-models.mdc'
 required='.cursor/rules/pstack-models.mdc'
 
 if git grep -n -F -- "$forbidden" -- pstack ':!pstack/skills/setup-pstack/scripts/*'
