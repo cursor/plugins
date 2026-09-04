@@ -327,6 +327,11 @@
       "name": "x-ads",
       "source": "third_party/x-ads",
       "description": "Manage ad campaigns, create ads, track conversions, and pull performance stats."
+    },
+    {
+      "name": "iflytek-skills",
+      "source": "third_party/iflytek-skills",
+      "description": "Speech, OCR, translation, proofreading, and multimodal AI workflows powered by iFLYTEK APIs."
     }
   ]
 }
