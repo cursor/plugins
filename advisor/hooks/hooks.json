@@ -3,23 +3,23 @@
   "hooks": {
     "afterFileEdit": [
       {
-        "command": "./hooks/mark-pending.sh"
+        "command": "bash \"${CURSOR_PLUGIN_ROOT}/hooks/mark-pending.sh\""
       }
     ],
     "afterAgentResponse": [
       {
-        "command": "./hooks/capture-response.sh"
+        "command": "bash \"${CURSOR_PLUGIN_ROOT}/hooks/capture-response.sh\""
       }
     ],
     "subagentStop": [
       {
-        "command": "./hooks/record-consult.sh",
+        "command": "bash \"${CURSOR_PLUGIN_ROOT}/hooks/record-consult.sh\"",
         "matcher": "^advisor-subagent$"
       }
     ],
     "stop": [
       {
-        "command": "./hooks/stop-hook.sh",
+        "command": "bash \"${CURSOR_PLUGIN_ROOT}/hooks/stop-hook.sh\"",
         "loop_limit": 3
       }
     ]
