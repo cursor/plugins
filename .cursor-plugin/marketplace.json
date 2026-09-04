@@ -179,6 +179,11 @@
       "description": "Search people and companies, enrich leads, run sequences."
     },
     {
+      "name": "hol-guard",
+      "source": "third_party/hol-guard",
+      "description": "Runtime and supply-chain security for Cursor and other AI coding agents."
+    },
+    {
       "name": "klaviyo",
       "source": "third_party/klaviyo",
       "description": "Manage profiles, segments, campaigns, and flows."
@@ -335,5 +340,3 @@
     }
   ]
 }
-
-
