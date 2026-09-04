@@ -617,6 +617,15 @@ export async function resolveChecks(
   } while (after !== null);
   const fallback = nonEmpty(checks);
   if (fallback !== null) return { source: "graphql-rollup", checks: fallback };
+  const fastPathConfirmsEmpty =
+    fast.kind === "checks" ||
+    (fast.exitCode === 1 &&
+      /^no checks reported on the .+ branch\s*$/im.test(fast.stderr));
+  if (fastPathConfirmsEmpty)
+    return {
+      source: fast.kind === "checks" ? "gh-pr-checks" : "graphql-rollup",
+      checks: [],
+    };
   const suffix =
     fast.kind === "unusable"
       ? `fast path exit=${fast.exitCode}; GraphQL rollup was empty${firstLine(fast.stderr) ? `; ${firstLine(fast.stderr)}` : ""}`

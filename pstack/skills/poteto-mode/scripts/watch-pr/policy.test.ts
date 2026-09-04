@@ -88,6 +88,23 @@ describe("readiness truth table", () => {
       blocker: { kind: "failing-checks" },
     });
   });
+
+  it("classifies a PR with no configured checks as CI-clean", async () => {
+    const reader = fakeReader({
+      fastPath: { kind: "checks", checks: [] },
+      rollupPages: [{ checks: [], endCursor: null }],
+    });
+    const snapshot = await readSnapshot({
+      reader,
+      context: context(2),
+      pendingHistory: "include",
+      allowDraft: false,
+    });
+    expect(snapshot.kind).toBe("open");
+    if (snapshot.kind !== "open") throw new Error("expected open snapshot");
+    expect(snapshot.ci.kind).toBe("ci-clean");
+    expect(snapshot.ci.all).toEqual([]);
+  });
 });
 
 describe("snapshot query planning", () => {
