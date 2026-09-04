@@ -332,6 +332,11 @@
       "name": "x-ads",
       "source": "third_party/x-ads",
       "description": "Manage ad campaigns, create ads, track conversions, and pull performance stats."
+    },
+    {
+      "name": "microsoft-ads",
+      "source": "third_party/microsoft-ads",
+      "description": "Explore campaigns, ad groups, ads, keywords, and pull performance metrics."
     }
   ]
 }
