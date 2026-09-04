@@ -1,11 +1,23 @@
 # Changelog
 
-All notable changes to this plugin will be documented here.
+All notable changes to this plugin are documented here.
 
 ## Unreleased
 
-- Renamed the full-pass skill to `check-agent-compatibility`.
-- Renamed `deterministic-scan-review` to `compatibility-scan-review`.
-- Renamed `docs-reality-review` to `docs-reliability-review`.
-- Clarified the score model so `Agent Compatibility Score` is the final blended score and `Deterministic Compatibility Score` is the raw CLI score.
-- Tightened the README, marketplace copy, and agent wording for public release.
+## 1.1.0 - 2026-08-19
+
+- Pinned the deterministic scanner to `agent-compatibility@0.1.7`.
+- Added an executable scanner guard that validates the pinned version, scanned path, output shape, and Cloudflare Worker classification signals.
+- Made pinned scanner execution shell-free on Windows by resolving npm's `npx-cli.js` entrypoint through Node.
+- Added a fail-closed result synthesizer as the sole owner of score validation, degraded states, and 70/30 arithmetic.
+- Made the synthesizer reject missing evidence, mismatched targets, and stateful results without isolated execution provenance.
+- Made startup and validation writable only inside isolated copies, with deploy, migration, credential, and paid-test boundaries.
+- Added explicit target, budget, mutation, and evidence handoffs for every subagent.
+- Changed specialist output to structured JSON with command outcomes and evidence.
+- Added contract and fixture tests plus CI coverage for agent, skill, and helper-script changes.
+
+## 1.0.0 - 2026-03-25
+
+- Added the full compatibility pass with deterministic, startup, validation, and docs-reliability reviews.
+- Added the 70/30 deterministic and workflow score model.
+- Added marketplace metadata and usage documentation.
