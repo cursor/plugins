@@ -329,6 +329,11 @@
       "description": "Browse, search, and read Microsoft OneDrive files."
     },
     {
+      "name": "sharepoint",
+      "source": "third_party/sharepoint",
+      "description": "Browse Microsoft SharePoint sites, document libraries, files, and lists."
+    },
+    {
       "name": "x-ads",
       "source": "third_party/x-ads",
       "description": "Manage ad campaigns, create ads, track conversions, and pull performance stats."
