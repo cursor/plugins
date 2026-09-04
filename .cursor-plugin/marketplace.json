@@ -332,6 +332,11 @@
       "name": "x-ads",
       "source": "third_party/x-ads",
       "description": "Manage ad campaigns, create ads, track conversions, and pull performance stats."
+    },
+    {
+      "name": "quickbooks",
+      "source": "third_party/quickbooks",
+      "description": "Read and write customers, invoices, bills, payments, and reports."
     }
   ]
 }
