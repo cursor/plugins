@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "lazyweb": {
+      "type": "http",
+      "url": "https://www.lazyweb.com/mcp"
+    }
+  }
+}
