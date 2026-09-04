@@ -37,6 +37,8 @@ advisor_state_update() {
 # Bind the state to the first conversation that touches it and keep transcript_path
 # current. Returns 1 when the hook input belongs to a different conversation, so
 # callers can stay out of conversations that did not enable the advisor.
+# A fresh bind also drops per-conversation markers so a re-bind cannot inherit
+# the previous conversation's pending edits.
 advisor_bind_conversation() {
   local input="$1"
   local conv bound transcript current
@@ -45,6 +47,7 @@ advisor_bind_conversation() {
   if [[ -n "$conv" ]]; then
     if [[ -z "$bound" ]]; then
       advisor_state_update '.conversation_id = $conv' --arg conv "$conv"
+      rm -f "$PENDING_FILE" "$LAST_RESPONSE_FILE"
     elif [[ "$bound" != "$conv" ]]; then
       return 1
     fi

@@ -46,7 +46,7 @@ If the Task tool rejects a slug, read the valid slugs from its error message, pi
 ## Enabling
 
 1. Resolve the model as described above.
-2. Write `.cursor/advisor/state.json` with the file-writing tool (not a shell redirect), creating the directory if needed. If a state file already exists, carry over its `model` (unless this command names one) and `nudge`, and reset every other field to the values below. You cannot see which conversation an existing file belongs to, so always rewrite it: that re-binds the mode to this conversation, the hooks re-fill `conversation_id` and `transcript_path`, and the next consult starts a fresh advisor instead of resuming another chat's.
+2. Write `.cursor/advisor/state.json` with the file-writing tool (not a shell redirect), creating the directory if needed. If a state file already exists, carry over its `model` (unless this command names one) and `nudge`, and reset every other field to the values below. You cannot see which conversation an existing file belongs to, so always rewrite it: that re-binds the mode to this conversation, the hooks re-fill `conversation_id` and `transcript_path`, and the next consult starts a fresh advisor instead of resuming another chat's. Also delete `.cursor/advisor/pending` and `.cursor/advisor/last-response.txt` if they exist, so a marker left by another conversation cannot trigger the end-of-turn nudge here. Keep `log.md`.
 
    ```json
    {
@@ -80,7 +80,7 @@ Do not consult for routine steps, for things you can verify yourself (run the te
 
 ## How to consult
 
-1. Read `.cursor/advisor/state.json`. If it is missing or `enabled` is false, advisor mode is off: do not consult. Exception: the user explicitly asks in this message, in which case run a one-off consult with the default model and do not create the state file. If the file exists but you did not run the Enabling steps in this conversation, it belongs to another chat: run them now (that is what a bare `/advisor` does), then continue. Never `resume` an `advisor_agent_id` you did not save yourself in this conversation.
+1. Read `.cursor/advisor/state.json`. Advisor mode is on for this conversation only if the file exists with `enabled: true` and you ran the Enabling steps in this conversation. Otherwise do not consult at checkpoints, and leave the file alone: a file you did not write belongs to another chat, and only `/advisor` re-binds it. Never `resume` an `advisor_agent_id` you did not save yourself in this conversation. Exception: the user explicitly asks for a consult in this message (`/advisor ask ...`, or a request for a second opinion). Run it as a one-off: a fresh spawn on the file's `model` if there is one, otherwise the default; no `resume`; no state writes. Mention that `/advisor` turns the mode on for this conversation.
 2. Build the briefing from `references/briefing-template.md`. Give the advisor everything it needs to disagree with you:
    - The user's request verbatim, plus constraints or corrections they added later.
    - What has happened so far, in order: what you investigated, decided, changed, tried, and ruled out.
