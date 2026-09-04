@@ -332,6 +332,11 @@
       "name": "x-ads",
       "source": "third_party/x-ads",
       "description": "Manage ad campaigns, create ads, track conversions, and pull performance stats."
+    },
+    {
+      "name": "hunter",
+      "source": "third_party/hunter",
+      "description": "Find and verify emails, discover companies, and save leads."
     }
   ]
 }
