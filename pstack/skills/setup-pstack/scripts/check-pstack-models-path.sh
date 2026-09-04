@@ -7,7 +7,7 @@ cd "$root"
 forbidden='~/.cursor/rules/pstack-models.mdc'
 required='.cursor/rules/pstack-models.mdc'
 
-if git grep -n -F -- "$forbidden" -- pstack ':!pstack/skills/setup-pstack/scripts/*'
+if git grep -n -F -- "$forbidden" -- pstack ':!pstack/skills/setup-pstack/scripts/check-pstack-models-path.sh'
 then
   printf '%s\n' "pstack-models must live at $required, not the home path" >&2
   exit 1
