@@ -244,6 +244,11 @@
       "description": "Read balances, transactions, statements, and cards."
     },
     {
+      "name": "mermail",
+      "source": "third_party/mermail",
+      "description": "Read, search, draft, send, and manage Mermail inboxes for AI agents."
+    },
+    {
       "name": "todoist",
       "source": "third_party/todoist",
       "description": "Create, find, and complete tasks and projects."
