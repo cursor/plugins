@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "microsoft-ads": {
+      "type": "http",
+      "url": "https://partner.api.bingads.microsoft.com/ext/mcp/vnext?toolSetNames=OpenBeta",
+      "auth": {
+        "CLIENT_ID": "${CLIENT_ID}",
+        "scopes": [
+          "https://ads.microsoft.com/msads.manage",
+          "offline_access"
+        ]
+      }
+    }
+  }
+}
