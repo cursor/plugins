@@ -80,7 +80,9 @@ Do not consult for routine steps, for things you can verify yourself (run the te
 
 ## How to consult
 
-1. Read `.cursor/advisor/state.json`. Advisor mode is on for this conversation only if the file exists with `enabled: true` and you ran the Enabling steps in this conversation. Otherwise do not consult at checkpoints, and leave the file alone: a file you did not write belongs to another chat, and only `/advisor` re-binds it. Never `resume` an `advisor_agent_id` you did not save yourself in this conversation. Exception: the user explicitly asks for a consult in this message (`/advisor ask ...`, or a request for a second opinion). Run it as a one-off: a fresh spawn on the file's `model` if there is one, otherwise the default; no `resume`; no state writes. Mention that `/advisor` turns the mode on for this conversation.
+1. Read `.cursor/advisor/state.json` and decide which situation you are in:
+   - **Mode on here**: the file exists with `enabled: true` and you ran the Enabling steps in this conversation. Checkpoint consults and `/advisor ask` both follow the steps below in full, including `resume` and state writes.
+   - **Not on here**: the file is missing, `enabled` is false, or you did not write it. A file you did not write belongs to another chat; only `/advisor` re-binds it, so leave it alone and never `resume` an `advisor_agent_id` you did not save yourself. Do not consult at checkpoints. If the user explicitly asks for a consult in this message (`/advisor ask ...`, or a request for a second opinion), run it as a one-off: a fresh spawn on the file's `model` if there is one, otherwise the default; no `resume`, no state writes, and no `transcript_path` (another chat's transcript is not yours to share; write "not available"). Mention that `/advisor` turns the mode on for this conversation.
 2. Build the briefing from `references/briefing-template.md`. Give the advisor everything it needs to disagree with you:
    - The user's request verbatim, plus constraints or corrections they added later.
    - What has happened so far, in order: what you investigated, decided, changed, tried, and ruled out.
