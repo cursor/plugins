@@ -94,6 +94,11 @@
       "description": "Search events and schedule meetings."
     },
     {
+      "name": "google-chat",
+      "source": "third_party/google-chat",
+      "description": "Search spaces and messages, read threads, and send messages."
+    },
+    {
       "name": "gong",
       "source": "third_party/gong",
       "description": "Pull account summaries, deal insights, and call briefs."
