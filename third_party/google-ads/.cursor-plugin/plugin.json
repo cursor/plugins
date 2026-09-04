@@ -1,0 +1,61 @@
+{
+  "name": "google-ads",
+  "displayName": "Google Ads",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Query ad accounts, campaigns, and performance reports with GAQL.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/googleads/google-ads-mcp",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "google",
+    "google-ads",
+    "ads",
+    "advertising",
+    "campaigns",
+    "gaql",
+    "reporting",
+    "analytics",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "google",
+    "ads",
+    "advertising",
+    "mcp"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "GOOGLE_ADS_DEVELOPER_TOKEN": {
+        "type": "string",
+        "title": "Google Ads developer token",
+        "description": "Developer token from the API Center of your Google Ads manager account. Needs at least Explorer access to query production accounts."
+      },
+      "GOOGLE_APPLICATION_CREDENTIALS": {
+        "type": "string",
+        "title": "Application Default Credentials file",
+        "description": "Absolute path to the credentials JSON written by `gcloud auth application-default login`. The login must include the https://www.googleapis.com/auth/adwords scope."
+      },
+      "GOOGLE_PROJECT_ID": {
+        "type": "string",
+        "title": "Google Cloud project ID",
+        "description": "ID of the Google Cloud project where the Google Ads API is enabled and your OAuth client was created."
+      }
+    },
+    "required": [
+      "GOOGLE_ADS_DEVELOPER_TOKEN",
+      "GOOGLE_APPLICATION_CREDENTIALS",
+      "GOOGLE_PROJECT_ID"
+    ]
+  },
+  "mcpServers": "./mcp.json"
+}
