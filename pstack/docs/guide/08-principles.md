@@ -34,7 +34,7 @@ The core principles decide how much to build and when to rethink the design:
 - [Foundational Thinking](../../skills/principle-foundational-thinking/SKILL.md) chooses the core data structures before writing logic.
 - [Redesign from First Principles](../../skills/principle-redesign-from-first-principles/SKILL.md) integrates a new requirement as if it had been there from day one.
 - [Subtract Before You Add](../../skills/principle-subtract-before-you-add/SKILL.md) removes dead weight before building on top of it.
-- [Minimize Reader Load](../../skills/principle-minimize-reader-load/SKILL.md) collapses layers and hidden state a reader must hold in their head.
+- [Minimize Reader Load](../../skills/principle-minimize-reader-load/SKILL.md) cuts layers and state readers must remember, including value roles hidden by vague names.
 - [Outcome-Oriented Execution](../../skills/principle-outcome-oriented-execution/SKILL.md) converges rewrites on the target design instead of preserving throwaway compatibility states.
 - [Experience First](../../skills/principle-experience-first/SKILL.md) chooses the user's result over implementation convenience.
 - [Exhaust the Design Space](../../skills/principle-exhaust-the-design-space/SKILL.md) builds two or three competing prototypes when there's no precedent.
