@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": "./hooks/mark-pending.sh"
+      }
+    ],
+    "afterAgentResponse": [
+      {
+        "command": "./hooks/capture-response.sh"
+      }
+    ],
+    "subagentStop": [
+      {
+        "command": "./hooks/record-consult.sh",
+        "matcher": "^advisor-subagent$"
+      }
+    ],
+    "stop": [
+      {
+        "command": "./hooks/stop-hook.sh",
+        "loop_limit": 3
+      }
+    ]
+  }
+}

@@ -74,6 +74,11 @@
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
     },
     {
+      "name": "advisor",
+      "source": "advisor",
+      "description": "Consult a stronger model before major decisions, when stuck, and before declaring done."
+    },
+    {
       "name": "gmail",
       "source": "third_party/gmail",
       "description": "Search, read, draft, and manage email."
