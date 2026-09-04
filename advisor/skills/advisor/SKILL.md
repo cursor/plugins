@@ -89,7 +89,7 @@ Do not consult for routine steps, for things you can verify yourself (run the te
    - Relevant tool results verbatim: error messages, stack traces, test output, diffs. Trim unrelated noise and mark trims with `[...]`, but never paraphrase evidence.
    - Current state: `git status --short`, `git diff --stat`, files you touched, anything half-done.
    - Your specific questions, the options you see, and your current leaning with reasons.
-   - The `transcript_path` from `state.json` when set, so the advisor can read the full conversation itself.
+   - The `transcript_path` from `state.json` when set and the mode is on in this conversation, so the advisor can read the full conversation itself.
    - No secrets. Redact tokens, keys, and `.env` values.
 3. Spawn the advisor in the foreground and wait for it:
    - `subagent_type: "advisor-subagent"`
