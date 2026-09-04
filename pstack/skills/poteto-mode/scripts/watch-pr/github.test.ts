@@ -63,6 +63,30 @@ describe("checks fallback chain", () => {
     expect(reader.calls).toEqual(["checksFastPath", "checkRollupPage:null"]);
   });
 
+  it("accepts an empty check set confirmed by both readers", async () => {
+    const reader = fakeReader({
+      fastPath: {
+        kind: "unusable",
+        exitCode: 1,
+        stderr: "no checks reported on the feature branch",
+      },
+      rollupPages: [{ checks: [], endCursor: null }],
+    });
+    const read = await resolveChecks(reader, context);
+    expect(read.checks).toEqual([]);
+    expect(reader.calls).toEqual(["checksFastPath", "checkRollupPage:null"]);
+  });
+
+  it("accepts valid empty fast-path JSON confirmed by the rollup", async () => {
+    const reader = fakeReader({
+      fastPath: { kind: "checks", checks: [] },
+      rollupPages: [{ checks: [], endCursor: null }],
+    });
+    const read = await resolveChecks(reader, context);
+    expect(read.checks).toEqual([]);
+    expect(reader.calls).toEqual(["checksFastPath", "checkRollupPage:null"]);
+  });
+
   it("fails closed when both paths are empty", async () => {
     const reader = fakeReader({
       fastPath: {
