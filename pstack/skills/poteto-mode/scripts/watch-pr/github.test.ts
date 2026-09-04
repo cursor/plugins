@@ -73,6 +73,7 @@ describe("checks fallback chain", () => {
       rollupPages: [{ checks: [], endCursor: null }],
     });
     const read = await resolveChecks(reader, context);
+    expect(read.source).toBe("graphql-rollup");
     expect(read.checks).toEqual([]);
     expect(reader.calls).toEqual(["checksFastPath", "checkRollupPage:null"]);
   });
@@ -83,6 +84,7 @@ describe("checks fallback chain", () => {
       rollupPages: [{ checks: [], endCursor: null }],
     });
     const read = await resolveChecks(reader, context);
+    expect(read.source).toBe("gh-pr-checks");
     expect(read.checks).toEqual([]);
     expect(reader.calls).toEqual(["checksFastPath", "checkRollupPage:null"]);
   });
@@ -99,6 +101,20 @@ describe("checks fallback chain", () => {
       ChecksUnavailable
     );
     expect(reader.calls).toEqual(["checksFastPath", "checkRollupPage:null"]);
+  });
+
+  it("fails closed when exit 1 has an unrelated error", async () => {
+    const reader = fakeReader({
+      fastPath: {
+        kind: "unusable",
+        exitCode: 1,
+        stderr: "resource not accessible by integration",
+      },
+      rollupPages: [{ checks: [], endCursor: null }],
+    });
+    await expect(resolveChecks(reader, context)).rejects.toBeInstanceOf(
+      ChecksUnavailable
+    );
   });
 });
 
