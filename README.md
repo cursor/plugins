@@ -83,7 +83,7 @@ plugins/
 │   │   └── plugin.json        # Per-plugin manifest
 │   ├── skills/                # Agent skills (SKILL.md with frontmatter)
 │   ├── rules/                 # Cursor rules (.mdc files)
-│   ├── mcp.json               # MCP server definitions
+│   ├── mcp.json               # MCP server definitions (Cursor default)
 │   ├── README.md
 │   ├── CHANGELOG.md
 │   └── LICENSE
