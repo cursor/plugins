@@ -13,11 +13,15 @@ codex plugin marketplace add rudironsoni/cursor-plugins-for-all-harnesses
 codex plugin install teaching
 ```
 
-OpenCode has no marketplace. After you have the plugin folder, add it in `opencode.json`:
+OpenCode has no marketplace. Every plugin ships an `opencode.js`. After you have the plugin folder, add it in `opencode.json`:
 
 ```json
-{ "plugins": ["./teaching/opencode.js"] }
+{ "plugin": ["./teaching/opencode.js"] }
 ```
+
+MCP plugins (everything under `third_party/`) register their server via the `config` hook, so there is nothing else to configure. Restart OpenCode after enabling, because MCP registration happens at startup. Credentials use `{env:VAR}` interpolation, for example `GITHUB_PERSONAL_ACCESS_TOKEN` for `third_party/github`. Services that use OAuth client credentials (`docusign`, `gong`, `hubspot`, `salesforce`, `x`, `x-ads`, `zoom`) register an `oauth` block; run `opencode mcp auth <server>` to complete the flow.
+
+Skill plugins (the first-party folders such as `teaching/`, plus `advisor`) keep their skills in `./skills/`. Copy or symlink them into `.opencode/skills`, `.claude/skills`, or `.agents/skills` for discovery.
 
 Or use the community installer, which reads this repo's Claude catalog:
 
