@@ -246,6 +246,8 @@ type [`/automate-me`](./skills/automate-me/SKILL.md). it mines your recent trans
 
 models are configurable too. type [`/setup-pstack`](./skills/setup-pstack/SKILL.md). it detects the models you have access to and writes a small always-applied rule mapping each role (code, judgment, the review panels) to a model. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
 
+pstack is cursor-first, but the skills are mostly portable prose. there's a community port for [oh-my-pi](https://github.com/can1357/oh-my-pi) at [negoro26/pstack-omp](https://github.com/negoro26/pstack-omp), installed as an omp marketplace. it swaps cursor mechanics for omp ones and names model capabilities instead of vendor slugs.
+
 ## automations
 
 pstack also ships a dormant [benny automation pack](./automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
