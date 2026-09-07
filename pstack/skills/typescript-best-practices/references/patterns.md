@@ -1,10 +1,10 @@
 # TypeScript patterns
 
-Code examples for each rule in `SKILL.md`. The underlying principles are language-agnostic; see the **type-system-discipline** and **boundary-discipline** principle skills.
+Code examples for each rule in `SKILL.md`. The underlying principles are language-agnostic. See the **type-system-discipline** and **boundary-discipline** principle skills.
 
 ## Branded types
 
-Brand primitives so they can't be mixed up. Validate once at the boundary; downstream code trusts the type.
+Brand primitives so they can't be mixed up. Validate once at the boundary. Downstream code trusts the type.
 
 ```ts
 type AgentId = string & { readonly __brand: "AgentId" };
@@ -19,11 +19,11 @@ function focusAgent(id: AgentId): void {
 }
 ```
 
-Match the `readonly __brand: 'X'` shape; don't invent a new convention.
+Match the `readonly __brand: 'X'` shape. Don't invent a new convention.
 
 ## Discriminated unions
 
-Model variants with a literal discriminant: every variant shares the field name and each variant's value is unique, so impossible combos can't be represented.
+Model variants with a literal discriminant. Every variant shares the field name and each variant's value is unique, so impossible combos can't be represented.
 
 ```ts
 // Don't. Boolean + optionals lets contradictory states exist.
@@ -146,7 +146,7 @@ function parseUser(input: unknown): User {
 }
 ```
 
-Use `safeParse` when failure is an expected branch. Use the equivalent inference helper when the repository uses another schema library. Do not add a new schema dependency for one guard; this rule prefers the schema system the codebase already trusts.
+Use `safeParse` when failure is an expected branch. Use the equivalent inference helper when the repository uses another schema library. Do not add a new schema dependency for one guard. This rule prefers the schema system the codebase already trusts.
 
 ## No `as` casts
 
@@ -241,7 +241,7 @@ function handle(s: Shape): void {
 }
 ```
 
-Return-style in value-returning switches; void-style in statement switches.
+Return-style in value-returning switches, void-style in statement switches.
 
 ## `satisfies` over `as`
 
@@ -258,7 +258,7 @@ const config = { theme: "dark", cols: 3 } satisfies Config;
 
 ## Boundary validation
 
-Validate once where data crosses in; trust types inside. See the **boundary-discipline** principle skill.
+Validate once where data crosses in. Trust types inside. See the **boundary-discipline** principle skill.
 
 - **Wire formats** (proto, JSON-RPC): parse with `ignoreUnknownFields` so forward-compatible changes don't break old clients.
 - **Persisted JSON:** versioned blob with a try/catch around the parse.

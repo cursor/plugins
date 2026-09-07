@@ -8,4 +8,4 @@
 4. Map the finding back to source: file, symbol, the line that allocates or schedules.
 5. Throughput checkpoint stays one line: `throughput checkpoint: n/a, read-only forensics`.
 
-**Reply:** the signal captured, the reduced finding, how you proved the mechanism, the source location, artifact paths. No fix unless asked; hand back to Bug fix or Perf once the cause is known.
+**Reply:** the signal captured, the reduced finding, how you proved the mechanism, the source location, artifact paths. No fix unless asked. Hand back to Bug fix or Perf once the cause is known.

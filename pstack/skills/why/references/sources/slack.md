@@ -9,7 +9,7 @@
 - Post-merge discussions that explain why something was revisited
 - DMs (usually not searchable, scope accordingly)
 
-Slack is frequently where the *real* decisions got made, especially for smaller changes that didn't warrant a doc. It's also the most ephemeral source: threads get deleted, channels get archived, and search quality degrades over time.
+Slack is frequently where the *real* decisions got made, especially for smaller changes that didn't warrant a doc. It's also the most ephemeral source. Threads get deleted, channels get archived, and search quality degrades over time.
 
 ## How to search it
 
@@ -38,7 +38,7 @@ Slack MCP tools vary. Check which Slack MCP is available and inspect its tool sc
 ## Common pitfalls
 
 - **Channel archaeology limits.** Very old messages may be gone due to retention policies. If you can't find anything before a certain date, note the retention cliff.
-- **Unsearched DMs.** Many decisions happen in DMs that aren't searchable. You'll miss them; that's a known limitation.
+- **Unsearched DMs.** Many decisions happen in DMs that aren't searchable. You'll miss them. That's a known limitation.
 - **Speculative jokes as "decisions."** Slack is casual. "Lol just do the thing" isn't a decision, even if it preceded the commit. Look for considered discussion.
 - **Context collapse in single messages.** Without the thread, a single message often reads differently than in context. Always fetch threads.
 - **Auth failures.** If the MCP isn't authenticated, stop. Don't make up findings. Report that Slack wasn't searchable.

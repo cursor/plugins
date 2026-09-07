@@ -2,7 +2,7 @@
 
 How to reason about confidence when evidence is historical, fragmentary, and sometimes contradictory, and how to communicate it without flattening it into false certainty.
 
-Code doesn't carry its own motivation. You can read what code does; you can't read *why it exists*. That lives in commits, PRs, tickets, docs, and conversations, all incomplete, biased, and sometimes missing entirely. Pretending otherwise produces confident-sounding guesses that mislead the user.
+Code doesn't carry its own motivation. You can read what code does. You can't read *why it exists*. That lives in commits, PRs, tickets, docs, and conversations, all incomplete, biased, and sometimes missing entirely. Pretending otherwise produces confident-sounding guesses that mislead the user.
 
 ## Confidence Tiers
 
@@ -38,7 +38,7 @@ A reasonable reading of the context, but nothing explicitly supports it. The rea
 
 Examples:
 - The PR doesn't say why, but given the error was happening in production (per the incident channel timing) and the fix was rushed (merged the same day), it was likely a hotfix.
-- The function name suggests retry logic; the retry count is 3; this matches the team's general convention of "3 retries" seen elsewhere in the codebase.
+- The function name suggests retry logic. The retry count is 3. This matches the team's general convention of "3 retries" seen elsewhere in the codebase.
 
 Phrasing: hedged. "It appears", "likely", "suggests", "is consistent with", "one reading is". Make the inference chain explicit: "Given A and B, C seems likely because D."
 
@@ -56,7 +56,7 @@ Phrasing: explicitly speculative. "One possibility is X, but we have no direct e
 
 You looked and couldn't find out. A valid and important outcome. Document it.
 
-Phrasing: "We searched X, Y, and Z and found no evidence of why." Be specific about *what* you searched. "We couldn't find out" is less useful than "we searched the ticket tracker with keywords A and B, scanned the 6 PRs that touched this file since 2023, and grep'd the repo for string literals matching the threshold; none surfaced a rationale."
+Phrasing: "We searched X, Y, and Z and found no evidence of why." Be specific about *what* you searched. "We couldn't find out" is less useful than "we searched the ticket tracker with keywords A and B, scanned the 6 PRs that touched this file since 2023, and grep'd the repo for string literals matching the threshold. None surfaced a rationale."
 
 ## Phrasing Guide
 
@@ -105,7 +105,7 @@ Resist the urge to:
 
 ## The Sycophancy Trap
 
-Users often phrase `why` questions with an embedded hypothesis: "Why do we do it this way, I assume it's for performance?" Don't simply confirm it. Treat it as one candidate among others and check the evidence independently. If the evidence supports it, say so with citations; if not, say so and present what the evidence *does* support.
+Users often phrase `why` questions with an embedded hypothesis: "Why do we do it this way, I assume it's for performance?" Don't simply confirm it. Treat it as one candidate among others and check the evidence independently. If the evidence supports it, say so with citations. If not, say so and present what the evidence *does* support.
 
 The user's guess is a prompt for investigation, not a conclusion to validate.
 
@@ -126,7 +126,7 @@ An honest "we don't know" is one of the most valuable outputs this skill can pro
 - They'll need to ask a human (the original author, the product owner, the team lead) to find out
 - Or they can decide the question isn't worth pursuing further
 
-Failing to mark a gap and filling it with a confident guess actively harms the user; they'll act on the guess.
+Failing to mark a gap and filling it with a confident guess actively harms the user. They'll act on the guess.
 
 When you hit a gap, name it concretely:
 - What question you were trying to answer
@@ -139,6 +139,6 @@ When you hit a gap, name it concretely:
 Before delivering the output, the synthesizer should review every claim in "What We Found" and "What We Can Reasonably Infer" and ask:
 
 1. Does this claim have a citation? If not, either add one or move it to "Inferred" / "Hypotheses".
-2. Is the phrasing calibrated to the tier? (A Direct claim can use "because"; an Inferred claim cannot.)
+2. Is the phrasing calibrated to the tier? (A Direct claim can use "because". An Inferred claim cannot.)
 3. Am I treating the code itself as evidence for its own intent? If so, that's not evidence. Remove or reclassify.
 4. Does the output include a "What We Don't Know" section? If no gaps are mentioned, that's suspicious. Either the evidence was unusually complete or something is being swept under the rug.

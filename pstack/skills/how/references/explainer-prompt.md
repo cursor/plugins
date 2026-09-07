@@ -51,5 +51,5 @@ Non-obvious things, surprising behavior, historical context, pitfalls. Skip this
 - Say "the `UserService` calls `AuthClient.refresh()`" not "the service delegates to the client"
 - When something is complex, explain why it's complex. Don't just describe the complexity
 - When something is simple, don't pad it out
-- If there's a helpful analogy, use it; if there isn't, don't force one
+- If there's a helpful analogy, use it. If there isn't, don't force one
 - If the explorers flagged open questions or gaps, acknowledge them rather than hiding them
