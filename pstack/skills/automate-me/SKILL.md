@@ -17,7 +17,7 @@ This skill orchestrates three parts: an inline mining pass (see step 1), an inst
 
 ### 0. Check for an existing skill
 
-Discover the workspace and user skill roots exposed by the host, then look recursively for `*-mode/SKILL.md` matching the user's handle. Include the shared Agent Skills roots `.agents/skills/` and `~/.agents/skills/` when the host does not advertise roots. Mode skills can live in a personal category directory, not only at the top level. If one exists, confirm intent through the host's structured-question feature when available, or one concise chat question otherwise (unless they already said "update my skill" or similar):
+Look recursively for `*-mode/SKILL.md` matching the user's handle under workspace `.cursor/skills/`, user `~/.cursor/skills/`, and plugin-installed `~/.cursor/plugins/`. Also search host-advertised skill roots when present, and fall back to `.agents/skills/` and `~/.agents/skills/` when the host does not advertise roots. Mode skills can live in a personal category directory, not only at the top level. If one exists, confirm intent through the host's structured-question feature when available, or one concise chat question otherwise (unless they already said "update my skill" or similar):
 
 - Update the existing skill (default for repeat runs)
 - Start fresh (rare; ask why before doing it)
@@ -69,7 +69,7 @@ The **poteto-mode** skill shows the shape. Read it for granularity. Don't copy i
 
 Use an installed skill-authoring workflow when the host provides one; otherwise follow the Agent Skills specification directly and run the available SKILL.md validator. Placement:
 
-- Path: preserve an existing mode skill's category. For a new mode, use the host-discovered workspace skill root, falling back to `.agents/skills/<handle>/<handle>-mode/SKILL.md` when the repo has a personal category or `.agents/skills/<handle>-mode/SKILL.md` otherwise. Use the discovered user root, falling back to `~/.agents/skills/`, only when the user prefers a personal skill.
+- Path: preserve an existing mode skill's category. For a new mode, use `.cursor/skills/<handle>/<handle>-mode/SKILL.md` or `.cursor/skills/<handle>-mode/SKILL.md` in the project when that layout exists, `~/.cursor/skills/<handle>-mode/` when the user prefers a personal skill, or plugin-installed roots under `~/.cursor/plugins/` when the host uses that layout. When the host advertises other roots, use those; otherwise fall back to `.agents/skills/<handle>/<handle>-mode/SKILL.md`, `.agents/skills/<handle>-mode/SKILL.md`, or `~/.agents/skills/`.
 - Handle: the user's first name or chosen identifier.
 - Frontmatter `description`: trigger on their name + `/<handle>-mode` + "work in their style", not on generic keywords like "write code" or "review PR".
 - Frontmatter formatting: follow the Agent Skills YAML rules. Keep `description` as one YAML scalar; quote it or use `description: >-` with indented continuation lines when punctuation or wrapping requires it.
