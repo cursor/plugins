@@ -1,4 +1,8 @@
-import { WatcherQueryError, resolveChecks } from "./github.ts";
+import {
+  ChecksUnavailable,
+  WatcherQueryError,
+  resolveChecks,
+} from "./github.ts";
 import type * as T from "./types.ts";
 import { nonEmpty } from "./types.ts";
 export function assessGitHubMerge(args: {
@@ -108,6 +112,10 @@ export async function readSnapshot(args: {
         pending: pending ?? [],
         github: merge.github,
       };
+    else if (checks.checks.length === 0 && merge.hadPreviousPassingCi)
+      throw new ChecksUnavailable(
+        "PR head has no checks yet after a previously checked commit"
+      );
     else if (pending !== null)
       ci = { ...base, kind: "ci-pending", failed: [], pending };
     else

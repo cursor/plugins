@@ -105,6 +105,25 @@ describe("readiness truth table", () => {
     expect(snapshot.ci.kind).toBe("ci-clean");
     expect(snapshot.ci.all).toEqual([]);
   });
+
+  it("waits when a new head temporarily has no checks after prior CI passed", async () => {
+    const reader = fakeReader({
+      fastPath: { kind: "checks", checks: [] },
+      rollupPages: [{ checks: [], endCursor: null }],
+      commitRollups: [
+        { oid: "previous", state: "SUCCESS" },
+        { oid: "head", state: null },
+      ],
+    });
+    await expect(readSnapshot({
+      reader,
+      context: context(3),
+      pendingHistory: "include",
+      allowDraft: false,
+    })).rejects.toThrow(
+      "PR head has no checks yet after a previously checked commit"
+    );
+  });
 });
 
 describe("snapshot query planning", () => {
