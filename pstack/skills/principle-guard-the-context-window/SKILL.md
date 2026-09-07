@@ -6,9 +6,9 @@ disable-model-invocation: true
 
 # Guard the Context Window
 
-The context window is finite and non-renewable within a session. Every token that enters should earn its place.
+The context window is finite and non-renewable within a session. Every token should be worth its cost.
 
-**Why:** Context overflow degrades reasoning quality, creates compression artifacts, and halts progress. Unlike compute or time, context spent inside a session cannot be reclaimed.
+**Why:** Context overflow degrades reasoning quality, creates compression artifacts, and halts progress.
 
 **Pattern:**
 - **Isolate large payloads.** Route verbose outputs, screenshots, and large documents to subagents. The main context gets summaries, not raw data.

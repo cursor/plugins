@@ -18,8 +18,6 @@ Examples of the pattern:
 - User describes a flaky test the agent could have queried via an observability MCP. Routing: the debugging skill should mention the observability MCP.
 - User links a chat thread the agent could have fetched via a chat MCP. Routing: the relevant skill should mention the chat MCP.
 
-The durable improvement is the skill learning to use available tools, not this one user typing one less ticket title.
-
 Read the active transcript at <ABSOLUTE_PATH> (or use the digest below if no path is given).
 
 Scan for:
@@ -43,7 +41,7 @@ Two valid finding shapes:
 - The parent invoked the skill and you found a real gap in its body. Route to the skill's relevant section.
 - The skill was visible in the catalog but did not trigger when it would have helped. Tune the skill's description so future agents pick it up. Route as `tune description: <skill path>`.
 
-If a skill was neither invoked nor a missed-trigger candidate, drop it. Adding text to a skill the parent never opened does not change behavior.
+If a skill was neither invoked nor a missed-trigger candidate, drop it.
 
 Surface 3-5 durable learnings. For each:
 - Principle: one sentence naming the convention or technical fact. Concrete enough that a future agent recognizes when it applies.

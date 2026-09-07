@@ -23,7 +23,7 @@ Match the `readonly __brand: 'X'` shape; don't invent a new convention.
 
 ## Discriminated unions
 
-If a bug forces the question "wait, can this combination actually happen?", the type is too loose. Model variants with a literal discriminant: every variant shares the field name and each variant's value is unique, so impossible combos can't be represented.
+Model variants with a literal discriminant: every variant shares the field name and each variant's value is unique, so impossible combos can't be represented.
 
 ```ts
 // Don't. Boolean + optionals lets contradictory states exist.
@@ -40,7 +40,7 @@ Pick one discriminant name (`kind`, `type`, `tag`) and stick to it.
 
 ## Constructive modeling
 
-Build the type from parts that are all legal instead of restricting a loose type with runtime checks. Adding is easier than subtracting.
+Build the type from parts that are all legal instead of restricting a loose type with runtime checks.
 
 Non-empty, via a variadic tuple:
 
@@ -65,7 +65,7 @@ Where a plain `T[]` arrives, narrow once with a guard. The fact then travels in 
 const isNonEmpty = <T>(arr: T[]): arr is NonEmpty<T> => arr.length > 0;
 ```
 
-Even length, as pairs. TypeScript has no refinement types (no `arr.length % 2 === 0` at the type level); you don't need one:
+Even length, as pairs:
 
 ```ts
 type Pairs<T> = [T, T][];
@@ -81,7 +81,7 @@ type TimeRange = { start: Date; end: Date }; // start <= end
 type TimeRange = { start: Date; durationMs: number };
 ```
 
-Keep `durationMs` a plain number. Brand it (per Branded types) only if a raw number could be passed where a duration is expected, not by reflex. A `Pairs<T>` is an even-length list under the interpretation you give it, the same way `{ start, durationMs }` is a range. Pick the representation that makes the bad state unconstructable, then expose the reading you need on top (`pairs.flat()`, a `rangeEnd()` helper).
+Keep `durationMs` a plain number. Brand it (per Branded types) only if a raw number could be passed where a duration is expected, not by reflex. Pick the representation that makes the bad state unconstructable, then expose the reading you need on top (`pairs.flat()`, a `rangeEnd()` helper).
 
 ## Simplest total type
 
@@ -105,11 +105,11 @@ function newestSession(sessions: NonEmpty<Session>): Session {
 }
 ```
 
-Weakening the result to `Session | undefined` is the other total signature. Either way the empty case lands at the call site, the one place that knows what empty means.
+Weakening the result to `Session | undefined` is the other total signature.
 
 ## `unknown` over `any`
 
-`any` disables type checking for everything it touches. External data is always `unknown`. Narrow before use.
+External data is always `unknown`. Narrow before use.
 
 ```ts
 // Don't
@@ -195,7 +195,7 @@ function area(s: Shape): number {
 
 ## Type guards
 
-A guard must actually verify the claim. A lying guard is worse than `as` because the bug hides behind a name that says it's safe.
+A guard must actually verify the claim. A lying guard is worse than `as`.
 
 ```ts
 function isCircle(s: Shape): s is Shape & { kind: "circle" } {
@@ -203,11 +203,11 @@ function isCircle(s: Shape): s is Shape & { kind: "circle" } {
 }
 ```
 
-Prefer discriminant narrowing when possible. The guard adds a layer the reader has to follow.
+Prefer discriminant narrowing when possible.
 
 ## Exhaustiveness
 
-In default arms, assign the discriminant to a `never`-typed local. The compiler errors if a new variant is added without handling.
+In default arms, assign the discriminant to a `never`-typed local.
 
 ```ts
 // Value-returning switch
