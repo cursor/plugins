@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "sharepoint": {
+      "type": "http",
+      "url": "https://agent365.svc.cloud.microsoft/agents/tenants/${TENANT_ID}/servers/mcp_SharePointRemoteServer",
+      "auth": {
+        "CLIENT_ID": "${CLIENT_ID}"
+      }
+    }
+  }
+}
