@@ -67,7 +67,7 @@ NN-slug/
 - **Goal.** What the phase accomplishes.
 - **Changes.** Files affected and the change at a high level. What and why, not how. No code snippets.
 - **Data structures.** Name the key types or schemas. One-line sketch only (the **foundational-thinking** principle skill).
-- **Verification.** Per section 6.
+- **Verification.** Per section 5.
 
 Order phases so infrastructure and shared types land first (the **foundational-thinking** principle skill). Each phase should be independently shippable.
 
@@ -98,7 +98,7 @@ In the overview, name which poteto-mode non-negotiables the implementer must app
 - the **interrogate** skill for adversarial review on contested designs before shipping.
 - `/deslop` over each diff before commit. the **unslop** skill over any prose surface.
 - the **show-me-your-work** skill to keep a decision trail when the plan is large enough to need an auditable record.
-- The pstack **Babysit** playbook after opening the PR.
+- The pstack **Babysit** playbook only when the operator asks for it after the phase or stack is built. Opening a PR does not start babysitting.
 
 ## 7. Hand back
 

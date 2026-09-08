@@ -1,7 +1,7 @@
 {
 	"name": "pstack-generic",
 	"displayName": "pstack generic",
-	"version": "0.14.2-generic.1",
+	"version": "0.14.2-generic.2",
 	"description": "Portable, model-agnostic pstack engineering workflows with optional host adapters.",
 	"author": {
 		"name": "Lauren Tan"

@@ -66,7 +66,7 @@ An open PR starts collecting blockers immediately. Checks fail, reviewers commen
 /poteto-mode babysit this pr. get it green.
 ```
 
-Babysit watches the PR with a bundled watcher and takes blockers in order: conflicts, then review threads, then CI. Every known fix batches into one push, so the checks restart once instead of after every fix. The comment triage is skeptical, because humans and bots file real catches and noise in the same list. A real finding gets a fix, and noise gets dismissed with the disproof posted on the thread. When all you want is status, ask smaller and Babysit answers without starting the loop:
+Babysit watches GitHub PRs with the bundled watcher and other providers through their native CLI or API. It takes blockers in order: conflicts, then review threads, then CI. Every known fix batches into one push, so the checks restart once instead of after every fix. The comment triage is skeptical, because humans and bots file real catches and noise in the same list. A real finding gets a fix, and noise gets dismissed with the disproof posted on the thread. When all you want is status, ask smaller and Babysit answers without starting the loop:
 
 ```text
 /poteto-mode check on pr 123. anything outstanding?
@@ -82,6 +82,6 @@ Green is not the same as safe. When you're ready to land, say so:
 /poteto-mode land the stack.
 ```
 
-The [Shipping playbook](../../skills/poteto-mode/playbooks/shipping.md) verifies each PR independently before it arms anything. One fresh agent per PR proves the behavior live, and the agent that judges a change is never the one that wrote it. Then Shipping lands only the contiguous verified run from the bottom, through Graphite merge-when-ready, and reports the first PR that breaks the chain. A verified PR sitting above an unverified one waits, because merging it would pull the gap in underneath.
+The [Shipping playbook](../../skills/poteto-mode/playbooks/shipping.md) verifies each PR independently before it arms anything. One fresh agent per PR proves the behavior live, and the agent that judges a change is never the one that wrote it. Then Shipping lands only the contiguous verified run from the bottom through the configured stack adapter, or one PR at a time through the source-control host's native interface. It confirms each merge before preparing the next PR and reports the first PR that breaks the chain. A verified PR sitting above an unverified one waits, because merging it would pull the gap in underneath.
 
 Next: [Run work while you sleep](./07-overnight.md).
