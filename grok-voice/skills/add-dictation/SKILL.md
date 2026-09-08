@@ -28,7 +28,7 @@ Batch is the default for a composer mic button: one request, no socket, the key 
 
 ## Auth
 
-- Bearer `XAI_API_KEY`, server side only. The STT docs document no ephemeral-token flow, and browsers cannot set WebSocket headers, so browser streaming goes through your backend relay. Do not invent a token flow.
+- Bearer `XAI_API_KEY`, server side only. The STT docs document no ephemeral-token flow, and browsers cannot set WebSocket headers, so browser streaming goes through your backend relay. Authenticate that upgrade with the app's existing session, check `Origin`, and bind `127.0.0.1`. `WebSocketServer({ port })` alone listens on every interface and spends the key for anyone who can reach it. Do not invent a token flow.
 - Never put the key in a client bundle. Do not paste keys in chat.
 
 ## Steps
@@ -80,12 +80,17 @@ rec.start(); // second tap: rec.stop()
 ```
 
 3. **Streaming path**
-   - Relay: server holds the key, upgrades the browser socket, forwards binary frames and client control messages up, JSON events down. Build the query string server side.
+   - Relay: server holds the key, authenticates the browser upgrade, binds localhost, forwards binary frames and client control messages up, JSON events down. Build the query string server side. Prefer attaching the upgrade to the app HTTP server so the session cookie is on the request.
 
 ```ts
 import { WebSocketServer, WebSocket } from "ws";
 
-new WebSocketServer({ port: 8788 }).on("connection", (client) => {
+new WebSocketServer({
+  port: 8788,
+  host: "127.0.0.1",
+  verifyClient: ({ origin, req }) =>
+    origin === (process.env.APP_ORIGIN ?? "http://localhost:3000") && Boolean(req.headers.cookie), // replace cookie with the app session
+}).on("connection", (client) => {
   const q = new URLSearchParams({ sample_rate: "16000", encoding: "pcm", interim_results: "true", language: "en" });
   const up = new WebSocket(`wss://api.x.ai/v1/stt?${q}`, { headers: { Authorization: `Bearer ${process.env.XAI_API_KEY}` } });
   up.on("message", (d) => client.send(d.toString()));                       // transcript.* and error events

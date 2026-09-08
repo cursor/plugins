@@ -29,7 +29,7 @@ Batch is the default for a read-aloud button: one request, one MP3, cacheable, t
 
 ## Auth
 
-- Bearer `XAI_API_KEY`, server side only. The TTS docs document no ephemeral-token flow, and browsers cannot set WebSocket headers, so browser streaming goes through your backend relay.
+- Bearer `XAI_API_KEY`, server side only. The TTS docs document no ephemeral-token flow, and browsers cannot set WebSocket headers, so browser streaming goes through your backend relay. Authenticate that upgrade with the app's existing session, check `Origin`, and bind `127.0.0.1`. `WebSocketServer({ port })` alone listens on every interface and spends the key for anyone who can reach it.
 - Never put the key in a client bundle. Do not paste keys in chat.
 
 ## Steps
@@ -95,17 +95,28 @@ function stop() { current?.pause(); current = null; }
    - Safari suspends an `AudioContext` created outside a gesture for good. Create it synchronously in the click handler, before any `await`.
 
 4. **Streaming path**
-   - Relay: server holds the key, upgrades the browser socket, builds the query string, forwards client JSON up and server JSON down. Request `codec=pcm` for the browser: raw PCM16 chunks can be scheduled as they arrive, while MP3 chunks cannot be decoded piecemeal without `MediaSource`.
+   - Relay: server holds the key, authenticates the browser upgrade, binds localhost, builds the query string, queues client JSON until the upstream socket is open, then forwards client JSON up and server JSON down. Prefer attaching the upgrade to the app HTTP server so the session cookie is on the request. Request `codec=pcm` for the browser: raw PCM16 chunks can be scheduled as they arrive, while MP3 chunks cannot be decoded piecemeal without `MediaSource`.
 
 ```ts
 import { WebSocketServer, WebSocket } from "ws";
 
-new WebSocketServer({ port: 8789 }).on("connection", (client) => {
+new WebSocketServer({
+  port: 8789,
+  host: "127.0.0.1",
+  verifyClient: ({ origin, req }) =>
+    origin === (process.env.APP_ORIGIN ?? "http://localhost:3000") && Boolean(req.headers.cookie), // replace cookie with the app session
+}).on("connection", (client) => {
   const q = new URLSearchParams({ language: "en", voice: "eve", codec: "pcm", sample_rate: "24000" /* optimize_streaming_latency: "1" */ });
   const up = new WebSocket(`wss://api.x.ai/v1/tts?${q}`, { headers: { Authorization: `Bearer ${process.env.XAI_API_KEY}` } });
+  const pending: string[] = [];
+  up.on("open", () => { for (const m of pending) up.send(m); pending.length = 0; });
   up.on("message", (d) => client.send(d.toString()));                                   // audio.delta, audio.done, audio.clear, session.updated, error
-  client.on("message", (d) => up.readyState === WebSocket.OPEN && up.send(d.toString())); // text.delta, text.done, text.clear, session.update
-  const end = () => { client.close(); up.close(); };
+  client.on("message", (d) => {
+    const msg = d.toString();
+    if (up.readyState === WebSocket.OPEN) up.send(msg);
+    else pending.push(msg);                                                             // text.delta can arrive before upstream is open
+  });
+  const end = () => { pending.length = 0; client.close(); up.close(); };
   up.on("close", end); up.on("error", end); client.on("close", end);
 });
 ```
