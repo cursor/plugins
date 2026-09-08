@@ -1,0 +1,27 @@
+{
+  "name": "iflytek-skills",
+  "displayName": "iFLYTEK Skills",
+  "version": "1.0.0",
+  "description": "Speech, OCR, translation, proofreading, and multimodal AI workflows powered by iFLYTEK APIs.",
+  "author": {
+    "name": "iFLYTEK"
+  },
+  "homepage": "https://github.com/iflytek/iFly-Skills",
+  "repository": "https://github.com/iflytek/iFly-Skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "iflytek",
+    "speech",
+    "ocr",
+    "translation",
+    "multimodal"
+  ],
+  "category": "integrations",
+  "tags": [
+    "ai",
+    "speech",
+    "documents",
+    "localization"
+  ],
+  "skills": "./skills/"
+}
