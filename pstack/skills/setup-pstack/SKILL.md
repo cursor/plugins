@@ -11,7 +11,7 @@ Write `~/.cursor/rules/pstack-models.mdc`, an always-applied rule that sets psta
 
 ### 1. Detect available models
 
-Enumerate the model slugs you can pass to a `Task` subagent in this session. That is the dependable source. If Cursor also exposes a models API or CLI that lists the user's entitled models, prefer it for completeness. If you cannot detect any, ask the user to paste the slugs they have access to. Never write a real slug you have not confirmed is available. The aliases `inherit-parent` and `auto` are always valid even though they are not detected slugs.
+Enumerate the model slugs you can pass to a `Task` subagent in this session. That is the dependable source. Enabling a model in Settings → Models (the chat picker) or Explore Subagent Model does not add it to the Task allow-list. If Cursor also exposes a models API or CLI that lists the user's entitled models, prefer it for completeness. If you cannot detect any, ask the user to paste the slugs they have access to. Never write a real slug you have not confirmed is available. The aliases `inherit-parent` and `auto` are always valid even though they are not detected slugs.
 
 ### 2. Load current state
 
@@ -36,23 +36,23 @@ alwaysApply: true
 ---
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
 # `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit Task `model`). Alias entries in a panel list still count toward its fan-out.
-feature, refactoring: grok-4.6-fast-xhigh
-bug-fix: claude-fable-5-1-thinking-max
-perf-issue: claude-fable-5-1-thinking-max
-hillclimb: claude-fable-5-1-thinking-max
-judgment and prose: claude-fable-5-1-thinking-max
-hardest tasks: claude-fable-5-1-thinking-max
-how explorer: grok-4.6-fast-xhigh
-how explainer: claude-fable-5-1-thinking-max
-why investigators: grok-4.6-fast-xhigh
-why synthesizer: claude-fable-5-1-thinking-max
-reflect tooling: gpt-5.6-sol-max
-reflect judgment, divergent, synthesizer: claude-fable-5-1-thinking-max
-arena runners: claude-fable-5-1-thinking-max, gpt-5.6-sol-max, grok-4.6-fast-xhigh, claude-opus-5-thinking-xhigh
-arena cross-judge pool: claude-fable-5-1-thinking-max, gpt-5.6-sol-max, grok-4.6-fast-xhigh, claude-opus-5-thinking-xhigh
-swarm workers: grok-4.6-fast-xhigh
-architect runners: claude-fable-5-1-thinking-max, gpt-5.6-sol-max, grok-4.6-fast-xhigh, claude-opus-5-thinking-xhigh
-interrogate reviewers: claude-fable-5-1-thinking-max, gpt-5.6-sol-max, grok-4.6-fast-xhigh, claude-opus-5-thinking-xhigh
+feature, refactoring: cursor-grok-4.6-high-fast
+bug-fix: claude-fable-5-1-thinking-high
+perf-issue: claude-fable-5-1-thinking-high
+hillclimb: claude-fable-5-1-thinking-high
+judgment and prose: claude-fable-5-1-thinking-high
+hardest tasks: claude-fable-5-1-thinking-high
+how explorer: cursor-grok-4.6-high-fast
+how explainer: claude-fable-5-1-thinking-high
+why investigators: cursor-grok-4.6-high-fast
+why synthesizer: claude-fable-5-1-thinking-high
+reflect tooling: gpt-5.6-sol-medium
+reflect judgment, divergent, synthesizer: claude-fable-5-1-thinking-high
+arena runners: claude-fable-5-1-thinking-high, gpt-5.6-sol-medium, cursor-grok-4.6-high-fast, claude-opus-5-thinking-high
+arena cross-judge pool: claude-fable-5-1-thinking-high, gpt-5.6-sol-medium, cursor-grok-4.6-high-fast, claude-opus-5-thinking-high
+swarm workers: cursor-grok-4.6-high-fast
+architect runners: claude-fable-5-1-thinking-high, gpt-5.6-sol-medium, cursor-grok-4.6-high-fast, claude-opus-5-thinking-high
+interrogate reviewers: claude-fable-5-1-thinking-high, gpt-5.6-sol-medium, cursor-grok-4.6-high-fast, claude-opus-5-thinking-high
 ```
 
 ### 6. Confirm
