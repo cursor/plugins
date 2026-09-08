@@ -68,6 +68,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `similarweb` | [Similarweb](third_party/similarweb/) | Cursor | Integrations | Analyze website traffic, audiences, and competitors. |
 | `xero` | [Xero](third_party/xero/) | Cursor | Integrations | Read and write invoices, contacts, reports, and payroll. |
 | `x-ads` | [X Ads](third_party/x-ads/) | Cursor | Integrations | Manage ad campaigns, create ads, track conversions, and pull performance stats. |
+| `lazyweb` | [Lazyweb](third_party/lazyweb/) | Lazyweb | Integrations | Real product screenshots, flows, A/B tests, and growth research for UI and product work. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

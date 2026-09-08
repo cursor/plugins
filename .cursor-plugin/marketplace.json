@@ -332,6 +332,11 @@
       "name": "x-ads",
       "source": "third_party/x-ads",
       "description": "Manage ad campaigns, create ads, track conversions, and pull performance stats."
+    },
+    {
+      "name": "lazyweb",
+      "source": "third_party/lazyweb",
+      "description": "Real product screenshots, flows, A/B tests, and growth research for UI and product work."
     }
   ]
 }

@@ -1,0 +1,36 @@
+{
+  "name": "lazyweb",
+  "displayName": "Lazyweb",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Real product screenshots, flows, A/B tests, and growth research for UI and product work.",
+  "author": {
+    "name": "Lazyweb"
+  },
+  "homepage": "https://www.lazyweb.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "lazyweb",
+    "product-design",
+    "ui",
+    "screenshots",
+    "flows",
+    "ab-tests",
+    "paywalls",
+    "growth",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "lazyweb",
+    "design",
+    "growth",
+    "research",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
