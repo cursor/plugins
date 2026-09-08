@@ -1,0 +1,32 @@
+{
+  "name": "grok-voice",
+  "displayName": "Grok Voice",
+  "version": "0.1.0",
+  "description": "Add Grok voice to an app: realtime speech-to-speech, speech-to-text dictation, text-to-speech read-aloud, and a log-driven fix loop for voice sessions.",
+  "author": {
+    "name": "Eric Zakariasson"
+  },
+  "homepage": "https://github.com/cursor/plugins/tree/main/grok-voice",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "category": "developer-tools",
+  "keywords": [
+    "grok",
+    "xai",
+    "voice",
+    "realtime",
+    "speech-to-speech",
+    "speech-to-text",
+    "text-to-speech",
+    "dictation",
+    "tts",
+    "stt"
+  ],
+  "tags": [
+    "voice",
+    "grok",
+    "ai",
+    "developer-tools"
+  ],
+  "skills": "./skills/"
+}
