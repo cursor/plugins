@@ -26,7 +26,7 @@ separate before serializing shared state. give each attempt its own worktree, no
 
 Each phrase lands because the rule behind it is specific. The agent still has to say, in its reply, which decision the rule changed. A principle citation with no decision behind it is the tell that it name-dropped instead of applying.
 
-## The 21, briefly
+## The 23, briefly
 
 The core principles decide how much to build and when to rethink the design:
 
