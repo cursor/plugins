@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Same dark warm background as the other plugin logos in this repo. -->
+  <rect width="512" height="512" fill="#3c3935"/>
+  <!-- Waveform: the plugin's icon for voice. Bars are rounded strokes, mirrored around the center line. -->
+  <g stroke="#ffffff" stroke-width="34" stroke-linecap="round" fill="none">
+    <line x1="120" y1="222" x2="120" y2="290"/>
+    <line x1="188" y1="170" x2="188" y2="342"/>
+    <line x1="256" y1="118" x2="256" y2="394"/>
+    <line x1="324" y1="186" x2="324" y2="326"/>
+    <line x1="392" y1="236" x2="392" y2="276"/>
+  </g>
+</svg>
