@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "axiom": {
+      "type": "http",
+      "url": "https://mcp.axiom.co/mcp"
+    }
+  }
+}

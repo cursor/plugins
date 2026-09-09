@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "gamma": {
+      "type": "http",
+      "url": "https://mcp.gamma.app/mcp"
+    }
+  }
+}

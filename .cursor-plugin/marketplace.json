@@ -347,8 +347,66 @@
       "name": "hunter",
       "source": "third_party/hunter",
       "description": "Find and verify emails, discover companies, and save leads."
+    },
+    {
+      "name": "axiom",
+      "source": "third_party/axiom",
+      "description": "Query logs, traces, and datasets with APL."
+    },
+    {
+      "name": "bigdata",
+      "source": "third_party/bigdata",
+      "description": "Search financial news, filings, and transcripts."
+    },
+    {
+      "name": "cal",
+      "source": "third_party/cal",
+      "description": "Check availability and book, cancel, or reschedule."
+    },
+    {
+      "name": "coinbase",
+      "source": "third_party/coinbase",
+      "description": "Read balances, prices, and transactions."
+    },
+    {
+      "name": "deepwiki",
+      "source": "third_party/deepwiki",
+      "description": "Read AI-generated docs for any GitHub repository."
+    },
+    {
+      "name": "gamma",
+      "source": "third_party/gamma",
+      "description": "Generate presentations, documents, and websites."
+    },
+    {
+      "name": "google-cloud-bigquery",
+      "source": "third_party/google-cloud-bigquery",
+      "description": "Explore datasets and run SQL queries."
+    },
+    {
+      "name": "google-cloud-sql",
+      "source": "third_party/google-cloud-sql",
+      "description": "Inspect and manage Cloud SQL instances and databases."
+    },
+    {
+      "name": "interactive-brokers",
+      "source": "third_party/interactive-brokers",
+      "description": "View accounts, positions, orders, and market data."
+    },
+    {
+      "name": "meltwater",
+      "source": "third_party/meltwater",
+      "description": "Search media coverage, social mentions, and insights."
+    },
+    {
+      "name": "sp-global",
+      "source": "third_party/sp-global",
+      "description": "Query company financials and market data via Kensho."
+    },
+    {
+      "name": "webull",
+      "source": "third_party/webull",
+      "description": "View accounts, positions, orders, and quotes."
     }
   ]
 }
-
-

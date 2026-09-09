@@ -1,0 +1,35 @@
+{
+  "name": "google-cloud-sql",
+  "displayName": "Google Cloud SQL",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Manage Cloud SQL instances, users, and backups, and run SQL.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://docs.cloud.google.com/sql/docs/mysql/use-cloudsql-mcp",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "google cloud sql",
+    "google cloud",
+    "cloud sql",
+    "postgres",
+    "mysql",
+    "sql server",
+    "databases",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "cloud sql",
+    "google cloud",
+    "databases",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

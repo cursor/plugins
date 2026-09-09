@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "interactive-brokers": {
+      "type": "http",
+      "url": "https://api.ibkr.com/v1/api/mcp-public"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "bigdata": {
+      "type": "http",
+      "url": "https://mcp.bigdata.com/",
+      "headers": {
+        "x-api-key": "${BIGDATA_API_KEY}"
+      }
+    }
+  }
+}

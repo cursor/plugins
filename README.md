@@ -71,6 +71,18 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `x-ads` | [X Ads](third_party/x-ads/) | Cursor | Integrations | Manage ad campaigns, create ads, track conversions, and pull performance stats. |
 | `attio` | [Attio](third_party/attio/) | Cursor | Integrations | Search and update CRM records, lists, notes, and tasks. |
 | `hunter` | [Hunter](third_party/hunter/) | Cursor | Integrations | Find and verify emails, discover companies, and save leads. |
+| `axiom` | [Axiom](third_party/axiom/) | Cursor | Integrations | Query logs, traces, and metrics with APL and manage monitors. |
+| `bigdata` | [Bigdata.com](third_party/bigdata/) | Cursor | Integrations | Search financial news, filings, transcripts, and company data. |
+| `cal` | [Cal.com](third_party/cal/) | Cursor | Integrations | Manage bookings, event types, schedules, and availability. |
+| `coinbase` | [Coinbase](third_party/coinbase/) | Cursor | Integrations | Check balances, get quotes, and preview or place trades. |
+| `deepwiki` | [DeepWiki](third_party/deepwiki/) | Cursor | Integrations | Read AI-generated docs and ask questions about any public repo. |
+| `gamma` | [Gamma](third_party/gamma/) | Cursor | Integrations | Generate presentations, documents, and webpages. |
+| `google-cloud-bigquery` | [Google Cloud BigQuery](third_party/google-cloud-bigquery/) | Cursor | Integrations | Explore datasets and tables and run SQL queries. |
+| `google-cloud-sql` | [Google Cloud SQL](third_party/google-cloud-sql/) | Cursor | Integrations | Manage Cloud SQL instances, users, and backups, and run SQL. |
+| `interactive-brokers` | [Interactive Brokers](third_party/interactive-brokers/) | Cursor | Integrations | Review positions, balances, P&L, and draft trade instructions. |
+| `meltwater` | [Meltwater](third_party/meltwater/) | Cursor | Integrations | Search media and social mentions and pull analytics. |
+| `sp-global` | [S&P Global](third_party/sp-global/) | Cursor | Integrations | Query S&P Capital IQ financials, prices, and transcripts. |
+| `webull` | [Webull](third_party/webull/) | Cursor | Integrations | View accounts, positions, orders, watchlists, and market data. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
