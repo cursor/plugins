@@ -1,6 +1,6 @@
 # Uizze
 
-**Build distinctive UI**
+**UI design that stands out**
 
 ![Uizze](https://raw.githubusercontent.com/uizze/uizze/main/plugins/openai-directory/uizze/assets/uizze-logo.png)
 

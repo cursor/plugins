@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "uizze",
-  "description": "Build distinctive UI",
-  "version": "1.2.15",
+  "description": "UI design that stands out",
+  "version": "1.2.16",
   "author": {
     "name": "Uizze",
     "email": "business@uizze.com",
