@@ -54,7 +54,7 @@ The hosted runtime is the source of truth for tool names and schemas.
 - Tools reference: https://docs.cloud.google.com/bigquery/docs/reference/mcp
 - Server URL: https://bigquery.googleapis.com/mcp
 
-Logo is Google Cloud BigQuery's official mark.
+Logo is the official BigQuery product icon from Google Cloud's architecture icon set, on a padded white tile.
 
 ## License
 

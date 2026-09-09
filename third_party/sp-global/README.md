@@ -53,7 +53,7 @@ The hosted runtime is the source of truth for tool names and schemas.
 - kfinance on GitHub: https://github.com/kensho-technologies/kfinance
 - Server URL: https://kfinance.kensho.com/integrations/mcp
 
-Logo is S&P Global's official mark, from the `kensho-technologies` GitHub organization.
+Logo is S&P Global's official mark (black rule over red block), redrawn at 192×192 from the icon published on marketplace.spglobal.com.
 
 ## License
 

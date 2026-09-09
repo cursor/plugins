@@ -53,7 +53,7 @@ The hosted runtime is the source of truth for tool names and schemas.
 - Tools reference: https://developers.gamma.app/mcp/mcp-tools-reference.md
 - Server URL: https://mcp.gamma.app/mcp
 
-Logo is Gamma's official mark.
+Logo is Gamma's official mark, from the `gamma-app` GitHub organization.
 
 ## License
 
