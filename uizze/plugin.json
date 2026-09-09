@@ -1,13 +1,13 @@
 {
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "uizze",
-  "displayName": "Uizze",
-  "version": "1.2.15",
   "description": "Build distinctive UI",
+  "version": "1.2.15",
   "author": {
     "name": "Uizze",
-    "email": "business@uizze.com"
+    "email": "business@uizze.com",
+    "url": "https://uizze.com"
   },
-  "publisher": "Uizze",
   "homepage": "https://uizze.com/?utm_source=cursor&utm_medium=plugin_marketplace&utm_campaign=cursor_plugin_v1",
   "repository": "https://github.com/uizze/uizze",
   "license": "MIT",
@@ -19,15 +19,5 @@
     "mcp",
     "anti-slop",
     "agent-skill"
-  ],
-  "category": "developer-tools",
-  "tags": [
-    "frontend",
-    "design",
-    "ui",
-    "code-quality",
-    "mcp"
-  ],
-  "logo": "https://raw.githubusercontent.com/uizze/uizze/main/plugins/openai-directory/uizze/assets/uizze-logo.png",
-  "skills": "./skills/anti-ui-slop/"
+  ]
 }

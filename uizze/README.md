@@ -1,31 +1,33 @@
-# UIZZE for Cursor
+# Uizze
 
-UIZZE helps Cursor stop generic UI before it ships. The free `anti-ui-slop` skill defines a product-specific design contract, required states, and a hard finish gate; the optional MCP adds live reference search, validation, audits, and rendered critique.
+**Build distinctive UI**
 
-Install the skill directly from UIZZE:
+![Uizze](https://raw.githubusercontent.com/uizze/uizze/main/plugins/openai-directory/uizze/assets/uizze-logo.png)
 
-```bash
-npx skills add https://uizze.com --skill anti-ui-slop
-```
+Uizze gives coding agents a free anti-ui-slop Skill and optional full MCP access to live UI references and license-clear materials. Use the skill to inspect the product and design system, write a design contract, cover required states, and run a bounded finish gate. The MCP answers one concrete unresolved UI question with strong full-screen references and finds license-clear materials for a concrete role.
 
-The optional hosted MCP and current setup are documented in the [UIZZE repository](https://github.com/uizze/uizze).
+## Get started
 
-## Try it on your next screen
+Install this package from Cursor’s plugin marketplace when available. The bundled `mcp.json` connects to Uizze through Cursor’s native MCP authentication. If you already configured Uizze manually, keep one active connection.
 
-Open the page you want to improve and ask Cursor:
+## Try it
 
-```text
-Use anti-ui-slop on our billing settings page. Make the current plan,
-payment method, and invoices easy to scan. Reuse our components and tokens.
-Preserve billing behavior. Cover loading, no invoices, failure with retry,
-and a successful update. Inspect desktop and mobile output and fix visible
-breakage before finishing.
-```
+> Help me ground a new interface in Uizze real screens.
 
-[Watch the 30-second UIZZE comparison](https://github.com/uizze/uizze#watch-uizze-before-and-after),
-or [try more tasks for tables, permissions, and iOS](https://github.com/uizze/uizze/blob/main/examples/agent-workflows.md).
+> Find strong full-screen UI references for this unresolved interface question.
 
-For focused reference search, follow the
-[Cursor MCP connection guide](https://github.com/uizze/uizze/tree/main/integrations/mcp#cursor).
+> Run the bounded UI finish gate on my rendered interface.
 
-[**Build your next screen with UIZZE →**](https://uizze.com/?utm_source=cursor&utm_medium=plugin_marketplace&utm_campaign=cursor_plugin_v1&utm_content=readme_first_task)
+## Skill and MCP
+
+The free skill includes its playbooks and licensing notices. It works without an account or MCP connection. The optional paid MCP uses the same Uizze account and service as the ChatGPT plugin. Complete the host’s native OAuth connection when prompted.
+
+The MCP exposes `find_ui_references` and `find_ui_materials`. The skill’s finish gate uses the agent’s local inspection and rendering capabilities. No hosted review tool is included.
+
+[Uizze](https://uizze.com/ai-ui-slop) · [Setup](https://uizze.com/docs) · [Support](https://uizze.com/contact) · [Privacy](https://uizze.com/privacy) · [Terms](https://uizze.com/terms)
+
+## License
+
+Uizze’s entry point is MIT licensed. Included Apache-2.0 playbooks retain their LICENSE, NOTICE, and modification notices in the skill directory.
+
+[Watch the Uizze before/after demonstration](https://github.com/uizze/uizze#watch-uizze-before-and-after).
