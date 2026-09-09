@@ -382,6 +382,16 @@
       "name": "webull",
       "source": "third_party/webull",
       "description": "View accounts, positions, orders, watchlists, and market data."
+    },
+    {
+      "name": "excalidraw",
+      "source": "third_party/excalidraw",
+      "description": "Draw and export hand-drawn diagrams from chat."
+    },
+    {
+      "name": "daloopa",
+      "source": "third_party/daloopa",
+      "description": "Pull source-linked fundamentals, KPIs, filings, and prices."
     }
   ]
 }
