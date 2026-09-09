@@ -349,29 +349,9 @@
       "description": "Find and verify emails, discover companies, and save leads."
     },
     {
-      "name": "axiom",
-      "source": "third_party/axiom",
-      "description": "Query logs, traces, and metrics with APL and manage monitors."
-    },
-    {
-      "name": "bigdata",
-      "source": "third_party/bigdata",
-      "description": "Search financial news, filings, transcripts, and company data."
-    },
-    {
-      "name": "cal",
-      "source": "third_party/cal",
-      "description": "Manage bookings, event types, schedules, and availability."
-    },
-    {
       "name": "coinbase",
       "source": "third_party/coinbase",
       "description": "Check balances, get quotes, and preview or place trades."
-    },
-    {
-      "name": "deepwiki",
-      "source": "third_party/deepwiki",
-      "description": "Read AI-generated docs and ask questions about any public repo."
     },
     {
       "name": "gamma",
@@ -382,11 +362,6 @@
       "name": "google-cloud-bigquery",
       "source": "third_party/google-cloud-bigquery",
       "description": "Explore datasets and tables and run SQL queries."
-    },
-    {
-      "name": "google-cloud-sql",
-      "source": "third_party/google-cloud-sql",
-      "description": "Manage Cloud SQL instances, users, and backups, and run SQL."
     },
     {
       "name": "interactive-brokers",

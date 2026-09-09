@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "google-cloud-sql": {
-      "type": "http",
-      "url": "https://sqladmin.googleapis.com/mcp"
-    }
-  }
-}
