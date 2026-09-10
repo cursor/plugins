@@ -387,6 +387,11 @@
       "name": "meltwater",
       "source": "third_party/meltwater",
       "description": "Search media and social mentions and pull analytics."
+    },
+    {
+      "name": "daloopa",
+      "source": "third_party/daloopa",
+      "description": "Pull source-linked fundamentals, KPIs, filings, and prices."
     }
   ]
 }
