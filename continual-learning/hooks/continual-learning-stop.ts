@@ -160,7 +160,10 @@ async function main(): Promise<number> {
     const now = Date.now();
 
     const trialEnabled = parseBoolean(
-      readEnvValue("CONTINUAL_LEARNING_TRIAL_MODE", "CONTINUOUS_LEARNING_TRIAL_MODE")
+      readEnvValue(
+        "CONTINUAL_LEARNING_TRIAL_MODE",
+        "CONTINUOUS_LEARNING_TRIAL_MODE"
+      ) ?? "true"
     );
     if (trialEnabled && countedTurn && state.trialStartedAtMs === null) {
       state.trialStartedAtMs = now;
