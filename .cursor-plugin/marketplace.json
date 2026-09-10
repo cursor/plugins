@@ -402,6 +402,11 @@
       "name": "coinbase",
       "source": "third_party/coinbase",
       "description": "Check balances, get quotes, and preview or place trades."
+    },
+    {
+      "name": "google-cloud-bigquery",
+      "source": "third_party/google-cloud-bigquery",
+      "description": "Explore datasets and tables and run SQL queries."
     }
   ]
 }
