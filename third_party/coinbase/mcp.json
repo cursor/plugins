@@ -1,11 +1,7 @@
 {
   "mcpServers": {
     "coinbase": {
-      "url": "https://agents.coinbase.com/mcp",
-      "auth": {
-        "CLIENT_ID": "${CLIENT_ID}",
-        "CLIENT_SECRET": "${CLIENT_SECRET}"
-      }
+      "url": "https://agents.coinbase.com/mcp"
     }
   }
 }

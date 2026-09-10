@@ -31,24 +31,5 @@
     "crypto",
     "mcp"
   ],
-  "variables": {
-    "type": "object",
-    "properties": {
-      "CLIENT_ID": {
-        "type": "string",
-        "title": "Coinbase OAuth Client ID",
-        "description": "OAuth client ID from the Coinbase Developer Platform portal (portal.cdp.coinbase.com \u2192 OAuth)."
-      },
-      "CLIENT_SECRET": {
-        "type": "string",
-        "title": "Coinbase OAuth Client Secret",
-        "description": "OAuth client secret from the same Coinbase Developer Platform OAuth client."
-      }
-    },
-    "required": [
-      "CLIENT_ID",
-      "CLIENT_SECRET"
-    ]
-  },
   "mcpServers": "./mcp.json"
 }
