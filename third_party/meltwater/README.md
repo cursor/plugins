@@ -8,7 +8,7 @@ Search media and social mentions and pull analytics.
 
 1. Open **Cursor Settings → Plugins**.
 2. Search for **Meltwater**.
-3. Click **Install**, then enter your Meltwater API token.
+3. Click **Install**, then complete the Meltwater sign-in prompt.
 
 Or run `/add-plugin meltwater` in chat.
 
@@ -19,20 +19,17 @@ Or run `/add-plugin meltwater` in chat.
   "mcpServers": {
     "meltwater": {
       "type": "http",
-      "url": "https://api.meltwater.com/v2/mcp",
-      "headers": {
-        "apikey": "${MELTWATER_API_KEY}"
-      }
+      "url": "https://api.meltwater.com/v2/mcp"
     }
   }
 }
 ```
 
-Auth is an API key sent as the `apikey` header. Cursor asks for `MELTWATER_API_KEY` when you install the plugin and never stores it in the repository.
+Auth is OAuth. Cursor prompts for Meltwater sign-in when the plugin connects — there is no client ID or API token to configure.
 
 ## Before you connect
 
-You need a Meltwater subscription that includes the Meltwater MCP package and an API token from the developer portal. Available tools depend on the products in your subscription.
+You need a Meltwater subscription that includes the Meltwater MCP package. Available tools depend on the products in your subscription.
 
 ## What agents can do
 
@@ -47,7 +44,7 @@ The hosted runtime is the source of truth for tool names and schemas.
 
 ## Notes
 
-- Meltwater authenticates custom clients with the `apikey` header; OAuth is planned but not available yet.
+- Meltwater's server advertises standard MCP OAuth with dynamic client registration; its public docs still describe API-key auth, but the OAuth flow is live.
 - This is Meltwater MCP (`/v2/mcp`), not the higher-level Mira API endpoint at `/mcp`.
 
 ## Docs

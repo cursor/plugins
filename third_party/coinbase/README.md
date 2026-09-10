@@ -8,7 +8,7 @@ Check balances, get quotes, and preview or place trades.
 
 1. Open **Cursor Settings → Plugins**.
 2. Search for **Coinbase**.
-3. Click **Install**, then complete the Coinbase sign-in prompt.
+3. Click **Install**, then follow **Setup** below.
 
 Or run `/add-plugin coinbase` in chat.
 
@@ -18,18 +18,28 @@ Or run `/add-plugin coinbase` in chat.
 {
   "mcpServers": {
     "coinbase": {
-      "type": "http",
-      "url": "https://agents.coinbase.com/mcp"
+      "url": "https://agents.coinbase.com/mcp",
+      "auth": {
+        "CLIENT_ID": "${CLIENT_ID}",
+        "CLIENT_SECRET": "${CLIENT_SECRET}"
+      }
     }
   }
 }
 ```
 
-Auth is OAuth. Cursor prompts for Coinbase sign-in when the plugin connects — there is no client ID or personal access token to configure.
+## Setup
 
-## Before you connect
+Coinbase's authorization server (`login.coinbase.com`) does not support dynamic client registration, so an OAuth client has to be registered before anyone can connect.
 
-You need a Coinbase account with Advanced Trade. Coinbase recommends scoping the agent to a dedicated portfolio.
+1. In the [Coinbase Developer Platform portal](https://portal.cdp.coinbase.com/), create an OAuth client and enable the Coinbase for Agents (`mcp:*`) scopes you want to expose.
+2. Register both redirect URIs on that client:
+   - Desktop: `http://localhost:8787/callback`
+   - Web and Cloud Agents: `https://www.cursor.com/agents/mcp/oauth/callback`
+3. In **Dashboard → Plugins → Configure**, set **Coinbase OAuth Client ID** and **Coinbase OAuth Client Secret** from that client.
+4. Complete the Coinbase login when Cursor prompts.
+
+On a team marketplace an admin sets the client ID and secret once for everyone; each member still completes their own Coinbase login, so tool calls run against that member's account. Coinbase recommends scoping the agent to a dedicated portfolio.
 
 ## What agents can do
 

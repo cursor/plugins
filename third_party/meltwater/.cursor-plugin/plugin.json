@@ -31,18 +31,5 @@
     "pr",
     "mcp"
   ],
-  "variables": {
-    "type": "object",
-    "properties": {
-      "MELTWATER_API_KEY": {
-        "type": "string",
-        "title": "Meltwater API token",
-        "description": "API token from the Meltwater developer portal. Requires the Meltwater MCP package on your subscription."
-      }
-    },
-    "required": [
-      "MELTWATER_API_KEY"
-    ]
-  },
   "mcpServers": "./mcp.json"
 }

@@ -2,10 +2,7 @@
   "mcpServers": {
     "meltwater": {
       "type": "http",
-      "url": "https://api.meltwater.com/v2/mcp",
-      "headers": {
-        "apikey": "${MELTWATER_API_KEY}"
-      }
+      "url": "https://api.meltwater.com/v2/mcp"
     }
   }
 }
