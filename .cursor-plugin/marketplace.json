@@ -382,6 +382,11 @@
       "name": "interactive-brokers",
       "source": "third_party/interactive-brokers",
       "description": "Review positions, balances, P&L, and draft trade instructions."
+    },
+    {
+      "name": "meltwater",
+      "source": "third_party/meltwater",
+      "description": "Search media and social mentions and pull analytics."
     }
   ]
 }

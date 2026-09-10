@@ -77,6 +77,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `webull` | [Webull](third_party/webull/) | Cursor | Integrations | View accounts, positions, orders, watchlists, and market data. |
 | `sp-global` | [S&P Global](third_party/sp-global/) | Cursor | Integrations | Query S&P Capital IQ financials, prices, and transcripts. |
 | `interactive-brokers` | [Interactive Brokers](third_party/interactive-brokers/) | Cursor | Integrations | Review positions, balances, P&L, and draft trade instructions. |
+| `meltwater` | [Meltwater](third_party/meltwater/) | Cursor | Integrations | Search media and social mentions and pull analytics. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

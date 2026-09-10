@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "meltwater": {
+      "type": "http",
+      "url": "https://api.meltwater.com/v2/mcp"
+    }
+  }
+}
