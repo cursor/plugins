@@ -73,6 +73,9 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `hunter` | [Hunter](third_party/hunter/) | Cursor | Integrations | Find and verify emails, discover companies, and save leads. |
 | `gamma` | [Gamma](third_party/gamma/) | Cursor | Integrations | Generate presentations, documents, and webpages. |
 | `teams` | [Teams](third_party/teams/) | Cursor | Productivity | Search, read, and send Microsoft Teams chats and channel messages. |
+| `outlook` | [Outlook](third_party/outlook/) | Cursor | Productivity | Search, read, and send Microsoft Outlook email, and look up contacts. |
+| `outlook-calendar` | [Outlook Calendar](third_party/outlook-calendar/) | Cursor | Productivity | List, create, update, and cancel Microsoft Outlook calendar events. |
+| `onedrive` | [OneDrive](third_party/onedrive/) | Cursor | Productivity | Browse, search, and read Microsoft OneDrive files. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
