@@ -392,6 +392,11 @@
       "name": "daloopa",
       "source": "third_party/daloopa",
       "description": "Pull source-linked fundamentals, KPIs, filings, and prices."
+    },
+    {
+      "name": "excalidraw",
+      "source": "third_party/excalidraw",
+      "description": "Draw and export hand-drawn diagrams from chat."
     }
   ]
 }
