@@ -7,6 +7,8 @@ description: Configure which models pstack uses per role. Detects your available
 
 For the cost-efficient GPT goal workflow, use the [goal skill](../goal/SKILL.md). Its table owns the default goal roles and reasoning efforts. An explicit request for that tree already selects those defaults; ask only about unavailable choices. Keep goal overrides separate from the other roles below. Store model and effort separately, for example `goal worker: gpt-5.6-sol` and `goal worker effort: high`. In Cursor, include those lines in the rule below. In other harnesses, use their existing always-loaded instruction file and name the target before editing. Preserve unrelated instructions. If no override is needed, the goal skill's defaults suffice. Root settings describe the desired session and do not change a running model.
 
+For goal-only setup, validate the requested models and efforts, apply any requested overrides, report the result, and stop. The steps below configure the other roles.
+
 Write `~/.cursor/rules/pstack-models.mdc`, an always-applied rule that sets pstack's model per role.
 
 ## Steps
