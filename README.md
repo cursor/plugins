@@ -73,6 +73,8 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `hunter` | [Hunter](third_party/hunter/) | Cursor | Integrations | Find and verify emails, discover companies, and save leads. |
 | `gamma` | [Gamma](third_party/gamma/) | Cursor | Integrations | Generate presentations, documents, and webpages. |
 | `teams` | [Teams](third_party/teams/) | Cursor | Productivity | Search, read, and send Microsoft Teams chats and channel messages. |
+| `sharepoint` | [SharePoint](third_party/sharepoint/) | Cursor | Integrations | Search and read SharePoint sites, pages, and files, powered by Grok. |
+| `finance` | [Finance](third_party/finance/) | Cursor | Integrations | Portfolio, balances, and transactions from your linked brokerages, powered by Grok. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

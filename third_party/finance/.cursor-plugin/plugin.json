@@ -1,0 +1,31 @@
+{
+  "name": "finance",
+  "displayName": "Finance",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Portfolio, balances, and transactions from your linked brokerages, powered by Grok.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://grok.com/connectors",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "finance",
+    "portfolio",
+    "brokerage",
+    "plaid",
+    "transactions",
+    "grok"
+  ],
+  "category": "integrations",
+  "tags": [
+    "finance",
+    "portfolio",
+    "grok"
+  ]
+}

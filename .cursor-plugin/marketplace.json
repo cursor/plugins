@@ -357,6 +357,16 @@
       "name": "gamma",
       "source": "third_party/gamma",
       "description": "Generate presentations, documents, and webpages."
+    },
+    {
+      "name": "sharepoint",
+      "source": "third_party/sharepoint",
+      "description": "Search and read SharePoint sites, pages, and files, powered by Grok."
+    },
+    {
+      "name": "finance",
+      "source": "third_party/finance",
+      "description": "Portfolio, balances, and transactions from your linked brokerages, powered by Grok."
     }
   ]
 }
