@@ -397,6 +397,11 @@
       "name": "excalidraw",
       "source": "third_party/excalidraw",
       "description": "Draw and export hand-drawn diagrams from chat."
+    },
+    {
+      "name": "coinbase",
+      "source": "third_party/coinbase",
+      "description": "Check balances, get quotes, and preview or place trades."
     }
   ]
 }
