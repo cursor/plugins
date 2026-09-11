@@ -242,6 +242,8 @@ cursor already has a great plan mode which works great with pstack. but personal
 
 ## make it yours
 
+Use [`/goal`](./skills/goal/SKILL.md) when setting a goal and delegating bounded tasks. Astra at medium effort owns integration and verification, Luna at max handles exploration and research, and Sol at high implements. An independent Astra review at xhigh runs only when needed. The skill checks model availability before dispatch and uses the current root session if it cannot change it. See [`/setup-pstack`](./skills/setup-pstack/SKILL.md) to override goal roles.
+
 `poteto-mode` is my style. you may not want exactly that.
 
 type [`/automate-me`](./skills/automate-me/SKILL.md). it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
