@@ -6,10 +6,19 @@ on:
       - ".cursor-plugin/marketplace.json"
       - "**/plugin.json"
       - "schemas/**"
+      - "agent-compatibility/agents/**"
+      - "agent-compatibility/skills/**"
+      - "agent-compatibility/test/**"
+      - "agent-compatibility/README.md"
+      - "agent-compatibility/CHANGELOG.md"
+      - ".github/workflows/validate-plugins.yml"
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
@@ -22,3 +31,6 @@ jobs:
 
       - name: Validate plugin definitions
         run: node scripts/validate-plugins.mjs
+
+      - name: Test agent compatibility contracts
+        run: node --test agent-compatibility/test/*.test.mjs

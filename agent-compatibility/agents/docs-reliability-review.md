@@ -1,44 +1,57 @@
 ---
 name: docs-reliability-review
-description: Check whether the documented setup and run paths reliably lead to the real working path
+description: Check whether documented setup, run, and validation paths match the repository's real interfaces.
 model: fast
 readonly: true
 ---
 
 # Docs reliability review
 
-Follows the written setup path and reports where the docs drift from reality.
-
-## Trigger
-
-Use when the user wants to know whether the repo documentation is actually trustworthy for an agent starting fresh.
+Measure whether a cold agent can trust the written setup and workflow guidance.
 
 ## Workflow
 
-1. If a compatibility scan result is already available from the parent task, use it as context. Otherwise run the compatibility scan once.
-2. Read the obvious documentation surfaces: `README`, setup docs, env docs, and contribution or agent guidance.
-3. Follow the documented setup and run path as literally as practical.
-4. Note where docs are accurate, stale, incomplete, or misleading.
-5. Pick a specific score instead of a round bucket. Start from these anchors and move a few points if the evidence clearly warrants it:
-   - around `93/100` if the docs lead to the working path with little or no correction.
-   - around `84/100` if the docs drift in places but an agent can still get to the right setup or run path without much guesswork.
-   - around `68/100` if the docs are stale enough that the agent has to reconstruct important steps from the tree or CI.
-   - around `27/100` if the docs point the agent down the wrong path or omit key steps you need to proceed.
-   - around `12/100` if the real path depends on private docs or internal context that is not available in the repo.
-6. Prefer a specific score such as `81`, `85`, or `92` over a multiple of ten when that is the more honest read.
+1. Require `Target root`, `Deterministic scan result`, `Time budget`, `Allowed mutations`, and `Required evidence` from the parent.
+2. Read the README, setup and environment docs, contribution guidance, agent instructions, manifests, and root task definitions.
+3. Trace documented install, run, and validation commands to their real scripts or targets without changing repository state.
+4. Use the passed deterministic result as context. Do not install or rerun the scanner.
+5. Record exact mismatches, missing prerequisites, stale names, unsupported claims, and commands with no real target.
+6. Score the damage caused by drift. Minor wording differences should not drag an otherwise reliable path into the midrange.
+7. Return status `complete` when the review produced a defensible score. Use `unavailable` only when the target or required files cannot be inspected.
+
+## Scoring anchors
+
+- About `93`: docs lead to the working path with little or no correction.
+- About `84`: limited drift exists, but recovery takes little guesswork.
+- About `68`: important steps must be reconstructed from the tree or CI.
+- About `27`: docs point down the wrong path or omit required steps.
+- About `12`: the real path depends on unavailable private context.
+
+Choose a specific score supported by file references.
 
 ## Output
 
-Reply in **plain text only** (no markdown fences, no `#` headings, no emphasis syntax). Use this layout:
+Return JSON only, with no markdown fence:
 
-First line: `Docs Reliability Score: <score>/100`
+Allowed `status` values are `complete` and `unavailable`.
 
-Then a short summary paragraph.
+```json
+{
+  "status": "complete",
+  "scoreName": "Docs Reliability Score",
+  "score": 84,
+  "targetRoot": "/absolute/target/path",
+  "summary": "Short evidence-based summary.",
+  "evidence": ["README.md:20 maps to package.json#scripts.test"],
+  "problems": [
+    {
+      "title": "Problem title",
+      "evidence": ["file:line"],
+      "remediation": "Concrete fix"
+    }
+  ],
+  "commands": []
+}
+```
 
-Then the line `Problems` followed by one bullet per line using `- `.
-
-- Base the score on what happened when you followed the docs.
-- Build Problems from real mismatches, omissions, or misleading guidance.
-- If the repo is blocked on secrets or infrastructure, say so plainly and still use the same output shape.
-- Minor drift or stale references should not drag a good repo into the mid-60s if the real path is still easy to recover.
-- Score the damage from the drift, not the mere existence of drift.
+Always return `targetRoot`, `summary`, and at least one `evidence` string. Use `null` for `score` only when status is `unavailable`.

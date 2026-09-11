@@ -1,46 +1,67 @@
 ---
 name: check-agent-compatibility
-description: Run the full repository compatibility pass: scanner score, startup path, validation loop, and docs reliability.
+description: Run an evidence-backed repository compatibility pass across deterministic signals, startup, validation, and docs reliability.
 ---
 
 # Check agent compatibility
 
 ## Trigger
 
-Use when the user wants the full compatibility pass for a repo.
+Use when the user wants the full agent-compatibility review for a repository.
 
 ## Workflow
 
-1. Launch `compatibility-scan-review` to run the CLI and capture the raw repository score and main issues.
-2. Launch `startup-review` to verify whether the repo can actually be booted by an agent.
-3. Launch `validation-review` to check whether an agent can verify a small change without an unnecessarily heavy loop.
-4. Launch `docs-reliability-review` to see whether the documented setup and run paths reliably match reality.
-5. Use one subagent per task. Do not collapse these checks into one agent prompt.
-6. Compute an internal workflow score as the rounded average of:
-   - `Startup Compatibility Score`
-   - `Validation Loop Score`
-   - `Docs Reliability Score`
-7. Compute an `Agent Compatibility Score` as:
-   - `round((deterministic_score * 0.7) + (workflow_score * 0.3))`
-8. Synthesize the results into one final response.
+1. Resolve the requested repository to one canonical absolute `Target root`. Use that same path for every task. Resolve `Skill root` as the directory containing this `SKILL.md`; helper paths below are relative to that directory.
+2. Launch `compatibility-scan-review` first. Its task prompt must contain:
+   - `Target root`: the canonical path.
+   - `Scanner helper`: `<Skill root>/scripts/run-deterministic-scan.mjs`.
+   - `Deterministic scan result`: `not available yet`.
+   - `Time budget`: 3 minutes.
+   - `Allowed mutations`: npm cache writes needed to run the pinned scanner; no target-repository changes.
+   - `Required evidence`: the scanner helper's complete JSON result.
+3. Validate the returned JSON and retry the same subagent once if it is malformed or misses a required field. Preserve `unreliable` and `unavailable` as real statuses.
+4. Launch `startup-review`, `validation-review`, and `docs-reliability-review` in parallel, one subagent per task. Require startup and validation to create separate temporary project copies outside `Target root`. Every task prompt must contain:
+   - `Target root`: the same canonical path.
+   - `Deterministic scan result`: the complete scan JSON, including status and classification reliability.
+   - `Time budget`: 10 minutes for startup, 8 minutes for validation, and 5 minutes for docs.
+   - `Allowed mutations`: isolated-checkout writes only for startup and validation; none for docs. Never allow deploys, paid tests, production credentials, migrations, or external data changes.
+   - `Required evidence`: exact `targetRoot`, commands attempted and outcomes, file references, observed friction, and reasons for the score. Startup and validation must also return canonical `executionRoot` and `isolation` provenance.
+5. Validate each returned JSON and retry malformed output once. A tool or environment failure is `unavailable`; never convert it to a repository score of zero.
+6. Create a JSON object with exactly four top-level fields: `deterministic`, `startup`, `validation`, and `docs`. Each value is the corresponding complete specialist result. Write it to a temporary file outside `Target root`.
+7. Run `node "<Skill root>/scripts/synthesize-results.mjs" "<temporary-results-file>"`, then remove the temporary file. Use the synthesizer output exactly for score availability, component scores, statuses, and arithmetic. If the helper rejects the results, retry the malformed specialist once; if validation still fails, report no aggregate score.
+8. You must not compute the 70/30 blend yourself or substitute a different formula. With an unusable deterministic result and three usable workflow lanes, the synthesizer returns degraded workflow-only evidence. When any workflow lane is unavailable, it returns no aggregate score; do not impute its score.
+9. Prioritize only fixes backed by the returned evidence. Deduplicate overlapping problems and prefer fixes that improve more than one lane.
 
-When scoring internally, use specific non-round workflow scores for the behavioral checks rather than coarse round buckets. If startup, validation, or docs mostly work, treat them as good-with-friction rather than defaulting to the mid-60s. Do not create a low workflow score just because logs are noisy or the error text is rough.
+Use specific workflow scores rather than coarse buckets. Ordinary prerequisites and noisy logs are friction, not failure, unless they prevent the documented path from working.
 
 ## Output
 
-Respond in markdown, but keep it minimal. Do not use fenced code blocks.
+Keep the default response compact.
 
-Show only one score, as a level-two heading: `## Agent Compatibility Score: N/100`. Do not show how it was computed, including weights, formula, deterministic score, workflow score, per-check scores, or arithmetic, unless the user explicitly asks for a breakdown.
+When all four results are usable:
 
-Then a flat, prioritized list labeled `Top fixes` with one issue per line, each line starting with `- `.
-
-If the deterministic scanner cannot be run because of tool environment issues, say that separately and do not treat it as a repo defect or penalize the repo. Fold deterministic and behavioral findings into that one list instead of separate sections. Focus on the fixes that would most improve real agent workflows. Do not include a separate summary unless the user asks for more detail.
-
-Example shape:
-
-## Agent Compatibility Score: 72/100
+```text
+## Agent Compatibility Score: N/100
 
 Top fixes
-- First issue
-- Second issue
-- Third issue
+- First evidence-backed fix
+- Second evidence-backed fix
+```
+
+When the deterministic scan is unavailable or its classification is unreliable:
+
+```text
+## Agent Compatibility Score: unavailable
+
+## Workflow Compatibility Score: N/100
+
+The deterministic score was not used: <short reason>.
+
+Top fixes
+- First evidence-backed fix
+- Second evidence-backed fix
+```
+
+If any workflow lane is unavailable, report `## Agent Compatibility Score: unavailable`, omit `Workflow Compatibility Score: N/100`, name the unavailable lane, and do not impute its score.
+
+Render the score headings from the synthesizer output. Show scanner version, component scores, statuses, arithmetic, and supporting evidence only when the user asks for a breakdown.
