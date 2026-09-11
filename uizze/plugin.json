@@ -1,0 +1,23 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "uizze",
+  "description": "UI design that stands out",
+  "version": "1.2.16",
+  "author": {
+    "name": "Uizze",
+    "email": "business@uizze.com",
+    "url": "https://uizze.com"
+  },
+  "homepage": "https://uizze.com/?utm_source=cursor&utm_medium=plugin_marketplace&utm_campaign=cursor_plugin_v1",
+  "repository": "https://github.com/uizze/uizze",
+  "license": "MIT",
+  "keywords": [
+    "ui",
+    "design",
+    "frontend",
+    "cursor",
+    "mcp",
+    "anti-slop",
+    "agent-skill"
+  ]
+}
