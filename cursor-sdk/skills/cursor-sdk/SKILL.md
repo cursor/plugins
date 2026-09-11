@@ -232,7 +232,7 @@ If the user's integration monitors, lists, or visualizes agents — dashboards o
 
 ## What This Skill Doesn't Cover
 
-- The Cloud Agents REST API (`/v1/agents/*`). If the user needs a non-TS client, the REST API is documented separately at <https://cursor.com/docs/cloud-agent/api>; check there for current capabilities before assuming parity with the SDK.
+- The Cloud Agents REST API (`/v1/agents/*`). If the user needs a non-TS client, the REST API is documented separately at <https://cursor.com/docs/cloud-agent>; check there for current capabilities before assuming parity with the SDK.
 - `.cursor/hooks.json` hooks. Cloud agents execute them but the SDK doesn't manage them; see Cursor's Hooks docs.
 - Private workers / self-hosted cloud. Send users to the Private Workers docs.
 - Python / non-TS SDKs. There is no first-party SDK in other languages at time of writing; REST is the portable option.
