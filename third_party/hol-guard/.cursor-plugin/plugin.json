@@ -1,0 +1,30 @@
+{
+  "name": "hol-guard",
+  "displayName": "HOL Guard",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Runtime and supply-chain security for Cursor and other AI coding agents.",
+  "author": {
+    "name": "Hashgraph Online"
+  },
+  "homepage": "https://hol.org/guard",
+  "repository": "https://github.com/hashgraph-online/hol-guard",
+  "license": "MIT",
+  "keywords": [
+    "hol-guard",
+    "security",
+    "ai-security",
+    "runtime-security",
+    "supply-chain",
+    "cursor"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "security",
+    "ai",
+    "cursor",
+    "runtime"
+  ]
+}
