@@ -37,9 +37,9 @@ alwaysApply: true
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
 # `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit Task `model`). Alias entries in a panel list still count toward its fan-out.
 feature, refactoring: grok-4.6-fast-xhigh
-bug-fix: claude-fable-5-1-thinking-max
-perf-issue: claude-fable-5-1-thinking-max
-hillclimb: claude-fable-5-1-thinking-max
+bug-fix: grok-4.6-fast-xhigh
+perf-issue: grok-4.6-fast-xhigh
+hillclimb: grok-4.6-fast-xhigh
 judgment and prose: claude-fable-5-1-thinking-max
 hardest tasks: claude-fable-5-1-thinking-max
 how explorer: grok-4.6-fast-xhigh
