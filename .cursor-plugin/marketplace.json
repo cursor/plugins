@@ -397,6 +397,11 @@
       "name": "excalidraw",
       "source": "third_party/excalidraw",
       "description": "Draw and export hand-drawn diagrams from chat."
+    },
+    {
+      "name": "statsig",
+      "source": "third_party/statsig",
+      "description": "Query and manage feature gates, experiments, dynamic configs, and metrics."
     }
   ]
 }
