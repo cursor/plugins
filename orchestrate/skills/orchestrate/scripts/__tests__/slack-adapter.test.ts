@@ -12,14 +12,14 @@ installSlackWebApiMock();
 const { createSlackAdapter } = await import("../adapters/index.ts");
 const TEST_SLACK_CHANNEL = "C123TEST";
 
-const ORIGINAL_SLACK_TOKEN = process.env.SLACK_BOT_TOKEN;
-process.env.SLACK_BOT_TOKEN = "xoxb-test";
+const ORIGINAL_SLACK_TOKEN = process.env.ORCHESTRATE_SLACK_BOT_TOKEN;
+process.env.ORCHESTRATE_SLACK_BOT_TOKEN = "xoxb-test";
 
 afterAll(() => {
   if (ORIGINAL_SLACK_TOKEN === undefined) {
-    delete process.env.SLACK_BOT_TOKEN;
+    delete process.env.ORCHESTRATE_SLACK_BOT_TOKEN;
   } else {
-    process.env.SLACK_BOT_TOKEN = ORIGINAL_SLACK_TOKEN;
+    process.env.ORCHESTRATE_SLACK_BOT_TOKEN = ORIGINAL_SLACK_TOKEN;
   }
 });
 

@@ -69,7 +69,7 @@
     "slackChannel": {
       "type": "string",
       "minLength": 1,
-      "description": "Slack channel id for run visibility. Set from --slack-channel or SLACK_CHANNEL_ID by kickoff or the first root run."
+      "description": "Slack channel id for run visibility. Set from --slack-channel or ORCHESTRATE_SLACK_CHANNEL_ID by kickoff or the first root run."
     },
     "slackKickoffRef": {
       "type": "object",

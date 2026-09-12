@@ -1,22 +1,22 @@
 import type { ModelSelection } from "@cursor/sdk";
 
 import type { TaskType } from "./adapters/types.ts";
+import { PlanValidationError } from "./errors.ts";
+import { type ModelProfile, parseModelCatalogJson } from "./schemas.ts";
 
-// Model catalog. Source of truth for `tasks[].model` choices; `defaultFor`
-// entries supply the fallback when `tasks[].model` is omitted.
+export type { ModelProfile };
 
-export interface ModelProfile {
-  /** User-facing slug for `tasks[].model` and `--model` flags. */
-  slug: string;
-  /** Canonical SDK selection passed to `Agent.create({ model })`. */
-  selection: ModelSelection;
-  summary: string;
-  strengths: string[];
-  speed: "fast" | "medium" | "slow";
-  use: string;
-  /** Task types this profile is the default for. */
-  defaultFor?: TaskType[];
-}
+// Built-in model catalog, used when ORCHESTRATE_MODEL_CATALOG is unset.
+// `defaultFor` supplies the model for a task type when `tasks[].model` is
+// omitted. Root planners take their model from kickoff `--model`, not here.
+
+/**
+ * Env var holding the whole catalog as JSON, in the same shape as
+ * MODEL_CATALOG below. When set it replaces MODEL_CATALOG outright.
+ */
+export const MODEL_ENV_CATALOG = "ORCHESTRATE_MODEL_CATALOG";
+
+const TASK_TYPES: TaskType[] = ["worker", "subplanner", "verifier"];
 
 // `slug` is the stable authoring name; `selection` is the canonical SDK form.
 // Run `bun cli.ts models --check` after SDK or backend model-schema drift.
@@ -164,32 +164,67 @@ export const MODEL_CATALOG: ModelProfile[] = [
   },
 ];
 
+function envCatalogJson(): string | undefined {
+  return process.env[MODEL_ENV_CATALOG]?.trim() || undefined;
+}
+
+/**
+ * The catalog planners choose from. ORCHESTRATE_MODEL_CATALOG replaces
+ * MODEL_CATALOG outright when set; there is no merging, so the configured
+ * list is the complete menu. Read per call so env changes apply on the spot.
+ */
+export function effectiveModelCatalog(): ModelProfile[] {
+  const raw = envCatalogJson();
+  return raw ? parseModelCatalogJson(raw, MODEL_ENV_CATALOG) : MODEL_CATALOG;
+}
+
+/** Model slug for a task type when `tasks[].model` is omitted. */
 export function defaultModelForType(type: TaskType): string {
-  const match = MODEL_CATALOG.find(m => m.defaultFor?.includes(type));
-  if (!match)
-    throw new Error(`MODEL_CATALOG missing default for TaskType "${type}"`);
-  return match.slug;
+  const match = effectiveModelCatalog().find(m => m.defaultFor?.includes(type));
+  if (match) return match.slug;
+  throw new PlanValidationError(
+    envCatalogJson()
+      ? `${MODEL_ENV_CATALOG} has no ${type} default. Add "defaultFor": ["${type}"] to one entry.`
+      : `MODEL_CATALOG missing default for TaskType "${type}"`
+  );
 }
 
 export function isKnownModel(slug: string): boolean {
-  return MODEL_CATALOG.some(m => m.slug === slug);
+  return effectiveModelCatalog().some(m => m.slug === slug);
 }
 
 /** Unknown slugs pass through as a bare `{ id }` so planners can reach
  * server-side models that aren't in our prescriptive catalog. */
 export function resolveModelSelection(slug: string): ModelSelection {
-  const profile = MODEL_CATALOG.find(m => m.slug === slug);
+  const profile = effectiveModelCatalog().find(m => m.slug === slug);
   return profile ? profile.selection : { id: slug };
+}
+
+/**
+ * Surface a broken catalog at CLI startup rather than as a spawn failure
+ * partway through a run.
+ */
+export function assertModelEnvConfig(): void {
+  for (const type of TASK_TYPES) defaultModelForType(type);
 }
 
 export function renderModelCatalog(): string {
   const lines: string[] = [];
-  for (const m of MODEL_CATALOG) {
+  if (envCatalogJson()) {
+    lines.push(
+      "This repo publishes an exact model menu. Use only the slugs listed below; do not reach for models outside this list."
+    );
+    lines.push("");
+  }
+  for (const m of effectiveModelCatalog()) {
     const defaults = m.defaultFor?.length
       ? ` (default for ${m.defaultFor.join(", ")})`
       : "";
     lines.push(`- \`${m.slug}\` — ${m.summary}${defaults}`);
-    lines.push(`  speed: ${m.speed}; strengths: ${m.strengths.join(", ")}`);
+    const strengths = m.strengths.length
+      ? `; strengths: ${m.strengths.join(", ")}`
+      : "";
+    lines.push(`  speed: ${m.speed}${strengths}`);
     lines.push(`  use: ${m.use}`);
   }
   return lines.join("\n");
