@@ -34,23 +34,23 @@ This plugin points at `https://api.typeform.com/mcp`, which serves Typeform's de
 | Account | Server URL | Authorization server |
 | --- | --- | --- |
 | Default data center | `https://api.typeform.com/mcp` | `https://api.typeform.com` |
-| EU data center | `https://api.eu.typeform.com/mcp` | `https://api.typeform.com` |
-| `typeform.eu` | `https://api.typeform.eu/mcp` | `https://api.typeform.eu` |
+| EU data center 1 | `https://api.eu.typeform.com/mcp` | `https://api.typeform.com` |
+| EU data center 2 | `https://api.typeform.eu/mcp` | `https://api.typeform.eu` |
 
 `api.typeform.eu` is a separate stack with its own issuer, token endpoint, and JWKS, so tokens are not portable between it and `api.typeform.com`. Picking the wrong host fails during the OAuth exchange rather than at install time, which makes it awkward to diagnose.
 
-If you're not sure which applies, the standard discovery chain settles it: an unauthenticated call to the server returns `401` with a `WWW-Authenticate: Bearer resource_metadata="..."` header, and that metadata document names the authorization server to use.
+EU-hosted accounts are only available on Typeform Enterprise plans. If you're not sure which applies, contact your Typeform Success Manager.
 
 ## What agents can do
 
 | Category | Capabilities |
 | --- | --- |
-| Forms | List, read, create, and edit forms, publish drafts, and check form capabilities |
+| Forms | List, read, create, and edit forms, and publish drafts |
 | Themes | List the themes available to the user and apply one to a form |
-| Automations | Read and build automations that react to form submissions |
+| Automations | Build and publish automations with email, webhook, delay, and integration steps |
 | Insights | Discover and analyze response data |
-| Contacts | List contacts and import form responses by mapping |
-| Workspaces & accounts | List workspaces and accounts |
+| Contacts | Manage contacts and lists, including bulk upsert and form field mapping |
+| Workspaces & accounts | List accounts and workspaces |
 
 The hosted runtime is the source of truth for tool names and schemas. Call `accounts-list_accounts` as a read-only smoke test after connecting.
 
@@ -63,8 +63,8 @@ The hosted runtime is the source of truth for tool names and schemas. Call `acco
 
 ## Docs
 
-- Typeform MCP server: https://developers.typeform.com/developers/get-started/mcp/
-- Connect Typeform to your AI: https://help.typeform.com/hc/en-us/articles/50533862636308-Connect-Typeform-to-your-AI-with-the-Typeform-MCP-server
+- Typeform MCP server: https://developers.typeform.com/developers/mcp/
+- Connect Typeform to your AI: https://help.typeform.com/hc/en-us/articles/50533862636308
 - Server URL: https://api.typeform.com/mcp
 
 Logo is Typeform's official mark, from the `Typeform` GitHub organization.
