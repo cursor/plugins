@@ -1,12 +1,12 @@
 /// <reference types="bun-types-no-globals/lib/index.d.ts" />
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { homedir } from "node:os";
 import { basename, dirname, isAbsolute, join, resolve } from "node:path";
 
 /**
- * On-disk locations this fork writes to.
+ * On-disk locations this plugin writes to.
  *
  * Default is always the personal file under ~/.cursor/projects/<slug>/ so a
  * team-owned AGENTS.md is never the learning target.
@@ -146,7 +146,6 @@ export function migrateLegacyState(targets: MemoryTargets): void {
       }
       if (!isGitTracked(targets.workspaceCwd, from)) {
         try {
-          const { rmSync } = require("node:fs") as typeof import("node:fs");
           rmSync(from, { force: true });
         } catch {
           // best effort
