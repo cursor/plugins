@@ -29,13 +29,25 @@ Auth is OAuth. Cursor prompts for Typeform sign-in when the plugin connects. Per
 
 ## Before you connect
 
-This plugin points at Typeform's default data center. If your account is hosted in the EU, change the server URL to `https://api.eu.typeform.com/mcp` or `https://api.typeform.eu/mcp` depending on where your account lives.
+This plugin points at `https://api.typeform.com/mcp`, which serves Typeform's default data center. EU-hosted accounts use a different URL, and the two EU hosts are **not** interchangeable:
+
+| Account | Server URL | Authorization server |
+| --- | --- | --- |
+| Default data center | `https://api.typeform.com/mcp` | `https://api.typeform.com` |
+| EU data center | `https://api.eu.typeform.com/mcp` | `https://api.typeform.com` |
+| `typeform.eu` | `https://api.typeform.eu/mcp` | `https://api.typeform.eu` |
+
+`api.typeform.eu` is a separate stack with its own issuer, token endpoint, and JWKS, so tokens are not portable between it and `api.typeform.com`. Picking the wrong host fails during the OAuth exchange rather than at install time, which makes it awkward to diagnose.
+
+If you're not sure which applies, the standard discovery chain settles it: an unauthenticated call to the server returns `401` with a `WWW-Authenticate: Bearer resource_metadata="..."` header, and that metadata document names the authorization server to use.
 
 ## What agents can do
 
 | Category | Capabilities |
 | --- | --- |
-| Forms | List, read, and create forms, and check form capabilities |
+| Forms | List, read, create, and edit forms, publish drafts, and check form capabilities |
+| Themes | List the themes available to the user and apply one to a form |
+| Automations | Read and build automations that react to form submissions |
 | Insights | Discover and analyze response data |
 | Contacts | List contacts and import form responses by mapping |
 | Workspaces & accounts | List workspaces and accounts |
@@ -44,7 +56,7 @@ The hosted runtime is the source of truth for tool names and schemas. Call `acco
 
 ## Notes
 
-- Tool calls run as the Typeform user who authorizes the connection. Scopes requested include `accounts:read`, `forms:read`, `forms:write`, `contacts:read`, `contacts:write`, `insights:read`, and `workspaces:read`.
+- Tool calls run as the Typeform user who authorizes the connection. The server's authorization challenge advertises `accounts:read`, `automations:read`, `automations:write`, `contacts:read`, `contacts:write`, `forms:read`, `forms:write`, `insights:read`, `responses:read`, `responses:write`, `webhooks:read`, `webhooks:write`, `workspaces:read`, and `workspaces:write`.
 - Typeform describes this as a generally available beta with limited capabilities, so the tool catalog can change.
 - Streamable HTTP is the only supported transport — there is no SSE endpoint.
 - If the connection shows no tools right after authorizing, refresh the tool list; Typeform documents this as a known issue.
