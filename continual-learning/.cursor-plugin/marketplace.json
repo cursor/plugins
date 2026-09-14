@@ -1,0 +1,16 @@
+{
+  "name": "continual-learning-local",
+  "owner": {
+    "name": "Liqiuyue9597"
+  },
+  "metadata": {
+    "description": "Local team-safe fork of continual-learning that writes AGENTS.local.md"
+  },
+  "plugins": [
+    {
+      "name": "continual-learning",
+      "source": ".",
+      "description": "Incremental transcript-driven memory updates written to user-scoped AGENTS.local.md."
+    }
+  ]
+}
