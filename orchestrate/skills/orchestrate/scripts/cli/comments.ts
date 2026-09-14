@@ -3,6 +3,7 @@ import { basename, isAbsolute, join, relative, resolve } from "node:path";
 import type { Command } from "commander";
 
 import { createSlackAdapter } from "../adapters/index.ts";
+import { SLACK_TOKEN_ENV } from "../adapters/slack/client.ts";
 import { appendAgentFooter } from "../core/agent-manager.ts";
 import { postOrQueueComment } from "../core/comment-retry-queue.ts";
 import { redactBody } from "../core/redact-body.ts";
@@ -147,7 +148,7 @@ async function uploadFileToThread(args: {
   }
   const slack = createSlackAdapter(args.channel);
   if (!slack) {
-    throw new Error("SLACK_BOT_TOKEN not set; cannot upload Slack file");
+    throw new Error(`${SLACK_TOKEN_ENV} not set; cannot upload Slack file`);
   }
   const content = readFileSync(args.filePath);
   const initial =

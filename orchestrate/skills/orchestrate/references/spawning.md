@@ -57,7 +57,7 @@ Cloud-agent VMs may redact environment variable values as a prompt-injection def
 
 ## Slack visibility
 
-When `SLACK_BOT_TOKEN` is set, Slack traffic is owned by the script. Agents do not drive lifecycle. The script posts the kickoff thread to `plan.slackChannel`, records the result in `plan.slackKickoffRef`, mirrors task status messages in that thread, and reads `:rotating_light:` on the kickoff message for Andon.
+When `ORCHESTRATE_SLACK_BOT_TOKEN` is set, Slack traffic is owned by the script. Agents do not drive lifecycle. The script posts the kickoff thread to `plan.slackChannel`, records the result in `plan.slackKickoffRef`, mirrors task status messages in that thread, and reads `:rotating_light:` on the kickoff message for Andon.
 
 Spawn prompts still include a Slack block because workers may need to leave notes:
 
