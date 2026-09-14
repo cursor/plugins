@@ -18,6 +18,8 @@ fork it. improve it. make it yours. PRs are welcome!
 /add-plugin pstack
 ```
 
+pstack also includes a root [`plugin.json`](./plugin.json) for [Agent Plugins v1](https://agent-plugins.org/specification) clients. use your client's plugin flow to install the `pstack/` directory. the portable package exposes the skills under `skills/`; the two subagents under `agents/` remain cursor-specific.
+
 ## get started
 
 two steps:
