@@ -141,11 +141,19 @@ async function parseHookInput<T>(): Promise<T> {
 function buildFollowupMessage(
   targets: ReturnType<typeof resolveMemoryTargets>
 ): string {
+  const sharedWorkspaceFileAllowed = Boolean(
+    targets.workspaceFile && !targets.workspaceFileBlocked
+  );
+
   const workspaceLine = targets.workspaceFile
     ? targets.workspaceFileBlocked
       ? `Workspace memory file (\`${targets.workspaceFile}\`) is BLOCKED: ${targets.workspaceFileBlockReason} Do not write that file. Put workspace facts in the user memory file under \`## Learned Workspace Facts\`.`
-      : `Optional workspace memory file (shared, may be committed): \`${targets.workspaceFile}\`. Write only durable team-shareable workspace facts here.`
+      : `Opted-in workspace memory file (shared, may be committed): \`${targets.workspaceFile}\`. Write only durable team-shareable workspace facts here.`
     : "No workspace memory file is configured. Do NOT write any file inside the git workspace, especially not the repo-tracked AGENTS.md.";
+
+  const routingLine = sharedWorkspaceFileAllowed
+    ? `Write user preferences to the user memory file. Workspace facts may go to the opted-in workspace memory file (\`${targets.workspaceFile}\`); anything not team-shareable stays in the user memory file. Never append \`## Learned User Preferences\` or \`## Learned Workspace Facts\` to any other repo-tracked AGENTS.md / CLAUDE.md / GEMINI.md.`
+    : "Write learned memory ONLY to the user memory file. Never append `## Learned User Preferences` or `## Learned Workspace Facts` to a repo-tracked AGENTS.md / CLAUDE.md / GEMINI.md.";
 
   return [
     "Run the `continual-learning` skill now. Use the `agents-memory-updater` subagent for the full memory update flow.",
@@ -155,7 +163,7 @@ function buildFollowupMessage(
     `- ${workspaceLine}`,
     `- Incremental transcript index: \`${targets.indexFile}\``,
     "",
-    "Write learned memory ONLY to the user memory file. Never append `## Learned User Preferences` or `## Learned Workspace Facts` to a repo-tracked AGENTS.md / CLAUDE.md / GEMINI.md.",
+    routingLine,
     "Keep existing section titles: `## Learned User Preferences` and `## Learned Workspace Facts` (do not rename to a `(local)` heading).",
     "",
     "Use incremental transcript processing: only consider transcripts not in the index, or transcripts whose mtime is newer than the indexed mtime. After processing, refresh index mtimes and remove entries for deleted transcripts.",
