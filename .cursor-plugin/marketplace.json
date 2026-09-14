@@ -16,7 +16,7 @@
     {
       "name": "continual-learning",
       "source": "continual-learning",
-      "description": "Incremental transcript-driven memory updates for AGENTS.md using high-signal bullet points only."
+      "description": "Incremental transcript-driven memory updates for a user-scoped AGENTS.local.md using high-signal bullet points only."
     },
     {
       "name": "cursor-team-kit",

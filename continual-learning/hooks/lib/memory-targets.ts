@@ -57,10 +57,13 @@ function expandPath(value: string, workspaceCwd: string): string {
 /**
  * git check-ignore -q: exit 0 = ignored, 1 = not ignored (would leak if written).
  */
-export function isPathTeamShared(workspaceCwd: string, filePath: string): boolean {
+export function isPathTeamShared(args: {
+  workspaceCwd: string;
+  filePath: string;
+}): boolean {
   const result = spawnSync(
     "git",
-    ["-C", workspaceCwd, "check-ignore", "-q", "--", filePath],
+    ["-C", args.workspaceCwd, "check-ignore", "-q", "--", args.filePath],
     { stdio: "ignore" }
   );
   if (result.error || typeof result.status !== "number") {
@@ -90,7 +93,7 @@ export function resolveMemoryTargets(workspaceCwd = process.cwd()): MemoryTarget
   const workspaceFileRaw = readEnv("CONTINUAL_LEARNING_WORKSPACE_FILE");
   if (workspaceFileRaw) {
     workspaceFile = expandPath(workspaceFileRaw, workspaceCwd);
-    if (!allowShared && isPathTeamShared(workspaceCwd, workspaceFile)) {
+    if (!allowShared && isPathTeamShared({ workspaceCwd, filePath: workspaceFile })) {
       workspaceFileBlocked = true;
       workspaceFileBlockReason =
         `${workspaceFile} is inside a git repo and not gitignored; ` +
@@ -144,7 +147,7 @@ export function migrateLegacyState(targets: MemoryTargets): void {
       if (!existsSync(backup)) {
         writeFileSync(backup, contents, "utf-8");
       }
-      if (!isGitTracked(targets.workspaceCwd, from)) {
+      if (!isGitTracked({ workspaceCwd: targets.workspaceCwd, filePath: from })) {
         try {
           rmSync(from, { force: true });
         } catch {
@@ -157,10 +160,10 @@ export function migrateLegacyState(targets: MemoryTargets): void {
   }
 }
 
-function isGitTracked(workspaceCwd: string, filePath: string): boolean {
+function isGitTracked(args: { workspaceCwd: string; filePath: string }): boolean {
   const result = spawnSync(
     "git",
-    ["-C", workspaceCwd, "ls-files", "--error-unmatch", "--", filePath],
+    ["-C", args.workspaceCwd, "ls-files", "--error-unmatch", "--", args.filePath],
     { stdio: "ignore" }
   );
   return result.status === 0;

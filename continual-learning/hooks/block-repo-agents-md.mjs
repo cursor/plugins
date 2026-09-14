@@ -7,7 +7,7 @@
 
 import { spawnSync } from "node:child_process";
 import { homedir } from "node:os";
-import { basename, isAbsolute, join, resolve } from "node:path";
+import { basename, dirname, isAbsolute, join, resolve } from "node:path";
 
 const BLOCKED_NAMES = new Set(["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
 const LEARNED_RE = /## Learned (User Preferences|Workspace Facts)/;
@@ -77,13 +77,13 @@ function isLearnedAgentFile(filePath) {
 function isInsideGitWorkTree(filePath) {
   const result = spawnSync(
     "git",
-    ["-C", filePath.replace(/\/[^/]+$/, "") || ".", "rev-parse", "--is-inside-work-tree"],
+    ["-C", dirname(resolve(filePath)), "rev-parse", "--is-inside-work-tree"],
     { stdio: "ignore" }
   );
   return result.status === 0;
 }
 
-function isGitIgnored(workspaceCwd, filePath) {
+function isGitIgnored({ workspaceCwd, filePath }) {
   const result = spawnSync(
     "git",
     ["-C", workspaceCwd, "check-ignore", "-q", "--", filePath],
@@ -105,7 +105,7 @@ function isAllowedSharedWorkspaceFile(filePath) {
   if (parseBoolean(process.env.CONTINUAL_LEARNING_ALLOW_SHARED)) {
     return true;
   }
-  return isGitIgnored(workspaceCwd, configured);
+  return isGitIgnored({ workspaceCwd, filePath: configured });
 }
 
 const raw = await new Promise((resolvePromise) => {

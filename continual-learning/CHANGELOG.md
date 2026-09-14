@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0
 
 - Default memory file is `~/.cursor/projects/<slug>/AGENTS.local.md`.
 - Stop-hook followup embeds resolved absolute paths and forbids writing the
