@@ -1,0 +1,33 @@
+{
+  "name": "uizze",
+  "displayName": "Uizze",
+  "version": "1.2.16",
+  "description": "UI design that stands out",
+  "author": {
+    "name": "Uizze",
+    "email": "business@uizze.com"
+  },
+  "publisher": "Uizze",
+  "homepage": "https://uizze.com/?utm_source=cursor&utm_medium=plugin_marketplace&utm_campaign=cursor_plugin_v1",
+  "repository": "https://github.com/uizze/uizze",
+  "license": "MIT",
+  "keywords": [
+    "ui",
+    "design",
+    "frontend",
+    "cursor",
+    "mcp",
+    "anti-slop",
+    "agent-skill"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "frontend",
+    "design",
+    "ui",
+    "code-quality",
+    "mcp"
+  ],
+  "logo": "https://raw.githubusercontent.com/uizze/uizze/main/plugins/openai-directory/uizze/assets/uizze-logo.png",
+  "skills": "./skills/anti-ui-slop/"
+}
