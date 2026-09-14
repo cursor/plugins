@@ -14,4 +14,6 @@ Be scientific. Every shipped line traces to runtime evidence. Belt-and-suspender
 
 Investigation fans out `how` + `why` as parallel subagents.
 
+A test that failed once is a bug until proven otherwise. Capture the full failure output before rerunning. A rerun without a saved assertion destroys the evidence. Fails-in-suite but passes-alone is the signature of order-dependent shared state, not noise. Name the shared resource before you stop. A flake verdict needs a captured assertion plus either a reproduction or a tracker entry. One green rerun earns neither, and a privacy or security assertion never earns it at all.
+
 **Reply:** what was broken, root cause, fix, how you verified. Paste failing-then-passing repro output verbatim.
