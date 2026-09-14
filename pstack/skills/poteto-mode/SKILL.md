@@ -14,6 +14,8 @@ reminder: New task? Playbook match or rigor needed -> apply /poteto-mode. Casual
 
 The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf SKILL.md you read this session.
 
+For tiny known-mechanism bug fixes, use the [inline fast path](playbooks/bug-fix.md) instead of the fanout triggers below. Laziness and subtraction take precedence over routine delegation. Use subagents for real parallel investigation or large diffs, not as the default for tiny known fixes.
+
 Remaining triggers:
 
 - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
