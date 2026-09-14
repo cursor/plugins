@@ -1,14 +1,37 @@
 #!/usr/bin/env node
 /**
  * preToolUse: deny Write/StrReplace that append Learned sections to a
- * repo-tracked AGENTS.md / CLAUDE.md / GEMINI.md.
+ * repo-tracked AGENTS.md / CLAUDE.md / GEMINI.md, unless that path is the
+ * configured workspace file and the write is allowed.
  */
 
 import { spawnSync } from "node:child_process";
-import { basename } from "node:path";
+import { homedir } from "node:os";
+import { basename, isAbsolute, join, resolve } from "node:path";
 
 const BLOCKED_NAMES = new Set(["AGENTS.md", "CLAUDE.md", "GEMINI.md"]);
 const LEARNED_RE = /## Learned (User Preferences|Workspace Facts)/;
+
+function parseBoolean(value) {
+  if (!value) {
+    return false;
+  }
+  const normalized = value.trim().toLowerCase();
+  return (
+    normalized === "1" ||
+    normalized === "true" ||
+    normalized === "yes" ||
+    normalized === "on"
+  );
+}
+
+function expandPath(value, workspaceCwd) {
+  let expanded = value;
+  if (expanded.startsWith("~/") || expanded === "~") {
+    expanded = expanded === "~" ? homedir() : join(homedir(), expanded.slice(2));
+  }
+  return isAbsolute(expanded) ? expanded : resolve(workspaceCwd, expanded);
+}
 
 function collectEditText(toolInput) {
   if (!toolInput || typeof toolInput !== "object") {
@@ -46,15 +69,9 @@ function extractPath(data) {
   return "";
 }
 
-function isRepoRootFile(filePath) {
+function isLearnedAgentFile(filePath) {
   const name = basename(filePath);
-  if (!BLOCKED_NAMES.has(name)) {
-    return false;
-  }
-  if (name === "AGENTS.md" && filePath.endsWith("AGENTS.local.md")) {
-    return false;
-  }
-  return true;
+  return BLOCKED_NAMES.has(name);
 }
 
 function isInsideGitWorkTree(filePath) {
@@ -66,10 +83,35 @@ function isInsideGitWorkTree(filePath) {
   return result.status === 0;
 }
 
-const raw = await new Promise((resolve) => {
+function isGitIgnored(workspaceCwd, filePath) {
+  const result = spawnSync(
+    "git",
+    ["-C", workspaceCwd, "check-ignore", "-q", "--", filePath],
+    { stdio: "ignore" }
+  );
+  return result.status === 0;
+}
+
+function isAllowedSharedWorkspaceFile(filePath) {
+  const raw = process.env.CONTINUAL_LEARNING_WORKSPACE_FILE;
+  if (!raw || !raw.trim()) {
+    return false;
+  }
+  const workspaceCwd = process.cwd();
+  const configured = expandPath(raw.trim(), workspaceCwd);
+  if (resolve(filePath) !== resolve(configured)) {
+    return false;
+  }
+  if (parseBoolean(process.env.CONTINUAL_LEARNING_ALLOW_SHARED)) {
+    return true;
+  }
+  return isGitIgnored(workspaceCwd, configured);
+}
+
+const raw = await new Promise((resolvePromise) => {
   const chunks = [];
   process.stdin.on("data", (chunk) => chunks.push(chunk));
-  process.stdin.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+  process.stdin.on("end", () => resolvePromise(Buffer.concat(chunks).toString("utf8")));
 });
 
 let data = {};
@@ -84,14 +126,19 @@ const filePath = extractPath(data);
 const toolInput = data.tool_input ?? data.arguments ?? {};
 const editText = collectEditText(toolInput);
 
-if (isRepoRootFile(filePath) && LEARNED_RE.test(editText) && isInsideGitWorkTree(filePath)) {
+if (
+  isLearnedAgentFile(filePath) &&
+  LEARNED_RE.test(editText) &&
+  isInsideGitWorkTree(filePath) &&
+  !isAllowedSharedWorkspaceFile(filePath)
+) {
   console.log(
     JSON.stringify({
       permission: "deny",
       agent_message:
-        "Do not write ## Learned User Preferences / ## Learned Workspace Facts into the repo-tracked AGENTS.md. Write those bullets only to ~/.cursor/projects/<slug>/AGENTS.local.md.",
+        "Do not write ## Learned User Preferences / ## Learned Workspace Facts into the repo-tracked AGENTS.md. Write those bullets only to ~/.cursor/projects/<slug>/AGENTS.local.md (or the configured workspace file when it is allowed).",
       user_message:
-        "Blocked a continual-learning write to the team AGENTS.md. Memory belongs in AGENTS.local.md.",
+        "Blocked a continual-learning write to a tracked agent file. Memory belongs in AGENTS.local.md unless a shared workspace file is explicitly allowed.",
     })
   );
   process.exit(0);
