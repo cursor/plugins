@@ -57,9 +57,8 @@ The hosted runtime is the source of truth for tool names and schemas. Call `acco
 ## Notes
 
 - Tool calls run as the Typeform user who authorizes the connection. The server's authorization challenge advertises `accounts:read`, `automations:read`, `automations:write`, `contacts:read`, `contacts:write`, `forms:read`, `forms:write`, `insights:read`, `responses:read`, `responses:write`, `webhooks:read`, `webhooks:write`, `workspaces:read`, and `workspaces:write`.
-- Typeform describes this as a generally available beta with limited capabilities, so the tool catalog can change.
+- Typeform is actively expanding and improving the capabilities in this MCP server.
 - Streamable HTTP is the only supported transport — there is no SSE endpoint.
-- If the connection shows no tools right after authorizing, refresh the tool list; Typeform documents this as a known issue.
 
 ## Docs
 
