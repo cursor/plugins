@@ -45,7 +45,7 @@ EU-hosted accounts are only available on Typeform Enterprise plans. If you're no
 
 | Category | Capabilities |
 | --- | --- |
-| Forms | List, read, create, and edit forms, and publish drafts |
+| Forms | List, read, create, edit, and publish forms |
 | Themes | List the themes available to the user and apply one to a form |
 | Automations | Build and publish automations with email, webhook, delay, and integration steps |
 | Insights | Discover and analyze response data |
