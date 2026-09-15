@@ -21,28 +21,28 @@ When in doubt, take the simple path.
 
 Decompose the question into 2 to 4 exploration angles, each a distinct slice of the subsystem. Spawn all explorers in a single message:
 
-- `subagent_type`: `generalPurpose`
-- `model`: your configured how-explorer model (default `grok-4.6-fast-xhigh`)
+- `subagent_type`: generic slug from [`../poteto-mode/references/harness.md`](../poteto-mode/references/harness.md)
+- `model`: your configured how-explorer model (a slug this session's spawn tool lists)
 - `readonly`: `true`
 
 Each explorer gets the prompt in `references/explorer-prompt.md` with its angle filled in. Then go to Step 3.
 
 ## Step 2b. Direct Explain (simple questions)
 
-Spawn one Task subagent that explores and explains in one pass:
+Spawn one explainer that explores and explains in one pass:
 
-- `subagent_type`: `generalPurpose`
-- `model`: your configured how-explainer model (default `claude-fable-5-1-thinking-max`)
+- `subagent_type`: generic slug from [`../poteto-mode/references/harness.md`](../poteto-mode/references/harness.md)
+- `model`: your configured how-explainer model (a slug this session's spawn tool lists)
 - `readonly`: `true`
 
 Build its prompt from `references/explainer-prompt.md` without the explorer-findings section. Go to Step 4.
 
 ## Step 3. Synthesize (complex questions only)
 
-Once all explorers have returned, spawn one Task subagent to synthesize their findings into one explanation:
+Once all explorers have returned, spawn one explainer to synthesize their findings into one explanation:
 
-- `subagent_type`: `generalPurpose`
-- `model`: your configured how-explainer model (default `claude-fable-5-1-thinking-max`)
+- `subagent_type`: generic slug from [`../poteto-mode/references/harness.md`](../poteto-mode/references/harness.md)
+- `model`: your configured how-explainer model (a slug this session's spawn tool lists)
 - `readonly`: `true`
 
 Build its prompt from `references/explainer-prompt.md` with every explorer's findings filled in.

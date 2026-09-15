@@ -78,8 +78,8 @@ Aim for a complete **coverage map**, not a minimal one. Document the null, don't
 Launch all matching investigators in a single message so they run concurrently. Don't ask one agent to cover multiple MCPs.
 
 Subagent config (each):
-- `subagent_type`: `generalPurpose`
-- `model`: your configured why-investigators model (default `grok-4.6-fast-xhigh`)
+- `subagent_type`: generic slug from [`../poteto-mode/references/harness.md`](../poteto-mode/references/harness.md)
+- `model`: your configured why-investigators model (a slug this session's spawn tool lists)
 - `readonly`: `false` (agent mode). **Do not use readonly/Ask mode.** It strips MCP access, which disables MCP-backed investigators entirely. Investigators still shouldn't write anything.
 
 Each investigator gets:
@@ -122,8 +122,8 @@ If your scope assessment suggests a single-commit trivial target where the PR de
 
 Spawn one synthesizer subagent:
 
-- `subagent_type`: `generalPurpose`
-- `model`: your configured why-synthesizer model (default `claude-fable-5-1-thinking-max`)
+- `subagent_type`: generic slug from [`../poteto-mode/references/harness.md`](../poteto-mode/references/harness.md)
+- `model`: your configured why-synthesizer model (a slug this session's spawn tool lists)
 - `readonly`: `false` (agent mode). The synthesizer's quality check spot-verifies citations, which can require MCP access. Readonly/Ask mode strips MCPs and defeats that.
 
 The synthesizer gets:
