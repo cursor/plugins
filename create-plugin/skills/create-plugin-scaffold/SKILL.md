@@ -48,9 +48,10 @@ This path makes the plugin immediately available to Cursor without any install s
    - Agents: `agents/*.md` with `name`, `description`
    - Commands: `commands/*.(md|txt)` with `name`, `description`
 6. If repository uses `.cursor-plugin/marketplace.json`, add plugin entry:
-   - `name`
-   - `source`
-   - optional metadata (`description`, `keywords`, `category`, `tags`)
+   - Required: `name`, `source`
+   - Optional: `description`, `minClientVersions`
+   - Keep `keywords`, `category`, and `tags` in the plugin's
+     `.cursor-plugin/plugin.json`; they are not valid marketplace entry fields.
 7. Ensure all manifest paths are relative, valid, and do not use absolute paths or parent traversal.
 
 ## Guardrails
