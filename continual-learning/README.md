@@ -42,7 +42,7 @@ Default cadence:
 - minimum 120 minutes since the last run
 - transcript mtime must advance since the previous run
 
-Trial mode defaults (enabled in this plugin hook config):
+Trial mode defaults (enabled by default in this plugin):
 
 - minimum 3 completed turns
 - minimum 15 minutes
