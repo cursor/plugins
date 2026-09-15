@@ -37,7 +37,7 @@ This plugin points at `https://api.typeform.com/mcp`, which serves Typeform's de
 | EU data center 1 | `https://api.eu.typeform.com/mcp` | `https://api.typeform.com` |
 | EU data center 2 | `https://api.typeform.eu/mcp` | `https://api.typeform.eu` |
 
-`api.typeform.eu` is a separate stack with its own issuer, token endpoint, and JWKS, so tokens are not portable between it and `api.typeform.com`. Picking the wrong host fails during the OAuth exchange rather than at install time, which makes it awkward to diagnose.
+`api.typeform.eu` is a separate stack with its own issuer, token endpoint, and JWKS, so tokens are not portable between it and `api.typeform.com`. Picking the wrong host fails during the OAuth exchange rather than at install time.
 
 EU-hosted accounts are only available on Typeform Enterprise plans. If you're not sure which applies, contact your Typeform Success Manager.
 
