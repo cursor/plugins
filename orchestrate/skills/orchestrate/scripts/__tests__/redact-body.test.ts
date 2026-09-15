@@ -41,6 +41,28 @@ describe("redactBody", () => {
     expect(redactBody(`\`${sha}\``).reasons).toEqual([]);
   });
 
+  test("redacts the credential after an auth scheme, not just the scheme", () => {
+    const jwt = "eyJhbGciOiJIUzI1NiJ9.SECRETPAYLOAD.sig";
+    const result = redactBody(`Authorization: Bearer ${jwt}`);
+
+    expect(result.text).toBe("Authorization=[redacted]");
+    expect(result.text).not.toContain(jwt);
+    expect(result.reasons).toContain("contains sensitive key");
+  });
+
+  test("redacts a quoted value containing spaces", () => {
+    const result = redactBody('export TOKEN="my secret value"');
+
+    expect(result.text).toBe("export TOKEN=[redacted]");
+    expect(result.text).not.toContain("secret value");
+  });
+
+  test("redacts only the offending line", () => {
+    const result = redactBody("password: hunter2\nnext line stays");
+
+    expect(result.text).toBe("password=[redacted]\nnext line stays");
+  });
+
   test("allows concise operational context", () => {
     const result = redactBody("blocked: docker rate-limit on redis:7");
 
