@@ -27,7 +27,7 @@ Open a todolist with one entry per phase before launching anything.
 
 ## Phase B: Fan out
 
-Spawn all N workers in one message with `subagent_type: generalPurpose`, `environment: "cloud"`, `run_in_background: true`, and the configured model. Use `environment: "local"` only when the worker needs access to something on the user's computer.
+Spawn all N workers in one message with the generic type from [`../poteto-mode/references/harness.md`](../poteto-mode/references/harness.md), `environment: "cloud"` when the spawn tool has it, `run_in_background: true` / `background: true`, and the configured model. Use `environment: "local"` only when the worker needs access to something on the user's computer. Skip `environment` when the spawn tool has no such parameter.
 
 When a worker must start from a non-default pushed branch, pass `cloud_base_branch`.
 
