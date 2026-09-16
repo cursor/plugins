@@ -14,6 +14,7 @@ Here's what you'll learn:
 8. [Steer with principle names](./08-principles.md). The 23 names that redirect an agent mid-task.
 9. [Make it yours](./09-make-it-yours.md). Your own mode, plus how to test a skill change.
 10. [Recipes and pitfalls](./10-recipes-and-pitfalls.md). Prompts to copy and mistakes to skip.
+11. [Run pstack on other hosts](./11-other-hosts.md). Codex, Claude Code, and generic skill roots.
 
 Read the pages in order the first time. After that, each page stands alone.
 

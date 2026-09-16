@@ -47,3 +47,8 @@ Watch the todo list. Its first items are the matched playbook's steps copied in,
 From here you can type normal follow-ups. `/poteto-mode` is sticky. It stays on for the conversation until you opt out by saying so.
 
 Next: [Route work through `/poteto-mode`](./02-poteto-mode.md).
+
+## Other agent hosts
+
+To run the same skills in Codex, Claude Code, or a plain skill root, see [Run pstack on other hosts](./11-other-hosts.md) and [`adapters/README.md`](../../adapters/README.md).
+

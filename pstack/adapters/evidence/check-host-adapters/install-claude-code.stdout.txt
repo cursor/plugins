@@ -1,0 +1,5 @@
+installed host=claude-code mode=symlink
+  entry:  /var/folders/2q/k63m84tn5q13cvh__pxjtnjm0000gn/T/tmp.hiEnIj3trl/claude-code-skills/poteto-mode
+  root:   /var/folders/2q/k63m84tn5q13cvh__pxjtnjm0000gn/T/tmp.hiEnIj3trl/claude-code-skills/pstack-root -> /Users/randydinh/source/projects/plugins/pstack
+  host:   /var/folders/2q/k63m84tn5q13cvh__pxjtnjm0000gn/T/tmp.hiEnIj3trl/claude-code-skills/pstack-HOST.md
+read /Users/randydinh/source/projects/plugins/pstack/adapters/claude-code/HOST.md then skills/poteto-mode before the first task.

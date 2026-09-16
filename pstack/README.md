@@ -18,6 +18,10 @@ fork it. improve it. make it yours. PRs are welcome!
 /add-plugin pstack
 ```
 
+## other hosts
+
+cursor is native. for Codex, Claude Code, or a generic skill root, see [`adapters/`](./adapters/) and [the hosts guide](./docs/guide/11-other-hosts.md).
+
 ## get started
 
 two steps:

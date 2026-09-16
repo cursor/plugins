@@ -1,0 +1,16 @@
+ok /Users/randydinh/source/projects/plugins/pstack/adapters/README.md
+ok /Users/randydinh/source/projects/plugins/pstack/adapters/cursor/HOST.md
+ok /Users/randydinh/source/projects/plugins/pstack/adapters/codex/HOST.md
+ok /Users/randydinh/source/projects/plugins/pstack/adapters/claude-code/HOST.md
+ok /Users/randydinh/source/projects/plugins/pstack/adapters/generic/HOST.md
+ok /Users/randydinh/source/projects/plugins/pstack/adapters/codex/skills/poteto-mode/SKILL.md
+ok /Users/randydinh/source/projects/plugins/pstack/adapters/claude-code/skills/poteto-mode/SKILL.md
+ok /Users/randydinh/source/projects/plugins/pstack/adapters/generic/skills/poteto-mode/SKILL.md
+ok /Users/randydinh/source/projects/plugins/pstack/scripts/install-host.sh
+ok /Users/randydinh/source/projects/plugins/pstack/docs/guide/11-other-hosts.md
+ok mapping-discipline codex
+ok mapping-discipline claude-code
+ok mapping-discipline generic
+ok install-dry-run codex
+ok install-dry-run claude-code
+ok install-dry-run generic
