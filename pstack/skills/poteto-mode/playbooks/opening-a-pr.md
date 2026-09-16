@@ -10,17 +10,21 @@ Invoked at the end of every other playbook.
 
 **Titles.** Conventional Commits, `type(scope): subject` — `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf`; the changed area as scope (`pstack`, `poteto-mode`); short imperative subject naming the real symbol that carries the change (`fix(pstack): retarget opening-a-pr babysit trigger`). No trailing period. Same technical-writing + unslop pass as the body.
 
-**Descriptions.** Use these sections in order; drop one when it is empty.
+**Descriptions.** A reviewer who has the diff should learn why the change exists, what scope matters, and how you proved the change works. Keep the body brief enough to read in under a minute. If a squash commit copies the PR body and would exceed about 40 lines, shorten the body and link the detailed evidence.
 
-- `## Why` — the intent, and why this approach fits.
-- `## Scope` — facts from the diff: real symbols and paths, both sides of a rename or retarget, in/out boundary when it matters.
-- `## Tradeoffs` — real choices only.
-- `## Blast Radius` — who and what the change touches, why it is safe or risky; if main is red without the fix, name the continuing cost.
-- `## Verification` — how each check ran and its rigor: real surface names (an installed CLI or UI control skill, targeted tests) and each outcome, not just command names.
+Use these sections in order. Drop a section when it has nothing to say.
 
-Attach videos or screenshots after these sections when they prove a claim. No `## Summary` / `## Test plan` boilerplate on any PR; a commit body does not restate its subject.
+- `## Why`. State the intent and approach in one or two short paragraphs. Omit rebase genealogy and a "based on main" preamble.
+- `## Scope`. Name real symbols and paths, both sides of a rename or retarget, and scope boundaries when they matter. Avoid a file-by-file essay.
+- `## Tradeoffs`. Name rejected alternatives that a reviewer would otherwise ask about. Skip this section when there was no real choice.
+- `## Blast Radius`. Name who or what the change touches and why the change is safe or risky. State the continuing cost if main stays red without the fix.
+- `## Verification`. Name each real run path and its outcome. For a performance change, give the primary before and after measurement with its unit. Link the detailed evidence, including methodology, remaining metrics, and arena or swarm results.
 
-**Size and stacks.** Small PRs, 5 narrow over 1 fat; stack follow-ups, branch off main only for genuinely independent work. For stacked PRs, use whatever stacking tool the team uses; the principle is small, ordered slices with the stack visible to reviewers. Rebase on `main` before substantial stack work.
+Attach videos or screenshots after these sections when they prove a claim. Keep SHA lists, lane recitals, metric tables, and full verification logs in a linked artifact. Do not use `## Summary` or `## Test plan` boilerplate. A commit body does not restate its subject.
+
+**Source-control host.** Resolve the repository's provider and available CLI or API before the first PR operation, then keep that choice for create, edit, view, watch, and merge. Use `gh` for GitHub when available, or the provider's supported native interface. Keep configured stack tooling optional. If the selected interface cannot perform an operation, report the limitation and any supported fallback before switching; do not infer state from another provider.
+
+**Size and stacks.** Prefer five narrow PRs to one large PR. A stack is a base-branch chain. The root PR targets trunk; each child branch rebases onto its parent's exact tip and its PR targets that parent branch. Use the team's configured stack tool or the source-control host's native base-branch operations, then read back the base relationships. Branch from trunk only for independent work. Rebase on trunk before substantial stack work.
 
 **Readiness.** Open every PR ready, never as a draft. Host tooling that defaults to draft gets flipped through the host's ready command. Verify state through the repository host's supported PR viewer before referencing status.
 
