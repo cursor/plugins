@@ -2,15 +2,15 @@
 
 ## What this source contains
 
-Datadog holds the runtime record: what actually happened in production, as opposed to what was planned or discussed.
+Datadog holds the runtime record, what actually happened in production, as opposed to what was planned or discussed.
 
-- **Metrics.** Counters, gauges, histograms instrumented by the team. A metric's *presence* is itself evidence: someone thought this number worth watching.
+- **Metrics.** Counters, gauges, histograms instrumented by the team. A metric's *presence* is itself evidence. Someone thought this number worth watching.
 - **Monitors & alerts.** Conditions the team decided warranted waking someone up. A monitor firing on `rate_limit_hit > 10/min` is direct evidence the team worried about that threshold.
 - **Dashboards.** Curated views. The charts tell you what the team considers important for a subsystem.
 - **APM traces & spans.** Request-level runtime data. Useful for "why is this slow" / "why is there a timeout here" questions.
 - **Logs.** High-volume event records. Often contain the error conditions that motivated defensive code.
 - **Incidents.** Formal incident records with timelines and linked postmortems.
-- **Notebooks.** Exploratory investigations; often contain hypotheses and analyses.
+- **Notebooks.** Exploratory investigations. Often contain hypotheses and analyses.
 
 Datadog answers "what was the production reality around the time this code was written?", which often explains the code's shape.
 
@@ -51,7 +51,7 @@ Use the Datadog MCP. Start broad, then narrow.
    analyze_datadog_logs (SQL-style aggregations, only when you need counts)
    ```
 
-   Search with symbols, error strings, or feature names. **Strongly prefer time-bounded queries** (e.g., 30 days before/after the change). Log volume is huge; unconstrained searches waste time and may time out.
+   Search with symbols, error strings, or feature names. **Strongly prefer time-bounded queries** (e.g., 30 days before/after the change). Log volume is huge. Unconstrained searches waste time and may time out.
 
 5. **APM spans and traces.**
 
@@ -74,7 +74,7 @@ Use the Datadog MCP. Start broad, then narrow.
 
 ## What good evidence looks like here
 
-- A monitor whose query and threshold match the constraint the code enforces (code clamps to 100; monitor alerts when requests exceed 100/min)
+- A monitor whose query and threshold match the constraint the code enforces (code clamps to 100, monitor alerts when requests exceed 100/min)
 - A dashboard created by the target's author, with widgets that correspond to what the code measures or guards against
 - A metric showing a production spike immediately before the code was merged, and stable values after
 - An incident record referencing the target code, the same symbols, or the same error strings

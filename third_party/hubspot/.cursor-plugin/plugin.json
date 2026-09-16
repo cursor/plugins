@@ -2,7 +2,7 @@
   "name": "hubspot",
   "displayName": "HubSpot",
   "version": "1.0.0",
-  "description": "Connect to HubSpot CRM — search and update contacts, companies, deals, and tickets; work with activities, conversations, and marketing emails — via HubSpot's official remote MCP server.",
+  "description": "Search and update contacts, companies, deals, and tickets.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

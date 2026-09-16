@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "fathom": {
+      "type": "http",
+      "url": "https://api.fathom.ai/mcp"
+    }
+  }
+}

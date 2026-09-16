@@ -2,7 +2,7 @@
   "name": "salesforce",
   "displayName": "Salesforce",
   "version": "1.0.0",
-  "description": "Connect to Salesforce via Salesforce Hosted MCP — query, search, create, update, and traverse records in your org.",
+  "description": "Query, create, and update records in your org.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -31,7 +31,7 @@
       "SALESFORCE_MCP_URL": {
         "type": "string",
         "title": "Salesforce MCP server URL",
-        "description": "Server URL from Setup → MCP Servers. Production: https://api.salesforce.com/platform/mcp/v1/platform/sobject-all — Sandbox or scratch: https://api.salesforce.com/platform/mcp/v1/sandbox/platform/sobject-all — custom servers replace platform/ with custom/."
+        "description": "Server URL from Setup → MCP Servers. Production: https://api.salesforce.com/platform/mcp/v1/platform/sobject-all. Sandbox or scratch: https://api.salesforce.com/platform/mcp/v1/sandbox/platform/sobject-all. For custom servers, replace platform/ with custom/."
       },
       "CLIENT_ID": {
         "type": "string",

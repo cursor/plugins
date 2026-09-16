@@ -46,7 +46,7 @@ Every file you read during exploration, so the explainer can reference them.
 Where this subsystem connects to other parts of the codebase. The inputs and outputs.
 
 ### Non-Obvious Things
-Anything surprising, historically motivated, or easy to get wrong. Things that look like they should work one way but actually work another.
+Anything surprising, historically motivated, or easy to get wrong. Things that look like they should work one way but work another.
 
 ### Open Questions
 Anything you couldn't fully trace or understand. Be honest about gaps.

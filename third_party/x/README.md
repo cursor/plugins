@@ -2,7 +2,7 @@
 
 Cursor plugin that connects agents to the [X API](https://docs.x.com) through X's official hosted [Model Context Protocol](https://modelcontextprotocol.io/) server at `https://api.x.com/mcp`.
 
-This plugin signs you in with OAuth as your own X account. It is no longer read-only: alongside searching and reading public X data, agents can manage your lists, bookmarks, blocks, and mutes.
+This plugin signs you in with OAuth as your own X account. It is no longer read-only: alongside searching and reading public X data, agents can manage your lists, bookmarks, blocks, and mutes, and call X Chat endpoints.
 
 ## Install
 
@@ -35,7 +35,10 @@ Or run `/add-plugin x` in chat.
           "block.write",
           "bookmark.read",
           "bookmark.write",
-          "billing.write",
+          "dm.read",
+          "dm.write",
+          "developer.billing.write",
+          "developer.write",
           "offline.access"
         ]
       }
@@ -56,6 +59,8 @@ Or run `/add-plugin x` in chat.
 | Lists | Read and manage your lists |
 | Bookmarks | Read and manage your bookmarks |
 | Blocks & mutes | Read your blocks and mutes; add or remove blocks |
+| Chat | List conversations, fetch events, send messages, typing, and read receipts |
+| Developer account | Read your X developer account settings and credit balance |
 
 Posting is not included: the plugin does not request the `tweet.write` scope, so agents cannot publish posts as you.
 
@@ -67,7 +72,7 @@ Requests run in your user context, so they count against your account's rate lim
 
 ## Scopes requested
 
-`tweet.read`, `users.read`, `follows.read`, `space.read`, `mute.read`, `like.read`, `list.read`, `list.write`, `block.read`, `block.write`, `bookmark.read`, `bookmark.write`, `billing.write`, `offline.access`
+`tweet.read`, `users.read`, `follows.read`, `space.read`, `mute.read`, `like.read`, `list.read`, `list.write`, `block.read`, `block.write`, `bookmark.read`, `bookmark.write`, `dm.read`, `dm.write`, `developer.billing.write`, `developer.write`, `offline.access`
 
 ## X documentation search
 

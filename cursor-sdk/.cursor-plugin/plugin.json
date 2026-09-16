@@ -2,7 +2,7 @@
   "name": "cursor-sdk",
   "displayName": "Cursor SDK",
   "version": "1.0.0",
-  "description": "Build apps, scripts, CI pipelines, and automations on top of the Cursor TypeScript SDK (@cursor/sdk) — runtime selection, auth, streaming, MCP, error handling, and ready-to-extend integration patterns.",
+  "description": "Build apps, scripts, and automations with the TypeScript SDK.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Connect to Navan — query expenses, analyze travel bookings, check policies and approvals, and manage cards — via Navan's official remote MCP server.",
+  "description": "Query expenses, travel bookings, policies, and cards.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

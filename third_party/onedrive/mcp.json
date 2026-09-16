@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "onedrive": {
+      "type": "http",
+      "url": "https://api.cursor.com/rest-mcp/onedrive/mcp"
+    }
+  }
+}

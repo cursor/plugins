@@ -28,7 +28,7 @@ Two valid finding shapes:
 - The parent invoked the skill and you found a real gap in its body. Route to the skill's relevant section.
 - The skill was visible in the catalog but did not trigger when it would have helped. Tune the skill's description so future agents pick it up. Route as `tune description: <skill path>`.
 
-If a skill was neither invoked nor a missed-trigger candidate, drop it. Adding text to a skill the parent never opened does not change behavior.
+If a skill was neither invoked nor a missed-trigger candidate, drop it.
 
 Surface 3-5 durable learnings. For each:
 - Principle: one sentence describing what generalizes. State the rule, not the label, no name-dropping.

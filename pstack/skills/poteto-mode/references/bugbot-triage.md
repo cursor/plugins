@@ -40,7 +40,7 @@ Use `candidate` for one or two examples. Use `recurring` after multiple real dis
 ### Upstack or stack-local usage Bugbot cannot see
 
 - Confidence: candidate
-- Skip when: Bugbot flags an export, component, helper, or file as unused, and `gt ls -s`, upper-stack diffs, or PR context shows it is used by a later PR in the stack.
+- Skip when: Bugbot flags an export, component, helper, or file as unused, and the active forge's PR list and diffs, upper-stack diffs, or PR context show it is used by a later PR in the stack.
 - Do not skip when: The current PR is not part of a stack, the symbol is public API, or the supposed upstack use cannot be verified.
 - Example signal: "Exported component is never used" with a human reply like "used upstack".
 

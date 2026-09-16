@@ -36,7 +36,7 @@ Does the code fit well into the system it's part of?
 - Boundary discipline: is validation at system boundaries, or scattered through business logic? Validate data once where it enters the system, then trust it internally.
 - Abstraction level: is the code mixing high-level orchestration with low-level detail?
 - Coupling: does this change introduce dependencies that will make future changes harder?
-- Data model fit: do the data structures match the actual access patterns? The right structure makes downstream code obvious; the wrong one fights you at every turn.
+- Data model fit: do the data structures match the actual access patterns? The right structure makes downstream code obvious. The wrong one fights you at every turn.
 - Bolted-on vs. integrated: was the change patched onto the existing design, or does it read as if the design always accounted for it? If the new requirement had been known from the start, would the code look like this?
 - Legacy dual-paths: does the change introduce a new API while keeping the old one alive? If there are no external consumers, migrate callers and delete the old path in the same wave. Don't leave compatibility layers that will become permanent.
 
@@ -50,7 +50,7 @@ Can you tell that this code works from reading it?
 - Are there assertions/invariants that would catch regressions?
 - If this is a bug fix: is there a test for the bug?
 - If this touches an integration boundary: is the full path tested?
-- Check the real thing, not a proxy: if the code checks liveness via file mtime or cached state instead of reading the actual value, that's a verification gap.
+- Check the real thing, not a proxy. If the code checks liveness via file mtime or cached state instead of reading the actual value, that's a verification gap.
 - For delegated or async work: does the code verify actual output artifacts, or does it trust self-reports and summaries?
 
 ## Complexity Budget

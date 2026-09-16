@@ -1,0 +1,36 @@
+{
+  "name": "google-cloud-bigquery",
+  "displayName": "Google Cloud BigQuery",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Explore datasets and tables and run SQL queries.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://docs.cloud.google.com/bigquery/docs/use-bigquery-mcp",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "google cloud bigquery",
+    "google cloud",
+    "bigquery",
+    "sql",
+    "analytics",
+    "data warehouse",
+    "datasets",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "bigquery",
+    "google cloud",
+    "analytics",
+    "sql",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

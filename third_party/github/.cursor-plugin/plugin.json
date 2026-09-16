@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Connect to GitHub — repositories, issues, pull requests, code search, and Actions — via GitHub's official remote MCP server.",
+  "description": "Manage repos, issues, pull requests, and Actions.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

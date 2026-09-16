@@ -12,14 +12,6 @@ Editing code you don't understand is how subtle regressions ship. pstack gives y
 
 Ask the question you actually have. [`/how`](../../skills/how/SKILL.md) reads the code and answers at the level of a senior engineer onboarding you onto the subsystem, with the runtime flow, the key types, and the non-obvious parts. For a big subsystem it fans out two to four read-only explorers first. For a narrow question it just reads and explains.
 
-`/how` can also push back on the design. Ask for Critique mode when you suspect the structure itself:
-
-```text
-/how explain the sync service, then critique its ownership boundaries
-```
-
-The explanation comes first, so the critique stays grounded in how the thing really works.
-
 ## Dig up history with `/why`
 
 ```text

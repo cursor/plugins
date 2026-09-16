@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "brex": {
+      "type": "http",
+      "url": "https://api.brex.com/mcp"
+    }
+  }
+}

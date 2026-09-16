@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Connect to Ashby — search candidates and jobs, prep for interviews, manage pipeline tasks, and take recruiting actions — via Ashby's official remote MCP server.",
+  "description": "Search candidates, prep interviews, and manage pipeline tasks.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

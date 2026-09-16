@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Connect to Google Calendar via Google's remote MCP server — list calendars, search events, and create or update meetings.",
+  "description": "Search events and schedule meetings.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "wrike": {
+      "type": "http",
+      "url": "https://mcp.wrike.com/v2",
+      "headers": {
+        "Authorization": "Bearer ${WRIKE_ACCESS_TOKEN}"
+      }
+    }
+  }
+}

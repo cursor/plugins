@@ -2,7 +2,7 @@
   "name": "docusign",
   "displayName": "Docusign",
   "version": "1.0.0",
-  "description": "Connect to Docusign — work with eSignature envelopes and templates, Maestro workflows, and Navigator agreements — via Docusign's official remote MCP server (beta).",
+  "description": "Manage envelopes, templates, workflows, and agreements.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

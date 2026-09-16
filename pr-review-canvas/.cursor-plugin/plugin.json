@@ -2,7 +2,7 @@
   "name": "pr-review-canvas",
   "displayName": "PR Review Canvas",
   "version": "0.1.0",
-  "description": "Render PR diffs as interactive canvases organized for reviewer comprehension — groups changes by importance, separates boilerplate from core logic, and highlights tricky or unexpected code.",
+  "description": "Render PR diffs as review canvases grouped by importance.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

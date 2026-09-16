@@ -1,0 +1,37 @@
+{
+  "name": "finance",
+  "displayName": "Finance",
+  "version": "1.1.0",
+  "minClientVersions": {
+    "cursor": "never",
+    "grokbot": "0.49.0",
+    "sand": "0.49.0"
+  },
+  "description": "Securely connect your accounts so Grok can help with questions about your spending, subscriptions, balances, and investments.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://grok.com/connectors",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "finance",
+    "accounts",
+    "spending",
+    "subscriptions",
+    "balances",
+    "investments",
+    "grok",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "finance",
+    "accounts",
+    "grok",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Connect to Google Drive via Google's remote MCP server — search, read, create, share, and manage files.",
+  "description": "Search, read, create, and share files.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

@@ -2,7 +2,7 @@
   "name": "gong",
   "displayName": "Gong",
   "version": "1.0.0",
-  "description": "Gong MCP integration for revenue intelligence — account summaries, deal insights, and call briefs.",
+  "description": "Pull account summaries, deal insights, and call briefs.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
