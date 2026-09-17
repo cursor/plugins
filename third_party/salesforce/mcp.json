@@ -4,7 +4,7 @@
       "type": "http",
       "url": "${SALESFORCE_MCP_URL}",
       "auth": {
-        "CLIENT_ID": "${CLIENT_ID}",
+        "CLIENT_ID": "${SALESFORCE_CLIENT_ID}",
         "scopes": ["mcp_api", "refresh_token"]
       }
     }
