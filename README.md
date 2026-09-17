@@ -82,6 +82,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `daloopa` | [Daloopa](third_party/daloopa/) | Cursor | Integrations | Pull source-linked fundamentals, KPIs, filings, and prices. |
 | `excalidraw` | [Excalidraw](third_party/excalidraw/) | Cursor | Integrations | Draw and export hand-drawn diagrams from chat. |
 | `google-cloud-bigquery` | [Google Cloud BigQuery](third_party/google-cloud-bigquery/) | Cursor | Integrations | Explore datasets and tables and run SQL queries. |
+| `whatsetter` | [WhatSetter](third_party/whatsetter/) | WhatSetter | Integrations | Work WhatsApp leads, conversations, bookings, and campaigns run by the WhatSetter AI setter. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

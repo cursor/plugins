@@ -407,6 +407,11 @@
       "name": "google-cloud-bigquery",
       "source": "third_party/google-cloud-bigquery",
       "description": "Explore datasets and tables and run SQL queries."
+    },
+    {
+      "name": "whatsetter",
+      "source": "third_party/whatsetter",
+      "description": "Work WhatsApp leads, conversations, bookings, and campaigns run by the WhatSetter AI setter."
     }
   ]
 }
