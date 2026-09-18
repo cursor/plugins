@@ -169,6 +169,11 @@
       "description": "Track AI visibility, sentiment, and citations."
     },
     {
+      "name": "uizze",
+      "source": "uizze",
+      "description": "UI design that stands out"
+    },
+    {
       "name": "juicebox",
       "source": "third_party/juicebox",
       "description": "Query recruiting analytics, shortlists, and sourcing agents."
