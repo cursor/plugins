@@ -99,6 +99,21 @@
       "description": "Search events and schedule meetings."
     },
     {
+      "name": "google-docs",
+      "source": "third_party/google-docs",
+      "description": "Read, create, and edit documents."
+    },
+    {
+      "name": "google-sheets",
+      "source": "third_party/google-sheets",
+      "description": "Read, write, and append spreadsheet data."
+    },
+    {
+      "name": "google-slides",
+      "source": "third_party/google-slides",
+      "description": "Create, edit, and render presentations."
+    },
+    {
       "name": "gong",
       "source": "third_party/gong",
       "description": "Pull account summaries, deal insights, and call briefs."
