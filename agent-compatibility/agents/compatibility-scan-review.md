@@ -1,40 +1,58 @@
 ---
 name: compatibility-scan-review
-description: Run the agent-compatibility CLI and return the raw repository score with its main problems
+description: Run the pinned agent-compatibility CLI, validate its repository classification, and return structured evidence.
 model: fast
-readonly: true
+readonly: false
 ---
 
 # Compatibility scan review
 
-Runs the published scanner and reports the raw repository score.
-
-## Trigger
-
-Use when the task is specifically to run the published `agent-compatibility` scanner and report the raw compatibility result.
+Run the deterministic scanner without modifying the target repository.
 
 ## Workflow
 
-1. Try the published scanner first with `npx -y agent-compatibility@latest --json "<path>"`.
-2. If you are clearly working inside the scanner source repo and the published package path fails for an environment reason, fall back to the local scanner entrypoint.
-3. Only say the scanner is unavailable after you have actually tried the published package, and the local fallback when it is clearly available.
-4. Prefer JSON when you need structured reasoning. Prefer Markdown when the user wants a direct report.
-5. Keep the scanner's real score, summary direction, and problem ordering.
-6. Do not bundle in startup, validation, or docs-reliability judgments. Those belong to separate agents.
+1. Require canonical absolute `Target root` and `Scanner helper` paths from the parent task.
+2. Confirm `Scanner helper` ends in `scripts/run-deterministic-scan.mjs`, then run `node "<Scanner helper>" "<Target root>"` exactly once. The helper runs `agent-compatibility@0.1.7`, validates the scanned path, and checks the scanner classification against obvious repository signals.
+3. Return the helper's JSON exactly. Do not reinterpret its score, classification, reliability, command outcomes, or failure status.
+4. If the helper process exits nonzero but emits valid JSON, return that JSON; `unavailable` is evidence about the tool or environment, not a repository score of zero.
+5. If the helper cannot be read or emits invalid JSON, return `unavailable` using the schema below. Do not run the scanner directly or substitute a different package version.
+6. Do not make startup, validation-loop, or docs-reliability judgments.
+
+Npm cache writes are allowed. Do not change files in the target repository.
 
 ## Output
 
-Reply in **plain text only** (no markdown fences, no `#` headings, no emphasis syntax). Use this layout:
+Return JSON only, with no markdown fence:
 
-First line: `Deterministic Compatibility Score: <score>/100`
+Allowed `status` values are `complete`, `unreliable`, and `unavailable`. Allowed command `outcome` values are `passed`, `failed`, and `blocked`.
+An obviously wrong classification is returned as `"unreliable"`, with the scanner's evidence preserved.
 
-Then a short summary paragraph.
+```json
+{
+  "status": "complete",
+  "scoreName": "Deterministic Compatibility Score",
+  "score": 84,
+  "scannerVersion": "0.1.7",
+  "targetRoot": "/absolute/path",
+  "scannedPath": "/absolute/path",
+  "classification": "application",
+  "classificationReliable": true,
+  "summary": "Short evidence-based summary.",
+  "evidence": ["scannerVersion: 0.1.7", "scannedPath: /absolute/path"],
+  "problems": [
+    {
+      "title": "Problem title",
+      "evidence": ["file:line or scanner evidence"],
+      "remediation": "Concrete fix"
+    }
+  ],
+  "commands": [
+    {
+      "command": "npx -y agent-compatibility@0.1.7 --json <target>",
+      "outcome": "passed"
+    }
+  ]
+}
+```
 
-Then the line `Problems` followed by one bullet per line using `- `.
-
-- Use the compatibility scan's real score.
-- Keep accelerator context separate from the deterministic compatibility score itself.
-- Include both rubric issues and accelerator issues when they matter.
-- If there are no meaningful problems, under Problems write `- None.`
-- Do not treat scanner availability as a defect in the target repo.
-- If the scanner truly cannot be run, say that the deterministic scan is unavailable because of the tool environment, not because the repo lacks a compatibility CLI.
+Always return `targetRoot`, `summary`, and at least one `evidence` string. Use `null` for `score`, `scannerVersion`, or `classification` when unavailable. Use an empty `problems` array when no meaningful deterministic problem exists.
