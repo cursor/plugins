@@ -29,6 +29,11 @@ Code organization:
 - Prompt construction: structured state in, string out
 - Scoring and assessment: pure transforms from state to results
 
+Measurement and adversarial engagements:
+- Guards belong at the engagement edge: the authorized targets, credentials, and budget
+- Every interior restriction must trace to the engagement's stated goal, or be labeled a human option
+- An interior fence silently changes what the measurement means
+
 **The tests:**
 - "Is this data crossing a system boundary right now?" If not, validation is redundant.
 - "Can this be a pure function that the shell just calls?" If yes, extract it.
