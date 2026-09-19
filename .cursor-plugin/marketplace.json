@@ -174,6 +174,11 @@
       "description": "Query recruiting analytics, shortlists, and sourcing agents."
     },
     {
+      "name": "invinoveritas",
+      "source": "third_party/invinoveritas",
+      "description": "Independent, signed pre-action verdicts for agent tool calls and merges — a neutral second opinion before an irreversible action, with a recomputable proof after, via invinoveritas's official remote MCP server."
+    },
+    {
       "name": "outreach",
       "source": "third_party/outreach",
       "description": "Search sequences, prospects, and Kaia meetings."
