@@ -412,6 +412,11 @@
       "name": "statsig",
       "source": "third_party/statsig",
       "description": "Inspect and manage feature gates, experiments, dynamic configs, and metrics."
+    },
+    {
+      "name": "swarms",
+      "source": "third_party/swarms",
+      "description": "Run agents, orchestrate multi-agent swarms, and process batches."
     }
   ]
 }
