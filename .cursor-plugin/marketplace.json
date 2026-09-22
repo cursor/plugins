@@ -427,6 +427,11 @@
       "name": "statsig",
       "source": "third_party/statsig",
       "description": "Inspect and manage feature gates, experiments, dynamic configs, and metrics."
+    },
+    {
+      "name": "united-starlink-tracker",
+      "source": "third_party/united-starlink-tracker",
+      "description": "Check United flights for Starlink WiFi and plan Starlink-maximizing itineraries."
     }
   ]
 }

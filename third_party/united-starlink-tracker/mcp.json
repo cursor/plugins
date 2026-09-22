@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "united-starlink-tracker": {
+      "type": "http",
+      "url": "https://unitedstarlinktracker.com/mcp"
+    }
+  }
+}
