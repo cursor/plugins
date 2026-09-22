@@ -427,6 +427,11 @@
       "name": "statsig",
       "source": "third_party/statsig",
       "description": "Inspect and manage feature gates, experiments, dynamic configs, and metrics."
+    },
+    {
+      "name": "clarify",
+      "source": "third_party/clarify",
+      "description": "Search and update CRM records, lists, campaigns, and meetings."
     }
   ]
 }
