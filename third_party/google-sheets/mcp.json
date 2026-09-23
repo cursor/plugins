@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "google-sheets": {
+      "type": "http",
+      "url": "https://api.cursor.com/rest-mcp/google-sheets/mcp"
+    }
+  }
+}

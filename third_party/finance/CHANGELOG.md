@@ -2,6 +2,11 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.1.1 — Pre-connect disclosure
+
+- The listing description now says what connecting does (Plaid link), what data is shared (contact details, account and balance info, transactions, credit and loans, investments), that Grok syncs and stores linked account data for the connector to work while privacy mode still governs conversation storage and training, that access is read-only, that xAI never sees or stores bank logins, and that accounts can be unlinked from cursor.com.
+- Same text in the README. No server or client-version changes.
+
 ## 1.1.0 — MCP server
 
 - Added the `finance` MCP server pointing at `https://connectors-gateway.grok.com/gateway/v1/finance/mcp`, the streamable-HTTP transport of the Grok Finance connector.
