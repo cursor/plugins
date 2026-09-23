@@ -21,7 +21,7 @@ Copy `references/decision-log-template.tsv` (the header row) to start a clean lo
 - **evidence.** A link or path that proves it: commit SHA, PR number, `file:line`, or an artifact, trace, or screenshot path. Never a paragraph.
 - **result.** The outcome or predicate state: `tests green`, `reverted`, `pixel-diff 0`, `INCONCLUSIVE`, `open`.
 
-An example, plain-spoken so a reviewer reads it at a glance. This is illustration only. Don't copy these rows into a real log.
+An example, plain-spoken so a reviewer reads it at a glance.
 
 ```
 ts	phase	decision	why	evidence	result
@@ -47,7 +47,6 @@ Commit it only when the work is ambitious enough that a reviewer needs the trail
 
 ## Rules
 
-- One row is one decision or checkpoint.
 - Append-only. A wrong call gets a new row that supersedes it. Never edit or delete history.
 - Prefer evidence produced by committed scripts over hand-made one-offs (the **encode-lessons-in-structure** principle skill).
 
