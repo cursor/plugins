@@ -30,7 +30,7 @@ Skip Phase A only when the work is genuinely greenfield with no surrounding syst
 
 Run the **arena** skill with the design-sketch task and the Phase A grounding artifacts. Pass `references/runner-prompt.md` as each runner's prompt. Each candidate produces a design package shaped per `references/rationale-template.md`.
 
-Use your configured architect runners (defaults `claude-opus-5-5-max`, `gpt-5.6-sol-max`, `grok-4.7-xhigh-fast`).
+Use your configured architect runners (defaults `claude-opus-5-5-max` and `gpt-5.6-sol-max`). If a configured runner's model is rejected, retry it with another available configured runner; if none is available, omit `model` so it inherits the parent. If the retry fails, continue with the remaining candidates and record the dropout; the parent must finish the design comparison with the candidates that completed.
 
 Design it twice. Require at least two structurally distinct candidates before synthesis, even when the first looks sufficient. This is the **exhaust-the-design-space** principle skill made concrete. Whole-shape alternatives, not point fixes inside one shape.
 

@@ -5,7 +5,7 @@ description: Configure which models pstack uses per role and at what reasoning b
 
 # Setup pstack
 
-Write `~/.cursor/rules/pstack-models.mdc`, an always-applied rule that sets pstack's model per role.
+Write `~/.cursor/rules/pstack-models.mdc`, an always-applied rule that sets pstack's model per role. Defaults come from this loaded copy of `setup-pstack`; running the skill does not fetch or update pstack or overwrite its project files. It only writes the user-level model rule.
 
 ## Steps
 
@@ -58,11 +58,11 @@ why investigators: grok-4.7-xhigh-fast
 why synthesizer: claude-opus-5-5-max
 reflect tooling: gpt-5.6-sol-max
 reflect judgment, divergent, synthesizer: claude-opus-5-5-max
-arena runners: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
-arena cross-judge pool: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
+arena runners: claude-opus-5-5-max, gpt-5.6-sol-max
+arena cross-judge pool: claude-opus-5-5-max, gpt-5.6-sol-max
 swarm workers: grok-4.7-xhigh-fast
-architect runners: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
-interrogate reviewers: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
+architect runners: claude-opus-5-5-max, gpt-5.6-sol-max
+interrogate reviewers: claude-opus-5-5-max, gpt-5.6-sol-max
 ```
 
 ### 6. Confirm
