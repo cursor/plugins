@@ -452,6 +452,11 @@
         "grokbot": "0.52.0",
         "sand": "0.52.0"
       }
+    },
+    {
+      "name": "beket",
+      "source": "third_party/beket",
+      "description": "Audit AI visibility, citations, and content gaps."
     }
   ]
 }
