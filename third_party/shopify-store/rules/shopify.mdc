@@ -12,7 +12,7 @@ Two Shopify capabilities can be present at once. Pick by what the user is asking
 For anything about the user's own store, its data, or changes to it: products, prices, inventory, orders, customers, collections, discounts, sales and analytics questions, store info, switching stores.
 
 - Read before you write: `get-shop-info`, `search_products`, `get-product`, `list-orders`, `get-order`, `list-customers`, `get-inventory-levels`, `search_collections`, `get-collection`, `run-analytics-query`.
-- Confirm with the user before any write tool (`create-product`, `update-product`, `set-inventory`, `create-discount`, `add-to-collection`, `create-collection`, `update-collection`, `bulk-update-product-status`, `graphql_mutation`); state what will change and where.
+- Confirm with the user before any write tool (`create-product`, `update-product`, `set-inventory`, `create-discount`, `add-to-collection`, `create-collection`, `update-collection`, `bulk-update-product-status`, `upload-image`, `graphql_mutation`); state what will change and where.
 - If the tools are absent or report that no store is connected, tell the user to connect their store from the Shopify connector; do not fall back to web search for their store's data.
 
 ## Use the Shopify AI Toolkit skills (building on Shopify)
