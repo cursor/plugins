@@ -1,6 +1,6 @@
 {
   "name": "shopify-store",
-  "displayName": "Shopify Store",
+  "displayName": "Shopify",
   "version": "1.0.0",
   "minClientVersions": {
     "cursor": "never",
@@ -34,5 +34,6 @@
     "grok",
     "mcp"
   ],
-  "mcpServers": "./mcp.json"
+  "mcpServers": "./mcp.json",
+  "rules": "./rules/"
 }

@@ -1,10 +1,10 @@
-# Shopify Store
+# Shopify
 
 Grok Bot plugin that connects agents to the Grok **Shopify** connector, which talks to your store through Shopify's remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
 
 Connect your Shopify store so Grok can answer questions about your products, orders, customers, inventory, and sales. You sign in with Shopify and approve the store access Grok requests; Grok keeps that authorization so the connector can work, and Grok Bot's privacy mode still controls whether your conversations are stored or used for training. xAI never sees or stores your Shopify password, and you can disconnect the store anytime from grok.com.
 
-This is the merchant connector for an existing store. It is distinct from Shopify's own [`shopify-plugin`](https://cursor.com/marketplace/shopify) (the Shopify AI Toolkit), which is a developer toolkit of skills for building on Shopify and does not access a store's data.
+This is the merchant connector for an existing store, listed under the slug `shopify-store` because the marketplace already has Shopify's own [`shopify-plugin`](https://cursor.com/marketplace/shopify) (the Shopify AI Toolkit: skills for building on Shopify, no store access). The two are meant to converge into a single "Shopify" plugin that carries both the MCP server and the toolkit skills; until then, `rules/shopify.mdc` tells the agent when to use the store's MCP tools and when to use the toolkit skills if both are installed.
 
 ## Who can use it
 
@@ -25,6 +25,10 @@ This is the merchant connector for an existing store. It is distinct from Shopif
 ```
 
 The server is Shopify's hosted MCP for a connected store. Sign-in runs through Grok: the Grok connector completes Shopify's OAuth (PKCE public client, registered by xAI) and executes tools on the caller's behalf, so the row appears in Grok Bot as served by Grok. Shopify's authorization server does not offer dynamic client registration, which is why Cursor cannot connect to this URL on its own and the plugin is Grok Bot only.
+
+## Routing rule
+
+`rules/shopify.mdc` (always applied) routes requests: the user's own store data and changes go to the `shopify` MCP tools, with confirmation before any write tool; developer work (GraphQL, Liquid, Functions, Hydrogen, Polaris, App Store review, docs) goes to the Shopify AI Toolkit skills when installed; anything the toolkit would run against a store through the Shopify CLI uses the MCP tools instead inside Grok Bot.
 
 ## About this connector
 
