@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "beket": {
+      "type": "http",
+      "url": "https://mcp.beket.ai/cursor/mcp"
+    }
+  }
+}
