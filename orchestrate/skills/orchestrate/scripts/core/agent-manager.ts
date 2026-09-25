@@ -18,7 +18,10 @@ import type {
   SDKMessage,
 } from "@cursor/sdk";
 import { createSlackAdapter } from "../adapters/index.ts";
-import { createSlackWebClient } from "../adapters/slack/client.ts";
+import {
+  createSlackWebClient,
+  slackTokenConfigured,
+} from "../adapters/slack/client.ts";
 import type { SlackAdapter, TaskStatus } from "../adapters/types.ts";
 import { PlanValidationError } from "../errors.ts";
 import type {
@@ -1648,7 +1651,7 @@ function planSlackChannel(plan: Plan): string | undefined {
 }
 
 function slackAdapterForPlan(plan: Plan): SlackAdapter | undefined {
-  // SLACK_BOT_TOKEN missing is signalled once via console.error inside
+  // A missing token is signalled once via console.error inside
   // createSlackWebClient. Don't double-log to attention.log: env config
   // belongs to the operator surface, not workspace-visible state.
   const channel = planSlackChannel(plan);
@@ -1656,7 +1659,7 @@ function slackAdapterForPlan(plan: Plan): SlackAdapter | undefined {
     // Surface the missing-token signal even when the channel is also unset,
     // so an operator who expected Slack visibility sees a single console line
     // explaining why it's off.
-    if (!process.env.SLACK_BOT_TOKEN) createSlackWebClient();
+    if (!slackTokenConfigured()) createSlackWebClient();
     return undefined;
   }
   return createSlackAdapter(channel);
