@@ -91,6 +91,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `etoro-trading` | [eToro Trading](third_party/etoro-trading/) | Cursor | Integrations | View your eToro portfolio, balances, positions, and watchlists, research instruments and traders, and prepare and place trades. |
 | `x-money` | [X Money](third_party/x-money/) | Cursor | Integrations | Use your X Money Card, send money to users on X, manage your finances, view your balance and browse through your transaction history. |
 | `shopify-store` | [Shopify](third_party/shopify-store/) | Cursor | Integrations | Connect your Shopify store so Grok can answer questions about products, orders, customers, inventory, and sales. |
+| `usmail` | [USMail.ai](third_party/usmail/) | USMail.ai | Integrations | Prepare USMail.ai print-to-mail in Cursor. The agent uploads, configures, and generates a proof. A human funds the meter and approves production on the app. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
