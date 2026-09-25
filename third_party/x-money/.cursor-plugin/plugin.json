@@ -1,0 +1,42 @@
+{
+  "name": "x-money",
+  "displayName": "X Money",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "never",
+    "grokbot": "0.52.0",
+    "sand": "0.52.0"
+  },
+  "description": "Use your X Money Card, send money to users on X, manage your finances, view your balance and browse through your transaction history.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://x.com/i/money",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "x money",
+    "xmoney",
+    "x",
+    "payments",
+    "balance",
+    "transactions",
+    "send money",
+    "p2p",
+    "virtual card",
+    "wallet",
+    "finance",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "x-money",
+    "payments",
+    "finance",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
+}

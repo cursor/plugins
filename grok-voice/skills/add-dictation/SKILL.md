@@ -15,7 +15,12 @@ Add Grok Speech to Text to an existing app: a mic button that dictates into the 
 ## Docs
 
 - https://docs.x.ai/developers/model-capabilities/audio/speech-to-text
+- Model selection (read first): https://docs.x.ai/developers/model-capabilities/audio/speech-to-text#model-selection
 - Pricing (cite docs only): https://docs.x.ai/developers/pricing
+
+## Model
+
+Before any STT call, read the model-selection section and pass the **latest listed** model as `model`. Do not invent ids or reuse a stale one from this skill. REST: form field before `file`. Streaming: query param. Official examples currently send `grok-voice-transcribe-2.0`. Listed today: `grok-voice-transcribe-2.0` (best), `grok-voice-transcribe-1.0` (original; API default when `model` is omitted).
 
 ## Pick the path
 
@@ -40,12 +45,13 @@ Batch is the default for a composer mic button: one request, no socket, the key 
 
 2. **Batch path (default)**
    - Client: `MediaRecorder` → `Blob` → `POST` to your own route. The endpoint auto-detects containers (WAV, MP3, OGG, Opus, FLAC, AAC, MP4, M4A, MKV, WebM), so send whatever `MediaRecorder` produces.
-   - Server: forward as `multipart/form-data`. Option fields first, **`file` last**; fields after `file` may be ignored. `file` or `url`, max 500 MB.
+   - Server: forward as `multipart/form-data`. Option fields first, **`file` last**; fields after `file` may be ignored. `file` or `url`, max 500 MB. `model` from docs (latest listed).
 
 ```ts
 // server (any runtime with fetch + FormData)
 export async function transcribe(blob: Blob, filename: string) {
   const form = new FormData();
+  form.append("model", "grok-voice-transcribe-2.0"); // latest from docs; re-read model-selection
   form.append("format", "true");     // written-form numbers/currency; requires language
   form.append("language", "en");
   // form.append("keyterm", "Acme"); // repeat per term, ≤100 terms × 50 chars
@@ -80,13 +86,13 @@ rec.start(); // second tap: rec.stop()
 ```
 
 3. **Streaming path**
-   - Relay: server holds the key, upgrades the browser socket, forwards binary frames and client control messages up, JSON events down. Build the query string server side.
+   - Relay: server holds the key, upgrades the browser socket, forwards binary frames and client control messages up, JSON events down. Build the query string server side. `model` from docs (latest listed).
 
 ```ts
 import { WebSocketServer, WebSocket } from "ws";
 
 new WebSocketServer({ port: 8788 }).on("connection", (client) => {
-  const q = new URLSearchParams({ sample_rate: "16000", encoding: "pcm", interim_results: "true", language: "en" });
+  const q = new URLSearchParams({ model: "grok-voice-transcribe-2.0", sample_rate: "16000", encoding: "pcm", interim_results: "true", language: "en" });
   const up = new WebSocket(`wss://api.x.ai/v1/stt?${q}`, { headers: { Authorization: `Bearer ${process.env.XAI_API_KEY}` } });
   up.on("message", (d) => client.send(d.toString()));                       // transcript.* and error events
   client.on("message", (d, isBinary) => up.readyState === WebSocket.OPEN && up.send(d, { binary: isBinary })); // audio + finalize/audio.done
@@ -126,6 +132,7 @@ ws.addEventListener("message", (e) => {
 
 | Want | Set |
 | --- | --- |
+| Latest STT | Read docs #model-selection, pass that `model`. Snapshot: `grok-voice-transcribe-2.0`. Omit → `grok-voice-transcribe-1.0`. Batch: form field. Streaming: query param. |
 | Text while speaking | `interim_results=true` |
 | “one hundred dollars” → `$100` | streaming: `language=en`; batch: `format=true` + `language=en` |
 | Product names, jargon | `keyterm=` repeated |
@@ -145,7 +152,7 @@ import os, requests
 r = requests.post(
     "https://api.x.ai/v1/stt",
     headers={"Authorization": f"Bearer {os.environ['XAI_API_KEY']}"},
-    data=[("format", "true"), ("language", "en")],
+    data=[("model", "grok-voice-transcribe-2.0"), ("format", "true"), ("language", "en")],
     files={"file": ("dictation.webm", blob, "audio/webm")},  # requests sends data fields before files
 )
 r.raise_for_status(); text = r.json()["text"]
@@ -153,7 +160,7 @@ r.raise_for_status(); text = r.json()["text"]
 ```
 
 6. **Smoke**
-   - Batch: `curl -X POST https://api.x.ai/v1/stt -H "Authorization: Bearer $XAI_API_KEY" -F language=en -F file=@short.wav` → 200 with `text`. Same call with `-F format=true` and no `language` → 400.
+   - Batch: latest `model` from docs (currently `grok-voice-transcribe-2.0`): `curl -X POST https://api.x.ai/v1/stt -H "Authorization: Bearer $XAI_API_KEY" -F model=grok-voice-transcribe-2.0 -F language=en -F file=@short.wav` → 200 with `text`. Same call with `-F format=true` and no `language` → 400.
    - Streaming: dictate two sentences with a pause between them. Expect interim text, then a final; no duplicated or vanished words at the utterance boundary (if words vanish, the stitched `speech_final` text did not include the chunk finals: append instead of replacing `locked`). `audio.done` → `transcript.done`, socket closes.
    - Search the client bundle for `XAI_API_KEY`; it must not be there.
    - Debug from logs with `/debug-voice`; swap its hook points to `transcript.*` events.
@@ -161,4 +168,4 @@ r.raise_for_status(); text = r.json()["text"]
 ## Out of scope
 
 - Speech that talks back (`/add-voice`), speaking text (`/add-read-aloud`)
-- Inventing an STT token flow, endpoints, or event names not in the docs
+- Inventing an STT token flow, endpoints, model ids, or event names not in the docs
