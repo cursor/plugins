@@ -374,6 +374,11 @@
       "description": "Manage ad campaigns, create ads, track conversions, and pull performance stats."
     },
     {
+      "name": "meta-ads",
+      "source": "third_party/meta-ads",
+      "description": "Manage Meta ad campaigns, creatives, catalogs, and reporting from chat."
+    },
+    {
       "name": "attio",
       "source": "third_party/attio",
       "description": "Search and update CRM records, lists, notes, and tasks."
