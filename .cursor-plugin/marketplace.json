@@ -89,6 +89,11 @@
       "description": "Search, read, draft, and manage email."
     },
     {
+      "name": "google-chat",
+      "source": "third_party/google-chat",
+      "description": "Access spaces and read or send messages."
+    },
+    {
       "name": "google-drive",
       "source": "third_party/google-drive",
       "description": "Search, read, create, and share files."
