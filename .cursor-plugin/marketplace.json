@@ -394,6 +394,11 @@
       "description": "View accounts, positions, orders, watchlists, and market data."
     },
     {
+      "name": "zerodha-kite",
+      "source": "third_party/zerodha-kite",
+      "description": "Review portfolios, positions, orders, margins, and market data through Kite."
+    },
+    {
       "name": "sp-global",
       "source": "third_party/sp-global",
       "description": "Query S&P Capital IQ financials, prices, and transcripts."
