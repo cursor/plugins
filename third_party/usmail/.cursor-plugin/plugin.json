@@ -1,0 +1,31 @@
+{
+  "name": "usmail",
+  "displayName": "USMail.ai",
+  "description": "Prepare USMail.ai print-to-mail in Cursor. The agent uploads, configures, and generates a proof. A human funds the meter and approves production on the app.",
+  "version": "0.2.0",
+  "author": {
+    "name": "USMail.ai"
+  },
+  "publisher": "USMail.ai",
+  "homepage": "https://www.usmail.ai",
+  "repository": "https://github.com/Postalocity/usmail-cursor-plugin",
+  "license": "MIT",
+  "keywords": [
+    "print-to-mail",
+    "direct mail",
+    "USPS mail",
+    "mail automation",
+    "MCP",
+    "usmail"
+  ],
+  "logo": "assets/logo.svg",
+  "category": "integrations",
+  "tags": [
+    "print-to-mail",
+    "direct-mail",
+    "usps",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
+}
