@@ -33,9 +33,9 @@ Or run `/add-plugin gong` in chat.
 Gong's MCP server uses static OAuth client credentials plus a per-user OAuth login, so an administrator has to register Cursor before anyone can connect.
 
 1. A Gong technical administrator creates an MCP integration under **Company Settings → Ecosystem → API → Integrations** and enables the MCP scope.
-2. Register both redirect URIs on that integration:
-   - Desktop: `http://localhost:8787/callback`
+2. Register Cursor's redirect URI on that integration:
    - Web and Cloud Agents: `https://www.cursor.com/agents/mcp/oauth/callback`
+   - Desktop: `http://localhost:8787/callback`, but Gong's console only accepts `https://` redirect URIs, so this URI cannot be saved and desktop sign-in cannot complete.
 3. In **Dashboard → Plugins → Configure**, set **Gong Client ID** and **Gong Client Secret** from that integration.
 4. Complete the Gong OAuth login when Cursor prompts.
 
