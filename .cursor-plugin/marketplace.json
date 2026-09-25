@@ -309,6 +309,11 @@
       "description": "Search meetings and pull transcripts and summaries."
     },
     {
+      "name": "plaud",
+      "source": "third_party/plaud",
+      "description": "Search Plaud recordings, transcripts, notes, and action items."
+    },
+    {
       "name": "craft",
       "source": "third_party/craft",
       "description": "Search, create, and update documents and daily notes."
