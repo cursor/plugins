@@ -16,7 +16,7 @@ Invoke when the user says "reflect" or "/reflect". Skip when the conversation is
 
 ### 1. Locate the active transcript
 
-The parent finds its own transcript file before fanning out. The system prompt names the active workspace's `agent-transcripts/` directory. Use that path. Do not glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
+The parent finds its own transcript file before fanning out. Detect the harness first. Cursor writes JSONL under the active workspace's `agent-transcripts/` directory (the system prompt names the path; use it, and do not glob across `~/.cursor/projects/*/`). OpenCode stores sessions in `~/.local/share/opencode/opencode.db`; open it read-only with `?immutable=1` and export to text. Codex writes rollout files under `~/.codex`. Never cross workspace boundaries or read private chats from unrelated projects.
 
 ```bash
 ls -t <agent-transcripts>/*.jsonl <agent-transcripts>/*/*.jsonl <agent-transcripts>/*/subagents/*.jsonl 2>/dev/null | head -10
