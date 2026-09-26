@@ -14,17 +14,17 @@ headings to fit the app.
   rest (usually native or mirror), and whether there is feedback for Cursor
   and if any of it blocks.
 - **Maps what the app uses to Origin.** Every capability the code relies on,
-  with the Origin operation, slug, or `llms-full.txt` anchor it maps to, or a
+  with the Origin operation, slug, or reference page it maps to, or a
   note that nothing does. Where a webhook handler reads specific payload
   fields, say per field whether it is present, comes from the envelope, needs
   a follow-up read (and how many per event), is derivable, or is absent.
   Group by facet if the table is long. End with the scopes to request: the
   union of `x-origin-scopes.scopes` over the operations named, minus what
-  `#scopes` says is automatic or implied.
+  `reference/scopes.md` says is automatic or implied.
 - **Gives an app-specific first-run path when it helps.** The events to
   select by slug, the mirror-state check, the first event that should arrive
   and what it should carry, the first write. Generic setup steps belong to
-  `llms-full.txt#implementation-checklist`, not here. Skip for a read-only app
+  `reference/implementation-checklist.md`, not here. Skip for a read-only app
   with one event.
 - **Adds plan notes.** What drives the size of the port (a few bullets, no
   time estimates) and how to roll it out: dual-run or cutover, what a mirror
@@ -45,7 +45,7 @@ headings to fit the app.
 - Every claim about the app cites evidence: `file:line`, or "from
   `<dependency>` (documented behavior)". Team-facing sections only.
 - Every claim about Origin resolves in the fetched `openapi.yaml` or
-  `llms-full.txt`: an `operationId`, a slug, or an anchor. Nothing from
+  `llms-full.txt`: an `operationId`, a slug, or a reference page. Nothing from
   memory.
 - Behavior the docs do not state is a question plus a first-run step that
   observes it, never an assumption.

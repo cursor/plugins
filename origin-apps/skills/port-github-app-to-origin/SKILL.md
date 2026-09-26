@@ -37,15 +37,16 @@ Adapt the steps to the app. The brief format matters most in its Feedback
 section.
 
 1. **Load the spec.** A brief needs broad coverage, so fetch the full
-   `openapi.yaml` and `llms-full.txt`. Record `info.version` and the fetch
-   time for provenance. Build the index per `references/spec-mapping.md`.
+   `openapi.yaml` and `llms-full.txt` (see `origin-api` for URLs). Record
+   `info.version` and the fetch time for provenance. Build the index per
+   `references/spec-mapping.md`.
 2. **Discover** per `references/discovery.md`, including payload fields read
    only for logging and calls the framework makes on the app's behalf. Note
    what you looked for and did not find.
 3. **Map** each capability (`references/spec-mapping.md`). Map the payload
    fields the code reads, not only the event names; if a payload lacks a
    field the REST resource has, a follow-up read is the usual answer
-   (`#event-payloads`). Check `references/origin-isms.md` before calling
+   (`reference/event-payloads.md`). Check `references/origin-isms.md` before calling
    anything a gap, and `references/gap-bar.md` before writing feedback. A
    capability the Origin docs do not mention is not available today and gets
    a question. A behavior the docs neither confirm nor deny becomes a
@@ -53,7 +54,7 @@ section.
    carried over from the app's current platform.
 4. **Write the brief** per `references/brief-template.md`: guidance and a
    default outline, not a form. Every Origin claim names an `operationId`, a
-   slug, or an `llms-full.txt` anchor. When there is feedback, also write the
+   slug, or a `reference/<anchor>.md` page. When there is feedback, also write the
    Feedback section to `ORIGIN-FEEDBACK.md` beside the brief.
 5. **Self-check** before finishing: every Origin claim resolves in the
    fetched files; every gap has a feedback entry that names a tradeoff from
