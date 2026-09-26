@@ -2,7 +2,7 @@
   "mcpServers": {
     "google-drive": {
       "type": "http",
-      "url": "https://drivemcp.googleapis.com/mcp/v1"
+      "url": "https://api.cursor.com/rest-mcp/google-drive/mcp"
     }
   }
 }
