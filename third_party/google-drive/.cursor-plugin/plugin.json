@@ -29,5 +29,6 @@
     "mcp",
     "google-workspace"
   ],
-  "mcpServers": "./mcp.json"
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
 }
