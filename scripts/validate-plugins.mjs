@@ -95,7 +95,35 @@ for (const entry of marketplace.plugins ?? []) {
   }
 }
 
-// 3. Validate skill frontmatter
+// 3. Check every plugin in the repository is registered in the marketplace
+const marketplaceSources = new Set(
+  (marketplace.plugins ?? []).map((entry) => resolve(root, entry.source))
+);
+
+const pluginDirs = [];
+
+(function collectPluginDirs(dir) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name === ".git" || entry.name === "node_modules") continue;
+    const full = resolve(dir, entry.name);
+    if (!entry.isDirectory()) continue;
+    if (existsSync(resolve(full, ".cursor-plugin/plugin.json"))) {
+      pluginDirs.push(full);
+    } else {
+      collectPluginDirs(full);
+    }
+  }
+})(root);
+
+for (const pluginDir of pluginDirs) {
+  if (!marketplaceSources.has(pluginDir)) {
+    fail(
+      `${relative(root, pluginDir)}: has a .cursor-plugin/plugin.json but is not listed in .cursor-plugin/marketplace.json`
+    );
+  }
+}
+
+// 4. Validate skill frontmatter
 const skillFiles = [];
 
 (function collectSkillFiles(dir) {
@@ -141,7 +169,7 @@ for (const skillPath of skillFiles.sort()) {
   }
 }
 
-// 4. Report results
+// 5. Report results
 if (errors > 0) {
   console.error(`\nValidation failed with ${errors} error(s).`);
   process.exit(1);
