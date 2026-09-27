@@ -77,6 +77,9 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `gamma` | [Gamma](third_party/gamma/) | Cursor | Integrations | Generate presentations, documents, and webpages. |
 | `teams` | [Teams](third_party/teams/) | Cursor | Productivity | Search, read, and send Microsoft Teams chats and channel messages. |
 | `sharepoint` | [SharePoint](third_party/sharepoint/) | Cursor | Productivity | Search and read Microsoft SharePoint sites, document libraries, files, and lists. |
+| `onedrive` | [OneDrive](third_party/onedrive/) | Cursor | Productivity | Browse, search, and read Microsoft OneDrive files. |
+| `outlook` | [Outlook](third_party/outlook/) | Cursor | Productivity | Search, read, and send Microsoft Outlook email, and look up contacts. |
+| `outlook-calendar` | [Outlook Calendar](third_party/outlook-calendar/) | Cursor | Productivity | List, create, update, and cancel Microsoft Outlook calendar events. |
 | `finance` | [Finance](third_party/finance/) | Cursor | Integrations | Securely connect your accounts so Grok can help with questions about your spending, subscriptions, balances, and investments. |
 | `webull` | [Webull](third_party/webull/) | Cursor | Integrations | View accounts, positions, orders, watchlists, and market data. |
 | `sp-global` | [S&P Global](third_party/sp-global/) | Cursor | Integrations | Query S&P Capital IQ financials, prices, and transcripts. |
@@ -91,6 +94,12 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `etoro-trading` | [eToro Trading](third_party/etoro-trading/) | Cursor | Integrations | View your eToro portfolio, balances, positions, and watchlists, research instruments and traders, and prepare and place trades. |
 | `x-money` | [X Money](third_party/x-money/) | Cursor | Integrations | Use your X Money Card, send money to users on X, manage your finances, view your balance and browse through your transaction history. |
 | `shopify-store` | [Shopify](third_party/shopify-store/) | Cursor | Integrations | Connect your Shopify store so Grok can answer questions about products, orders, customers, inventory, and sales. |
+| `beehiiv` | [beehiiv](third_party/beehiiv/) | Cursor | Integrations | Run your beehiiv newsletter from chat: draft and edit posts, organize subscribers with tags, custom fields, and segments, build automations, and review publication, post, and website performance. |
+| `buffer` | [Buffer](third_party/buffer/) | Cursor | Integrations | Manage social media with Buffer: draft, schedule, and publish posts across connected channels, manage the queue and ideas, and review post performance. |
+| `plaud` | [Plaud](third_party/plaud/) | Cursor | Integrations | Work with your Plaud recordings: list and search meetings and voice notes, read full transcripts with speaker labels, and pull AI summaries, action items, and key topics into your workflow. |
+| `posthog-mcp` | [PostHog MCP](third_party/posthog-mcp/) | Cursor | Integrations | Work with PostHog from chat: query product analytics and run SQL, manage feature flags and experiments, triage error tracking issues, and review session replays, surveys, and dashboards (URL-only connector to PostHog's hosted MCP server). |
+| `tinyfish` | [TinyFish](third_party/tinyfish/) | Cursor | Integrations | Browse and automate the web with TinyFish: run multi-step web automations, search the web, extract clean page content, and drive remote stealth browser sessions. |
+| `trello` | [Trello](third_party/trello/) | Cursor | Integrations | Manage your Trello workspace from chat: browse and create boards, view and move lists, create, update, move, archive, and complete cards with labels and due dates, manage checklists, capture Inbox cards, schedule Planner focus time, and search across boards. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
@@ -98,7 +107,7 @@ Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `p
 This is a multi-plugin marketplace repository. The root `.cursor-plugin/marketplace.json` lists all plugins, and each plugin has its own manifest:
 
 ```
-plugins/
+cursor/plugins/
 ├── .cursor-plugin/
 │   └── marketplace.json       # Marketplace manifest (lists all plugins)
 ├── plugin-name/
