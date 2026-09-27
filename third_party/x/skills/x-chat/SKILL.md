@@ -1,5 +1,5 @@
 ---
-name: X Chat
+name: x-chat
 description: >-
   Read, summarize, or send encrypted X Chat (XChat) DMs via the X plugin MCP
   plus local chatxdk / xchat_lite.py. Use when the user mentions X Chat, xchat,

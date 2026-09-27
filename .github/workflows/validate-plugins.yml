@@ -5,7 +5,9 @@ on:
     paths:
       - ".cursor-plugin/marketplace.json"
       - "**/plugin.json"
+      - "**/SKILL.md"
       - "schemas/**"
+      - "scripts/**"
 
 jobs:
   validate:
@@ -18,7 +20,7 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install --no-save ajv ajv-formats
+        run: npm install --no-save ajv ajv-formats yaml
 
       - name: Validate plugin definitions
         run: node scripts/validate-plugins.mjs

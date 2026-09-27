@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cursor.com/schemas/cursor-plugin/skill.json",
+  "title": "Cursor Skill Frontmatter",
+  "description": "Schema for the YAML frontmatter of a SKILL.md — defines a single skill's metadata. Unknown keys are permitted so plugins can add harness-specific options.",
+  "type": "object",
+  "required": ["name", "description"],
+  "additionalProperties": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$",
+      "description": "Unique skill identifier in kebab-case. Must match the skill's folder name."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Short description of what the skill does and when to use it."
+    }
+  }
+}

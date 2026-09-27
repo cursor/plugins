@@ -1,6 +1,6 @@
 ---
 name: check-agent-compatibility
-description: Run the full repository compatibility pass: scanner score, startup path, validation loop, and docs reliability.
+description: "Run the full repository compatibility pass: scanner score, startup path, validation loop, and docs reliability."
 ---
 
 # Check agent compatibility
