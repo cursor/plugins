@@ -45,7 +45,7 @@ Teams and Enterprise can import a Git repo as a team marketplace ([Add a team ma
 
 1. Open **Dashboard → Plugins & MCPs**.
 2. Under **Team Marketplaces**, choose **Add Marketplace**.
-3. Choose **Import from Repo** and paste `https://github.com/Postalocity/usmail-cursor-plugin`.
+3. Choose **Import from Repo** and paste `https://github.com/usmail-ai/usmail-cursor-plugin`.
 4. Add **USMail.ai** to that marketplace and set who can install it.
 5. Each person installs it from **Customize** (unless an admin set it Default On or Required), then connects `usmail` with OAuth.
 

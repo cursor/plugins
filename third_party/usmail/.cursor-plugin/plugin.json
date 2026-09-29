@@ -8,7 +8,7 @@
   },
   "publisher": "USMail.ai",
   "homepage": "https://www.usmail.ai",
-  "repository": "https://github.com/Postalocity/usmail-cursor-plugin",
+  "repository": "https://github.com/usmail-ai/usmail-cursor-plugin",
   "license": "MIT",
   "keywords": [
     "print-to-mail",
