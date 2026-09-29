@@ -1,74 +1,133 @@
 ---
 name: setup-pstack
-description: Configure which models pstack uses per role and at what reasoning budget. Detects your available models and writes an always-applied rule that overrides the skill defaults. Use for /setup-pstack, "configure pstack models", "pstack budget", or changing pstack's model choices.
+description: Configure pstack models and reasoning budgets by active harness, including native subagents and confirmed external review runners. Use for /setup-pstack, model choices, or pstack budgets.
 ---
 
 # Setup pstack
 
-Write `~/.cursor/rules/pstack-models.mdc`, an always-applied rule that sets pstack's model per role.
+Write a harness profile to `~/.config/pstack/models.json`. Pstack skills read
+the profile matching the current harness using
+[`docs/model-routing.md`](../../docs/model-routing.md). Cursor's existing
+`~/.cursor/rules/pstack-models.mdc` remains a compatibility export, not the
+source of truth for other harnesses.
 
-## Steps
+## 1. Detect the harness and runnable models
 
-### 1. Detect available models
+Identify the active harness from the tools **available in this session**, not
+from installed binaries: Cursor or Claude Code `Task`, Codex `spawn_agent`,
+OpenCode agents, or another documented subagent tool. Read its tool schema for
+accepted model IDs and effort inputs. If the harness is unclear, ask.
 
-Enumerate the model slugs you can pass to a `Task` subagent in this session. That is the dependable source. If Cursor also exposes a models API or CLI that lists the user's entitled models, prefer it for completeness. If you cannot detect any, ask the user to paste the slugs they have access to. Never write a real slug you have not confirmed is available. The aliases `inherit-parent` and `auto` are always valid even though they are not detected slugs.
+Inventory models by **runner**, then **family** (Claude, GPT, Grok, open-source,
+or another family). Prefer a native subagent when it supports the model. Check
+external runners independently:
 
-### 2. Load current state
+- Cursor Agent: `cursor-agent models` when authenticated. Its list describes
+  Cursor access; it is not the only model source.
+- Claude Code: check `claude auth status` and its current model configuration.
+  Confirm a selected alias through the active Task tool, a user confirmation,
+  or an explicitly authorized small probe; authentication alone is not proof
+  that every Claude alias is runnable.
+- Codex: use this session's subagent tool model schema when in Codex. Else
+  check CLI authentication and confirm a selected CLI model before writing it.
+  Codex's `model` and reasoning effort are separate inputs.
+- OpenCode: check `opencode auth list` and `opencode models`. The catalog is
+  broader than configured provider access; confirm the selected provider and
+  model with a user confirmation or an authorized probe.
+- Local open-source: check loaded models through Ollama, LM Studio, or the
+  configured local provider when available. A binary or downloaded catalog is
+  not proof that a model is loaded and runnable.
 
-The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.cursor/rules/pstack-models.mdc` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it.
+Classify each candidate as **confirmed native**, **confirmed external**, or
+**catalog-only/unverified**. Only confirmed models may be written. The native
+aliases `inherit-parent` and `auto` are always valid. Never expose credentials
+while discovering models, and do not send a model prompt just to list models.
 
-### 3. Budget, map, and confirm
+## 2. Load current choices
 
-**(a) Ask for a budget.** Prefer AskQuestion over free text. Offer these four options with these exact labels, and name the current budget when the rule records one.
+Read the matching harness profile in `~/.config/pstack/models.json`, if any.
+Preserve profiles for other harnesses. If this profile does not exist, read the
+legacy Cursor rule when present and treat its role values as candidates, not
+proof that those models work in this harness. Drop retired roles such as
+`how critics` and report them.
+
+## 3. Choose a budget
+
+Ask the user to select one of these exact labels, naming the current budget
+when one exists:
 
 - `unlimited — keep max`
 - `large — xhigh reasoning`
 - `medium — high reasoning`
 - `small — medium reasoning`
 
-**(b) Apply it.** Build the working table from the skill defaults, and on a re-run keep any role you changed by family, list, or alias (`inherit-parent`, `auto`). `unlimited` leaves every effort as in that table. `large`, `medium`, and `small` set the effort token of every real slug, panel entries included, to `xhigh`, `high`, or `medium`. The effort token is the last token, or the one before a trailing `fast`, on the ladder `max` > `xhigh` > `high` > `medium` > `low`. If the result is not a detected slug, use the same family's detected slug with the highest effort at or below the target, else mark the role as needing a choice. `inherit-parent` and `auto` do not change. So `small` turns `claude-opus-5-5-max` into `claude-opus-5-5-medium`, and `grok-4.7-xhigh-fast` into `grok-4.7-medium-fast`.
+Budget targets apply to each runner's actual effort control, not by blindly
+appending a suffix to a model name. For a native tool with a separate effort
+field, keep the model ID and set that field. For effort-encoded variants, choose
+the highest confirmed variant at or below the target. For a CLI with a variant
+or effort option, use only confirmed options. If a runner has no effort
+control, mark its entry unbudgeted in the preview and ask whether to keep it.
+`inherit-parent` and `auto` keep the parent model and effort.
 
-**(c) Show the roles and confirm.** Show every role with its model, marking any real slug not in the detected set as needing a choice. Also list each line step 2 dropped. Ask whether to accept as-is or change specific roles, offering the detected models plus `inherit-parent` and `auto` (both mean: this role runs on the parent chat model, which is how Auto users stay on Auto) as the options. Prefer AskQuestion over free text. For panel roles (arena runners, architect runners, interrogate reviewers) the value is a list, and one subagent runs per entry, alias entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena selects one value from it whose model family differs from the parent's when possible. `swarm workers` is the default model for every worker unless a race or comparison assigns another model per arm.
+## 4. Build a harness-aware proposal
 
-### 4. Validate
+Primary coding roles favor the **active harness's native model family** unless
+the user chose otherwise. On Codex, prefer confirmed GPT models for primary
+work; on Claude Code, confirmed Claude models; on Cursor or OpenCode, the
+confirmed family selected for that session. Use a confirmed different family
+for review and adversarial roles when it is runnable. If the native subagent
+tool exposes all desired families, use it. Otherwise use a confirmed external
+read-only runner for review, as described in `docs/model-routing.md`. Never
+present a catalog-only model as an available reviewer.
 
-Every real slug written must be in the detected set. `inherit-parent` and `auto` always pass. If a chosen real slug is not available, stop and ask again.
+Use these exact role labels. Single-model roles get one entry; panel roles get
+one entry per reviewer. The `arena cross-judge pool` lists candidates from
+which Arena selects **one** different-family judge when possible.
 
-### 5. Write the rule
+| Role group | Labels |
+| --- | --- |
+| Coding | `feature, refactoring`; `bug-fix`; `perf-issue`; `hillclimb`; `swarm workers` |
+| Judgment | `judgment and prose`; `hardest tasks`; `how explainer`; `why synthesizer`; `reflect judgment, divergent, synthesizer` |
+| Investigation | `how explorer`; `why investigators`; `reflect tooling` |
+| Panels | `arena runners`; `arena cross-judge pool`; `architect runners`; `interrogate reviewers` |
 
-Write `~/.cursor/rules/pstack-models.mdc` with `alwaysApply: true`, a `# budget` line with the chosen label and its target effort, and one line per role, using the same labels poteto-mode uses. Overwrite the whole file so re-runs stay idempotent. Shape:
+Write-capable roles use native subagents by default. External writers require
+explicit user selection and an isolated checkout. Respect an existing
+confirmed custom family, list length, or alias on a re-run. Do not replace it
+merely because another family's default changed.
 
-```
----
-description: pstack per-role model choices (overrides skill defaults)
-alwaysApply: true
----
-# pstack model configuration. One line per role. Delete a line to fall back to the skill default.
-# `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit Task `model`). Alias entries in a panel list still count toward its fan-out.
-# budget: unlimited (max)
-feature, refactoring: grok-4.7-xhigh-fast
-bug-fix: grok-4.7-xhigh-fast
-perf-issue: grok-4.7-xhigh-fast
-hillclimb: grok-4.7-xhigh-fast
-judgment and prose: claude-opus-5-5-max
-hardest tasks: claude-opus-5-5-max
-how explorer: grok-4.7-xhigh-fast
-how explainer: claude-opus-5-5-max
-why investigators: grok-4.7-xhigh-fast
-why synthesizer: claude-opus-5-5-max
-reflect tooling: gpt-5.6-sol-max
-reflect judgment, divergent, synthesizer: claude-opus-5-5-max
-arena runners: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
-arena cross-judge pool: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
-swarm workers: grok-4.7-xhigh-fast
-architect runners: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
-interrogate reviewers: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
-```
+## 5. Show, confirm, and validate
 
-### 6. Confirm
+Show **every role** with runner, model, effort, family, and detection evidence.
+Show panel entries individually so the fan-out count is clear. Mark every
+unverified entry as needing a choice, list retired lines dropped, and ask the
+user to accept or change specific roles. Offer confirmed native and external
+models plus `inherit-parent` and `auto`. Prefer structured questions over an
+open-ended prompt.
 
-Tell the user the rule was written and that it applies to new sessions. Re-running this skill updates it.
+Before writing, validate that every real model is confirmed for its runner,
+every external reviewer has a read-only invocation path, every effort value is
+supported, and the user's budget and role choices are recorded. If anything
+fails, keep the existing configuration and ask for the missing choice.
 
-### 7. Offer a verification skill (optional)
+## 6. Write the profile
 
-Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, invoke `/create-verification-skill` (resolves wherever pstack is installed: workspace, user, or plugin). On no, move on without pushing.
+Write or update **only this harness** in `~/.config/pstack/models.json` using
+the schema in `docs/model-routing.md`; preserve other profiles. Validate the
+result with a JSON parser and read it back. If the active harness is Cursor,
+also write `~/.cursor/rules/pstack-models.mdc` with `alwaysApply: true`, a
+`# budget` line, and the same role labels. Put confirmed native Task model
+slugs there; represent external-only entries with the safe native fallback and
+note that the portable profile supplies the external runner. Never write an
+unverified slug to either file.
+
+Tell the user which profile was written, the selected budget, runner families,
+and what will happen if a reviewer is unavailable. The profile applies to new
+sessions; re-running `/setup-pstack` updates it.
+
+## 7. Optional verification skill
+
+If the project has no existing way to drive the real app for proof (such as a
+`verify-*` skill or browser harness), offer once to create a project-local
+verification skill with `/create-verification-skill`. If one already exists,
+skip the offer.
