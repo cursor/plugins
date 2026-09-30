@@ -40,7 +40,7 @@ Deep when the invoking skill or the human asks for it (deep / thorough / thermo)
 
 ## Dylan-lens worker
 
-Prefer `dyl-agent`, else `generalPurpose`. Either way, scope it to this section (steps 1 to 3): the worker does not spawn workers or synthesize. It must:
+Use `generalPurpose`, not `dyl-agent`: `dyl-agent` routes review asks back into this skill. Scope it to this section (steps 1 to 3): the worker does not spawn workers or synthesize. It must:
 
 ### 1. Gather PR context
 

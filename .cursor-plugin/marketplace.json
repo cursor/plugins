@@ -76,7 +76,7 @@
     {
       "name": "dyl-stack",
       "source": "dyl-stack",
-      "description": "Dylan's agent style on top of pstack: root causes over symptom patches, paste-ready PR reviews, and Figma-to-UI with a visual judge."
+      "description": "Dylan's agent style on top of pstack: root causes over symptom patches, The Algorithm before design, terse verified delivery, a PR review that fits in a paste, and Figma-to-UI with a visual judge."
     },
     {
       "name": "grok-voice",
