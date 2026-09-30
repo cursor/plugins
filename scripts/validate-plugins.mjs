@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-import { readFileSync, existsSync } from "fs";
-import { resolve, dirname } from "path";
+import { readFileSync, existsSync, readdirSync } from "fs";
+import { resolve, dirname, basename, relative } from "path";
 import { fileURLToPath } from "url";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
+import { parse as parseYaml } from "yaml";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
@@ -17,12 +18,14 @@ const marketplaceSchema = loadJSON(
   resolve(root, "schemas/marketplace.schema.json")
 );
 const pluginSchema = loadJSON(resolve(root, "schemas/plugin.schema.json"));
+const skillSchema = loadJSON(resolve(root, "schemas/skill.schema.json"));
 
 const ajv = new Ajv({ allErrors: true });
 addFormats(ajv);
 
 const validateMarketplace = ajv.compile(marketplaceSchema);
 const validatePlugin = ajv.compile(pluginSchema);
+const validateSkill = ajv.compile(skillSchema);
 
 let errors = 0;
 
@@ -92,7 +95,81 @@ for (const entry of marketplace.plugins ?? []) {
   }
 }
 
-// 3. Report results
+// 3. Check every plugin in the repository is registered in the marketplace
+const marketplaceSources = new Set(
+  (marketplace.plugins ?? []).map((entry) => resolve(root, entry.source))
+);
+
+const pluginDirs = [];
+
+(function collectPluginDirs(dir) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name === ".git" || entry.name === "node_modules") continue;
+    const full = resolve(dir, entry.name);
+    if (!entry.isDirectory()) continue;
+    if (existsSync(resolve(full, ".cursor-plugin/plugin.json"))) {
+      pluginDirs.push(full);
+    } else {
+      collectPluginDirs(full);
+    }
+  }
+})(root);
+
+for (const pluginDir of pluginDirs) {
+  if (!marketplaceSources.has(pluginDir)) {
+    fail(
+      `${relative(root, pluginDir)}: has a .cursor-plugin/plugin.json but is not listed in .cursor-plugin/marketplace.json`
+    );
+  }
+}
+
+// 4. Validate skill frontmatter
+const skillFiles = [];
+
+(function collectSkillFiles(dir) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name === ".git" || entry.name === "node_modules") continue;
+    const full = resolve(dir, entry.name);
+    if (entry.isDirectory()) collectSkillFiles(full);
+    else if (entry.name === "SKILL.md") skillFiles.push(full);
+  }
+})(root);
+
+for (const skillPath of skillFiles.sort()) {
+  const skillRel = relative(root, skillPath);
+  const text = readFileSync(skillPath, "utf-8");
+  const frontmatterMatch = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(text);
+
+  if (!frontmatterMatch) {
+    fail(`${skillRel}: missing YAML frontmatter (file must start with "---")`);
+    continue;
+  }
+
+  let frontmatter;
+  try {
+    frontmatter = parseYaml(frontmatterMatch[1]) ?? {};
+  } catch (err) {
+    fail(`${skillRel}: frontmatter is not valid YAML (${err.message.split("\n")[0]})`);
+    continue;
+  }
+
+  if (!validateSkill(frontmatter)) {
+    fail(`${skillRel}: frontmatter does not match schemas/skill.schema.json:`);
+    for (const err of validateSkill.errors) {
+      console.error(`  ${err.instancePath || "/"}: ${err.message}`);
+    }
+    continue;
+  }
+
+  const folder = basename(dirname(skillPath));
+  if (frontmatter.name !== folder) {
+    fail(
+      `${skillRel}: frontmatter name "${frontmatter.name}" does not match folder name "${folder}"`
+    );
+  }
+}
+
+// 5. Report results
 if (errors > 0) {
   console.error(`\nValidation failed with ${errors} error(s).`);
   process.exit(1);
