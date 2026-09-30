@@ -22,7 +22,7 @@ Open a todolist with one entry per phase before starting.
 
 Build a real mental model of every system the new code touches. Run the **how** skill over the relevant subsystems.
 
-Naming a file isn't grounding. Produce the traced model `how` prescribes. If the design redefines ownership or layering, also run the **why** skill on the existing shape so the rationale becomes a constraint, not a guess.
+Naming a file isn't grounding. Produce the traced model `how` prescribes. If the design redefines ownership or layering, also run the **why** skill on the existing shape so the rationale becomes a constraint, not a guess. Tag each constraint as operator-stated, code-derived, or agent-proposed. When a fix for an agent-proposed constraint grows or fails live, offer dropping the constraint before adding code.
 
 Skip Phase A only when the work is genuinely greenfield with no surrounding system to integrate.
 
@@ -31,6 +31,8 @@ Skip Phase A only when the work is genuinely greenfield with no surrounding syst
 Run the **arena** skill with the design-sketch task and the Phase A grounding artifacts. Pass `references/runner-prompt.md` as each runner's prompt. Each candidate produces a design package shaped per `references/rationale-template.md`.
 
 Take the runners from the `architect runners` line in the `pstack-models.mdc` rule, in place of the `arena runners` line. If the rule or that line is missing, use `claude-opus-5-5-max`, `gpt-5.6-sol-max`, `grok-4.7-xhigh-fast`. Alias and rejected entries follow the runner rules in the **arena** skill's Phase A.
+
+When an OS permission system or a live run decides the open question, run the Prototype playbook of the **poteto-mode** skill first and design around the observed result.
 
 Design it twice. Require at least two structurally distinct candidates before synthesis, even when the first looks sufficient. This is the **exhaust-the-design-space** principle skill made concrete. Whole-shape alternatives, not point fixes inside one shape.
 

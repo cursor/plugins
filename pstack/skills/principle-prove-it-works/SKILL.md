@@ -13,6 +13,7 @@ Verify every task output by checking the real thing directly. Do not infer from 
 Check the real thing, not a proxy:
 - Check process liveness directly, not indirectly through derived state
 - Read the actual value, not a cached or derived representation
+- Treat the production launch path and the process identity (parent process, signature, granted permissions) as part of the real artifact, not only the build output
 - When verification fails, suspect the observation method before suspecting the system
 
 ## Script the check when you can
