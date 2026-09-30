@@ -30,7 +30,7 @@ Code organization:
 - Scoring and assessment: pure transforms from state to results
 
 Measurement and adversarial engagements:
-- Guards belong at the engagement edge: the authorized targets, credentials, and budget
+- Define the authorized targets, credentials, and budget at the engagement edge
 - Every interior restriction must trace to the engagement's stated goal, or be labeled a human option
 - An interior fence silently changes what the measurement means
 
