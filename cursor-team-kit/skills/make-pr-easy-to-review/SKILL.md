@@ -52,6 +52,20 @@ When code behavior should stay untouched, prefer PR description and review notes
 - Call out risky behavior changes, migration order, rollout plan, and test coverage.
 - Link issue trackers, dashboards, or design docs when they explain intent.
 
+### Preserve the Cursor-generated comment block
+
+When editing a PR description, fetch the existing body first:
+
+```bash
+gh pr view <PR> --json body -q .body
+```
+
+If the body contains a Cursor-generated block delimited by `<!-- CURSOR_SUMMARY -->` and `<!-- /CURSOR_SUMMARY -->`, **leave that block intact** — do not remove, rewrite, or relocate it. It may include risk level, change summary, and Bugbot notes that Cursor or Bugbot maintain.
+
+Also preserve any trailing Cursor agent footer (the `Open in Web` / `Open in Cursor` link div) if present.
+
+Add reviewer guidance **outside** the Cursor block — typically above it or in clearly separate sections below. When running `gh pr edit`, reconstruct the full body with the preserved block(s) copied verbatim from the original.
+
 ## Guardrails
 
 - Never hide meaningful behavior changes inside "cleanup".
