@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "bun test orch watch-pr",
+    "test": "bun test bootstrap orch watch-pr",
     "typecheck": "tsc --project watch-pr/tsconfig.json --noEmit --strict"
   },
   "dependencies": {
