@@ -9,17 +9,23 @@ import addFormats from "ajv-formats";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
 
-function loadJSON(path) {
-  return JSON.parse(readFileSync(path, "utf-8"));
+function safeLoadJSON(path) {
+  try {
+    return { data: JSON.parse(readFileSync(path, "utf-8")), error: null };
+  } catch (err) {
+    return { data: null, error: err.message };
+  }
 }
 
-const marketplaceSchema = loadJSON(
+const marketplaceSchema = safeLoadJSON(
   resolve(root, "schemas/marketplace.schema.json")
-);
-const pluginSchema = loadJSON(resolve(root, "schemas/plugin.schema.json"));
+).data;
+const pluginSchema = safeLoadJSON(
+  resolve(root, "schemas/plugin.schema.json")
+).data;
 
 const ajv = new Ajv({ allErrors: true });
-addFormats(ajv);
+(addFormats.default || addFormats)(ajv);
 
 const validateMarketplace = ajv.compile(marketplaceSchema);
 const validatePlugin = ajv.compile(pluginSchema);
@@ -39,17 +45,22 @@ if (!existsSync(marketplacePath)) {
   process.exit(1);
 }
 
-const marketplace = loadJSON(marketplacePath);
+const { data: marketplace, error: marketplaceJsonError } = safeLoadJSON(marketplacePath);
+
+if (marketplaceJsonError) {
+  fail(`marketplace.json is invalid JSON: ${marketplaceJsonError}`);
+  process.exit(1);
+}
 
 if (!validateMarketplace(marketplace)) {
   fail("marketplace.json schema validation failed:");
-  for (const err of validateMarketplace.errors) {
+  for (const err of validateMarketplace.errors ?? []) {
     console.error(`  ${err.instancePath || "/"}: ${err.message}`);
   }
 }
 
 // 2. Validate each plugin
-for (const entry of marketplace.plugins ?? []) {
+for (const entry of marketplace?.plugins ?? []) {
   const pluginDir = resolve(root, entry.source);
   const pluginJsonPath = resolve(pluginDir, ".cursor-plugin/plugin.json");
 
@@ -69,13 +80,20 @@ for (const entry of marketplace.plugins ?? []) {
     continue;
   }
 
-  const pluginJson = loadJSON(pluginJsonPath);
+  const { data: pluginJson, error: pluginJsonError } = safeLoadJSON(pluginJsonPath);
+
+  if (pluginJsonError) {
+    fail(
+      `Plugin "${entry.name}": malformed JSON in ${entry.source}/.cursor-plugin/plugin.json (${pluginJsonError})`
+    );
+    continue;
+  }
 
   if (!validatePlugin(pluginJson)) {
     fail(
       `Plugin "${entry.name}": plugin.json schema validation failed (${entry.source}/.cursor-plugin/plugin.json):`
     );
-    for (const err of validatePlugin.errors) {
+    for (const err of validatePlugin.errors ?? []) {
       const detail =
         err.keyword === "additionalProperties"
           ? `${err.message}: "${err.params.additionalProperty}"`
@@ -85,7 +103,7 @@ for (const entry of marketplace.plugins ?? []) {
   }
 
   // Check that marketplace name matches plugin name
-  if (pluginJson.name && pluginJson.name !== entry.name) {
+  if (pluginJson?.name && pluginJson.name !== entry.name) {
     fail(
       `Plugin "${entry.name}": marketplace name does not match plugin.json name "${pluginJson.name}"`
     );
