@@ -1,5 +1,11 @@
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  accessSync,
+  constants,
+  existsSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 
 const scriptsDirectory = import.meta.dir;
@@ -24,12 +30,21 @@ function currentInstallKey(): string {
 
 export function ensureDependenciesInstalled(): void {
   const installKey = currentInstallKey();
+  const hasCommander = existsSync(commanderPackagePath);
   if (
-    existsSync(commanderPackagePath) &&
+    hasCommander &&
     existsSync(installKeyPath) &&
     readFileSync(installKeyPath, "utf8").trim() === installKey
   ) {
     return;
+  }
+  if (hasCommander) {
+    // Read-only installs such as a Nix store path cannot run bun install, so trust the node_modules they ship.
+    try {
+      accessSync(scriptsDirectory, constants.W_OK);
+    } catch {
+      return;
+    }
   }
 
   const result = Bun.spawnSync(
