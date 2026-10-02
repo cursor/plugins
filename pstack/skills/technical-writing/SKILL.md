@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Technical writing
 
-The goal is writing a tired engineer understands on the first read. Four layers get you there, one question each: what kind of document is this, how do sentences address the reader, how much does each sentence carry, and can any sentence be read two ways. Apply all four.
+The goal is writing that a tired engineer understands on the first read. Four layers get you there, one question each: what kind of document is this, how do sentences address the reader, how much does each sentence carry, and can any sentence be read two ways. Apply all four.
 
 Three rules sit above the layers:
 
