@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "plaud": {
+      "type": "http",
+      "url": "https://mcp.plaud.ai/mcp",
+      "placement": "server"
+    }
+  }
+}

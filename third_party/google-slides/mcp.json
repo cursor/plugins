@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "google-slides": {
+      "type": "http",
+      "url": "https://api.cursor.com/rest-mcp/google-slides/mcp"
+    }
+  }
+}

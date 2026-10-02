@@ -69,7 +69,7 @@ Simpler is better unless simpler is wrong. Three lines of duplication beat a pre
 
 ## Security
 
-Only flag security issues you can actually trace through the code. "This could be an injection vector" without showing the input path is not useful.
+For each security finding, trace the input path through the code and show it.
 
 - User input flowing to dangerous sinks (SQL, shell, eval, innerHTML) without sanitization
 - Authentication/authorization gaps in new endpoints

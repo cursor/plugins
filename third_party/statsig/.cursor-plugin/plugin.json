@@ -1,0 +1,35 @@
+{
+  "name": "statsig",
+  "displayName": "Statsig",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Inspect and manage feature gates, experiments, dynamic configs, and metrics.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://docs.statsig.com/integrations/mcp/cursor",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "statsig",
+    "feature flags",
+    "feature gates",
+    "experiments",
+    "a/b testing",
+    "dynamic configs",
+    "metrics",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "statsig",
+    "feature-flags",
+    "experimentation",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

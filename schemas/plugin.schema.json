@@ -139,14 +139,29 @@
       "minProperties": 1,
       "properties": {
         "cursor": {
-          "$ref": "#/$defs/semver",
-          "description": "Minimum Cursor version required to install the plugin (e.g. \"3.13.0\")."
+          "$ref": "#/$defs/clientVersionRequirement",
+          "description": "Minimum Cursor version required to install the plugin (e.g. \"3.13.0\"), or \"never\" to hide it from Cursor entirely."
+        },
+        "grokbot": {
+          "$ref": "#/$defs/clientVersionRequirement",
+          "description": "Minimum Grok Bot version required to install the plugin (e.g. \"0.49.0\"), or \"never\" to hide it from Grok Bot entirely."
+        },
+        "sand": {
+          "$ref": "#/$defs/clientVersionRequirement",
+          "description": "Deprecated client id for Grok Bot. Same meaning as grokbot."
         }
       },
       "additionalProperties": {
-        "$ref": "#/$defs/semver",
-        "description": "Minimum version required for another client identifier."
+        "$ref": "#/$defs/clientVersionRequirement",
+        "description": "Minimum version required for another client identifier, or \"never\" to hide the plugin from that client."
       }
+    },
+    "clientVersionRequirement": {
+      "description": "A minimum semantic version, or the literal \"never\" when that client must not list or install the plugin.",
+      "oneOf": [
+        { "$ref": "#/$defs/semver" },
+        { "const": "never" }
+      ]
     },
     "semver": {
       "type": "string",

@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "buffer": {
+      "type": "http",
+      "url": "https://mcp.buffer.com/mcp",
+      "placement": "server"
+    }
+  }
+}

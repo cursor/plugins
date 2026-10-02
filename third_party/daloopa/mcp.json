@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "daloopa": {
+      "type": "http",
+      "url": "https://mcp.daloopa.com/server/mcp"
+    }
+  }
+}

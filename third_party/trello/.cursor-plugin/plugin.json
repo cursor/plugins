@@ -1,0 +1,36 @@
+{
+  "name": "trello",
+  "displayName": "Trello",
+  "version": "1.0.1",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Manage your Trello workspace from chat: browse and create boards, view and move lists, create, update, move, archive, and complete cards with labels and due dates, manage checklists, capture Inbox cards, schedule Planner focus time, and search across boards.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/atlassian/trello-mcp-server",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "trello",
+    "atlassian",
+    "kanban",
+    "boards",
+    "cards",
+    "checklists",
+    "project management",
+    "task management",
+    "planner",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "trello",
+    "project management",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

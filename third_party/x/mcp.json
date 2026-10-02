@@ -18,6 +18,8 @@
           "block.write",
           "bookmark.read",
           "bookmark.write",
+          "dm.read",
+          "dm.write",
           "developer.billing.write",
           "developer.write",
           "offline.access"

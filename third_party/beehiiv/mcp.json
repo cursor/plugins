@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "beehiiv": {
+      "type": "http",
+      "url": "https://mcp.beehiiv.com/mcp",
+      "placement": "server"
+    }
+  }
+}

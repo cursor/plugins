@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "webull": {
+      "type": "http",
+      "url": "https://api.webull.com/mcp"
+    }
+  }
+}

@@ -2,6 +2,21 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.5.1 — X Chat in the always-read MCP guide
+
+- Folded the X Chat companion skill into the X MCP guide so GrokBot loads Chat / inbox / DMs without a second skill. Clone `xchat_lite.py` from https://github.com/xdevplatform/xchat-grokbot-helper yourself — do not wait for the user to name the helper.
+- Removed `skills/x-chat/`. Secret-request Chat PIN only, decrypt/encrypt locally, MCP for ciphertext.
+
+## 2.5.0 — X Chat skill (read / reply)
+
+- Added the X Chat companion skill: clone `xchat_lite.py` from https://github.com/xdevplatform/xchat-grokbot-helper, secret-request Chat PIN only, decrypt/encrypt locally, MCP for ciphertext. Owner must approve outbound text unless they already said to send.
+- Missing Chat tools or `dm.read` / `dm.write` while other X tools work: reconnect the X plugin (not create a Project/App, not a Bearer token). On-connect capabilities now include Chat (not posting tweets).
+
+## 2.4.0 — X Chat scopes
+
+- Requested `dm.read` and `dm.write` so agents can call X Chat endpoints on `https://api.x.com/mcp`.
+- Existing installs need to sign in to X again to pick up the new scopes.
+
 ## 2.3.0 — Auto credits, missing-tools failure, never pay first
 
 - Developer accounts are auto-created and auto-credited. On connect, agents confirm X tools exist, fetch `get_usage_credits`, then congratulate with “you've received free X API credits to get started” (no dollar amount). Starter amounts by plan (Ultra $100, SuperGrok Plus $50, Pro+ $30, Pro $10) only if the user asks how much they received. Remaining balance (`total_balance`) is for budgets and “what's left.”

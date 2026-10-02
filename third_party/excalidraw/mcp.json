@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "excalidraw": {
+      "type": "http",
+      "url": "https://mcp.excalidraw.com/mcp",
+      "headers": {
+        "X-Cursor-Plugin": "excalidraw"
+      }
+    }
+  }
+}
