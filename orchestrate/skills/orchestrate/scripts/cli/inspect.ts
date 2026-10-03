@@ -1,7 +1,7 @@
 import type { Command } from "commander";
 import { isAndonActive } from "../core/andon.ts";
 import { renderPrompt } from "../core/prompts.ts";
-import { renderModelCatalog } from "../models.ts";
+import { effectiveModelCatalog, renderModelCatalog } from "../models.ts";
 import type { TaskState } from "../schemas.ts";
 import { firstChars, loadOrBail, parsePositiveIntegerOrBail } from "./util.ts";
 
@@ -156,10 +156,18 @@ export function registerInspectCommands(program: Command): void {
       "--check",
       "Validate each catalog entry against /v1/agents. Run after SDK or backend model-schema changes, or when kickoff/spawn returns invalid_model."
     )
+    .option(
+      "--json",
+      "Print the catalog as JSON in ORCHESTRATE_MODEL_CATALOG's shape. Copy this to start a repo-specific catalog."
+    )
     .description(
       "Print the model catalog. Planners consult this when setting `tasks[].model`."
     )
-    .action(async (opts: { check?: boolean }) => {
+    .action(async (opts: { check?: boolean; json?: boolean }) => {
+      if (opts.json) {
+        console.log(JSON.stringify(effectiveModelCatalog(), null, 2));
+        return;
+      }
       if (!opts.check) {
         console.log(renderModelCatalog());
         return;
