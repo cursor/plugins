@@ -28,9 +28,9 @@ For each candidate, read the first JSONL line and check that `message.content[0]
 
 ### 2. Spawn three reviewers in parallel
 
-One message, three `Task` calls, `subagent_type: generalPurpose`, with `model` set as below, agent mode (`readonly: false`). Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript). Readonly strips MCPs.
+First read [model routing](../../docs/model-routing.md) and the matching harness profile. Native reviewers can launch together through this session's subagent tool. Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript); use an external runner only if its context is complete or the same tools are available. Otherwise use the profile's confirmed native fallback. With no profile, use the legacy three `Task` calls in Cursor; in another harness use three native `inherit-parent` reviewers. Use agent mode when readonly strips MCPs.
 
-Each reviewer and the synthesizer name a role line in the `pstack-models.mdc` rule and a default. Set `model` to that line's value, or to the default if the rule or the line is missing. Leave `model` unset when the value is `auto` or `inherit-parent`. If the Task tool rejects a slug, use the default and say so. If it rejects the default, use the closest valid slug of the same family from its error message.
+Each reviewer and the synthesizer use the matching profile's role entry. Without a profile, use the legacy rule or table default in Cursor; in another harness use native `inherit-parent`. Leave native `model` unset for `auto` or `inherit-parent`. Report a rejected runner or model and use a confirmed fallback.
 
 | Lens | Role line | Default `model` | Prompt template |
 |---|---|---|---|
@@ -42,7 +42,7 @@ Pass each template verbatim, substituting the transcript path or digest where ma
 
 ### 3. Synthesize
 
-One `Task` call, `subagent_type: generalPurpose`, with `model` from the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-max`), agent mode (`readonly: false`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Readonly strips MCPs. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+Run one synthesizer using the matching profile's `reflect judgment, divergent, synthesizer` entry. With no profile, use the legacy Task line/default `claude-opus-5-5-max` in Cursor or native `inherit-parent` elsewhere. Its quality check includes spot-verifying citations, which can require MCP access; use an external runner only with equivalent context, else the confirmed native fallback. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 

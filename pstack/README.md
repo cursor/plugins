@@ -8,7 +8,7 @@ there's a growing sense that ai writes too much slop code. i agree. i don't want
 
 **pstack gives you fearless parallelism.** when you can go deep on one agent and trust it to write good, verifiable code, you can truly parallelize with confidence. start multiple agents up with `poteto-mode` and trust that they'll apply rigorous engineering principles to their work.
 
-**cursor gives you the best of all worlds.** every frontier model has its strengths and weaknesses. use any model with pstack. in fact, many of my skills use multi-model workflows to take advantage of each model's unique strengths.
+**use the models your harness can actually run.** every frontier and open model has its strengths and weaknesses. pstack uses native subagents where the active harness exposes them, and confirmed external runners for read-only cross-family review when it does not. [`/setup-pstack`](./skills/setup-pstack/SKILL.md) detects that boundary instead of assuming cursor's catalog is the whole model set.
 
 fork it. improve it. make it yours. PRs are welcome! 
 
@@ -248,7 +248,7 @@ cursor already has a great plan mode which works great with pstack. but personal
 
 type [`/automate-me`](./skills/automate-me/SKILL.md). it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
 
-models are configurable too. type [`/setup-pstack`](./skills/setup-pstack/SKILL.md). it detects the models you have access to and writes a small always-applied rule mapping each role (code, judgment, the review panels) to a model. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
+models are configurable too. type [`/setup-pstack`](./skills/setup-pstack/SKILL.md). it detects the active harness, confirms runnable models and runners, and writes a [harness profile](./docs/model-routing.md) mapping each role to a runner, model, and effort. every skill reads the matching profile and falls back to its existing defaults when one is absent. the cursor rule remains a compatibility export.
 
 a rule written before 0.15.3 pins the old default models. delete those role lines, or delete the file, then run `/setup-pstack` again. a rerun keeps any role whose model differs from the default.
 
