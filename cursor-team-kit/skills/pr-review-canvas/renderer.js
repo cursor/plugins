@@ -92,46 +92,60 @@ function renderDiff(target, diffInput) {
   var lines = toLines(diffInput);
   if (!lines.length) { el.innerHTML = '<div style="padding:12px;color:#777;font-size:12px;">No diff data</div>'; return; }
 
-  var filtered = lines.filter(function(l) {
-    if (l.startsWith('--- ') || l.startsWith('+++ ') || l.startsWith('@@') || l.startsWith('diff ')) return true;
-    return !isImport(l);
-  });
+  // Record source positions before hiding imports or collapsing whitespace.
+  var oL = 0, nL = 0;
+  var filtered = lines.map(function(line) {
+    var entry = { line: line };
+    if (line.startsWith('--- ') || line.startsWith('+++ ') || line.startsWith('diff ')) return entry;
+    if (line.startsWith('@@')) {
+      var hm = line.match(/@@ -(\d+)(?:,\d+)? \+(\d+)/);
+      if (hm) { oL = parseInt(hm[1]); nL = parseInt(hm[2]); }
+    } else if (line.startsWith('+')) {
+      entry.newLine = nL++;
+    } else if (line.startsWith('-')) {
+      entry.oldLine = oL++;
+    } else {
+      entry.oldLine = oL++; entry.newLine = nL++;
+    }
+    return entry;
+  }).filter(function(entry) { return !isImport(entry.line); });
 
   var wsOut = [];
   for (var wi = 0; wi < filtered.length; wi++) {
-    if (filtered[wi].startsWith('-')) {
+    if (filtered[wi].line.startsWith('-')) {
       var dr = [filtered[wi]], wj = wi+1;
-      while (wj < filtered.length && filtered[wj].startsWith('-')) { dr.push(filtered[wj]); wj++; }
+      while (wj < filtered.length && filtered[wj].line.startsWith('-')) { dr.push(filtered[wj]); wj++; }
       var ar = [], wk = wj;
-      while (wk < filtered.length && filtered[wk].startsWith('+')) { ar.push(filtered[wk]); wk++; }
+      while (wk < filtered.length && filtered[wk].line.startsWith('+')) { ar.push(filtered[wk]); wk++; }
       if (dr.length === ar.length && dr.length > 0) {
         var allWs = true;
-        for (var wc = 0; wc < dr.length; wc++) { if (!isWhitespaceOnly(dr[wc], ar[wc])) { allWs = false; break; } }
-        if (allWs) { for (var wx = 0; wx < ar.length; wx++) wsOut.push(' ' + ar[wx].slice(1)); wi = wk-1; continue; }
+        for (var wc = 0; wc < dr.length; wc++) { if (!isWhitespaceOnly(dr[wc].line, ar[wc].line)) { allWs = false; break; } }
+        if (allWs) {
+          for (var wx = 0; wx < ar.length; wx++) wsOut.push({ line: ' ' + ar[wx].line.slice(1), oldLine: dr[wx].oldLine, newLine: ar[wx].newLine });
+          wi = wk-1; continue;
+        }
       }
     }
     wsOut.push(filtered[wi]);
   }
 
   var dels = [], adds = [], parsed = [];
-  var oL = 0, nL = 0, pD = false, pA = false;
+  var pD = false, pA = false;
   for (var pi = 0; pi < wsOut.length; pi++) {
-    var line = wsOut[pi];
+    var entry = wsOut[pi], line = entry.line;
     if (line.startsWith('--- ') || line.startsWith('+++ ') || line.startsWith('diff ')) continue;
     if (line.startsWith('@@')) {
-      var hm = line.match(/@@ -(\d+)(?:,\d+)? \+(\d+)/);
-      if (hm) { oL = parseInt(hm[1]); nL = parseInt(hm[2]); }
       parsed.push({ type: 'hunk', text: line }); pD = false; pA = false; continue;
     }
     if (line.startsWith('+')) {
-      var ae = { type:'add', code:line.slice(1), newLine:nL, consecutive:pA, idx:parsed.length };
-      adds.push(ae); parsed.push(ae); nL++; pA = true; pD = false;
+      var ae = { type:'add', code:line.slice(1), newLine:entry.newLine, consecutive:pA && adds[adds.length-1].newLine + 1 === entry.newLine, idx:parsed.length };
+      adds.push(ae); parsed.push(ae); pA = true; pD = false;
     } else if (line.startsWith('-')) {
-      var de = { type:'del', code:line.slice(1), oldLine:oL, consecutive:pD, idx:parsed.length };
-      dels.push(de); parsed.push(de); oL++; pD = true; pA = false;
+      var de = { type:'del', code:line.slice(1), oldLine:entry.oldLine, consecutive:pD && dels[dels.length-1].oldLine + 1 === entry.oldLine, idx:parsed.length };
+      dels.push(de); parsed.push(de); pD = true; pA = false;
     } else {
       var c = line.startsWith(' ') ? line.slice(1) : line;
-      parsed.push({ type:'ctx', code:c, oldLine:oL, newLine:nL }); oL++; nL++; pD = false; pA = false;
+      parsed.push({ type:'ctx', code:c, oldLine:entry.oldLine, newLine:entry.newLine }); pD = false; pA = false;
     }
   }
 
