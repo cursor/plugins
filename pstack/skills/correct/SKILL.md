@@ -1,6 +1,6 @@
 ---
 name: correct
-description: "Turn mistakes the operator keeps correcting into repo changes that make each one impossible. Mines history for repeated mistake classes, fixes each at the highest level that works (architecture, then types, lint, and CI, then tests, with docs and agent rules last), and keeps a table that pairs each rule with what enforces it. Use for /correct or when the operator keeps correcting agents for the same mistakes."
+description: "Find the mistakes agents keep repeating in this repo and make each one impossible. Try architecture first, then types, then a lint whose error names the fix, then a test, and write docs last. Prove each check fails on a real past mistake. Repeat this each time the operator corrects you. Use for /correct."
 disable-model-invocation: true
 ---
 
