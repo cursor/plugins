@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "whatsetter": {
+      "type": "http",
+      "url": "https://mcp.whatsetter.com/mcp",
+      "placement": "server"
+    }
+  }
+}
