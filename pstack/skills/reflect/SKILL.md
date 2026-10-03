@@ -16,15 +16,21 @@ Invoke when the user says "reflect" or "/reflect". Skip when the conversation is
 
 ### 1. Locate the active transcript
 
-The parent finds its own transcript file before fanning out. The system prompt names the active workspace's `agent-transcripts/` directory. Use that path. Do not glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
+The parent finds its own transcript before fanning out. Detect the harness and obtain the active workspace directory and session ID from the current runtime. Match both before reading message bodies or exporting a session. Inspect only session metadata while locating candidates in a global store. Never read private chats from unrelated projects.
+
+Use only the locator and parser for the active harness.
+
+- Cursor uses the active workspace's `agent-transcripts/` directory named in the system prompt. Do not glob across `~/.cursor/projects/*/`. The command below applies only to Cursor.
 
 ```bash
 ls -t <agent-transcripts>/*.jsonl <agent-transcripts>/*/*.jsonl <agent-transcripts>/*/subagents/*.jsonl 2>/dev/null | head -10
 ```
 
-Three transcript layouts: legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), and subagent (`<parent>/subagents/<child>.jsonl`).
+- Cursor has legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), and subagent (`<parent>/subagents/<child>.jsonl`) layouts. Verify the session identity before checking the opening user prompt in `message.content` text blocks. The first JSONL line need not be a user message.
+- OpenCode stores sessions in `~/.local/share/opencode/opencode.db`. Open it read-only with `?mode=ro` and inspect the installed schema. Select session metadata by the active workspace directory and session ID before querying its messages. Export only that session with `opencode export <sessionID>`. Parse the export's `info` and `messages`, with roles in message `info` and text in `parts`. Do not apply Cursor's JSONL parser. Do not use `immutable=1` on the live database, because it can omit recent writes in the write-ahead log.
+- Codex stores rollout JSONL under its configured Codex home, normally `~/.codex/sessions/`. Match the `session_meta` payload's `cwd` and `id` before reading messages. Use parent and source metadata to distinguish a child or fork from the active session. Parse user text from `response_item` message payloads or `event_msg` user-message payloads, rather than Cursor's `message.content[0].text`.
 
-For each candidate, read the first JSONL line and check that `message.content[0].text` contains the conversation's opening user prompt. Take the matching path. If no path resolves, write a tight digest of the session and pass that instead.
+Normalize timestamps to one zone when comparing candidates. Do not select a transcript by filename, recency, or prompt text alone. If the runtime does not expose enough metadata to verify one session, write a tight digest of the current conversation and pass that instead. Do not broaden the search.
 
 ### 2. Spawn three reviewers in parallel
 
