@@ -127,6 +127,9 @@ function renderDiff(target, diffInput, options) {
 
   // Phase 2: merge whitespace-only del/add pairs into context lines. The merge
   // consumes the same old/new counters as the pair did, so numbering is kept.
+  // Pairs merge independently: an import edit in the same replacement block
+  // must not stop a whitespace-only pair from merging (the import pair itself
+  // stays a del/add and is hidden with a marker at render time).
   var merged = [];
   for (var mi = 0; mi < parsed.length; mi++) {
     var e = parsed[mi];
@@ -136,14 +139,22 @@ function renderDiff(target, diffInput, options) {
       var ar = [], mk = mj;
       while (mk < parsed.length && parsed[mk].type === 'add') { ar.push(parsed[mk]); mk++; }
       if (ar.length === dr.length && dr.length > 0) {
-        var allWs = true;
+        var mergeFlags = [];
         for (var wc = 0; wc < dr.length; wc++) {
-          if (!isWhitespaceOnly('-' + dr[wc].code, '+' + ar[wc].code)) { allWs = false; break; }
+          mergeFlags.push(isWhitespaceOnly('-' + dr[wc].code, '+' + ar[wc].code));
         }
-        if (allWs) {
+        var anyWs = mergeFlags.some(function (f) { return f; });
+        if (anyWs) {
           for (var wx = 0; wx < ar.length; wx++) {
-            merged.push({ type: 'ctx', raw: ' ' + ar[wx].code, code: ar[wx].code,
-              oldLine: dr[wx].oldLine, newLine: ar[wx].newLine });
+            if (mergeFlags[wx]) {
+              merged.push({ type: 'ctx', raw: ' ' + ar[wx].code, code: ar[wx].code,
+                oldLine: dr[wx].oldLine, newLine: ar[wx].newLine });
+            } else {
+              merged.push(dr[wx]);
+            }
+          }
+          for (var ax = 0; ax < ar.length; ax++) {
+            if (!mergeFlags[ax]) merged.push(ar[ax]);
           }
           mi = mk - 1; continue;
         }
