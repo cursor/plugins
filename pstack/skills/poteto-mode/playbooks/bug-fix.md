@@ -1,6 +1,16 @@
 ### Bug fix
 
-**You own this task. Plan, review, verify.** Delegate investigation and the fix to subagents, stay in the lead.
+**You own this task. Plan, review, verify.** Choose the path by the surviving mechanism and the scope of the fix.
+
+#### Tiny known-mechanism fast path
+
+When evidence already establishes the surviving mechanism and the fix is about one predicate or a few-line local change, the parent edits and verifies inline. Do not fan out `how`, `why`, `architect`, `worker`, or `reviewer`, including a parallel worker+reviewer workflow. This path overrides the general delegation and function-boundary triggers.
+
+Use the existing evidence, make the smallest fix, and run the focused repro and relevant checks yourself. Commit the fix with its regression test when applicable. Do not require a failing-test-first commit, approval of test order, or confirmation that the diff is frozen for review. Run **Opening a PR** without adding a delegation gate. Report the mechanism, changed lines, and verification results.
+
+#### Full scientific path
+
+Use this path when the mechanism is unknown or the change is cross-cutting. Delegate investigation and the fix to subagents, stay in the lead. A larger local fix with a known mechanism can reuse the evidence and follow the applicable steps without reopening the investigation.
 
 Be scientific. Every shipped line traces to runtime evidence. Belt-and-suspenders that "might help" is a hypothesis, not a fix. It does not ship. When evidence refutes a hypothesis, revert what it motivated. The smallest change the evidence justifies ships, nothing more.
 
