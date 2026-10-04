@@ -1,9 +1,10 @@
 ---
 name: anti-ui-slop
 description: Stop coding agents from shipping generic UI. Use UIZZE's 800,000+ real web and iOS screens to build product-specific interfaces, define a design contract, cover required states, and run a hard finish gate. Use when designing, implementing, redesigning, critiquing, or pre-ship reviewing a web or iOS interface in Codex, Claude Code, Cursor, Copilot, or another coding agent. Trigger with "anti-ui-slop", "stop UI slop", "ground this UI in real screens", or "run the UI finish gate".
-license: MIT
+license: Apache-2.0; see LICENSE and NOTICE for attribution
+allowed-tools: Read, Glob, Grep, WebFetch
 metadata:
-  version: "1.2.13"
+  version: "1.3.1"
   author: "UIZZE <business@uizze.com>"
   compatibility: "Designed for Claude Code, Codex, Cursor, and GitHub Copilot; works in any agent that can read project files and fetch a URL."
   tags: "ui-design, design-system, design-review, frontend, web-ui, ios-ui"
@@ -34,25 +35,36 @@ Use the product brief, existing UI, components, and local design system to make 
 
 ## Work from the product
 
-Read the brief, existing UI, components, tokens, and constraints before designing. They always outrank this skill. Keep familiar interaction conventions and make the product's own objects, workflow, and priorities visually clear. Do not add novelty for its own sake.
+Read the brief, existing UI, components, tokens, assets, and any PRODUCT.md or DESIGN.md before designing. The user's request and project constraints outrank this skill. Preserve an established visual system for extensions and polish; replace it only for an approved redesign. A new project does not require those files.
 
-## Load one playbook
+Identify the audience, primary task, important states, and intended result. Ask only about missing choices that would materially change the work. A precise request is enough to proceed; do not turn a small fix into a discovery workshop.
 
-Choose at most one file for the current request:
+## Select the workflow
 
-- New interface or major redesign: `reference/new-work.md`
-- Product or dashboard work: `reference/operate.md`
-- Refinement and polish: `reference/polish.md`
-- Simplification or distillation: `reference/distill.md`
-- Explicit audit: `reference/audit.md`
-- Native iOS work: `reference/ios.md`
+Load the playbook for the requested action, plus the platform and craft guidance needed to execute it:
 
-Do not load a second playbook. Apply judgment rather than treating its examples as a checklist.
+- New interface or major redesign: [new-work](reference/new-work.md)
+- Product or dashboard work: [operate](reference/operate.md)
+- Refinement and polish: [polish](reference/polish.md)
+- Simplification: [distill](reference/distill.md)
+- Explicit audit: [audit](reference/audit.md), read-only unless fixes were requested
+- Native iOS: [iOS](reference/ios.md), alongside the action's playbook
+- Explicit `/overdrive`, “Uizze Overdrive”, or a request for exceptional interaction work: [Overdrive](reference/overdrive.md)
+
+For implementation, use [craft](reference/craft.md) after the direction is settled. Load only relevant files; multiple complementary playbooks are allowed. Overdrive is opt-in, not the default for ordinary UI work. It requires a chosen direction before implementation.
+
+“Use Uizze Overdrive on this screen” works through this router; a native slash command depends on the host. These are self-contained Markdown playbooks, not an installer, background service, or executable engine.
 
 ## Optional Uizze evidence
 
-Read `references/uizze-reference-policy.md` before using the paid MCP. It exposes exactly `find_ui_references` and `find_ui_materials`. Use them only when a concrete unresolved visual or material question would benefit from evidence. If they return nothing, continue silently.
+Read [the reference policy](references/uizze-reference-policy.md) before using `find_ui_references` or `find_ui_materials`. Inspect relevant visual evidence when it can inform the layout, state, interaction, or assets. Use the host's available tools, not invented calls or connections. Paid retrieval is optional; missing access does not block local design work.
+
+Distinguish an exact reference, a related example, no match, and a service error. Briefly disclose a limitation that affected the result. Never claim an image was inspected or a state was found without evidence.
 
 ## Finish
 
-Complete the requested scope. When the environment supports it, render and inspect once. Fix observable breakage such as clipping, overlap, distorted media, inaccessible controls, or inert interactions. Keep the handoff concise.
+Build the requested scope and exercise its important states. Render and inspect the real result at representative desktop/mobile sizes or native device classes, including the user's reported failing size. Compare it with the chosen direction or supplied reference, not just with the absence of runtime errors.
+
+Fix material problems in a batch, then render and inspect again. Stop once the requested result is verified; do not keep inventing work. If a bounded pass cannot resolve an issue, report it instead of claiming a pass. When rendering is unavailable, distinguish code checks from visual verification.
+
+Keep the handoff concise: what changed, what was actually tested, and any remaining limitation. A skill does not authorize publishing, purchases, new dependencies, account changes, or destructive actions.

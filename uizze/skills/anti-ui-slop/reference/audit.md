@@ -11,4 +11,4 @@ Inspect:
 - labels, focus, keyboard access, target size, and contrast;
 - obvious performance problems visible in the experience.
 
-Return at most three material findings, ordered by user impact. For each finding, name the observable evidence and the smallest concrete correction. If nothing material is visible, say so briefly. An audit does not modify the product unless the user also asked for fixes.
+Return material findings ordered by user impact; lead with the most important without hiding additional release-blocking defects. For each, name the observed screen/state, evidence and smallest concrete correction. Distinguish confirmed defects from checks that could not run. If nothing material is visible, say so at the scope actually inspected. An audit does not modify the product unless the user also asked for fixes.

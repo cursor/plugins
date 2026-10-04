@@ -1,4 +1,4 @@
 interface:
   display_name: "Uizze Anti UI Slop"
-  short_description: "Design guidance with quiet visual evidence"
-  default_prompt: "Use Uizze for design judgment. Retrieve evidence or materials only for one concrete unresolved need."
+  short_description: "Product-specific UI, craft checks and Overdrive"
+  default_prompt: "Use $anti-ui-slop to build this UI from a clear design direction, relevant references, and visual verification."

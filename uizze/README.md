@@ -28,6 +28,8 @@ The MCP exposes `find_ui_references` and `find_ui_materials`. The skill’s fini
 
 ## License
 
-Uizze’s entry point is MIT licensed. Included Apache-2.0 playbooks retain their LICENSE, NOTICE, and modification notices in the skill directory.
+Uizze’s entry point is MIT licensed. The bundled skill declares Apache-2.0 and retains third-party notices, including the MIT notice for identified iOS material. Keep LICENSE, NOTICE, and MODIFICATIONS.md with the skill.
 
 [Watch the Uizze before/after demonstration](https://github.com/uizze/uizze#watch-uizze-before-and-after).
+
+The complete skill package is copied from [Uizze’s 1.3.1 source release](https://github.com/uizze/uizze/releases/tag/v1.3.1), pinned to commit `4a0224f578f65a87f328e9c533b3d8bf1023c1f7`. Its 16 files include eight playbooks, legal notices, checksum records, and per-playbook provenance. The manifest explicitly records the still-unknown original iOS source revision; this package update does not resolve that upstream provenance question or imply marketplace approval.
