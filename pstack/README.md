@@ -263,3 +263,7 @@ to set it up, point cursor at [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.m
 ## license
 
 MIT
+
+## optional shared ownership
+
+The separate [osb-coordination skill](./skills/osb-coordination/SKILL.md) is an opt-in source proposal for projects with an operator-provisioned shared authority. It preserves the local orch store and named stacker, journals request replay and checks current ownership plus declared revisions before cooperative checkpoints. It installs no service, launches no external effect and provides no atomic fence around later Git/CI/merge commands. Ordinary PStack does not require OSB or a compatible endpoint. The new client and its [acceptance fixtures](./skills/osb-coordination/references/validation.md) are unexecuted; deployed authentication and harness compatibility require separate validation.
