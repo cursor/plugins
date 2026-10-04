@@ -21,6 +21,13 @@ if [[ ! -f "$STATE_FILE" ]]; then
   exit 0
 fi
 
+# jq is required to emit the followup_message. Check before touching the state
+# file so a missing dependency never advances the iteration counter.
+if ! command -v jq >/dev/null 2>&1; then
+  echo "Ralph loop: jq is required but was not found on PATH (brew install jq / apt install jq). Loop paused; the state file is untouched." >&2
+  exit 0
+fi
+
 # Parse state file frontmatter
 FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
 ITERATION=$(echo "$FRONTMATTER" | grep '^iteration:' | sed 's/iteration: *//')
