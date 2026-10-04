@@ -14,6 +14,8 @@ Input has contract, operation and payload. Allowed lifecycle operations: `enroll
 
 Request/config input is bounded at 64 KiB and the native envelope at 64 KiB; receipt is bounded at 128 KiB, durable journal entries at 256 KiB to retain accepted request plus receipt. A local nonblocking lock protects journal identity and writes. Route/member/authority changes require an explicitly reviewed fresh journal; existing journal identity cannot be silently replaced. Files are durably replaced on one private host filesystem; do not share this journal via NFS or treat it as multiuser authority.
 
+The fully contextualized native envelope is size-checked before journaling a request or contacting authority discovery. A locally rejected oversized envelope creates no mutation entry, so a smaller body may reuse that uncommitted key. Once a request is journaled, its key/body binding remains immutable even when its reply is uncertain.
+
 ```json
 {"contract":"pstack.osb.client.v1","operation":"submit","payload":{"request_id":"submit-a","intent_id":"intent-a","generation":1,"base":"refs/heads/main","base_oid":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","branch":"work/a","task_id":"unit-a","goal":"Synthetic shared unit","resources":[{"type":"file","name":"src/shared.py"}]}}
 ```

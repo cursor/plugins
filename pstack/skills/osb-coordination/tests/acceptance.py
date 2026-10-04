@@ -189,6 +189,30 @@ class EndpointAcceptance(unittest.TestCase):
         journal = Path(json.loads(self.configs["alice"].read_text())["journal"])
         self.assertTrue(any(path.stat().st_size > 65536 for path in journal.glob("*.json")))
 
+    def test_oversized_native_envelope_does_not_poison_key(self):
+        request = {"request_id": "oversized-submit", "intent_id": "intent-oversized", "base": "refs/heads/main",
+            "base_oid": BASE, "branch": "fixture/oversized", "task_id": "unit-oversized", "goal": "Synthetic boundary",
+            "generation": self.sessions["alice"], "expected_artifacts": [""],
+            "resources": [{"type": "file", "name": "src/boundary.py"}]}
+        envelope = {"contract": "pstack.osb.client.v1", "operation": "submit", "payload": request}
+        request["expected_artifacts"] = ["x" * (65536 - len(json.dumps(envelope).encode()) - 16)]
+        self.assertLessEqual(len(json.dumps(envelope).encode()), 65536)
+        cfg = json.loads(self.configs["alice"].read_text())
+        context = {key: cfg[key] for key in ("scope_id", "authority_id", "membership_epoch", "home_id", "repo", "forge_host", "forge_repo_id")}
+        native = {"protocol": "coord.project.v1", "operation": "submit", "payload": {**context, **request}}
+        self.assertGreater(len(json.dumps(native, sort_keys=True, separators=(",", ":")).encode()), 65536)
+        journal = Path(cfg["journal"])
+        before = sorted(path.name for path in journal.glob("*.json"))
+        refused = self.call("alice", "submit", request, expected_exit=1)
+        self.assertEqual(refused["reason"], "request-too-large")
+        self.assertEqual(before, sorted(path.name for path in journal.glob("*.json")))
+        # No request was dispatched or committed, so a corrected same key is valid.
+        request["expected_artifacts"] = ["small"]
+        accepted = self.call("alice", "submit", request)
+        self.assertTrue(accepted["ok"], accepted)
+        self.assertEqual(accepted, self.call("alice", "submit", request))
+        self.assertEqual(len(self.call("alice", "scope-inspect", {})["intents"]), 1)
+
 
 if __name__ == "__main__":
     if not os.environ.get("OSB_TEST_OWNER_SOURCE") or not os.environ.get("OSB_TEST_OWNER_COMMIT"):

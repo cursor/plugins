@@ -28,6 +28,12 @@ def encoded(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":"))
 
 
+def wire_request(operation, payload):
+    data = encoded({"protocol": "coord.project.v1", "operation": operation, "payload": payload})
+    require(len(data.encode()) <= 65536, "request-too-large")
+    return data
+
+
 def require(condition, reason):
     if not condition:
         raise Refused(reason)
@@ -76,9 +82,7 @@ class Client:
                 self.save(identity, {"binding": self.binding})
 
     def transport(self, operation, payload):
-        envelope = {"protocol": "coord.project.v1", "operation": operation, "payload": payload}
-        data = encoded(envelope)
-        require(len(data.encode()) <= 65536, "request-too-large")
+        data = wire_request(operation, payload)
         try:
             result = subprocess.run(self.cfg["route"], input=data, text=True, capture_output=True,
                                     timeout=8, check=False)
@@ -126,6 +130,8 @@ class Client:
     def request(self, operation, payload):
         require(operation in MUTATIONS | READS, "unsupported-operation")
         payload = self.contextual(payload)
+        # Validate the fully contextualized wire bytes before any request journal.
+        wire_request(operation, payload)
         self.discover()
         if operation in READS:
             return self.transport(operation, payload)
