@@ -20,6 +20,15 @@ It is designed to avoid noisy rewrites by:
 /add-plugin continual-learning
 ```
 
+## Requirements
+
+The `stop` hook is a TypeScript script executed with [Bun](https://bun.sh) (`bun run hooks/continual-learning-stop.ts`), so `bun` must be on the `PATH` of the shell Cursor uses to run hooks. Node is not enough: the script imports `stdin` from the `bun` module.
+
+- macOS / Linux: `curl -fsSL https://bun.sh/install | bash`
+- Homebrew: `brew install oven-sh/bun/bun`
+
+Without Bun the hook exits with `bun: command not found` on every turn and the learning cadence never triggers. Check the hook output in Cursor if `AGENTS.md` is never updated.
+
 ## How it works
 
 On eligible `stop` events, the hook may emit a `followup_message` that asks the agent to run the `continual-learning` skill.
