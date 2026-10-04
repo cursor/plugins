@@ -19,8 +19,12 @@ def main():
         print("synthetic verifier output")
         return 1 if behavior == "fail" else 0
     if mode == "publisher":
+        args = sys.argv[4:]
+        if len(args) == 4 and args[:1] == ["--store"] and args[2:] == ["ledger", "summary"]:
+            initialized = Path(args[1]) / "mock-initialized.json"
+            return 0 if initialized.exists() and initialized.read_text() == "synthetic-initialized\n" else 2
         with marker.open("a") as output:
-            output.write(json.dumps(sys.argv[4:]) + "\n")
+            output.write(json.dumps(args) + "\n")
         return 1 if behavior == "unknown" else 0
     return 2
 

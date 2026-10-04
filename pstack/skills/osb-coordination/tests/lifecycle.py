@@ -48,6 +48,7 @@ class Lifecycle(unittest.TestCase):
             orch_route=[sys.executable, str(COMMANDS), "publisher", str(self.effects), "success"],
             success_verdict="unit-test-verified", worker_timeout_seconds=10,
             run_directory=str(self.directory / "runs"), orch_store=str(self.directory / "store"))
+        self.initialize_mock_store()
         self.spec = {"attempt": "synthetic-check-1", "unit": "unit-alice", "pr": 42,
             "worktree": str(self.worktree), "branch": "fixture/alice", "base": "refs/heads/main",
             "base_oid": base, "head_oid": head, "resources": [{"type": "file", "name": "src/shared.py"}]}
@@ -58,10 +59,16 @@ class Lifecycle(unittest.TestCase):
                        "GIT_COMMITTER_NAME": "Synthetic Fixture", "GIT_COMMITTER_EMAIL": "fixture@example.invalid"}
         return subprocess.check_output(["git", "-C", str(self.worktree), *args], text=True, env=environment, timeout=10).strip()
 
-    def launch(self):
+    def initialize_mock_store(self):
+        store = Path(self.cfg["orch_store"])
+        store.mkdir(mode=0o700, exist_ok=True)
+        (store / "mock-initialized.json").write_text("synthetic-initialized\n")
+
+    def launch(self, fault=None):
         self.cfg_path.write_text(json.dumps(self.cfg))
         self.spec_path.write_text(json.dumps(self.spec))
-        process = subprocess.Popen([sys.executable, str(RUNNER), "--config", str(self.cfg_path), "--spec", str(self.spec_path)],
+        command = [sys.executable, str(RUNNER)] if fault is None else [sys.executable, str(ROOT / "tests/acquisition_fault.py"), fault]
+        process = subprocess.Popen([*command, "--config", str(self.cfg_path), "--spec", str(self.spec_path)],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         self.addCleanup(self.cleanup_process, process)
         return process
@@ -149,11 +156,63 @@ class Lifecycle(unittest.TestCase):
     def test_lost_claim_ack_resumes_same_acquisition_once(self):
         self.cfg["route"] = [sys.executable, str(ROOT / "tests/drop_reply.py"), str(self.directory / "drop-once"), self.endpoint.endpoint, self.endpoint.db, "alice"]
         self.cfg["journal"] = str(self.directory / "relay-journal")
-        self.assertEqual(self.result(self.launch(), 1)["outcome"], "setupfailed")
+        first = self.result(self.launch(), 1)
+        self.assertEqual(first["outcome"], "setupfailed")
+        self.assertEqual(first["release"], "no-known-claim-identical-acquisition-replay-or-reconcile")
         self.assertFalse(self.marker.exists())
+        states = list(Path(self.cfg["run_directory"]).glob("*/state.json"))
+        self.assertEqual(len(states), 1)
+        self.assertEqual(json.loads(states[0].read_text())["phase"], "acquiring")
         receipt = self.result(self.launch(), 0)
         self.assertEqual(receipt["effect"], "confirmed")
         self.assertEqual(len(self.effects.read_text().splitlines()), 1)
+
+    def test_missing_empty_and_invalid_store_fail_before_acquisition_then_same_attempt_succeeds(self):
+        executable = self.cfg["local_verifier"][0]
+        self.cfg["local_verifier"][0] = "/nonexistent/operator-verifier"
+        self.assertEqual(self.result(self.launch(), 1)["reason"], "operator-command-unavailable")
+        self.assertFalse(self.marker.exists())
+        self.assertFalse(self.effects.exists())
+        self.assertFalse(any(Path(self.cfg["run_directory"]).glob("*/state.json")))
+        self.assertEqual(self.endpoint.call("alice", "scope-inspect", {})["claims"], [])
+        self.cfg["local_verifier"][0] = executable
+        for name, contents in (("missing", None), ("empty", ""), ("invalid", "malformed\n")):
+            with self.subTest(store=name):
+                self.cfg["orch_store"] = str(self.directory / ("store-" + name))
+                store = Path(self.cfg["orch_store"])
+                if contents is not None:
+                    store.mkdir(mode=0o700)
+                    if contents:
+                        (store / "mock-initialized.json").write_text(contents)
+                receipt = self.result(self.launch(), 1)
+                self.assertEqual(receipt["outcome"], "setupfailed")
+                self.assertEqual(receipt["reason"], "orch-store-missing" if contents is None else "orch-store-preflight-refused")
+                if contents is None:
+                    self.assertFalse(store.exists())
+                self.assertFalse(self.marker.exists())
+                self.assertFalse(self.effects.exists())
+                self.assertFalse(any(Path(self.cfg["run_directory"]).glob("*/state.json")))
+                self.assertEqual(self.endpoint.call("alice", "scope-inspect", {})["claims"], [])
+        # The same attempt can now pass: no journaled dispatch binding was committed.
+        self.initialize_mock_store()
+        self.assertEqual(self.result(self.launch(), 0)["effect"], "confirmed")
+        self.assertEqual(len(self.effects.read_text().splitlines()), 1)
+
+    def test_bound_signals_and_write_failure_release_without_launch(self):
+        for fault in ("before-bound-signal", "after-bound-signal", "bound-write-error"):
+            with self.subTest(fault=fault):
+                self.spec["attempt"] = "synthetic-" + fault
+                receipt = self.result(self.launch(fault=fault), 1)
+                self.assertEqual(receipt["outcome"], "setupfailed" if fault == "bound-write-error" else "cancelled")
+                self.assertEqual(receipt["effect"], "not-started")
+                self.assertEqual(receipt["release"], "confirmed")
+                self.assertFalse(self.marker.exists())
+                self.assertFalse(self.effects.exists())
+                claims = self.endpoint.call("alice", "scope-inspect", {})["claims"]
+                self.assertFalse(any(row["state"] == "active" for row in claims))
+                self.assertEqual(self.result(self.launch(), 1)["reason"], "prior-launch-requires-explicit-reconciliation")
+        self.spec["attempt"] = "synthetic-after-cleanup"
+        self.assertEqual(self.result(self.launch(), 0)["effect"], "confirmed")
 
     def test_timeout_quiesces_without_verdict(self):
         self.cfg["local_verifier"][-1] = "wait"

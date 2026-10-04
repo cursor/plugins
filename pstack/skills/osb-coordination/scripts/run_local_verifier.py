@@ -13,9 +13,12 @@ import time
 from osb import Client, Refused, config, encoded, object_file, require
 
 
-def private_directory(path):
+def private_directory(path, create=True):
     require(path.is_absolute() and not path.is_symlink(), "absolute-private-directory-required")
-    path.mkdir(mode=0o700, parents=True, exist_ok=True)
+    if create:
+        path.mkdir(mode=0o700, parents=True, exist_ok=True)
+    else:
+        require(path.is_dir(), "orch-store-missing")
     info = path.stat()
     require(path.is_dir() and info.st_uid == os.getuid() and info.st_mode & 0o077 == 0, "private-owned-directory-required")
     return path.resolve(strict=True)
@@ -57,6 +60,7 @@ def revision(worktree, cfg, spec):
 def argv(value):
     require(isinstance(value, list) and value and all(isinstance(v, str) and v for v in value)
             and Path(value[0]).is_absolute(), "operator-fixed-command-required")
+    require(Path(value[0]).is_file() and os.access(value[0], os.X_OK), "operator-command-unavailable")
     return value
 
 
@@ -114,7 +118,8 @@ def run(cfg_path, spec_path):
     root_path, store_path = Path(cfg["run_directory"]), Path(cfg["orch_store"])
     require(root_path.is_absolute() and store_path.is_absolute(), "absolute-run-directory-and-store-required")
     require(not root_path.resolve().is_relative_to(worktree) and not store_path.resolve().is_relative_to(worktree), "state-outside-worktree-required")
-    state_root, store_root = private_directory(root_path), private_directory(store_path)
+    store_root = private_directory(store_path, create=False)
+    state_root = private_directory(root_path)
     revision(worktree, cfg, spec)
     run_dir = private_directory(state_root / hashlib.sha256(spec["attempt"].encode()).hexdigest())
     require(not run_dir.is_relative_to(store_root) and not store_root.is_relative_to(run_dir), "run-and-store-must-be-separate")
@@ -129,6 +134,10 @@ def run(cfg_path, spec_path):
         state = object_file(state_path) if state_path.exists() else {"binding": binding, "phase": "acquiring"}
         require(state.get("binding") == binding, "attempt-binding-changed")
         require(state.get("phase") == "acquiring", "prior-launch-requires-explicit-reconciliation")
+        # Native read validates initialization/format without copying the store schema.
+        preflight = subprocess.run([*orch, "--store", str(store_root), "ledger", "summary"],
+            cwd=worktree, capture_output=True, timeout=15, check=False)
+        require(preflight.returncode == 0, "orch-store-preflight-refused")
 
         def record(phase, **extra):
             state.update(phase=phase, **extra)
@@ -137,16 +146,10 @@ def run(cfg_path, spec_path):
         client = Client(cfg)
         prefix = "local-" + hashlib.sha256(encoded({"home_binding": client.binding, "attempt": spec["attempt"]}).encode()).hexdigest()[:40]
         generation = cfg["generation"]
-        record("acquiring")
         intent = {"request_id": prefix + "-submit", "intent_id": prefix, "generation": generation,
                   "base": spec["base"], "base_oid": spec["base_oid"], "branch": spec["branch"],
                   "task_id": spec["unit"], "goal": "PStack local verifier", "resources": spec["resources"]}
-        require(client.request("submit", intent).get("ok") is True, "intent-refused")
-        grant = client.request("claim", {"request_id": prefix + "-claim", "intent_id": prefix,
-                                         "generation": generation, "version": 1, "ttl_seconds": 900})
-        require(grant.get("ok") is True, "claim-refused")
-        capsule = {"intent_id": prefix, "generation": generation, "claim_id": grant["claim_id"], "fence": grant["fence"]}
-        record("bound", capsule=capsule)
+        capsule = None
         capsule_path, evidence_path = run_dir / "claim.json", run_dir / "evidence.json"
         child = publisher = None
         outcome, reason, effect, release = "behaviorfailure", "unspecified", "not-started", "pending"
@@ -164,6 +167,15 @@ def run(cfg_path, spec_path):
         try:
             for sig in (signal.SIGINT, signal.SIGTERM):
                 handlers[sig] = signal.signal(sig, cancel)
+            record("acquiring")
+            cancellation_point()
+            require(client.request("submit", intent).get("ok") is True, "intent-refused")
+            cancellation_point()
+            grant = client.request("claim", {"request_id": prefix + "-claim", "intent_id": prefix,
+                                             "generation": generation, "version": 1, "ttl_seconds": 900})
+            require(grant.get("ok") is True, "claim-refused")
+            capsule = {"intent_id": prefix, "generation": generation, "claim_id": grant["claim_id"], "fence": grant["fence"]}
+            record("bound", capsule=capsule)
             cancellation_point()
             require(client.request("check", capsule).get("ok") is True, "historical-claim-not-live")
             cancellation_point()
@@ -225,12 +237,16 @@ def run(cfg_path, spec_path):
             reason = str(error) if isinstance(error, Refused) else "worker-or-publication-failed"
             if child is None:
                 outcome = "setupfailed"
+            if cancelled:
+                outcome, reason = "cancelled", "signal-during-acquisition-or-service"
         finally:
             for sig in handlers:
                 signal.signal(sig, signal.SIG_IGN)
             try:
                 worker_quiet, publisher_quiet = stop(child), stop(publisher)
-                if worker_quiet and publisher_quiet:
+                if capsule is None:
+                    release = "no-known-claim-identical-acquisition-replay-or-reconcile"
+                elif worker_quiet and publisher_quiet:
                     try:
                         receipt = client.request("release", {**capsule, "request_id": prefix + "-release"})
                         release = "confirmed" if receipt.get("ok") is True else "refused-or-stale"
@@ -240,7 +256,8 @@ def run(cfg_path, spec_path):
                     release = "owned-process-group-not-quiescent"
                 if outcome == "pass" and release != "confirmed":
                     outcome, reason = "behaviorfailure", "release-unconfirmed"
-                record("terminal", outcome=outcome, reason=reason, effect=effect, release=release)
+                record("terminal" if capsule is not None else "acquiring",
+                       outcome=outcome, reason=reason, effect=effect, release=release)
             finally:
                 for sig, handler in handlers.items():
                     signal.signal(sig, handler)
@@ -256,7 +273,7 @@ def main():
     try:
         result = run(args.config, args.spec)
     except KeyboardInterrupt:
-        result = {"ok": False, "outcome": "cancelled", "reason": "acquisition-may-require-identical-replay"}
+        result = {"ok": False, "outcome": "cancelled", "reason": "inspect-durable-phase-before-replay-or-reconcile"}
     except (Refused, OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
         result = {"ok": False, "outcome": "setupfailed", "reason": str(error) if isinstance(error, Refused) else "invalid-or-unavailable-setup"}
     print(encoded(result))
