@@ -76,6 +76,20 @@ describe("checks fallback chain", () => {
     );
     expect(reader.calls).toEqual(["checksFastPath", "checkRollupPage:null"]);
   });
+
+  it("returns an empty read when gh reports no checks on the branch", async () => {
+    const reader = fakeReader({
+      fastPath: {
+        kind: "unusable",
+        exitCode: 1,
+        stderr: "no checks reported on the 'trunk' branch",
+      },
+    });
+    const read = await resolveChecks(reader, context);
+    expect(read.source).toBe("gh-pr-checks");
+    expect(read.checks).toEqual([]);
+    expect(reader.calls).toEqual(["checksFastPath", "checkRollupPage:null"]);
+  });
 });
 
 describe("rollup node mapping", () => {

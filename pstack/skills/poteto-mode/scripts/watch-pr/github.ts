@@ -617,6 +617,17 @@ export async function resolveChecks(
   } while (after !== null);
   const fallback = nonEmpty(checks);
   if (fallback !== null) return { source: "graphql-rollup", checks: fallback };
+  // gh exits 0, 1, or 8 with empty output and a "no checks reported" message
+  // when the branch has no checks at all. That fact never changes on retry,
+  // so it is a valid empty answer and the merge assessment alone decides
+  // readiness. Any other empty read, such as a credential failure, still
+  // throws so the watcher fails closed.
+  const noChecksReported =
+    fast.kind === "checks" ||
+    (fast.kind === "unusable" &&
+      [0, 1, 8].includes(fast.exitCode) &&
+      /no checks reported/.test(fast.stderr));
+  if (noChecksReported) return { source: "gh-pr-checks", checks: [] };
   const suffix =
     fast.kind === "unusable"
       ? `fast path exit=${fast.exitCode}; GraphQL rollup was empty${firstLine(fast.stderr) ? `; ${firstLine(fast.stderr)}` : ""}`
