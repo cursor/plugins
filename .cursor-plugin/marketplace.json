@@ -507,6 +507,11 @@
       "name": "posthog-mcp",
       "source": "third_party/posthog-mcp",
       "description": "Work with PostHog from chat: query product analytics and run SQL, manage feature flags and experiments, triage error tracking issues, and review session replays, surveys, and dashboards (URL-only connector to PostHog's hosted MCP server)."
+    },
+    {
+      "name": "iflytek-skills",
+      "source": "third_party/iflytek-skills",
+      "description": "Speech, OCR, translation, proofreading, and multimodal AI workflows powered by iFLYTEK APIs."
     }
   ]
 }
