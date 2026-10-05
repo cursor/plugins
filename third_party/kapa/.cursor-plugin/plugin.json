@@ -1,0 +1,33 @@
+{
+  "name": "kapa",
+  "displayName": "Kapa",
+  "version": "0.1.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Set up, search, and improve Kapa knowledge bases: connect sources, preview and run crawls, and find coverage gaps.",
+  "author": {
+    "name": "kapa.ai",
+    "email": "support@kapa.ai"
+  },
+  "homepage": "https://www.kapa.ai/",
+  "repository": "https://github.com/kapa-ai/kapa-plugin",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "kapa",
+    "rag",
+    "documentation",
+    "knowledge-base",
+    "mcp",
+    "ingestion"
+  ],
+  "category": "integrations",
+  "tags": [
+    "mcp",
+    "documentation",
+    "knowledge-base",
+    "kapa"
+  ],
+  "mcpServers": "./mcp.json"
+}

@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "kapa": {
+      "type": "http",
+      "url": "https://mcp.kapa.ai/mcp",
+      "placement": "server"
+    }
+  }
+}
