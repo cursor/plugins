@@ -1,10 +1,10 @@
 ---
-name: pr-review-canvas
+name: pr-review-html
 disable-model-invocation: true
-description: Generate an interactive PR review walkthrough as an HTML page. Fetches PR data via gh API, categorizes files into core vs mechanical changes, adds reviewer annotations, and renders diffs with moved-code detection. Use when the user pastes a GitHub PR URL and asks for a review, walkthrough, or summary, or says "review this PR".
+description: Generate an interactive PR review walkthrough as a standalone HTML page. Fetches PR data via gh API, categorizes files into core vs mechanical changes, adds reviewer annotations, and renders diffs with moved-code detection. Use when the user pastes a GitHub PR URL and asks for an HTML review, walkthrough, or summary. For a Cursor Canvas output, use the pr-review-canvas plugin instead.
 ---
 
-# PR Review Canvas
+# PR Review HTML
 
 Generate an interactive HTML review of a GitHub PR that reads like a peer walking you through what matters.
 
