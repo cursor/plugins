@@ -1,7 +1,7 @@
 {
   "name": "agent-compatibility",
   "displayName": "Agent Compatibility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "CLI-backed repo compatibility scans plus agents that audit startup, validation, and docs against reality.",
   "author": {
     "name": "Cursor",
@@ -21,12 +21,7 @@
     "validation"
   ],
   "category": "developer-tools",
-  "tags": [
-    "agents",
-    "compatibility",
-    "quality",
-    "workflow"
-  ],
+  "tags": ["agents", "compatibility", "quality", "workflow"],
   "skills": "./skills/",
   "agents": "./agents/"
 }
