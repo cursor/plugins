@@ -507,6 +507,11 @@
       "name": "posthog-mcp",
       "source": "third_party/posthog-mcp",
       "description": "Work with PostHog from chat: query product analytics and run SQL, manage feature flags and experiments, triage error tracking issues, and review session replays, surveys, and dashboards (URL-only connector to PostHog's hosted MCP server)."
+    },
+    {
+      "name": "whatsetter",
+      "source": "third_party/whatsetter",
+      "description": "Work WhatsApp leads, conversations, bookings, and campaigns run by the WhatSetter AI setter."
     }
   ]
 }
