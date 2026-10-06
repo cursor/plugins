@@ -1,0 +1,30 @@
+name: Validate Plugins
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Restore Validation Cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/plugin_validation.json
+          key: plugin-cache-${{ runner.os }}-${{ hashFiles('.github/scripts/**') }}-${{ hashFiles('.github/scripts/**') }}-${{ github.sha }}
+          restore-keys: |
+            plugin-cache-${{ runner.os }}-${{ hashFiles('.github/scripts/**') }}-
+
+      - name: Run Plugin Validator
+        run: python3 .github/scripts/validate.py
