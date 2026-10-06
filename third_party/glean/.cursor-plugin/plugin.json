@@ -1,0 +1,44 @@
+{
+  "name": "glean",
+  "displayName": "Glean",
+  "version": "1.0.0",
+  "description": "Search your company's knowledge and chat with Glean Assistant.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://developers.glean.com/guides/mcp/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "glean",
+    "enterprise-search",
+    "knowledge-management",
+    "mcp",
+    "search",
+    "documents",
+    "people"
+  ],
+  "category": "productivity",
+  "tags": [
+    "mcp",
+    "enterprise",
+    "search",
+    "knowledge"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "GLEAN_INSTANCE": {
+        "type": "string",
+        "title": "Glean instance",
+        "description": "The subdomain of your Glean backend: the part before -be.glean.com (for example acme for https://acme-be.glean.com). Shown as the backend domain under Server instance in Glean admin → About Glean, and in the MCP server URL from Glean's MCP Configurator (Settings → Third party apps and MCP)."
+      }
+    },
+    "required": [
+      "GLEAN_INSTANCE"
+    ]
+  },
+  "mcpServers": "./mcp.json"
+}

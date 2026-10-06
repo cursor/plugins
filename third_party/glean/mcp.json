@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "glean": {
+      "type": "http",
+      "url": "https://${GLEAN_INSTANCE}-be.glean.com/mcp/default"
+    }
+  }
+}

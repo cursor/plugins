@@ -309,6 +309,11 @@
       "description": "Search company knowledge and draft verified answers."
     },
     {
+      "name": "glean",
+      "source": "third_party/glean",
+      "description": "Search your company's knowledge and chat with Glean Assistant."
+    },
+    {
       "name": "fireflies",
       "source": "third_party/fireflies",
       "description": "Search meeting transcripts, summaries, and action items."
