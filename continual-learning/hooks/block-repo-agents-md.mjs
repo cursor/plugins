@@ -38,7 +38,7 @@ function collectEditText(toolInput) {
     return "";
   }
   const chunks = [];
-  for (const key of ["contents", "new_string", "old_string"]) {
+  for (const key of ["content", "contents", "new_string", "old_string"]) {
     if (typeof toolInput[key] === "string") {
       chunks.push(toolInput[key]);
     }
