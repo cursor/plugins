@@ -88,6 +88,28 @@ describe("readiness truth table", () => {
       blocker: { kind: "failing-checks" },
     });
   });
+
+  it("treats a PR with no configured checks as clean when GitHub allows", async () => {
+    const reader = fakeReader({
+      facts: { mergeStateStatus: "CLEAN" },
+      fastPath: {
+        kind: "unusable",
+        exitCode: 1,
+        stderr: "no checks reported on the 'trunk' branch",
+      },
+    });
+    const snapshot = await readSnapshot({
+      reader,
+      context: context(3),
+      pendingHistory: "include",
+      allowDraft: false,
+    });
+    expect(snapshot.kind).toBe("open");
+    if (snapshot.kind !== "open") throw new Error("expected open snapshot");
+    expect(snapshot.ci.kind).toBe("ci-clean");
+    expect(snapshot.ci.all).toEqual([]);
+    expect(classifyPr(snapshot)).toMatchObject({ kind: "ready" });
+  });
 });
 
 describe("snapshot query planning", () => {

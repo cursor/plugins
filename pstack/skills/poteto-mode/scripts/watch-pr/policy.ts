@@ -76,7 +76,28 @@ export async function readSnapshot(args: {
     )
   );
   let ci: T.CiState;
-  if (failed === null && pending !== null && args.pendingHistory === "omit")
+  if (checks.checks.length === 0) {
+    const merge = await mergeAssessment(args.reader, facts);
+    ci = merge.github.kind === "refused"
+      ? {
+        kind: "ci-github-rejected",
+        source: checks.source,
+        all: [],
+        failed: [],
+        pending: [],
+        hadPreviousPassingCi: merge.hadPreviousPassingCi,
+        github: merge.github,
+      }
+      : {
+        kind: "ci-clean",
+        source: checks.source,
+        all: [],
+        failed: [],
+        pending: [],
+        hadPreviousPassingCi: merge.hadPreviousPassingCi,
+        github: merge.github,
+      };
+  } else if (failed === null && pending !== null && args.pendingHistory === "omit")
     ci = {
       kind: "ci-pending",
       source: checks.source,
