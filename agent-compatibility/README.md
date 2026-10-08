@@ -80,8 +80,10 @@ The scanner is heuristic. It scores repo signals and surfaces likely friction, b
 
 ## Local install
 
-If you want to use this plugin directly, symlink this directory into:
+If you want to use this plugin directly, copy this directory into:
 
 ```bash
-~/.cursor/plugins/local/agent-compatibility
+cp -R /path/to/plugins/agent-compatibility ~/.cursor/plugins/local/
 ```
+
+Cursor skips symlinks in this directory when their targets resolve elsewhere on disk. A typical repository clone is outside the local plugins directory, so use a copy for local testing.
