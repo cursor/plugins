@@ -31,7 +31,7 @@ You pick from things that run, not from descriptions. The agent answers its own 
 ## Turn a settled design into a plan
 
 ```text
-/poteto-mode turn this design into a plan. small verifiable PRs, each with its own proof.
+/poteto-mode turn this design into a plan. every PR gets its own proof.
 ```
 
 Ask only after the design settles. The plan is the deliverable, and it names the playbook that will execute it.

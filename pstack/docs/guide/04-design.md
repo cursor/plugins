@@ -103,7 +103,7 @@ Writing the tutorial first forces the caller's view. You describe the API to a h
 pstack has no planning skill, on purpose. When you do want a written plan, ask for it once the design is settled:
 
 ```text
-/poteto-mode turn this design into a plan. small verifiable PRs, each with its own verification steps.
+/poteto-mode turn this design into a plan. every PR gets its own verification steps.
 ```
 
 The [Multi-phase plan playbook](../../skills/poteto-mode/playbooks/multi-phase-plan.md) settles any remaining open questions by prototype, then writes one section per PR, each ending in proof that the change works. A passing test suite alone doesn't count as that proof. The plan is the deliverable. The playbook doesn't implement it, and it names which execution playbook should run it next.
@@ -111,7 +111,7 @@ The [Multi-phase plan playbook](../../skills/poteto-mode/playbooks/multi-phase-p
 For a migration, state the bar in the prompt:
 
 ```text
-/poteto-mode plan the migration of our ui library to the new styling system. small verifiable PRs, each with visual regression checks. the result must match the original exactly, bugs included.
+/poteto-mode plan the migration of our ui library to the new styling system. every PR gets visual regression checks. the result must match the original exactly, bugs included.
 ```
 
 "bugs included" keeps the migration from quietly fixing things on the way, which would make the old and new output impossible to compare. For a project that spans many days, you can commit the plan to the repo for a while so other agents see the work in progress. Delete it when the work lands.
