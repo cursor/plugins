@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "swarms": {
+      "type": "http",
+      "url": "https://mcp.swarms.world/mcp",
+      "headers": {
+        "x-api-key": "${SWARMS_API_KEY}"
+      }
+    }
+  }
+}
