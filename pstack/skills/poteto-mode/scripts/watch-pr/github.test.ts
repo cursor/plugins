@@ -1,6 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import {
   ChecksUnavailable,
+  readReviewThreadPages,
+  REVIEW_THREADS_QUERY,
   WatcherQueryError,
   mapRollupNode,
   orderStack,
@@ -254,6 +256,71 @@ it("annotates Bugbot threads with distinct review-pass counts", () => {
   expect(threads).toHaveLength(2);
   expect(threads.map((thread) => thread.isBugbot)).toEqual([true, true]);
   expect(threads.map((thread) => thread.bugbotReviewPasses)).toEqual([3, 3]);
+});
+
+describe("review thread pagination", () => {
+  it("includes unresolved threads after the first 100 threads", async () => {
+    const afterValues: (string | null)[] = [];
+    const firstPage = Array.from({ length: 100 }, (_, index) => ({
+      id: `resolved-${index}`,
+      isResolved: true,
+      comments: { nodes: [] },
+    }));
+    const lastThread = {
+      id: "late-unresolved",
+      isResolved: false,
+      comments: { nodes: [] },
+    };
+    const threads = await readReviewThreadPages(async (after) => {
+      afterValues.push(after);
+      const nodes = after === null ? firstPage : [lastThread];
+      return {
+        data: {
+          repository: {
+            pullRequest: {
+              reviewThreads: {
+                nodes,
+                pageInfo:
+                  after === null
+                    ? { hasNextPage: true, endCursor: "cursor-1" }
+                    : { hasNextPage: false, endCursor: "cursor-2" },
+              },
+            },
+          },
+        },
+      };
+    });
+
+    expect(afterValues).toEqual([null, "cursor-1"]);
+    expect(threads.map((thread) => thread.id)).toEqual(["late-unresolved"]);
+    expect(REVIEW_THREADS_QUERY).toContain(
+      "reviewThreads(first: 100, after: $after)"
+    );
+    expect(REVIEW_THREADS_QUERY).toContain("pageInfo");
+  });
+
+  it("fails closed when GitHub repeats a continuation cursor", async () => {
+    const fetchPage = async () => ({
+      data: {
+        repository: {
+          pullRequest: {
+            reviewThreads: {
+              nodes: [],
+              pageInfo: { hasNextPage: true, endCursor: "cursor-1" },
+            },
+          },
+        },
+      },
+    });
+
+    await expect(readReviewThreadPages(fetchPage)).rejects.toMatchObject({
+      failure: {
+        kind: "missing-key",
+        retryable: true,
+        detail: "reviewThreads pagination cursor did not advance",
+      },
+    });
+  });
 });
 
 describe("context and stack discovery", () => {
