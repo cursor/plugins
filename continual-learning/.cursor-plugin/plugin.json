@@ -1,7 +1,7 @@
 {
   "name": "continual-learning",
   "displayName": "Continual Learning",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Incrementally learns durable user preferences and workspace facts from transcript changes and keeps AGENTS.md up to date with plain bullet points.",
   "author": {
     "name": "Eric Zakariasson"
