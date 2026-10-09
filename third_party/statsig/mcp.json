@@ -2,7 +2,7 @@
   "mcpServers": {
     "statsig": {
       "type": "http",
-      "url": "https://api.statsig.com/v1/mcp"
+      "url": "https://api.statsig.com/v3/mcp"
     }
   }
 }

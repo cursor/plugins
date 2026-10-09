@@ -48,8 +48,6 @@ Use the compass on a whole document or on one sentence.
 
 Don't mix modes: no reference tables inside a tutorial, no tutorial hand-holding inside reference, no arguing inside a how-to. Split and link instead.
 
-Source: diataxis.fr, fetched 2026-07-18.
-
 ## Write sentences to the reader (Google developer style)
 
 - Talk to the reader as "you", in the present tense. "Will" only for things that genuinely happen later.
@@ -64,8 +62,6 @@ Source: diataxis.fr, fetched 2026-07-18.
 - Numbered lists for sequences, bullets for everything else. Introduce a list with a complete sentence. Keep items parallel.
 - Code goes in code font. UI elements go in bold. Use serial commas. Drop "etc." and say up front that a list is partial.
 
-Source: developers.google.com/style, fetched 2026-07-18.
-
 ## Make statements load one at a time (STE rules)
 
 - One instruction per sentence. One thought per sentence everywhere else.
@@ -76,8 +72,6 @@ Source: developers.google.com/style, fetched 2026-07-18.
 - Pick one word per action and stick to it: "start", not "start" here and "initiate" there.
 - Write procedures as direct commands, never as narration and never in the passive: "Install the component", not "the component must be installed".
 - Avoid "-ing" words where you can. They take too many grammatical jobs and breed misreadings.
-
-Source: asd-ste100.org (Issue 9, 2025), fetched 2026-07-18. The numbered rules and dictionary live in the spec PDF. The principles above are the transferable core.
 
 ## Leave no sentence open to two readings (Global English)
 
@@ -93,8 +87,6 @@ Source: asd-ste100.org (Issue 9, 2025), fetched 2026-07-18. The numbered rules a
 - No slashes: write "a, b, or both" instead of "a/b" or "and/or".
 - Call each thing by one name, everywhere. A doc that says "the gate", "the ratchet", and "the budget check" for one thing teaches three things. Rewording an unchanged sentence between edits costs the same way. Don't churn what didn't change.
 - Skip idioms, colloquialisms, Latin abbreviations, and metaphors. A non-native reader, a translator, and an agent all parse plain constructions best.
-
-Source: Kohl, The Global English Style Guide (SAS Press). Guideline text fetched from the Internet Archive and the SAS sample chapter, 2026-07-18.
 
 ## Voice and repo specifics
 

@@ -1,7 +1,7 @@
 {
   "name": "hubspot",
   "displayName": "HubSpot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Search and update contacts, companies, deals, and tickets.",
   "author": {
     "name": "Cursor",
@@ -33,18 +33,15 @@
       "CLIENT_ID": {
         "type": "string",
         "title": "HubSpot Client ID",
-        "description": "OAuth Client ID from Development → MCP Auth Apps → your app."
+        "description": "Optional. Leave blank to use Grok's HubSpot app when it is available to you. To use your own, the OAuth Client ID from Development → MCP Auth Apps → your app."
       },
       "CLIENT_SECRET": {
         "type": "string",
         "title": "HubSpot Client Secret",
-        "description": "OAuth Client Secret from the same HubSpot MCP auth app."
+        "description": "Optional. Only needed with your own Client ID: the OAuth Client Secret from the same HubSpot MCP auth app."
       }
     },
-    "required": [
-      "CLIENT_ID",
-      "CLIENT_SECRET"
-    ]
+    "required": []
   },
   "mcpServers": "./mcp.json"
 }

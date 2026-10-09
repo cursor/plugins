@@ -1,7 +1,7 @@
 {
   "name": "zoom",
   "displayName": "Zoom",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Search meetings, pull transcripts, and work with Zoom Docs.",
   "author": {
     "name": "Cursor",
@@ -31,17 +31,16 @@
       "CLIENT_ID": {
         "type": "string",
         "title": "Zoom Client ID",
-        "description": "OAuth Client ID from your Zoom App Marketplace General app → Basic Information → App Credentials."
+        "description": "Public Client ID (recommended) or Client ID from your Zoom App Marketplace General app → Basic Information → App Credentials. The Public Client ID appears after turning on Use Public Client OAuth."
       },
       "CLIENT_SECRET": {
         "type": "string",
         "title": "Zoom Client Secret",
-        "description": "OAuth Client Secret from the same Zoom General app."
+        "description": "Optional. Leave blank with a Public Client ID; Cursor then signs in with PKCE and no secret. Only set it alongside the confidential Client ID from the same app."
       }
     },
     "required": [
-      "CLIENT_ID",
-      "CLIENT_SECRET"
+      "CLIENT_ID"
     ]
   },
   "mcpServers": "./mcp.json"

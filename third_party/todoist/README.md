@@ -50,7 +50,7 @@ The hosted runtime is the source of truth for tool names and schemas.
 - Use Todoist MCP: https://www.todoist.com/help/articles/use-chatgpt-with-todoist-mcp-WEeLx9d8h
 - Server URL: https://ai.todoist.net/mcp
 
-Logo is Todoist's official mark, from the `Doist` GitHub organization.
+Logo is Todoist's official mark, from https://todoist.com.
 
 ## License
 

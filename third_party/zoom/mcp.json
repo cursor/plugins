@@ -5,7 +5,7 @@
       "url": "https://mcp.zoom.us/mcp/zoom/streamable",
       "auth": {
         "CLIENT_ID": "${CLIENT_ID}",
-        "CLIENT_SECRET": "${CLIENT_SECRET}"
+        "CLIENT_SECRET": "${CLIENT_SECRET:-}"
       }
     }
   }

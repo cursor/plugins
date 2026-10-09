@@ -64,6 +64,11 @@
       "description": "Build apps, scripts, and automations with the TypeScript SDK."
     },
     {
+      "name": "origin-apps",
+      "source": "origin-apps",
+      "description": "Skills for building on the Cursor Origin API. Fetch the live spec first, then follow the Origin rules for credentials, scopes, webhooks, paging, and errors. Includes a skill that plans the port of an existing GitHub App."
+    },
+    {
       "name": "orchestrate",
       "source": "orchestrate",
       "description": "Fan large tasks out across parallel cloud agents with planners, workers, verifiers, and structured handoffs."
@@ -72,6 +77,11 @@
       "name": "pstack",
       "source": "pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
+    },
+    {
+      "name": "dyl-stack",
+      "source": "dyl-stack",
+      "description": "Dylan's agent style on top of pstack: root causes over symptom patches, The Algorithm before design, terse verified delivery, a PR review that fits in a paste, and Figma-to-UI with a visual judge."
     },
     {
       "name": "grok-voice",
@@ -124,6 +134,11 @@
       "description": "Query, create, and update records in your org."
     },
     {
+      "name": "salesforce-headless-360",
+      "source": "third_party/salesforce-headless-360",
+      "description": "Manage records, users, and org setup across Salesforce."
+    },
+    {
       "name": "playwright",
       "source": "third_party/playwright",
       "description": "Navigate, click, screenshot, and test in a real browser."
@@ -137,6 +152,11 @@
       "name": "ashby",
       "source": "third_party/ashby",
       "description": "Search candidates, prep interviews, and manage pipeline tasks."
+    },
+    {
+      "name": "greenhouse",
+      "source": "third_party/greenhouse",
+      "description": "Search candidates, jobs, and applications, and review scorecards in Greenhouse Recruiting."
     },
     {
       "name": "hubspot",
@@ -492,6 +512,16 @@
       "name": "posthog-mcp",
       "source": "third_party/posthog-mcp",
       "description": "Work with PostHog from chat: query product analytics and run SQL, manage feature flags and experiments, triage error tracking issues, and review session replays, surveys, and dashboards (URL-only connector to PostHog's hosted MCP server)."
+    },
+    {
+      "name": "quickbooks-online",
+      "source": "third_party/quickbooks-online",
+      "description": "Read invoices, bills, expenses, customers, accounts, and financial reports."
+    },
+    {
+      "name": "workday",
+      "source": "third_party/workday",
+      "description": "Look up workers, organizations, time off, payroll, and recruiting data in Workday."
     },
     {
       "name": "commsync",
