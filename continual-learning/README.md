@@ -57,6 +57,29 @@ Trial mode defaults (enabled in this plugin hook config):
 - `CONTINUAL_LEARNING_TRIAL_MIN_MINUTES` (or legacy `CONTINUOUS_LEARNING_TRIAL_MIN_MINUTES`)
 - `CONTINUAL_LEARNING_TRIAL_DURATION_MINUTES` (or legacy `CONTINUOUS_LEARNING_TRIAL_DURATION_MINUTES`)
 
+## Exclude workspaces
+
+Create `~/.cursor/continual-learning.json` to disable learning in selected local
+directories, independently of the plugin cache:
+
+```json
+{
+  "excludedPaths": ["/absolute/path/to/private-repos"]
+}
+```
+
+Each absolute path excludes that directory and its descendants. Symlink aliases
+are resolved, and sibling names sharing a prefix do not match. Listed directories
+must exist. Set `CONTINUAL_LEARNING_CONFIG` to use a different config file.
+
+The stop hook checks exclusions before changing cadence state or triggering a
+memory update. The updater also checks before manual updates. An unreadable or
+invalid config stops learning and reports an error; a missing file keeps existing
+behavior. These settings do not change cadence or the memory filename, and do not
+match Git remote owners or repository slugs.
+
+Run the focused tests with `bun test continual-learning/hooks/workspace-exclusions.test.ts`.
+
 ## Output format in AGENTS.md
 
 The memory updater writes only:

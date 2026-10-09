@@ -14,6 +14,11 @@ Use from `continual-learning` when transcript deltas may produce durable memory 
 
 ## Workflow
 
+Before reading transcripts or writing any files, run
+`bun run "${CURSOR_PLUGIN_ROOT}/hooks/workspace-exclusions.ts"` in the workspace.
+If it reports `excluded: true` or fails, stop without updating memory or the
+incremental index. This check also applies to manually requested updates.
+
 1. Read existing `AGENTS.md` first. If it does not exist, create it with only:
    - `## Learned User Preferences`
    - `## Learned Workspace Facts`
