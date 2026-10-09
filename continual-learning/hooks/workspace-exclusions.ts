@@ -2,11 +2,11 @@ import { readFileSync, realpathSync } from "node:fs";
 import { homedir } from "node:os";
 import { isAbsolute, join, relative, sep } from "node:path";
 
-export function isWorkspaceExcluded(
+export function isWorkspaceExcluded({
   workspace = process.cwd(),
   configPath = process.env.CONTINUAL_LEARNING_CONFIG ??
-    join(homedir(), ".cursor", "continual-learning.json")
-): boolean {
+    join(homedir(), ".cursor", "continual-learning.json"),
+}: { workspace?: string; configPath?: string } = {}): boolean {
   let text: string;
   try {
     text = readFileSync(configPath, "utf-8");

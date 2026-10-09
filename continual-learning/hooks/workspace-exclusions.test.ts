@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from "bun:test";
-import { existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { isWorkspaceExcluded } from "./workspace-exclusions";
@@ -19,9 +19,9 @@ function fixture() {
 
 test("missing config and empty exclusions preserve existing behavior", () => {
   const { workspace, config } = fixture();
-  expect(isWorkspaceExcluded(workspace, config)).toBe(false);
+  expect(isWorkspaceExcluded({ workspace: workspace, configPath: config })).toBe(false);
   writeFileSync(config, JSON.stringify({ excludedPaths: [] }));
-  expect(isWorkspaceExcluded(workspace, config)).toBe(false);
+  expect(isWorkspaceExcluded({ workspace: workspace, configPath: config })).toBe(false);
 });
 
 test("exclusions match a directory and descendants, not sibling prefixes", () => {
@@ -31,9 +31,9 @@ test("exclusions match a directory and descendants, not sibling prefixes", () =>
   mkdirSync(child);
   mkdirSync(sibling);
   writeFileSync(config, JSON.stringify({ excludedPaths: [workspace] }));
-  expect(isWorkspaceExcluded(workspace, config)).toBe(true);
-  expect(isWorkspaceExcluded(child, config)).toBe(true);
-  expect(isWorkspaceExcluded(sibling, config)).toBe(false);
+  expect(isWorkspaceExcluded({ workspace: workspace, configPath: config })).toBe(true);
+  expect(isWorkspaceExcluded({ workspace: child, configPath: config })).toBe(true);
+  expect(isWorkspaceExcluded({ workspace: sibling, configPath: config })).toBe(false);
 });
 
 test("symlink aliases of a workspace remain excluded", () => {
@@ -41,16 +41,16 @@ test("symlink aliases of a workspace remain excluded", () => {
   const alias = join(root, "alias");
   symlinkSync(workspace, alias, "dir");
   writeFileSync(config, JSON.stringify({ excludedPaths: [workspace] }));
-  expect(isWorkspaceExcluded(alias, config)).toBe(true);
+  expect(isWorkspaceExcluded({ workspace: alias, configPath: config })).toBe(true);
   writeFileSync(config, JSON.stringify({ excludedPaths: [alias] }));
-  expect(isWorkspaceExcluded(workspace, config)).toBe(true);
+  expect(isWorkspaceExcluded({ workspace: workspace, configPath: config })).toBe(true);
 });
 
 test.each(["{", "null", "[]", '{"excludedPaths":null}', '{"excludedPaths":"/private"}', '{"excludedPaths":["relative"]}'])(
   "invalid config cannot silently allow learning: %s", (text) => {
     const { workspace, config } = fixture();
     writeFileSync(config, text);
-    expect(() => isWorkspaceExcluded(workspace, config)).toThrow();
+    expect(() => isWorkspaceExcluded({ workspace: workspace, configPath: config })).toThrow();
   }
 );
 
@@ -100,4 +100,26 @@ test("an invalid config prevents hook writes and reports the error", () => {
   expect(result.stderr.toString()).toContain("failed");
   expect(JSON.parse(result.stdout.toString())).toEqual({});
   expect(existsSync(join(workspace, ".cursor"))).toBe(false);
+});
+
+// The updater receives an absolute script path from the skill, not hook env vars.
+test("the updater helper works outside the plugin without CURSOR_PLUGIN_ROOT", () => {
+  const { root, workspace, config } = fixture();
+  const plugin = join(root, "installed plugin");
+  mkdirSync(plugin);
+  const helper = join(plugin, "workspace-exclusions.ts");
+  copyFileSync(join(import.meta.dir, "workspace-exclusions.ts"), helper);
+  const env: NodeJS.ProcessEnv = { ...process.env, CONTINUAL_LEARNING_CONFIG: config };
+  delete env.CURSOR_PLUGIN_ROOT;
+  for (const excluded of [false, true]) {
+    writeFileSync(config, JSON.stringify({ excludedPaths: excluded ? [workspace] : [] }));
+    const result = Bun.spawnSync({
+      cmd: [process.execPath, "run", helper],
+      cwd: workspace,
+      env,
+    });
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr.toString()).toBe("");
+    expect(JSON.parse(result.stdout.toString())).toEqual({ excluded });
+  }
 });

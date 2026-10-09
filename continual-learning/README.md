@@ -73,7 +73,9 @@ are resolved, and sibling names sharing a prefix do not match. Listed directorie
 must exist. Set `CONTINUAL_LEARNING_CONFIG` to use a different config file.
 
 The stop hook checks exclusions before changing cadence state or triggering a
-memory update. The updater also checks before manual updates. An unreadable or
+memory update. For manual updates, invoke the `continual-learning` skill so it
+can pass the installed helper path and workspace to the updater. The updater
+checks the same exclusions before reading transcripts or changing memory. An unreadable or
 invalid config stops learning and reports an error; a missing file keeps existing
 behavior. These settings do not change cadence or the memory filename, and do not
 match Git remote owners or repository slugs.
