@@ -1,0 +1,38 @@
+{
+  "name": "tailscale",
+  "displayName": "Tailscale",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "never",
+    "grokbot": "0.49.0",
+    "sand": "0.49.0"
+  },
+  "description": "Let Grok Bot reach MCP servers on your private Tailscale network. Sign in to Tailscale to connect your tailnet; Grok Bot joins it as one tagged device and only reaches the hosts you grant to tag:grokbot.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://tailscale.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "tailscale",
+    "tailnet",
+    "wireguard",
+    "vpn",
+    "private network",
+    "networking",
+    "self-hosted",
+    "grok",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "tailscale",
+    "networking",
+    "grok",
+    "mcp"
+  ],
+  "skills": "./skills/"
+}
