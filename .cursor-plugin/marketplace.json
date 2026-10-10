@@ -522,6 +522,11 @@
       "name": "workday",
       "source": "third_party/workday",
       "description": "Look up workers, organizations, time off, payroll, and recruiting data in Workday."
+    },
+    {
+      "name": "square",
+      "source": "third_party/square",
+      "description": "Work with payments, orders, catalog, customers, and invoices."
     }
   ]
 }
