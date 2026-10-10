@@ -42,9 +42,7 @@ const agent = Agent.create({
 });
 ```
 
-The non-null assertion (`!`) is a readable way to say "fail loudly if the env var is missing" — otherwise the SDK will throw an auth error later and the stack trace won't point at the env var.
-
-A slightly more polite pattern:
+The non-null assertion (`!`) only silences the type error — it is erased at compile time and performs no runtime check. If the env var is missing, `undefined` is passed through and the SDK throws an auth error later. To fail loudly at the call site, check explicitly:
 
 ```typescript
 const apiKey = process.env.CURSOR_API_KEY;
