@@ -122,6 +122,7 @@ to keep [`/poteto-mode`](./skills/poteto-mode/SKILL.md) on across turns, pick it
 | [`/automate-me`](./skills/automate-me/SKILL.md) | you want your own `-mode` skill, drafted from how you've actually worked. |
 | [`/make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a page or dashboard whose buttons wake a Grok Bot over a webhook, including the sender-key handoff and Tailscale. |
 | [`/setup-pstack`](./skills/setup-pstack/SKILL.md) | you want to pick which models pstack uses per role. detects your models and writes a config rule. |
+| [`/osb-coordination`](./skills/osb-coordination/SKILL.md) | opt-in ownership checkpoints for a project with a provisioned compatible authority; ordinary PStack stays local. |
 | [`/reflect`](./skills/reflect/SKILL.md) | a long task landed and you want the recipe captured as a skill edit. |
 | [`/correct`](./skills/correct/SKILL.md) | you keep correcting agents for the same mistakes. mines history for mistake classes, fixes each at the highest level that works (architecture, then types, lint, and ci, then tests, with docs last), and keeps a table pairing each rule with what enforces it. |
 | [`/teach`](./skills/teach/SKILL.md) | you want to actually understand a change or subsystem, not just have it summarized. runs how + why and weaves one plain explanation, built up diagram by diagram. |
@@ -265,3 +266,7 @@ to set it up, point cursor at [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.m
 ## license
 
 MIT
+
+## optional shared ownership
+
+The separate [osb-coordination skill](./skills/osb-coordination/SKILL.md) is an opt-in source proposal for projects with an operator-provisioned shared authority. It preserves the local orch store and named stacker, journals request replay and checks current ownership plus declared revisions before cooperative checkpoints. An additional explicitly enabled [local verifier path](./skills/osb-coordination/references/local-verifier.md) claims before a fixed foreground verifier, renews during work, gates the existing local verdict record and releases after owned process groups are quiescent. It installs no service and provides no atomic fence around Git/CI/merge commands or the local record. Ordinary PStack does not require OSB or a compatible endpoint. The client, runner and [acceptance fixtures](./skills/osb-coordination/references/validation.md) are unexecuted; deployed authentication and installed PStack compatibility require separate validation.
