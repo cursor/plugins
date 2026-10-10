@@ -1,6 +1,6 @@
 ---
 name: unslop
-description: Cut AI tells from any writing. Must always apply.
+description: Cut AI tells from any writing. Run it with /unslop on a draft, a PR description, or a reply; it does not fire on its own.
 disable-model-invocation: true
 ---
 
