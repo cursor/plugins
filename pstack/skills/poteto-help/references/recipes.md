@@ -26,8 +26,8 @@ Swap in the real paths, skills, and done checks. Informal wording works.
 - `/poteto-mode we need <feature>. /architect it first, and answer open questions with prototypes. let me review before proceeding.`
 - `/poteto-mode write a tutorial for how i would use <new package> first. then /teach me why it beats the current one.`
 - `ask /arena for a second opinion on this thread and our approach.`
-- `/poteto-mode turn this design into a plan. small verifiable PRs, each with its own verification steps.`
-- `/poteto-mode plan the migration of <library> to <target>. small verifiable PRs. the result must match the original exactly, bugs included.`
+- `/poteto-mode turn this design into a plan. every PR gets its own verification steps.`
+- `/poteto-mode plan the migration of <library> to <target>. the result must match the original exactly, bugs included.`
 
 ## Review and ship
 
