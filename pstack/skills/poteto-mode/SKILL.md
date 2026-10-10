@@ -10,6 +10,10 @@ reminder: New task? Playbook match or rigor needed -> apply /poteto-mode. Casual
 
 # Poteto mode
 
+## Reading bundled skills and playbooks
+
+Resolve bundled skill names from the directory containing this `SKILL.md`, not from the workspace root. Read `../<name>/SKILL.md` in full, including for `principle-*` skills. For example, **how** is [../how/SKILL.md](../how/SKILL.md). Resolve `playbooks/`, `references/`, and `scripts/` paths below from this same directory. Pass the resolved paths to delegates that need them. Skills identified as built-in or supplied by another plugin are not bundled siblings.
+
 ## Non-negotiables
 
 The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf SKILL.md you read this session.
