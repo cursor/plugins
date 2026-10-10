@@ -527,6 +527,11 @@
       "name": "square",
       "source": "third_party/square",
       "description": "Work with payments, orders, catalog, customers, and invoices."
+    },
+    {
+      "name": "notfair",
+      "source": "third_party/notfair",
+      "description": "Operate Google, Meta, X, LinkedIn, Reddit, and TikTok Ads plus GA4, Search Console, GoHighLevel, and WordPress through one OAuth MCP."
     }
   ]
 }
