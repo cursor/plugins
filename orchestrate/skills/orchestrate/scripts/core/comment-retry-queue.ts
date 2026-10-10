@@ -8,6 +8,7 @@ import {
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 
+import { SLACK_TOKEN_ENV } from "../adapters/slack/client.ts";
 import type { CommentCriticality, SlackAdapter } from "../adapters/types.ts";
 
 const COMMENT_RETRY_BACKOFF_MS = [1_000, 5_000, 30_000, 300_000, 1_800_000];
@@ -266,7 +267,7 @@ async function postComment(args: {
   }
   if (!args.destinations.slack) {
     throw new Error(
-      "Slack destination requested but SLACK_BOT_TOKEN is not set"
+      `Slack destination requested but ${SLACK_TOKEN_ENV} is not set`
     );
   }
   const target = parseSlackDestination(args.destination);
