@@ -24,7 +24,9 @@ ls -t <agent-transcripts>/*.jsonl <agent-transcripts>/*/*.jsonl <agent-transcrip
 
 Three transcript layouts: legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), and subagent (`<parent>/subagents/<child>.jsonl`).
 
-For each candidate, read the first JSONL line and check that `message.content[0].text` contains the conversation's opening user prompt. Take the matching path. If no path resolves, write a tight digest of the session and pass that instead.
+For each candidate, read the first JSONL line and check that `message.content[0].text` contains the conversation's opening user prompt. Take the matching path.
+
+If the system prompt names no `agent-transcripts/` directory, or the records are not Cursor JSONL with `message.content[0].text`, pass the session log this host can read. That includes a `{"type","content"}` jsonl and compaction rollouts such as `segment_*.md`. Do not substitute a digest for a log you can read. A digest drops lines the reviewers need. Write a tight digest only when no readable log exists.
 
 ### 2. Spawn three reviewers in parallel
 
@@ -40,9 +42,13 @@ Each reviewer and the synthesizer name a role line in the `pstack-models.mdc` ru
 
 Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Task` response body.
 
+If this host has no `Task` tool, no `model` argument, or no `generalPurpose` type, spawn three general-purpose reviewers with the tool this session provides. Omit the specialist type. Do not pick the nearest listed persona. Leave `model` unset when the tool has no model argument. Pass each template verbatim, with the transcript path substituted where marked. Use the mode that keeps MCP access. A readonly mode that strips MCPs is the wrong mode.
+
 ### 3. Synthesize
 
 One `Task` call, `subagent_type: generalPurpose`, with `model` from the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-xhigh`), agent mode (`readonly: false`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Readonly strips MCPs. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+
+If `Task`, a `model` argument, or `generalPurpose` is absent, use the step 2 fallback: one general-purpose synthesizer, no specialist type, `model` unset, `references/synthesizer.md` verbatim.
 
 ### 4. Structural enforcement check
 
