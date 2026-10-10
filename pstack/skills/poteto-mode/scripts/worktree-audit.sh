@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Read-only worktree prune audit. Classifies every git worktree by size, merge
-# state, uncommitted work, remote/PR state, and the most recent chat that
-# operated in it. Emits a table sorted by size with a suggested bucket. Never
-# deletes anything; deletion stays a human-gated step in the playbook.
+# Worktree prune audit. Classifies every git worktree by size, merge state,
+# uncommitted work, remote/PR state, and the most recent chat that operated in
+# it. Emits a table sorted by size with a suggested bucket. Never deletes
+# anything; deletion stays a human-gated step in the playbook. The only write
+# is `git fetch origin main`, which refreshes origin/main for the merge check.
 #
 # Usage: worktree-audit.sh [repo-path]   (defaults to the current repo)
 set -u
@@ -71,10 +72,18 @@ git worktree list --porcelain | awk '/^worktree /{print $2}' | while read -r wt;
 	fi
 	recent=$([ "$last_ts" -gt 0 ] 2>/dev/null && [ $(( (now - last_ts) / 86400 )) -le 4 ] && echo yes || echo no)
 
+	# Commits that exist only in this worktree (ahead of the remote, no remote
+	# branch, or detached) are gone with it. Only ancestry of origin/main or a
+	# MERGED PR proves the work lives elsewhere; a CLOSED PR proves nothing.
+	case "$pr" in *MERGED*) pr_merged=yes ;; *) pr_merged=no ;; esac
+	case "$remote" in ahead*|no-remote|detached) unpushed=yes ;; *) unpushed=no ;; esac
+	[ "$merged" = YES ] && unpushed=no
+
 	case "$dirty" in wip:*) bucket=hold-wip ;; *)
 		case "$pr" in *OPEN*) bucket=hold-open-pr ;; *)
-			if [ "$recent" = yes ]; then bucket=verify-recent-chat
-			elif [ "$merged" = YES ] || [ "$pr" != "-" ]; then bucket=safe
+			if [ "$unpushed" = yes ]; then bucket=hold-unpushed
+			elif [ "$recent" = yes ]; then bucket=verify-recent-chat
+			elif [ "$merged" = YES ] || [ "$pr_merged" = yes ]; then bucket=safe
 			else bucket=review; fi ;;
 		esac ;;
 	esac
