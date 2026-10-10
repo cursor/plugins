@@ -527,6 +527,11 @@
       "name": "square",
       "source": "third_party/square",
       "description": "Work with payments, orders, catalog, customers, and invoices."
+    },
+    {
+      "name": "commsync",
+      "source": "third_party/commsync",
+      "description": "Read, search, and send SMS and email from one shared inbox."
     }
   ]
 }

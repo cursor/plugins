@@ -1,0 +1,32 @@
+{
+  "name": "commsync",
+  "displayName": "CommSync",
+  "version": "1.0.0",
+  "description": "Read, search, and send SMS and email from one shared inbox.",
+  "author": {
+    "name": "CommSync",
+    "email": "support@commsync.ai"
+  },
+  "homepage": "https://commsync.ai/docs/connect-ai-apps",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "commsync",
+    "sms",
+    "email",
+    "inbox",
+    "texting",
+    "mcp",
+    "contacts",
+    "messaging"
+  ],
+  "category": "integrations",
+  "tags": [
+    "commsync",
+    "sms",
+    "email",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "commsync": {
+      "type": "http",
+      "url": "https://server.commsync.ai/api/mcp"
+    }
+  }
+}
