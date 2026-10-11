@@ -12,4 +12,4 @@ Use the `suno` MCP tools supplied by this plugin. The hosted server is the sourc
 3. Call `suno_get_task` with that same `task_id` until the task is terminal. `pending` and `processing` are not finished songs. If the chat is interrupted, ask for the original task ID and continue querying it.
 4. On success, return the audio links and open the completed file when possible. On failure, report the task error and ID. Never submit a second paid generation just to check progress.
 
-The API token belongs in **Dashboard → Plugins → Configure**, in `ACEDATACLOUD_API_TOKEN`; do not put it in chat, source files, or example prompts. For the exact first-run prompt and access steps, see the [README](../../README.md).
+Configure `ACEDATACLOUD_API_TOKEN` in **Customize → Plugins → Suno → Configure**; do not put it in chat, source files, or example prompts. For the exact first-run prompt and access steps, see the [README](../../README.md).

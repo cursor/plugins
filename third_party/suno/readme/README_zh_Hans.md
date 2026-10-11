@@ -6,7 +6,7 @@
 
 ## 1. 搜索和安装
 
-在 Cursor 3.13 或更新版本打开 **Cursor Settings → Plugins**，搜索 **Suno**，确认作者为 **Ace Data Cloud Dev**、图标为 Suno 标志后点击 **Install**。也可在聊天中输入 `/add-plugin suno`。如果官方列表尚未出现，可将源码放在 `~/.cursor/plugins/local/suno/` 本地审查；本地安装不能证明官方市场已经上架。
+在 Cursor 3.24 打开 **Customize → Browse Marketplace**，搜索 **Suno**，确认作者为 **Ace Data Cloud Dev**、图标为 Suno 标志后点击 **Add**。较早版本可能在 Settings 中提供 Plugins 入口。也可在聊天中输入 `/add-plugin suno`。如果官方列表尚未出现，可将源码放在 `~/.cursor/plugins/local/suno/` 本地审查；本地安装不能证明官方市场已经上架。
 
 ## 2. 获取具有 Suno 权限的 API Key
 
@@ -18,7 +18,7 @@
 
 ## 3. 配置插件
 
-打开 **Dashboard → Plugins → Configure**，选择 **Suno**，将 Key 原文填入 `ACEDATACLOUD_API_TOKEN`。插件会自行添加 `Bearer ` 前缀，并连接 `https://suno.mcp.acedata.cloud/mcp`；无需安装本地 Python 服务。工具没有出现时重新连接 MCP。
+打开 **Customize → Plugins → Suno → Configure**，将 Key 原文填入 **Ace Data Cloud API token** 并点击 **Save**。Cursor 将其用于 `ACEDATACLOUD_API_TOKEN`；插件会自行添加 `Bearer ` 前缀，并连接 `https://suno.mcp.acedata.cloud/mcp`；无需安装本地 Python 服务。工具没有出现时重新连接 MCP。
 
 ## 4. 生成并取回第一首歌
 

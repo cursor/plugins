@@ -6,7 +6,7 @@ Generate Suno music in Cursor through the [Ace Data Cloud](https://platform.aced
 
 ## 1. Find and install Suno
 
-In Cursor 3.13 or later, open **Cursor Settings → Plugins**, search for **Suno**, and check that the author is **Ace Data Cloud Dev** and the logo is the Suno mark. Click **Install**. The chat command `/add-plugin suno` is another entry point. If the official listing has not appeared yet, this source can be reviewed locally under `~/.cursor/plugins/local/suno/`; local installation does not prove Marketplace publication.
+In Cursor 3.24, open **Customize → Browse Marketplace**, search for **Suno**, and check that the author is **Ace Data Cloud Dev** and the logo is the Suno mark. Click **Add**. Older releases may put Plugins under Settings. The chat command `/add-plugin suno` is another entry point. If the official listing has not appeared yet, this source can be reviewed locally under `~/.cursor/plugins/local/suno/`; local installation does not prove Marketplace publication.
 
 ## 2. Get an API key with Suno access
 
@@ -18,7 +18,7 @@ Use the API key, not a platform management token. Keep it out of prompts and rep
 
 ## 3. Configure the plugin
 
-Open **Dashboard → Plugins → Configure**, select **Suno**, and set `ACEDATACLOUD_API_TOKEN` to the key string. Cursor substitutes it into the MCP Authorization header. Paste only the key: the plugin adds `Bearer ` itself. Reconnect the plugin if its tools do not appear.
+Open **Customize → Plugins → Suno → Configure**, paste the key string into **Ace Data Cloud API token**, and click **Save**. Cursor uses it as `ACEDATACLOUD_API_TOKEN` in the MCP Authorization header; the plugin adds `Bearer ` itself. Reconnect the plugin if its tools do not appear.
 
 The transport is a hosted HTTP MCP endpoint; no Python or local server is required:
 
