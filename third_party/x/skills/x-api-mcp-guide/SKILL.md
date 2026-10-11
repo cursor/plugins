@@ -2,7 +2,8 @@
 name: X MCP guide
 description: >-
   ALWAYS read this when a user connects the X plugin or any X MCP, before using
-  any X connection, and again on any X error. Do not call an X tool until this
+  any X tool, including Grok Bot's built-in public reads (no X connection or
+  credits needed), and again on any X error. Do not call an X tool until this
   file has been read in the current turn. On first connect, confirm X tools
   exist, fetch get_usage_credits BEFORE any user-facing text, then send the
   congrats + capabilities message. Never tell the user to buy credits until that
@@ -21,6 +22,10 @@ This plugin uses **X MCP**. The user taps Connect and signs in with X. Developer
 On a core error, stop. Name the simple issue, then the next step. Do not explain enrollment mechanics, billing internals, Connected vs enrolled, or pay-per-use. Never retry 401 / 403-enrollment / credits-blocked / missing-tools unchanged. Never ask for keys or Bearer tokens. Chat PIN is allowed only via secret-request (never pasted in chat). Never tell them to create an app, Project, or Production env except the quoted [error 2](#2-account-not-ready) steps. X Chat is in this file — [X Chat](#x-chat). Do not look for a second skill.
 
 **Never tell the user to buy, purchase, or add credits until `get_usage_credits` has returned and `{credits}` is ~$0 or the planned job would exceed it.** Do not use “you’ll need to purchase credits at https://console.x.com” (or any “buy credits first” variant) on connect or before that check. Missing tools is not a pay CTA.
+
+## Built-in X reads
+
+When the host says public X reads need no X connection, as Grok Bot does, it reads public posts, users, search, trends, and news through its own X access and doesn't spend the user's credits. For those reads, don't ask the user to connect X, check credits, or estimate a cost. `get_usage_credits` and `get_users_me` are only on the user's X connection, so their absence next to built-in reads is not [error 2](#2-account-not-ready) or an outage. The user's own account, home timeline, bookmarks, and X Chat need their X connection and the rest of this guide.
 
 ## Connect order
 
