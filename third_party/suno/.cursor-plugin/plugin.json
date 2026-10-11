@@ -1,0 +1,28 @@
+{
+  "name": "suno",
+  "displayName": "Suno",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Generate Suno music through Ace Data Cloud and retrieve completed songs by task ID.",
+  "author": {
+    "name": "Ace Data Cloud Dev",
+    "email": "dev@acedata.cloud"
+  },
+  "homepage": "https://platform.acedata.cloud/models",
+  "repository": "https://github.com/AceDataCloud/SunoCursor",
+  "license": "MIT",
+  "logo": "assets/logo.jpg",
+  "keywords": [
+    "suno",
+    "music generation",
+    "ai music",
+    "audio",
+    "acedatacloud",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": ["suno", "music", "audio", "mcp"],
+  "mcpServers": "./mcp.json"
+}
