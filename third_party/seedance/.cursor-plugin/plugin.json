@@ -1,0 +1,31 @@
+{
+  "name": "seedance",
+  "displayName": "Seedance",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Generate Seedance videos and retrieve the finished clip.",
+  "author": {
+    "name": "Ace Data Cloud Dev",
+    "email": "dev@acedata.cloud"
+  },
+  "homepage": "https://platform.acedata.cloud/models",
+  "repository": "https://github.com/AceDataCloud/SeedanceCursor",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "seedance",
+    "seedance",
+    "video",
+    "acedatacloud",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "seedance",
+    "video",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
