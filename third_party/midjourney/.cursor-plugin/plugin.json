@@ -1,0 +1,31 @@
+{
+  "name": "midjourney",
+  "displayName": "Midjourney",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Generate Midjourney images and retrieve the finished image.",
+  "author": {
+    "name": "Ace Data Cloud Dev",
+    "email": "dev@acedata.cloud"
+  },
+  "homepage": "https://platform.acedata.cloud/models",
+  "repository": "https://github.com/AceDataCloud/MidjourneyCursor",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "midjourney",
+    "midjourney",
+    "image",
+    "acedatacloud",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "midjourney",
+    "image",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
