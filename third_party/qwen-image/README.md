@@ -38,7 +38,7 @@ The transport is hosted HTTP; no local Node server is required:
 
 Paste the [first-image prompt](examples/first-image.md) into Cursor Agent. It checks `qwen_image_list_models`, then requests one `qwen_image_generate` call with model `qwen-image-3.0` when available, size `1024*1024`, count `1`, and no watermark. Use the live tool schema for supported values.
 
-The paid generation returns a task ID while work may still be pending. Keep it. Call `qwen_image_get_task` with that **same** ID until `response.success` is true or false; a successful result contains `response.data[].image_url`. If the chat is interrupted, begin a new chat with “Query Qwen Image task <task_id>; do not generate again.” Open the returned HTTPS image and check it.
+The paid generation returns a task ID while work may still be pending. Keep it. Call `qwen_image_get_task` with that **same** ID until `finished_at` is non-null. While `finished_at` is null, continue querying even if `response.success` is false. Once finished, `response.success: true` includes `response.data[].image_url`; `false` is a terminal failure. If the chat is interrupted, begin a new chat with “Query Qwen Image task <task_id>; do not generate again.” Open the returned HTTPS image and check it.
 
 In **Ace Data Cloud → Usage/Billing**, match the one generation to its deducted Credits record. Task queries do not submit another generation. The plugin is free; API calls follow current service pricing.
 

@@ -26,7 +26,7 @@
 
 在 Cursor Agent 中复制[首跑提示词](../examples/first-image.md)。它先查询 `qwen_image_list_models`，再调用一次 `qwen_image_generate`；账户可用时选 `qwen-image-3.0`、尺寸 `1024*1024`、数量 `1`、无水印。实际参数以在线工具 schema 为准。
 
-付费生成可能先返回 task ID，此时图片仍在处理。保存这个 ID，沿同一 ID 调用 `qwen_image_get_task`，直到 `response.success` 为 true 或 false；成功结果包含 `response.data[].image_url`。聊天中断时新开聊天说“查询 Qwen Image 任务 <task_id>，不要重新生成”。打开最终 HTTPS 图片检查。
+付费生成可能先返回 task ID，此时图片仍在处理。保存这个 ID，沿同一 ID 调用 `qwen_image_get_task`，直到 `finished_at` 非空。`finished_at` 为 null 时，即使 `response.success` 为 false 也要继续查同一任务；结束后 `response.success: true` 的结果包含 `response.data[].image_url`，false 才是终态失败。聊天中断时新开聊天说“查询 Qwen Image 任务 <task_id>，不要重新生成”。打开最终 HTTPS 图片检查。
 
 到 **Ace Data Cloud → Usage/Billing** 核对这一次生成对应的 Credits 扣费。任务查询不会再提交生成。插件免费，API 调用按当前服务价格计费。
 
