@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "qwen-image": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${CURSOR_PLUGIN_ROOT}/server.mjs"],
+      "cwd": "${CURSOR_PLUGIN_ROOT}",
+      "env": {
+        "ACEDATACLOUD_API_TOKEN": "${ACEDATACLOUD_API_TOKEN}"
+      }
+    }
+  }
+}
