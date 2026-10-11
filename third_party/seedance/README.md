@@ -6,7 +6,7 @@ Generate Seedance videos and retrieve the finished clip. This standalone plugin 
 
 ## 1. Search and install
 
-In Cursor 3.13 or later, open **Cursor Settings → Plugins**, search for **Seedance**, confirm **Ace Data Cloud Dev** and the service logo, then click **Install**. You can also use `/add-plugin seedance` in chat. If the official listing is not live, review this source under `~/.cursor/plugins/local/seedance/`; local installation does not prove Marketplace publication.
+In Cursor 3.24, open **Customize → Browse Marketplace**, search for **Seedance**, confirm **Ace Data Cloud Dev** and the service logo, then click **Add**. Older releases may put Plugins under Settings. You can also use `/add-plugin seedance` in chat. If the official listing is not live, review this source under `~/.cursor/plugins/local/seedance/`; local installation does not prove Marketplace publication.
 
 ## 2. Get a service API key
 
@@ -18,7 +18,7 @@ Use a service API key, not a platform management token. Do not put it in chat or
 
 ## 3. Configure the plugin
 
-Under **Dashboard → Plugins → Configure**, select **Seedance** and set `ACEDATACLOUD_API_TOKEN` to the key string. Paste only the key; the plugin adds `Bearer `. Reconnect the MCP server if tools are missing. The hosted endpoint needs no local Python installation.
+Open **Customize → Plugins → Seedance → Configure**, paste the key string into **Ace Data Cloud API token**, and click **Save**. Cursor uses it as `ACEDATACLOUD_API_TOKEN`; the plugin adds `Bearer `. Reconnect the MCP server if tools are missing. The hosted endpoint needs no local Python installation.
 
 ```json
 {

@@ -11,4 +11,4 @@ This skill adapts the [existing Ace Data Cloud skill](https://github.com/AceData
 2. Submit with `seedance_generate_video` once. Save the returned `task_id` and use `seedance_get_task` with that same ID until terminal. Pending is not a completed video; open the returned result URL on success. Never regenerate merely to poll.
 3. Return the result, task ID if present, and any service error. Keep the API token out of chat and files.
 
-Configure `ACEDATACLOUD_API_TOKEN` under **Dashboard → Plugins → Configure**. See the [first-run guide](../../README.md).
+Configure `ACEDATACLOUD_API_TOKEN` in **Customize → Plugins → Seedance → Configure**. See the [first-run guide](../../README.md).
