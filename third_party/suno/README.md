@@ -18,7 +18,7 @@ Use the API key, not a platform management token. Keep it out of prompts and rep
 
 ## 3. Configure the plugin
 
-Open **Customize → Plugins → Suno → Configure**, paste the key string into **Ace Data Cloud API token**, and click **Save**. Cursor uses it as `ACEDATACLOUD_API_TOKEN` in the MCP Authorization header; the plugin adds `Bearer ` itself. Reconnect the plugin if its tools do not appear.
+Open **Customize → Plugins → Suno → Configure**, paste the key string into **Ace Data Cloud API token**, and click **Save**. Wait for Save to finish, then reopen Configure to check that the value is masked. Cursor uses it as `ACEDATACLOUD_API_TOKEN` in the MCP Authorization header; the plugin adds `Bearer ` itself. Reconnect the plugin if its tools do not appear.
 
 The transport is a hosted HTTP MCP endpoint; no Python or local server is required:
 
@@ -47,7 +47,7 @@ Task queries use the same ID and do not submit a second generation. Check **Ace 
 | Symptom | Action |
 | --- | --- |
 | Plugin or tools are missing | Confirm the correct Suno listing is installed, configure the key, then reconnect the MCP server. A local copy is separate from the public Marketplace. |
-| 401 or 403 | Check the full key, expiration, Suno access, balance, and allowed generation/retrieval APIs. Do not include `Bearer ` in the configured value. |
+| 401 or 403 | Check the full key, expiration, Suno access, balance, and allowed generation/retrieval APIs. Do not include `Bearer ` in the configured value. If the same key works through the Ace API but Cursor still reports an invalid token, confirm Save finished and restart Cursor before retrying a read-only task query. |
 | Invalid model or argument | Ask `suno_list_models` and use the live tool schema. Models and limits can change. |
 | Pending task | Query the original task ID again. Do not rerun generation to poll. |
 | 429, timeout, or 5xx | Wait and inspect the original task or usage history before deciding whether another paid submission is needed. |

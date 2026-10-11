@@ -18,7 +18,7 @@
 
 ## 3. 配置插件
 
-打开 **Customize → Plugins → Suno → Configure**，将 Key 原文填入 **Ace Data Cloud API token** 并点击 **Save**。Cursor 将其用于 `ACEDATACLOUD_API_TOKEN`；插件会自行添加 `Bearer ` 前缀，并连接 `https://suno.mcp.acedata.cloud/mcp`；无需安装本地 Python 服务。工具没有出现时重新连接 MCP。
+打开 **Customize → Plugins → Suno → Configure**，将 Key 原文填入 **Ace Data Cloud API token** 并点击 **Save**。等待保存完成，重新打开 Configure，确认字段显示遮蔽值。Cursor 将其用于 `ACEDATACLOUD_API_TOKEN`；插件会自行添加 `Bearer ` 前缀，并连接 `https://suno.mcp.acedata.cloud/mcp`；无需安装本地 Python 服务。工具没有出现时重新连接 MCP。
 
 ## 4. 生成并取回第一首歌
 
@@ -31,7 +31,7 @@
 | 现象 | 处理 |
 | --- | --- |
 | 找不到插件或工具 | 核对 Suno 条目、配置 Key 并重新连接 MCP。本地安装与官方市场是两回事。 |
-| 401 或 403 | 检查 Key、有效期、Suno 权限、余额和允许的生成/查询 API；配置值不要带 `Bearer `。 |
+| 401 或 403 | 检查 Key、有效期、Suno 权限、余额和允许的生成/查询 API；配置值不要带 `Bearer `。若同一 Key 直连 Ace API 成功而 Cursor 仍报 token invalid，确认 Save 已完成，重启 Cursor 后先重试旧任务只读查询。 |
 | 模型或参数错误 | 调用 `suno_list_models`，以在线工具 schema 为准。 |
 | 任务 pending | 沿原 task ID 继续查询，不要为轮询再次生成。 |
 | 429、超时或 5xx | 先检查原任务和用量记录，再决定是否需要另一笔付费请求。 |
