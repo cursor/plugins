@@ -2,6 +2,11 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.6.3 — Chat message requests
+
+- List pending requests from both inboxes (`you_may_know` / Priority and `low_quality` / Hidden) with `get_chat_message_requests`, and decrypt them like other chats. Opening one with `get_chat_message_request` is only when the owner asked, because it marks those messages delivered.
+- Accept with `accept_chat_message_request` only when the owner said to accept. A reply does not accept a request. Do not accept while still paging the list.
+
 ## 2.6.2 — Focus X Chat summaries on the message
 
 - When showing or summarizing messages, focus on the content. Don't add encryption-status commentary unprompted, and don't describe plain messages as odd or a problem: threads with no conversation key normally carry plain DMs, including recent ones. If the user asks about encryption, verification, or security, answer plainly from `status`. Mention `unverified` briefly when it's relevant, e.g. before acting on that message.
