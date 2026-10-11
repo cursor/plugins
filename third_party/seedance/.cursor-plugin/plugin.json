@@ -27,5 +27,18 @@
     "video",
     "mcp"
   ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "ACEDATACLOUD_API_TOKEN": {
+        "type": "string",
+        "title": "Ace Data Cloud API token",
+        "description": "Service API key from https://platform.acedata.cloud/console/applications with Seedance access."
+      }
+    },
+    "required": [
+      "ACEDATACLOUD_API_TOKEN"
+    ]
+  },
   "mcpServers": "./mcp.json"
 }
