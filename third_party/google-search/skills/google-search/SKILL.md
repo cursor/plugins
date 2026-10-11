@@ -11,4 +11,4 @@ This skill adapts the [existing Ace Data Cloud skill](https://github.com/AceData
 2. Call `serp_google_search` once and inspect the returned search results. This synchronous operation has no task ID to poll.
 3. Return the result, task ID if present, and any service error. Keep the API token out of chat and files.
 
-Configure `ACEDATACLOUD_API_TOKEN` under **Dashboard → Plugins → Configure**. See the [first-run guide](../../README.md).
+Configure `ACEDATACLOUD_API_TOKEN` in **Customize → Plugins → Google Search → Configure**. See the [first-run guide](../../README.md).
