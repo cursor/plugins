@@ -6,7 +6,7 @@ Generate Grok Video clips and retrieve the finished video. 插件复用 [Ace Dat
 
 ## 1. 搜索安装
 
-在 Cursor 3.13 或更新版本打开 **Cursor Settings → Plugins**，搜索 **Grok Video**，确认作者 **Ace Data Cloud Dev** 和服务图标后点击 **Install**。也可在聊天中输入 `/add-plugin grok-video`。若官方条目尚未出现，可在 `~/.cursor/plugins/local/grok-video/` 本地审查；本地安装不代表 Marketplace 已上架。
+在 Cursor 3.24 打开 **Customize → Browse Marketplace**，搜索 **Grok Video**，确认作者 **Ace Data Cloud Dev** 和服务图标后点击 **Add**。较早版本可能在 Settings 中提供 Plugins 入口。也可在聊天中输入 `/add-plugin grok-video`。若官方条目尚未出现，可在 `~/.cursor/plugins/local/grok-video/` 本地审查；本地安装不代表 Marketplace 已上架。
 
 ## 2. 获取服务 API Key
 
@@ -18,7 +18,7 @@ Generate Grok Video clips and retrieve the finished video. 插件复用 [Ace Dat
 
 ## 3. 配置插件
 
-在 **Dashboard → Plugins → Configure** 选择 **Grok Video**，将 Key 原文填入 `ACEDATACLOUD_API_TOKEN`。插件会自行添加 `Bearer `，连接 `https://grok.mcp.acedata.cloud/mcp`；无需安装本地 Python 服务。工具未出现时重新连接 MCP。
+打开 **Customize → Plugins → Grok Video → Configure**，将 Key 原文填入 **Ace Data Cloud API token** 并点击 **Save**。Cursor 将其用于 `ACEDATACLOUD_API_TOKEN`；插件会自行添加 `Bearer `，连接 `https://grok.mcp.acedata.cloud/mcp`；无需安装本地 Python 服务。工具未出现时重新连接 MCP。
 
 The shared grok MCP also offers other tools. Restrict the key to Grok Video APIs if this installation should be limited to Grok Video.
 
