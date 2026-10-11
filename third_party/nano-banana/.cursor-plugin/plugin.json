@@ -1,0 +1,31 @@
+{
+  "name": "nano-banana",
+  "displayName": "Nano Banana",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Generate Nano Banana images and retrieve the finished image.",
+  "author": {
+    "name": "Ace Data Cloud Dev",
+    "email": "dev@acedata.cloud"
+  },
+  "homepage": "https://platform.acedata.cloud/models",
+  "repository": "https://github.com/AceDataCloud/NanoBananaCursor",
+  "license": "MIT",
+  "logo": "assets/logo.jpg",
+  "keywords": [
+    "nano-banana",
+    "nano banana",
+    "image",
+    "acedatacloud",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "nano-banana",
+    "image",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
