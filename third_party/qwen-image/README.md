@@ -1,12 +1,10 @@
 # Qwen Image for Cursor
 
-Generate and edit Qwen Image pictures through [Ace Data Cloud](https://platform.acedata.cloud) in Cursor. This focused plugin ships a dependency-free local MCP server with generation and same-task retrieval tools. It uses the current Qwen Image API contract already verified by the Ace Data Cloud Dify integration.
+Generate and edit Qwen Image pictures through [Ace Data Cloud](https://platform.acedata.cloud) in Cursor. This focused plugin reuses the existing hosted Qwen Image MCP for generation, editing, model listing, and same-task retrieval. The live MCP schemas define available actions and arguments.
 
 [简体中文教程](readme/README_zh_Hans.md) · [Copyable first-run prompt](examples/first-image.md) · [Current pricing](https://platform.acedata.cloud/models)
 
 ## 1. Install
-
-Install [Node.js 20 or later](https://nodejs.org/en/download) and check `node --version` in a terminal. The plugin starts its local MCP server with `node`; it does not download packages or run a remote executable.
 
 In Cursor 3.24, open **Customize → Browse Marketplace**, search for **Qwen Image**, confirm the **Ace Data Cloud Dev** author and Qwen Image logo, then click **Add**. Earlier Cursor versions may put Plugins under Settings. If the official listing is not live, copy this directory to `~/.cursor/plugins/local/qwen-image/`, then open **Customize → Plugins** and confirm the **Local** label. Local installation does not prove Marketplace publication.
 
@@ -20,15 +18,27 @@ Use a service API key, not a platform management token. Do not put it in prompts
 
 ## 3. Configure the plugin
 
-Open **Customize → Plugins → Qwen Image → Configure**, paste the key string into **Ace Data Cloud API token**, and save. Team administrators can configure the same variable in **Dashboard → Plugins → Configure**. The plugin passes the configured value to its local MCP server as `ACEDATACLOUD_API_TOKEN` and adds the Bearer header itself.
+Open **Customize → Plugins → Qwen Image → Configure**, paste the key string into **Ace Data Cloud API token**, and click **Save**. Wait for Save to finish, then reopen Configure to confirm a masked value. Team administrators can configure the same variable in **Dashboard → Plugins → Configure**. Cursor uses `ACEDATACLOUD_API_TOKEN` in the hosted MCP Authorization header; the plugin adds `Bearer ` itself.
 
-The bundled `mcp.json` starts `server.mjs` from `CURSOR_PLUGIN_ROOT`. It uses Node's built-in fetch and no npm packages. If the MCP does not start, check that `node` is on Cursor's process PATH and reconnect the plugin.
+The transport is hosted HTTP; no local Node server is required:
+
+```json
+{
+  "mcpServers": {
+    "qwen-image": {
+      "type": "http",
+      "url": "https://qwen-image.mcp.acedata.cloud/mcp",
+      "headers": {"Authorization": "Bearer ${ACEDATACLOUD_API_TOKEN}"}
+    }
+  }
+}
+```
 
 ## 4. Make and retrieve the first image
 
-Paste the [first-image prompt](examples/first-image.md) into Cursor Agent. It requests one `qwen_image_generate` call with model `qwen-image-3.0`, size `1024*1024`, count `1`, and no watermark. Use a model available to your account; the current service contract is the source of truth.
+Paste the [first-image prompt](examples/first-image.md) into Cursor Agent. It checks `qwen_image_list_models`, then requests one `qwen_image_generate` call with model `qwen-image-3.0` when available, size `1024*1024`, count `1`, and no watermark. Use the live tool schema for supported values.
 
-The paid generation returns a `task_id` while work may still be pending. Keep it. Call `qwen_image_get_task` with that **same** ID until `status=succeeded` and an image URL appears. If the chat is interrupted, begin a new chat with “Query Qwen Image task <task_id>; do not generate again.” Open the returned HTTPS PNG and check the image.
+The paid generation returns a task ID while work may still be pending. Keep it. Call `qwen_image_get_task` with that **same** ID until `response.success` is true or false; a successful result contains `response.data[].image_url`. If the chat is interrupted, begin a new chat with “Query Qwen Image task <task_id>; do not generate again.” Open the returned HTTPS image and check it.
 
 In **Ace Data Cloud → Usage/Billing**, match the one generation to its deducted Credits record. Task queries do not submit another generation. The plugin is free; API calls follow current service pricing.
 
@@ -37,8 +47,8 @@ In **Ace Data Cloud → Usage/Billing**, match the one generation to its deducte
 | Symptom | Action |
 | --- | --- |
 | Plugin not listed | Check the exact Qwen Image entry and author. A local plugin is separate from the public Marketplace. |
-| MCP server will not start | Run `node --version`, confirm Node 20+ is on Cursor's PATH, and reconnect the plugin. |
-| 401 or 403 | Check the service key, expiration, Qwen Image access, balance, and both Allowed APIs. Paste only the key, without `Bearer `. |
+| MCP is not connected | Check the saved key and hosted endpoint, then reconnect the plugin. The plugin needs no local runtime. |
+| 401 or 403 | Check the service key, expiration, Qwen Image access, balance, and both Allowed APIs. Paste only the key, without `Bearer `. If the same key works through the Ace API but Cursor reports an invalid token, confirm Save finished and restart Cursor before retrying a read-only task query. |
 | Invalid model or size | Use a currently supported model and `WIDTH*HEIGHT` size such as `1024*1024`. |
 | Pending or interrupted task | Query the original task ID; do not regenerate to poll. |
 | Timeout or 5xx | Check the task and usage history before deciding whether another paid request is needed. |

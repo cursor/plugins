@@ -1,12 +1,10 @@
 {
   "mcpServers": {
     "qwen-image": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["${CURSOR_PLUGIN_ROOT}/server.mjs"],
-      "cwd": "${CURSOR_PLUGIN_ROOT}",
-      "env": {
-        "ACEDATACLOUD_API_TOKEN": "${ACEDATACLOUD_API_TOKEN}"
+      "type": "http",
+      "url": "https://qwen-image.mcp.acedata.cloud/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ACEDATACLOUD_API_TOKEN}"
       }
     }
   }

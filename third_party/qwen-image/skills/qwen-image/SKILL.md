@@ -5,11 +5,11 @@ description: Generate or edit Qwen Image pictures through Ace Data Cloud in Curs
 
 # Qwen Image in Cursor
 
-This plugin supplies a small local MCP server because the existing Ace Data Cloud MCP catalog has no dedicated Qwen Image server. Its request fields follow the current Qwen Image API contract used by the Ace Data Cloud Dify integration.
+Use the existing Ace Data Cloud hosted Qwen Image MCP. Its live tool schemas are the source of truth for available models, arguments, and results.
 
-1. Check [current pricing and balance](https://platform.acedata.cloud/models) and confirm the account has Qwen Image access.
-2. Call `qwen_image_generate` once with a prompt and a supported model. Keep the returned `task_id`. This submits a paid request even if the task is still pending.
-3. Call `qwen_image_get_task` with that same ID until status is succeeded or failed. After an interruption, resume with the old ID; never generate again just to poll.
-4. Open the completed HTTPS image URL and report the task ID and result. A pending response is not a finished image.
+1. Check [current pricing and balance](https://platform.acedata.cloud/models), confirm Qwen Image access, and use `qwen_image_list_models` when the requested model is unclear.
+2. Call `qwen_image_generate` or `qwen_image_edit` once for the requested paid action. Keep the returned task ID even if the result is still pending.
+3. Call `qwen_image_get_task` with that same ID until `response.success` is true or false. After an interruption, resume with the old ID; never generate again just to poll.
+4. On success, open a returned `response.data[].image_url` HTTPS link and report the task ID and result. A pending response is not a finished image.
 
 The API key is configured in **Customize → Plugins → Qwen Image → Configure** as `ACEDATACLOUD_API_TOKEN`. Do not place it in chat or files. See the [first-run guide](../../README.md).
