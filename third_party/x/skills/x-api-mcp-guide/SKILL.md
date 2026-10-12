@@ -489,9 +489,20 @@ When they ask, run `$HELPER $SCRIPT forget`. If a run with `--remember-key` prin
 7. If it stops because `CHAT_PIN` is not set (it does when a saved key no longer matches and no PIN is stored), secret-request **Chat PIN** → `CHAT_PIN` and send the [Saved key](#saved-key) yes/no question widget alongside it. Then run `unlock-check` again, with `--remember-key` only on a clear Yes.
 8. On unlock failure: wrong PIN, wrong `--user-id` (must be the X id from `get_users_me`, not the OS `$UID`), incomplete Chat onboarding, or stale juicebox — refresh public key / juicebox; do not brute-force the PIN.
 
+### Unread
+
+X tracks which chats are unread. For "what's unread" or "anything new", use that: don't work it out by scanning every conversation for events newer than the read point.
+
+1. `get_chat_conversations` with `unread_only` true, `max_results` 100, and `chat_conversation.fields` `unread,last_read_event_id,newest_event_id`. A page can be short or empty while `meta.has_more` is true: pass `meta.next_token` as `pagination_token` until `has_more` is false. That is every unread conversation.
+2. For each, page `get_chat_conversation_events` until you reach `last_read_event_id`. Events after it are the unread messages (all of them if it is missing). Read further back whenever it helps the answer.
+3. Message requests are not in this list. If `meta.has_message_requests` is true, list them as in step 2 of [Read / summarize](#read--summarize).
+4. Get signing keys and decrypt as in [Read / summarize](#read--summarize).
+
+`unread` is always true or false. `get_chat_conversation` takes the same fields for one thread.
+
 ### Read / summarize
 
-Read every conversation and every message request, not only the ones that look relevant.
+To summarize or search chats, read every conversation and every message request, not only the ones that look relevant. For what's unread, use [Unread](#unread).
 
 1. `get_chat_conversations` with `max_results` 100. Page the whole inbox until `next_token` is absent.
 2. `get_chat_message_requests` with `max_results` 50, once with `inbox_type` `you_may_know` and once with `low_quality`, each paged until `next_token` is absent (a page can be empty while `next_token` is set). Each request carries `message_events` and `conversation_key_events`. Do not open requests with `get_chat_message_request`: it marks their messages as delivered.
@@ -540,6 +551,7 @@ If `add_conversation_keys` returns `UNAUTHORIZED_REQUESTING_USER` or similar: yo
 - Say pay-per-use or Production. Do not tell them to create an app or Project except the quoted [error 2](#2-account-not-ready) steps.
 - Ask for secrets, Bearer tokens, API keys, or passwords. Do not sign the user into X in the agent browser or on this computer. Chat PIN is the exception: secret-request into `CHAT_PIN` only — never paste it into the transcript.
 - Retry 403, missing-tools, or credits-blocked in a loop.
+- Find unread chats by scanning every conversation's events. Use [Unread](#unread).
 - Tell the user to buy / purchase / add credits before `get_usage_credits` has returned. Never use “you’ll need to purchase credits at https://console.x.com” unless the check showed ~$0 or a job would exceed `{credits}`.
 - Quote `total_balance` or `free_grants` as “you received $X”. Congrats is the free-credits line only, and only when they **just connected this chat**. Gift size by plan is the starter table, and only if they ask **and** you know the plan. Always say remaining balance (`You have about $X.XX in credits.`, including $0.00). `{credits}` ~$0 skips congrats.
 - Treat tools=0 / `user-X-*` not found as a paywall. That is [error 2](#2-account-not-ready).
