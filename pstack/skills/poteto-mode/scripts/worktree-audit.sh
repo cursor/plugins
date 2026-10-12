@@ -35,12 +35,15 @@ if [ -z "$base" ]; then
 	[ -z "$base" ] && { echo "error: no base ref (origin/HEAD, origin/main, origin/master all missing); pass -b <ref>" >&2; exit 1; }
 	echo "warn: no -b given; MERGED checks against $base" >&2
 fi
-git rev-parse --verify --quiet "$base^{commit}" >/dev/null 2>&1 || { echo "error: base ref not found: $base" >&2; exit 1; }
 
-# The base drives the merge check. Best-effort; stale is fine for a first pass.
+# The base drives the merge check. The fetch is best-effort (stale is fine for
+# a first pass) and runs before the check, since -b may name a branch not
+# fetched yet. The explicit refspec creates it even in a single-branch clone.
 case "$base" in
-origin/*) git fetch origin "${base#origin/}" --quiet 2>/dev/null || echo "warn: could not fetch $base; merged column may be stale" >&2 ;;
+origin/*) git fetch origin "+refs/heads/${base#origin/}:refs/remotes/$base" --quiet 2>/dev/null \
+	|| echo "warn: could not fetch $base; merged column may be stale" >&2 ;;
 esac
+git rev-parse --verify --quiet "$base^{commit}" >/dev/null 2>&1 || { echo "error: base ref not found: $base" >&2; exit 1; }
 
 # PR state by branch, fetched once. Empty if gh is unavailable.
 prs=$(mktemp)
