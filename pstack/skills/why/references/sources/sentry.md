@@ -1,18 +1,5 @@
 # Sentry Error History
 
-## What this source contains
-
-For defensive, corrective, or error-handling code, Sentry often holds the direct motivation: the specific exceptions, stack traces, and frequencies that pushed someone to add a check, catch, retry, or fallback.
-
-- **Issues.** Grouped errors with counts, first/last seen timestamps, affected releases, and comments
-- **Events.** Individual error instances within an issue (stack traces, tags, user context)
-- **Releases.** Deployment records with associated issues (useful for "which version fixed this?")
-- **Replays.** Session recordings of user-facing errors (if enabled)
-- **Profiles.** Performance profiling data (less useful for "why", more for "how slow")
-- **Issue comments & assignments.** Sometimes contain engineer notes on root cause
-
-The most valuable thing Sentry provides is **temporal correlation**: "issue X was created 2024-01-02, peaked at 500 events/day, stopped appearing after release v2.14.0 on 2024-01-15, the release that shipped the defensive check."
-
 ## How to search it
 
 Use the Sentry MCP.
@@ -64,23 +51,6 @@ Use the Sentry MCP.
    ```
 
    Seer's AI root-cause analyses are a hypothesis generator. Treat them as inference, not authoritative. The actual events and stack traces are the primary evidence.
-
-## What good evidence looks like here
-
-- An issue whose **first seen** is shortly before the target's PR and **last seen** shortly after, suggesting the target addressed this error
-- Stack traces that pass through or land on the target function, showing the exact failure mode being defended against
-- A comment on the issue from the PR author describing the fix
-- The target's PR description or commit message referencing a Sentry issue URL or ID
-- An issue with high event counts that stops after the release containing the target
-
-## Common pitfalls
-
-- **Grouping drift.** Sentry groups errors by fingerprint, so refactors or renames can track the "same" error under a new issue ID. If an issue ends abruptly, the error may have just been regrouped. Check for new issues immediately after.
-- **Release correlation is noisy.** A release contains many commits, so an issue stopping at v2.14.0 doesn't prove the target fixed it. Another change in the same release might have. Cross-reference with the target's exact commit.
-- **Silent fixes.** The error may stop because upstream changed, not because of the defensive code. The correlation suggests the fix but doesn't prove authorship.
-- **Resolved != fixed.** Issues can be marked "resolved" manually without any code change. Treat `resolved` as a human marker, not evidence that code fixed it.
-- **Seer hallucinations.** Seer can sound confident and be wrong. Fall back to the actual events, stack traces, and timestamps when making claims.
-- **Sampling.** Some projects sample events aggressively, so a low event count doesn't mean the error was rare. If in doubt, note the gap.
 
 ## What to return
 
