@@ -2,9 +2,11 @@
 
 All notable changes to this plugin will be documented here.
 
-## 2.6.3 — Use X Chat's unread state
+## 2.6.3 — Built-in public reads, unread state, no congrats line
 
+- Built-in public reads need no X connection, credits check, or cost estimate. Grok Bot reads public posts, users, search, trends, and news on its own, and a missing `get_usage_credits` or `get_users_me` next to those reads is not an error.
 - For "what's unread", list unread conversations with `get_chat_conversations` `unread_only` true and the `unread,last_read_event_id,newest_event_id` fields, paging until `meta.has_more` is false (pages can be short or empty), instead of scanning every conversation. Unread messages are the events after `last_read_event_id`.
+- The on-connect message no longer opens with "Congrats, you've received free X API credits to get started!". It starts with the capabilities list and still states the remaining balance.
 
 ## 2.6.2 — Focus X Chat summaries on the message
 
