@@ -1,8 +1,8 @@
 # Qwen Image for Cursor
 
-Generate and edit Qwen Image pictures through [Ace Data Cloud](https://platform.acedata.cloud) in Cursor. This focused plugin reuses the existing hosted Qwen Image MCP for generation, editing, model listing, and same-task retrieval. The live MCP schemas define available actions and arguments.
+Generate and edit Qwen Image pictures through [Ace Data Cloud](https://platform.acedata.cloud?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=qwen_image_cursor_shared_readme_platform_en) in Cursor. This focused plugin reuses the existing hosted Qwen Image MCP for generation, editing, model listing, and same-task retrieval. The live MCP schemas define available actions and arguments.
 
-[简体中文教程](readme/README_zh_Hans.md) · [Copyable first-run prompt](examples/first-image.md) · [Current pricing](https://platform.acedata.cloud/models)
+[简体中文教程](readme/README_zh_Hans.md) · [Copyable first-run prompt](examples/first-image.md) · [Current pricing](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=qwen_image_cursor_shared_readme_pricing_en)
 
 ## 1. Install
 
@@ -10,9 +10,9 @@ In Cursor 3.24, open **Customize → Browse Marketplace**, search for **Qwen Ima
 
 ## 2. Get the right API key
 
-1. Sign in at [Ace Data Cloud Applications](https://platform.acedata.cloud/console/applications).
+1. Sign in at [Ace Data Cloud Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=qwen_image_cursor_shared_readme_api_key_en).
 2. Open **General application** or a Qwen Image-specific application. Copy an existing service API key, or use **Manage Keys → Create** for a separate Cursor key.
-3. Check Qwen Image access, [current pricing](https://platform.acedata.cloud/models), and balance. If **Allowed APIs** restrictions are enabled, include both `/qwen-image/images` and `/qwen-image/tasks`.
+3. Check Qwen Image access, [current pricing](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=qwen_image_cursor_shared_readme_pricing_en), and balance. If **Allowed APIs** restrictions are enabled, include both `/qwen-image/images` and `/qwen-image/tasks`.
 
 Use a service API key, not a platform management token. Do not put it in prompts or repository files.
 

@@ -1,8 +1,8 @@
 # Cursor Qwen Image 插件
 
-通过 [Ace Data Cloud](https://platform.acedata.cloud) 在 Cursor 中生成或编辑 Qwen Image 图片。插件复用现有托管 Qwen Image MCP，提供生成、编辑、模型列表及同任务查询工具；可用参数以在线工具 schema 为准。
+通过 [Ace Data Cloud](https://platform.acedata.cloud?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=qwen_image_cursor_shared_readme_platform_zh_hans) 在 Cursor 中生成或编辑 Qwen Image 图片。插件复用现有托管 Qwen Image MCP，提供生成、编辑、模型列表及同任务查询工具；可用参数以在线工具 schema 为准。
 
-[English guide](../README.md) · [可复制的首跑提示词](../examples/first-image.md) · [当前价格](https://platform.acedata.cloud/models)
+[English guide](../README.md) · [可复制的首跑提示词](../examples/first-image.md) · [当前价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=qwen_image_cursor_shared_readme_pricing_zh_hans)
 
 ## 1. 安装
 
@@ -10,9 +10,9 @@
 
 ## 2. 获取服务 API Key
 
-1. 登录 [Ace Data Cloud 应用管理](https://platform.acedata.cloud/console/applications)。
+1. 登录 [Ace Data Cloud 应用管理](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=qwen_image_cursor_shared_readme_api_key_zh_hans)。
 2. 打开 **General application** 或 Qwen Image 专用应用，复制已有服务 Key；也可通过 **Manage Keys → Create** 新建 Cursor 专用 Key。
-3. 确认 Qwen Image 权限、[当前价格](https://platform.acedata.cloud/models)和余额。若启用了 **Allowed APIs**，同时允许 `/qwen-image/images` 和 `/qwen-image/tasks`。
+3. 确认 Qwen Image 权限、[当前价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=qwen_image_cursor_shared_readme_pricing_zh_hans)和余额。若启用了 **Allowed APIs**，同时允许 `/qwen-image/images` 和 `/qwen-image/tasks`。
 
 使用服务 API Key，不要使用平台管理 token；也不要把 Key 写进提示词或仓库。
 
