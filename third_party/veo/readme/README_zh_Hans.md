@@ -2,7 +2,7 @@
 
 Generate Veo videos and retrieve the finished clip. 插件复用 [Ace Data Cloud veo MCP](https://github.com/AceDataCloud/MCPs/tree/main/veo)，并提供专用 Agent skill。实际工具参数和限制以在线 MCP schema 为准。
 
-[English guide](../README.md) · [可复制的首跑提示词](../examples/first-run.md) · [当前价格](https://platform.acedata.cloud/models)
+[English guide](../README.md) · [可复制的首跑提示词](../examples/first-run.md) · [当前价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=veo_cursor_shared_readme_pricing_zh_hans)
 
 ## 1. 搜索安装
 
@@ -10,9 +10,9 @@ Generate Veo videos and retrieve the finished clip. 插件复用 [Ace Data Cloud
 
 ## 2. 获取服务 API Key
 
-1. 登录 [Ace Data Cloud 应用管理](https://platform.acedata.cloud/console/applications)。
+1. 登录 [Ace Data Cloud 应用管理](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=veo_cursor_shared_readme_api_key_zh_hans)。
 2. 打开 **General application** 或服务专用应用，复制已有 Key；也可通过 **Manage Keys → Create** 新建 Cursor 专用 Key。
-3. 确认 Veo 权限、[当前价格](https://platform.acedata.cloud/models)和余额。若启用了 **Allowed APIs**，允许 /veo/videos, /veo/tasks。
+3. 确认 Veo 权限、[当前价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=veo_cursor_shared_readme_pricing_zh_hans)和余额。若启用了 **Allowed APIs**，允许 /veo/videos, /veo/tasks。
 
 使用服务 API Key，不要用平台管理 token，也不要放在聊天或仓库文件中。
 
