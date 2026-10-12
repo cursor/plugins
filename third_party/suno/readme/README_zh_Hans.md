@@ -1,8 +1,8 @@
 # Cursor Suno 插件
 
-通过 [Ace Data Cloud](https://platform.acedata.cloud) 托管 MCP 在 Cursor 中生成 Suno 音乐。插件提供音乐、歌词、音频编辑和任务查询工具，并附带异步任务使用说明。实际工具参数和可用模型以在线 MCP 为准。
+通过 [Ace Data Cloud](https://platform.acedata.cloud?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=suno_cursor_shared_readme_platform_zh_hans) 托管 MCP 在 Cursor 中生成 Suno 音乐。插件提供音乐、歌词、音频编辑和任务查询工具，并附带异步任务使用说明。实际工具参数和可用模型以在线 MCP 为准。
 
-[English guide](../README.md) · [可复制的首跑提示词](../examples/first-song.md) · [当前价格](https://platform.acedata.cloud/models)
+[English guide](../README.md) · [可复制的首跑提示词](../examples/first-song.md) · [当前价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=suno_cursor_shared_readme_pricing_zh_hans)
 
 ## 1. 搜索和安装
 
@@ -10,9 +10,9 @@
 
 ## 2. 获取具有 Suno 权限的 API Key
 
-1. 登录 [Ace Data Cloud 应用管理](https://platform.acedata.cloud/console/applications)。
+1. 登录 [Ace Data Cloud 应用管理](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=suno_cursor_shared_readme_api_key_zh_hans)。
 2. 打开 **General application** 或 Suno 专用应用，复制已有 Key；也可通过 **Manage Keys → Create** 新建 Cursor 专用 Key。
-3. 确认 Suno 已开通、余额足够，并查看[当前价格](https://platform.acedata.cloud/models)。若启用了 Allowed APIs 限制，须同时允许生成 `/suno/audios` 和查询 `/suno/tasks`。
+3. 确认 Suno 已开通、余额足够，并查看[当前价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=suno_cursor_shared_readme_pricing_zh_hans)。若启用了 Allowed APIs 限制，须同时允许生成 `/suno/audios` 和查询 `/suno/tasks`。
 
 这里使用的是服务 API Key，不是平台管理 token。不要把 Key 写进聊天或仓库文件。
 

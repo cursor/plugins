@@ -1,8 +1,8 @@
 # Suno for Cursor
 
-Generate Suno music in Cursor through the [Ace Data Cloud](https://platform.acedata.cloud) hosted MCP server. The plugin provides Suno's music, lyrics, audio editing, and task-query tools, plus a short skill for safe async use. The hosted tool schemas determine the available actions and models.
+Generate Suno music in Cursor through the [Ace Data Cloud](https://platform.acedata.cloud?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=suno_cursor_shared_readme_platform_en) hosted MCP server. The plugin provides Suno's music, lyrics, audio editing, and task-query tools, plus a short skill for safe async use. The hosted tool schemas determine the available actions and models.
 
-[简体中文教程](readme/README_zh_Hans.md) · [Copyable first-run prompt](examples/first-song.md) · [Current pricing](https://platform.acedata.cloud/models)
+[简体中文教程](readme/README_zh_Hans.md) · [Copyable first-run prompt](examples/first-song.md) · [Current pricing](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=suno_cursor_shared_readme_pricing_en)
 
 ## 1. Find and install Suno
 
@@ -10,9 +10,9 @@ In Cursor 3.24, open **Customize → Browse Marketplace**, search for **Suno**, 
 
 ## 2. Get an API key with Suno access
 
-1. Sign in at [Ace Data Cloud Applications](https://platform.acedata.cloud/console/applications).
+1. Sign in at [Ace Data Cloud Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=suno_cursor_shared_readme_api_key_en).
 2. Open **General application** or a Suno-specific application. Copy an existing API key, or use **Manage Keys → Create** for a separate Cursor key.
-3. Check that Suno is enabled and that your balance covers the [current price](https://platform.acedata.cloud/models). If you restrict allowed APIs, include generation `/suno/audios` and retrieval `/suno/tasks`.
+3. Check that Suno is enabled and that your balance covers the [current price](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=suno_cursor_shared_readme_pricing_en). If you restrict allowed APIs, include generation `/suno/audios` and retrieval `/suno/tasks`.
 
 Use the API key, not a platform management token. Keep it out of prompts and repository files.
 
