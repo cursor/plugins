@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.6.3 — Use X Chat's unread state
+
+- For "what's unread", list unread conversations with `get_chat_conversations` `unread_only` true and the `unread,last_read_event_id,newest_event_id` fields, paging until `meta.has_more` is false (pages can be short or empty), instead of scanning every conversation. Unread messages are the events after `last_read_event_id`.
+
 ## 2.6.2 — Focus X Chat summaries on the message
 
 - When showing or summarizing messages, focus on the content. Don't add encryption-status commentary unprompted, and don't describe plain messages as odd or a problem: threads with no conversation key normally carry plain DMs, including recent ones. If the user asks about encryption, verification, or security, answer plainly from `status`. Mention `unverified` briefly when it's relevant, e.g. before acting on that message.
