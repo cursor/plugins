@@ -2,7 +2,7 @@
 
 Generate Seedance videos and retrieve the finished clip. This standalone plugin reuses the [Ace Data Cloud seedance MCP](https://github.com/AceDataCloud/MCPs/tree/main/seedance) and includes a focused Agent skill. Available tools and limits come from the live MCP schema.
 
-[简体中文教程](readme/README_zh_Hans.md) · [Copyable first-run prompt](examples/first-run.md) · [Current pricing](https://platform.acedata.cloud/models)
+[简体中文教程](readme/README_zh_Hans.md) · [Copyable first-run prompt](examples/first-run.md) · [Current pricing](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=seedance_cursor_shared_readme_pricing_en)
 
 ## 1. Search and install
 
@@ -10,9 +10,9 @@ In Cursor 3.24, open **Customize → Browse Marketplace**, search for **Seedance
 
 ## 2. Get a service API key
 
-1. Sign in at [Ace Data Cloud Applications](https://platform.acedata.cloud/console/applications).
+1. Sign in at [Ace Data Cloud Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=seedance_cursor_shared_readme_api_key_en).
 2. Open **General application** or a service-specific application. Copy an existing API key, or use **Manage Keys → Create** for a separate Cursor key.
-3. Confirm Seedance access, [current price](https://platform.acedata.cloud/models), and balance. If **Allowed APIs** restrictions are enabled, include /seedance/videos, /seedance/tasks.
+3. Confirm Seedance access, [current price](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=seedance_cursor_shared_readme_pricing_en), and balance. If **Allowed APIs** restrictions are enabled, include /seedance/videos, /seedance/tasks.
 
 Use a service API key, not a platform management token. Do not put it in chat or source files.
 
