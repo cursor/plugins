@@ -8,11 +8,11 @@ description: >-
   congrats + capabilities message. Never tell the user to buy credits until that
   check returns ~$0 or a job would exceed the balance. tools=0 / user-X-* not
   found is a setup failure, not a paywall. X Chat, XChat, inbox, DMs,
-  Chat PIN, juicebox, and xchat_lite live in THIS file: clone
-  xchat-grokbot-helper and run xchat_lite.py locally — do not wait for the user
-  to name the helper or another skill. Missing chat tools or dm.read/dm.write
-  while other X tools work: reconnect the X plugin. Estimate every X call and
-  confirm before anything expensive.
+  message requests, accepting a request, Chat PIN, juicebox, and xchat_lite
+  live in THIS file: clone xchat-grokbot-helper and run xchat_lite.py locally —
+  do not wait for the user to name the helper or another skill. Missing chat
+  tools or dm.read/dm.write while other X tools work: reconnect the X plugin.
+  Estimate every X call and confirm before anything expensive.
 ---
 # X MCP guide
 
@@ -99,7 +99,7 @@ Then:
 > - **Search** — search posts across X and count post volume on a topic
 > - **News & trends** — search X news stories and get trends by location
 > - **Bookmarks** — list, add, and remove bookmarks, and organize them into folders
-> - **Chat** — read and reply to X Chat (needs a Chat PIN via secret-request, not pasted here). Posting tweets is not supported.
+> - **Chat** — read and reply to X Chat, and list, open, or accept message requests (needs a Chat PIN via secret-request, not pasted here). Posting tweets is not supported.
 >
 > You have about $X.XX in credits.
 >
@@ -262,7 +262,7 @@ When X calls are required this session: confirm tools exist, then `get_users_me`
 
 Every X call can charge the user. Estimate the cost **before** calling. Read [references/pricing.md](references/pricing.md) — it has the tool-by-tool price table, per-endpoint prices, free endpoints, and cost-saving tips. Once per session, fetch live pricing from https://console.x.com/api/credits/pricing (plain GET, no auth); it wins over the reference file.
 
-X Chat is free for this plugin. X Chat reads (`GET /2/chat/*`) and public key lookups are free everywhere, in Grok Bot and in Cursor. Do not estimate a cost, ask for confirmation, or check or require credits for `get_chat_conversations`, `get_chat_message_requests`, `get_chat_conversation`, `get_chat_conversation_events`, public key lookups, `add_conversation_keys`, `send_chat_message`, typing indicators, or marking a conversation read.
+X Chat is free for this plugin. X Chat reads (`GET /2/chat/*`) and public key lookups are free everywhere, in Grok Bot and in Cursor. Do not estimate a cost, ask for confirmation, or check or require credits for `get_chat_conversations`, `get_chat_message_requests`, `get_chat_message_request`, `accept_chat_message_request`, `get_chat_conversation`, `get_chat_conversation_events`, public key lookups, `add_conversation_keys`, `send_chat_message`, typing indicators, or marking a conversation read.
 
 The live payload:
 
@@ -343,7 +343,7 @@ When they ask what they can do, re-fetch `{credits}`, say how many they have lef
 - Topic: recent counts → small search page → stop.
 - Bookmarks: list `{me}`. Save: parse status id, create bookmark.
 - One post: parse status id, lookup.
-- X Chat / inbox / DMs: [X Chat](#x-chat). Clone the helper if missing — do not ask the user to find it. Use a [saved key](#saved-key) or secret-request the Chat PIN only. Owner must approve outbound text unless they already said to send or reply.
+- X Chat / inbox / DMs / message requests: [X Chat](#x-chat). Clone the helper if missing — do not ask the user to find it. Use a [saved key](#saved-key) or secret-request the Chat PIN only. Owner must approve outbound text unless they already said to send or reply. Accept a request only when they said to accept.
 
 ## X Chat
 
@@ -353,7 +353,7 @@ MCP holds OAuth and raw events. Local `xchat_lite.py` unlocks Juicebox, decrypts
 
 Threads can contain messages sent without end-to-end encryption, including recent ones: a thread with no conversation key still carries plain DMs. `decrypt` accepts every event. Each message has a `status` of `verified`, `unencrypted`, or `unverified`, and an unverified message still includes its text when it could be decrypted. Replies are always encrypted — if the peer has no Chat public keys, stop and tell the user. Posting tweets is still not supported.
 
-**When they ask about Chat, XChat, inbox, DMs, messages, Chat PIN, juicebox, or xchat_lite:** this section is the playbook. Do not search for another skill. Do not wait for them to name the helper repo.
+**When they ask about Chat, XChat, inbox, DMs, message requests, accepting a request, Chat PIN, juicebox, or xchat_lite:** this section is the playbook. Do not search for another skill. Do not wait for them to name the helper repo.
 
 ### Clone the helper (required — do it yourself)
 
@@ -400,7 +400,9 @@ MCP owns OAuth (`dm.read` / `dm.write`) and ciphertext. Local `chatxdk` + `xchat
 | `get_users_public_key` | Self: `juicebox_config`, `public_key_version`, `public_key`, `signing_public_key`, `identity_public_key_signature` |
 | `get_users_public_keys` | Signing keys for every sender, all versions (up to 100 `ids` per call) |
 | `get_chat_conversations` | Inbox (paginate) |
-| `get_chat_message_requests` | Message requests, one `inbox_type` per call (`you_may_know`, `low_quality`), each with `message_events` + `conversation_key_events` |
+| `get_chat_message_requests` | Pending requests, one `inbox_type` per call (`you_may_know` Priority, `low_quality` Hidden) |
+| `get_chat_message_request` | One request. Marks its messages delivered. Only when the owner asked to open it |
+| `accept_chat_message_request` | Accept a received request into the inbox. Owner must say to accept. A reply does not |
 | `get_chat_conversation` | One thread metadata, including `participant_ids` / `member_ids` |
 | `get_chat_conversation_events` | `data[].encoded_event` + **`meta.conversation_key_events`** |
 | `send_chat_message` | Pre-encrypted `message_id` + `encoded_message_create_event` (+ signature) |
@@ -489,7 +491,7 @@ When they ask, run `$HELPER $SCRIPT forget`. If a run with `--remember-key` prin
 Read every conversation and every message request, not only the ones that look relevant.
 
 1. `get_chat_conversations` with `max_results` 100. Page the whole inbox until `next_token` is absent.
-2. `get_chat_message_requests` with `max_results` 50, once with `inbox_type` `you_may_know` and once with `low_quality`, each paged until `next_token` is absent (a page can be empty while `next_token` is set). Each request carries `message_events` and `conversation_key_events`. Do not open requests with `get_chat_message_request`: it marks their messages as delivered.
+2. [Message requests](#message-requests): `get_chat_message_requests` with `max_results` 50, once with `inbox_type` `you_may_know` and once with `low_quality`, each paged until `next_token` is absent. Do not call `get_chat_message_request` while scanning.
 3. `get_chat_conversation_events` for every conversation, and for every request with `has_more_events` (otherwise its `message_events` are the whole conversation), with `max_results` 100. Use each conversation's `id` and each request's `conversation_id` exactly as returned; do not rebuild ids from user ids. A page with `result_count: 0` that still has a `next_token` is not an empty thread: keep paging until `next_token` is absent.
 4. If a chat call returns 503, retry it with the same `pagination_token` up to 3 times. Never treat a thread or a list as complete after a 503. If it keeps failing, tell the owner which threads you could not finish.
 5. Collect **`meta.conversation_key_events`** plus each `data[].encoded_event` from every page. Use a request's list `message_events` and `conversation_key_events` only when it has no `has_more_events`. When it was paged, use only the event pages.
@@ -505,9 +507,21 @@ When showing or summarizing messages, focus on the content. Don't add encryption
 
 An edit row's text is the current text of its target message, so answer from the latest edit.
 
-Never claim you checked all chats unless you read every thread and message request to the end; otherwise say how many you read.
+Never claim you checked all chats unless you read every thread and both message-request inboxes to the end; otherwise say how many you read.
 
 If key changes or messages land in `errors`: refresh keys and make sure KeyChange blobs were included.
+
+### Message requests
+
+Pending 1:1 requests are not in `get_chat_conversations`. List, open, and accept are three different tools.
+
+**List** (`get_chat_message_requests`): one inbox per call. `you_may_know` is the Priority tab; `low_quality` is Hidden. `max_results` 50. Page until `next_token` is absent. A page can be empty while `next_token` is set. Request `chat_message_request.fields`: `conversation_id,conversation_key_events,encoded_message_create_event,has_more_events,message_events,sender_id,sender_recently_modified_profile,social_proof_user_ids`. Decrypt `message_events` with that row's `conversation_key_events`. If `has_more_events`, page `get_chat_conversation_events` on that `conversation_id` instead of stopping at the preview. If `sender_recently_modified_profile` is true, tell the owner the sender recently changed their name or avatar. Finish both inboxes before accepting: accepting or deleting between pages can skip or repeat rows.
+
+**Open** (`get_chat_message_request`): only when the owner asked to open that request. `id` is the other user's id or the hyphen `conversation_id`, exactly as returned — do not rebuild it. This marks the returned messages delivered and updates the unread badge, the same as opening it in the X app. Say that once. Request `chat_message_request_detail.fields`: `conversation_id,conversation_key_events,has_more_events,message_events,message_request_state,participant_id`. On this object `has_more_events` is true whenever `message_events` is non-empty, so page `get_chat_conversation_events` for the rest. `message_request_state`: `received` (theirs, pending), `sent` (ours, pending), `none` (not pending).
+
+**Accept** (`accept_chat_message_request`): only when the owner explicitly said to accept. Same `id` as open. It moves a `received` request into the inbox. A reply does **not** accept it, and `send_chat_message` is not a substitute. Do not accept `sent` or `none`. `data.accepted` true means it moved. No pending request, including a second accept, is 404 — if you just accepted it, that 404 is expected, not a failure. After accept, read and reply on the normal inbox path.
+
+Do not accept while you are still paging the list.
 
 ### Send / reply
 
@@ -540,5 +554,7 @@ If `add_conversation_keys` returns `UNAUTHORIZED_REQUESTING_USER` or similar: yo
 - Treat tools=0 / `user-X-*` not found as a paywall. That is [error 2](#2-account-not-ready).
 - Treat missing Chat tools as “create a Project and App.” If other X tools work, that is [X Chat scopes](#x-chat-scopes) — reconnect.
 - Wait for the user to name `xchat_lite`, the helper repo, or a second X Chat skill. Clone it yourself.
+- Treat a reply as accepting a message request. Accept only with `accept_chat_message_request`, and only when the owner said to accept.
+- Call `get_chat_message_request` while scanning requests. That marks them delivered. List with `get_chat_message_requests`.
 - Pitch or run work above `{credits}`. If `{credits}` is ~$0, only free lookups. If they have some balance, offer a cheaper alternative that fits.
 - Run an expensive request (over ~$0.25, pagination loops, bulk lookups) without giving an estimate and getting a yes.
