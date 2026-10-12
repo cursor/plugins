@@ -522,6 +522,11 @@
       "name": "square",
       "source": "third_party/square",
       "description": "Work with payments, orders, catalog, customers, and invoices."
+    },
+    {
+      "name": "looot",
+      "source": "third_party/looot",
+      "description": "Find work emails, phones, companies and web data from one API key and prepaid balance."
     }
   ]
 }
