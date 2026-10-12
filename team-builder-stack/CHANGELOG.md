@@ -2,6 +2,10 @@
 
 Changes to the Team Builder Stack, for people using it. Newer entries come first. A release turns Unreleased into a version entry.
 
+## 0.14.2 (2026-10-12)
+
+- A change to what a handoff passes stays on that handoff, including when its how changes or another handoff between the same bots uses the same how.
+
 ## 0.14.1 (2026-10-12)
 
 - A workflow skill's own steps are named lines under Do the work, and the team map shows each one.

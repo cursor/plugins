@@ -19,6 +19,7 @@ anything to fix later, such as a skill the spec names that isn't in the library 
 """
 
 import argparse
+import difflib
 import json
 import re
 import sys
@@ -383,23 +384,27 @@ def compare(now, before):
                 else:
                     pending.append(h)
 
-            def take(rows, field):
-                still, pairs = [], []
-                for h in rows:
-                    match = next((o for o in pool if h[field] == o[field]), None)
-                    if match is None:
-                        still.append(h)
-                    else:
-                        pool.remove(match)
-                        pairs.append((h, match))
-                return still, pairs
+            # Among unpaired old routes: highest what-similarity (an exact what
+            # is 1.0), then the same how, then list order. The closest pair is
+            # taken first, and each old route pairs once.
+            def rank(h, o, oi, pi):
+                return (
+                    -difflib.SequenceMatcher(None, h["what"], o["what"]).ratio(),
+                    0 if o["how"] == h["how"] else 1,
+                    oi,
+                    pi,
+                )
 
-            # Leftovers match on what passes, then how, then list order.
-            pending, by_what = take(pending, "what")
-            pending, by_how = take(pending, "how")
-            by_order = list(zip(pending, pool))
-            pending, pool = pending[len(by_order):], pool[len(by_order):]
-            for h, o in by_what + by_how + by_order:
+            paired = []
+            while pending and pool:
+                pi, oi = min(
+                    ((pi, oi) for pi in range(len(pending)) for oi in range(len(pool))),
+                    key=lambda pos: rank(pending[pos[0]], pool[pos[1]], pos[1], pos[0]),
+                )
+                paired.append((pending.pop(pi), pool.pop(oi)))
+            still = pending
+            pending = still
+            for h, o in paired:
                 was = [f"{name}: {fmt(o[f])}" for f, name in fields if o[f] != h[f]]
                 if was:
                     h["change"], h["was"] = "changed", was
