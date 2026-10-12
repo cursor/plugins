@@ -2,6 +2,15 @@
 
 Changes to the Team Builder Stack, for people using it. Newer entries come first. A release turns Unreleased into a version entry.
 
+## 0.14.1 (2026-10-12)
+
+- A workflow skill's own steps are named lines under Do the work, and the team map shows each one.
+- Two handoffs between the same bots stay separate on a proposed change, and an edit to one is marked as a change.
+- Removing one handoff and editing another between the same bots marks the edited route and the removed route, each as itself.
+- The guide counts six utility skills, the six the stack ships.
+- The utility skills table names Triage work, Delegate work, Verify work, Plan the work, Inform manager bot, and Run review panel. Record keeping and context loading stay in each workflow's load and record steps.
+- The README and the guide stay on the same count of utility skills.
+
 ## 0.14.0 (2026-10-12)
 
 - The plugin logo is the author's portrait.

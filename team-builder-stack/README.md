@@ -83,7 +83,7 @@ The [Team Builder Stack guide](./skills/explain-how-it-works/references/guide/RE
 <!-- team-builder-stack:begin readme-guide -->
 1. [The core idea](./skills/explain-how-it-works/references/guide/01-the-core-idea.md). Give a bot to what carries its own history, and turn each repeated workflow into a skill. (Basics)
 2. [Your first owner bot](./skills/explain-how-it-works/references/guide/02-your-first-owner-bot.md). One owner bot for one unit, proved by hand, then put on a routine. (Basics)
-3. [Utility and standard skills](./skills/explain-how-it-works/references/guide/03-utility-skills.md). Eight utility skills every bot uses, the standard skills every skill follows, and where each one lives in the stack. (Going further)
+3. [Utility and standard skills](./skills/explain-how-it-works/references/guide/03-utility-skills.md). Six utility skills every bot uses, the standard skills every skill follows, and where each one lives in the stack. (Going further)
 4. [The system map](./skills/explain-how-it-works/references/guide/04-the-system-map.md). Where the tailoring lives: your systems, how they store data, and how they tie to your units. (Going further)
 5. [Growing the team](./skills/explain-how-it-works/references/guide/05-growing-the-team.md). Manager, owner, and specialist bots, how they work together, and adding bots as the work grows. (Going further)
 6. [Making it yours](./skills/explain-how-it-works/references/guide/06-making-it-yours.md). Teach the stack how you work, and keep your skills current. (Going further)

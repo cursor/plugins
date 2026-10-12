@@ -1,17 +1,17 @@
 # 3. Utility and standard skills
 
-Every bot uses the same eight utility skills, steps a workflow skill calls or builds in. Improve one once, and every bot gets the better version.
+Every bot uses the same six utility skills, steps a workflow skill calls or builds in. Improve one once, and every bot gets the better version.
 
 | Skill | What it does | In the Team Builder Stack |
 | --- | --- | --- |
-| **Record keeping** | Write things down once, in the right place, so the next run and other bots find them. It decides what’s worth saving, where it goes, and how to write it for someone who wasn’t there. | The record step of every workflow skill |
-| **Context loading** | Before a task, pull in only what’s needed: the unit’s current record, recent meetings and threads, relevant memory, and the rules that apply. It keeps bots off stale facts and keeps messages between bots short. | The load step of every workflow skill |
-| **Verification** | A fresh subagent checks the work before it’s written down or shown to a person, either the facts against their sources or the quality against the standard. | The verify step of every workflow skill, which calls [Verify work](../../../verify-work/SKILL.md) |
-| **Triage work** | Sort incoming work and send each piece to the right place. | [Triage work](../../../triage-work/SKILL.md) |
-| **Parallelization** | Split a job and run the pieces side by side as subagents, each with only its own material. | [Delegate work](../../../delegate-work/SKILL.md) |
-| **Planning** | Before a run splits or grows past its skill’s pattern, size the plan: the stages, how many subagents, one contract per stage, the checks, and when to stop. | [Plan the work](../../../plan-the-work/SKILL.md) |
-| **Handoffs** | When work crosses bots, message the next owner directly with what’s done and what’s next. | [Delegate work](../../../delegate-work/SKILL.md) |
-| **Keeping the manager informed** | When a task finishes, mark it done in the task list and leave the manager bot a short note; wake it only for a block, a decision, or a deadline. | [Inform manager bot](../../../inform-manager-bot/SKILL.md) |
+| **Triage work** | Sorts each item to a skill on this bot, the bot that owns it, or the person. | Called when work arrives as a stream of items. [Triage work](../../../triage-work/SKILL.md) |
+| **Delegate work** | Runs the pieces in subagents by the plan, or sends them to the owning bot. | Called when work splits or a step belongs to another bot. [Delegate work](../../../delegate-work/SKILL.md) |
+| **Verify work** | A fresh checker reopens each source and checks each claim against the standard. | Called by every Verify step before anything is saved or shown. [Verify work](../../../verify-work/SKILL.md) |
+| **Plan the work** | Writes a plan sized to the work: stages, worker contracts, checks, and stop rules. | Called by Do the work when work splits or outgrows the skill’s pattern. [Plan the work](../../../plan-the-work/SKILL.md) |
+| **Inform manager bot** | Marks a task done and sends the manager bot a linked note, waking it only for a block, decision, or deadline. | Called by Hand off when a task finishes or is blocked. [Inform manager bot](../../../inform-manager-bot/SKILL.md) |
+| **Run review panel** | Fresh reviewers and a separate judge advise, and the person picks the changes. | Called after Verify work when a high-stakes draft needs review. [Run review panel](../../../run-review-panel/SKILL.md) |
+
+Record keeping and context loading are built into every workflow skill’s record and load steps rather than being separate skills.
 
 ## Standard skills
 
@@ -23,9 +23,9 @@ Standard skills are rules the other skills follow, not steps they run. Voice is 
 | **Compliance guidelines** | The company’s compliance rules, such as what may be promised, what needs legal’s review, and that an open question is looked up in the sources before anyone is asked. Read fresh from where the guideline lives each run, never copied into a workflow skill. | One standard skill for each guideline you have, which [Write a workflow skill](../../../write-a-workflow-skill/SKILL.md) links from where it lives |
 | **Brand guidelines** | The brand standard for anything that goes out, such as names, claims, and tone. The team that owns it keeps it current, and every skill that needs it names it. | One standard skill for each guideline you have, which [Write a workflow skill](../../../write-a-workflow-skill/SKILL.md) links from where it lives |
 
-In the stack, every skill that writes for a person follows your Writing voice rather than copying it. Triage work, planning, parallelization, handoffs, verification, and keeping the manager informed are ready-to-use utility skills that workflow skills call. [Triage work](../../../triage-work/SKILL.md) sorts incoming work. [Delegate work](../../../delegate-work/SKILL.md) does both parallelization and handoffs, because both send work on: to a fresh subagent on the same bot, or to the bot that owns it. [Plan the work](../../../plan-the-work/SKILL.md) writes the plan Delegate work follows when a run is bigger than its skill’s pattern. [Inform manager bot](../../../inform-manager-bot/SKILL.md) runs from the Hand off step when a task finishes or is blocked. [Verify work](../../../verify-work/SKILL.md) holds the rules for checking work, so every workflow skill’s Verify step calls it instead of restating them. [Run review panel](../../../run-review-panel/SKILL.md) is optional: a workflow skill can offer it after Verify work for a high-stakes draft, where fresh reviewers advise, a separate judge merges what they say, and you pick the changes. It never replaces Verify work.
+In the stack, every skill that writes for a person follows your Writing voice rather than copying it. Triage work, Delegate work, Verify work, Plan the work, Inform manager bot, and Run review panel are the utility skills that workflow skills call. [Triage work](../../../triage-work/SKILL.md) sorts incoming work. [Delegate work](../../../delegate-work/SKILL.md) does both parallelization and handoffs, because both send work on: to a fresh subagent on the same bot, or to the bot that owns it. [Plan the work](../../../plan-the-work/SKILL.md) writes the plan Delegate work follows when a run is bigger than its skill’s pattern. [Inform manager bot](../../../inform-manager-bot/SKILL.md) runs from the Hand off step when a task finishes or is blocked. [Verify work](../../../verify-work/SKILL.md) holds the rules for checking work, so every workflow skill’s Verify step calls it instead of restating them. [Run review panel](../../../run-review-panel/SKILL.md) is optional: a workflow skill can offer it after Verify work for a high-stakes draft, where fresh reviewers advise, a separate judge merges what they say, and you pick the changes. It never replaces Verify work.
 
-Context loading, verification, and record keeping are steps inside every workflow skill, so no workflow can skip them. Each step reads what it needs from the team spec: the systems of record, the unique ID that finds one unit, and where the record and log go. When a tool changes, you change the spec once, and every workflow skill follows.
+The load step and the record step read what they need from the team spec: the systems of record, the unique ID that finds one unit, and where the record and log go. When a tool changes, you change the spec once, and every workflow skill follows.
 
 ## Three types of skill
 

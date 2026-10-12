@@ -268,8 +268,8 @@ function TeamLevel({ body, showChanges, go }: { body: MapBody; showChanges: bool
         <Stack gap={12}>
           <H2>How they hand off</H2>
           <Stack gap={0}>
-            {body.handoffs.map((h) => (
-              <div key={`${h.from}|${h.to}|${h.what}`} style={{ borderTop: `1px solid ${theme.stroke.tertiary}`, padding: '10px 0', textDecoration: h.change === 'removed' ? 'line-through' : 'none' }}>
+            {body.handoffs.map((h, i) => (
+              <div key={`${i}|${h.from}|${h.to}|${h.what}|${h.how}`} style={{ borderTop: `1px solid ${theme.stroke.tertiary}`, padding: '10px 0', textDecoration: h.change === 'removed' ? 'line-through' : 'none' }}>
                 <Row gap={10} wrap>
                   <Text weight="semibold">{`${name(h.from)} to ${name(h.to)}`}</Text>
                   <Text tone="secondary">{h.what}</Text>
@@ -395,8 +395,8 @@ function BotLevel({ body, bot, showChanges, go }: { body: MapBody; bot: MapBot; 
           <H2>Handoffs</H2>
           {mine.length ? (
             <Stack gap={0}>
-              {mine.map((h) => (
-                <div key={`${h.from}|${h.to}|${h.what}`} style={{ borderTop: `1px solid ${theme.stroke.tertiary}`, padding: '8px 0' }}>
+              {mine.map((h, i) => (
+                <div key={`${i}|${h.from}|${h.to}|${h.what}|${h.how}`} style={{ borderTop: `1px solid ${theme.stroke.tertiary}`, padding: '8px 0' }}>
                   <Stack gap={2}>
                     <Row gap={6} wrap>
                       <Text weight="semibold">{`${name(h.from)} to ${name(h.to)}`}</Text>

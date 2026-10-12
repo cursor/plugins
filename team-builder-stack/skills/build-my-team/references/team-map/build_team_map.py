@@ -357,9 +357,63 @@ def compare(now, before):
         names = {b["id"]: b["name"] for b in before["bots"]}
         now["verifierWas"] = names.get(before["verifier"], "") or "empty"
         counts["changed"] += 1
+    # Group by from/to, then match each route on its own. An exact route stays
+    # put, and a leftover pair is an edit, so one route is a change rather than
+    # a removal plus an addition. Two routes between the same bots stay distinct.
+    def mark_handoffs(items, old_items):
+        fields = (("what", "What passes"), ("how", "How"))
+
+        def grouped(rows):
+            out = {}
+            for h in rows:
+                out.setdefault((h["from"], h["to"]), []).append(h)
+            return out
+
+        new_groups = grouped(items)
+        old_groups = grouped(old_items)
+        for pair in old_groups:
+            new_groups.setdefault(pair, [])
+        for pair, new_rows in new_groups.items():
+            pool = list(old_groups.get(pair, []))
+            pending = []
+            for h in new_rows:
+                exact = next((o for o in pool if o["what"] == h["what"] and o["how"] == h["how"]), None)
+                if exact is not None:
+                    pool.remove(exact)
+                else:
+                    pending.append(h)
+
+            def take(rows, field):
+                still, pairs = [], []
+                for h in rows:
+                    match = next((o for o in pool if h[field] == o[field]), None)
+                    if match is None:
+                        still.append(h)
+                    else:
+                        pool.remove(match)
+                        pairs.append((h, match))
+                return still, pairs
+
+            # Leftovers match on what passes, then how, then list order.
+            pending, by_what = take(pending, "what")
+            pending, by_how = take(pending, "how")
+            by_order = list(zip(pending, pool))
+            pending, pool = pending[len(by_order):], pool[len(by_order):]
+            for h, o in by_what + by_how + by_order:
+                was = [f"{name}: {fmt(o[f])}" for f, name in fields if o[f] != h[f]]
+                if was:
+                    h["change"], h["was"] = "changed", was
+                    counts["changed"] += 1
+            for h in pending:
+                h["change"] = "added"
+                counts["added"] += 1
+            for o in pool:
+                items.append(dict(o, change="removed"))
+                counts["removed"] += 1
+
     mark(now["bots"], before["bots"], lambda b: b["id"], (("type", "Type"), ("blueprint", "Blueprint"), ("modelBot", "Model bot"), ("botTemplate", "Bot template"), ("skills", "Skills")), "bot")
     mark(now["skills"], before["skills"], lambda s: s["id"], (("description", "Description"), ("templateLocation", "Template"), ("templateOwner", "Template owner")), "skill", steps)
-    mark(now["handoffs"], before["handoffs"], lambda h: (h["from"], h["to"]), (("what", "What passes"), ("how", "How")), "handoff")
+    mark_handoffs(now["handoffs"], before["handoffs"])
     mark(now["systems"], before["systems"], lambda s: s["name"], (("connector", "Connector"), ("holds", "Holds"), ("uniqueId", "Unique ID"), ("recordFor", "System of record for")), "system")
     return counts
 
