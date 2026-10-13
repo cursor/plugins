@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.6.7 — skill name matches its folder
+
+- `skills/x-api-mcp-guide/SKILL.md` frontmatter `name` is now `x-api-mcp-guide` (was `X MCP guide`), matching the folder as the skills spec requires. No behaviour change.
+
 ## 2.6.6 — media.write scope
 
 - Requested `media.write`.

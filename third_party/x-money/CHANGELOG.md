@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.0.1 — skill name matches its folder
+
+- `skills/x-money-guide/SKILL.md` frontmatter `name` is now `x-money-guide` (was `X Money guide`), matching the folder as the skills spec requires. No behaviour change.
+
 ## 1.0.0 — initial release
 
 - Added the `x-money` MCP server pointing at X Money's hosted Streamable HTTP endpoint (`https://mcp.money.x.com/mcp`), declared `placement: "server"` because the OAuth grant and tool calls live on the Cursor backend.

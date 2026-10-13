@@ -1,7 +1,7 @@
 {
   "name": "x-money",
   "displayName": "X Money",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minClientVersions": {
     "cursor": "never",
     "grokbot": "0.52.0",
