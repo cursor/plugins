@@ -86,7 +86,7 @@ def prepare(text, name):
     metadata, body = frontmatter(text)
     for key in ('mode', 'icon', 'color', 'reminder'):
         metadata.pop(key, None)
-    if name != 'poteto-help':
+    if name not in ('poteto-help', 'ketchup'):
         metadata.pop('disable-model-invocation', None)
     metadata['name'] = name
     if name.startswith('principle-'):

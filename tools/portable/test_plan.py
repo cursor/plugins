@@ -164,6 +164,22 @@ Record the actual prototype branch, SHA, receipts, and remaining unproven claims
             digest = hashlib.sha256((self.skills / resource).read_bytes()).hexdigest()
             self.assertIn(f'Installed snapshot SHA256 "{resource}" {digest}', portable.stdout)
 
+    def test_reviewed_checker_keeps_example_fences_out_of_plan_structure(self):
+        examples = [
+            '   ```markdown\n## Example only\n   ```\n',
+            '````markdown\n```markdown\n## Example only\n```\n````\n',
+            '~~~markdown `info`\n## Example only\n ~~~\n',
+            '````markdown\n~~~\n## Example only\n````\n',
+        ]
+        for example in examples:
+            with self.subTest(example=example):
+                result = self.invoke(self.plan_text() + '\n' + example)
+                self.assertIn('Portable STRUCTURE PASS', result.stdout)
+                self.assertIn('1 PR sections, 2 problems', result.stdout)
+        result = self.invoke(self.plan_text() + '\n```markdown\n## Example only\n```  \n## Example only\n', code=1)
+        self.assertIn('after Close the program is not an appendix', result.stderr)
+        self.assertIn('Portable STRUCTURE FAIL', result.stdout)
+
     def test_every_substantive_gate_remains_upstream_authority(self):
         base = self.plan_text()
         mutations = [

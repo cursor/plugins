@@ -7,7 +7,7 @@ import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 
 // Updating this pin requires reviewing the upstream checker and its output contract.
-const REVIEWED_CHECKER_SHA256 = "4f9432d9989880b6afc2bdda503d5b12a9d07d357ecf31936b7ab5e83bc80523";
+const REVIEWED_CHECKER_SHA256 = "e58c3d871b09d477be00628d69dd23ffa6c2e3a1728f5b867a841baa8e90278b";
 const COMPATIBILITY = new Set([
 	'Program checklist lacks "git show origin/main:"',
 	'Program checklist lacks "/loop 1h"',

@@ -8,16 +8,18 @@ Treat the directory containing the installed skill folders as the skills root. R
 
 - Use the tools actually exposed in this session. Do not invent a tool, model, background flag, or cloud environment.
 - Resolve another pstack skill by its directory name in the installed skills root. Claude Code may invoke `pstack:<name>`; Codex may load the installed skill or read its `SKILL.md`.
-- Generated workflow skills intentionally omit upstream `disable-model-invocation` so the model can discover and route to required skills. Poteto help stays explicit-only through that field on Claude and `policy.allow_implicit_invocation: false` on Codex. Claude supports the field; its omission elsewhere is a portable routing choice, not an unsupported-field fix or permission to act.
+- Generated workflow skills intentionally omit upstream `disable-model-invocation` so the model can discover and route to required skills. Poteto help and ketchup stay explicit-only through that field on Claude and `policy.allow_implicit_invocation: false` on Codex. Claude supports the field; its omission elsewhere is a portable routing choice, not an unsupported-field fix or permission to act.
 - Read the model sheet at `${CLAUDE_CONFIG_DIR:-~/.claude}/pstack-models.md` on Claude Code or `${CODEX_HOME:-~/.codex}/pstack-models.md` on Codex. This replaces every reference to `~/.cursor/rules/pstack-models.mdc`. Read it explicitly; it is not an always-applied Cursor rule.
 - An absent role defaults to `inherit-parent`, replacing upstream's Cursor model slugs. Use only models and reasoning levels confirmed available in the current harness. Do not send Claude or Grok model IDs to Codex. A Cursor effort suffix is not part of a portable model ID.
 - For multi-model panels, use distinct configured models when the tools support them. Otherwise use independent agents on the inherited model and disclose the reduced model diversity. Sequential passes without delegation are not independent agents. Report that gap wherever the upstream workflow requires independent review.
 - Writers need separate worktrees or output directories. Local subagents do not acquire isolation merely by being spawned. Review their output before integrating it.
-- Include a pointer to this file in every subagent brief. When a brief requests `poteto-agent`, require the child to read this file and `poteto-mode/SKILL.md` in full before work. When it requests `Comment Sicko`, require `poteto-mode/references/portable-agents/comment-sicko.md` instead.
+- Include a pointer to this file in every subagent brief. When a brief requests `poteto-agent`, require the child to read this file and `poteto-mode/SKILL.md` in full before work. When it requests `comment-sicko` or `Comment Sicko`, require `poteto-mode/references/portable-agents/comment-sicko.md` instead.
 - A missing optional dependency is a limitation to report, not permission to install another plugin, edit its cache, contact people, or publish an upstream PR. If it prevents the requested result, state the blocker. Preserve the user's authorization and the harness's approval rules.
 - Upstream autonomy, automatic backlog creation, and countersign language never waive the requested scope, operator gates, host approvals, or an access denial. A no-merge instruction remains binding even when a playbook normally ends by shipping.
 
 ## Delegation and lifecycle
+
+The chat receiving poteto-mode remains the playbook runner. Delegate scoped steps to poteto-agent; never delegate the entire playbook runner role. Apply this rule to both native agents and skills-only installations.
 
 Before fan-out, check the exposed tool schema, remaining agent capacity, permitted nesting, available evidence, and execution environment. Count coordinators and live children against any shared limit. Keep the upstream total participant count and distinct scopes. When they exceed capacity, queue the remaining seats and refill as workers finish. A capacity limit changes scheduling, not coverage. Arena's judge starts only after every candidate has finished or been recorded as a dropout.
 
@@ -47,7 +49,7 @@ Read [the Claude dispatch contract](claude-dispatch.md) before delegation.
 | --- | --- |
 | `Task`, `generalPurpose` | Available `Agent` or `Task` tool, `general-purpose` agent |
 | `poteto-agent` | Plugin agent `pstack:poteto-agent` when installed; otherwise an ad-hoc general-purpose agent with the required reading in its brief |
-| `Comment Sicko` | Plugin agent `pstack:comment-sicko` when installed; otherwise a read-only general-purpose agent that reads the bundled comment-sicko reference |
+| `comment-sicko` / `Comment Sicko` | Plugin agent `pstack:comment-sicko` when installed; otherwise a read-only general-purpose agent that reads the bundled comment-sicko reference |
 | `AskQuestion` | `AskUserQuestion` when available, otherwise a concise question |
 | todolist | Available task tools or a local checklist |
 | `environment: cloud`, `cloud_base_branch` | Available worker route, with the placement and starting-ref checks above |
