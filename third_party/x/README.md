@@ -59,7 +59,7 @@ Or run `/add-plugin x` in chat.
 | Lists | Read and manage your lists |
 | Bookmarks | Read and manage your bookmarks |
 | Blocks & mutes | Read your blocks and mutes; add or remove blocks |
-| Chat | List conversations, fetch events, send messages, typing, and read receipts |
+| Chat | List conversations, fetch events, send messages, typing, and read receipts; list, open, and accept message requests |
 | Developer account | Read your X developer account settings and credit balance |
 
 Posting is not included: the plugin does not request the `tweet.write` scope, so agents cannot publish posts as you.
