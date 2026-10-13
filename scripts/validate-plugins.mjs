@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { readFileSync, existsSync } from "fs";
-import { resolve, dirname } from "path";
+import { readFileSync, existsSync, readdirSync, statSync } from "fs";
+import { resolve, dirname, join } from "path";
 import { fileURLToPath } from "url";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
@@ -25,10 +25,94 @@ const validateMarketplace = ajv.compile(marketplaceSchema);
 const validatePlugin = ajv.compile(pluginSchema);
 
 let errors = 0;
+let warnings = 0;
 
 function fail(message) {
   console.error(`ERROR: ${message}`);
   errors++;
+}
+
+// Reported but not fatal. Used for rules that main does not satisfy yet; flip
+// a rule to fail() once the existing offenders are fixed.
+function warn(message) {
+  console.error(`WARN: ${message}`);
+  warnings++;
+}
+
+// Skill frontmatter rules, from cursor.com/docs/context/skills: `name` and
+// `description` are required; `name` is lowercase letters, digits and hyphens
+// and must match the parent folder; descriptions are capped at 1024 characters.
+const SKILL_NAME_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SKILL_DESCRIPTION_MAX = 1024;
+
+// Minimal YAML-subset frontmatter reader: top-level `key: value` pairs, quoted
+// scalars, and `>` / `|` block scalars (with optional `-`/`+` chomping) whose
+// continuation lines are indented. Returns null when there is no frontmatter.
+function parseFrontmatter(text) {
+  if (!text.startsWith("---")) return null;
+  const end = text.indexOf("\n---", 3);
+  if (end === -1) return null;
+  const lines = text.slice(text.indexOf("\n") + 1, end).split("\n");
+  const fields = {};
+  for (let i = 0; i < lines.length; i++) {
+    const match = /^([A-Za-z0-9_-]+):\s*(.*)$/.exec(lines[i]);
+    if (!match) continue;
+    const key = match[1];
+    let value = match[2].trim();
+    if (/^[>|][-+]?$/.test(value)) {
+      const folded = value.startsWith(">");
+      const block = [];
+      while (i + 1 < lines.length && (/^\s+\S/.test(lines[i + 1]) || lines[i + 1].trim() === "")) {
+        block.push(lines[++i].trim());
+      }
+      value = folded ? block.join(" ").trim() : block.join("\n").trim();
+    } else if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    fields[key] = value;
+  }
+  return fields;
+}
+
+function checkSkillFrontmatter(pluginName, skillDir) {
+  const skillFile = join(skillDir, "SKILL.md");
+  if (!existsSync(skillFile)) return;
+  const dirName = skillDir.split(/[\\/]/).pop();
+  const label = `Plugin "${pluginName}": skill "${dirName}"`;
+  const fields = parseFrontmatter(readFileSync(skillFile, "utf-8"));
+  if (!fields) {
+    fail(`${label} has no YAML frontmatter in SKILL.md`);
+    return;
+  }
+  if (!fields.name) {
+    fail(`${label} is missing "name" in SKILL.md frontmatter`);
+  } else if (!SKILL_NAME_PATTERN.test(fields.name)) {
+    warn(`${label} has name "${fields.name}"; names are lowercase letters, digits and hyphens`);
+  } else if (fields.name !== dirName) {
+    warn(`${label} has name "${fields.name}" but lives in "${dirName}"; name must match the parent folder`);
+  }
+  if (!fields.description) {
+    fail(`${label} is missing "description" in SKILL.md frontmatter`);
+  } else if (fields.description.length > SKILL_DESCRIPTION_MAX) {
+    warn(`${label} description is ${fields.description.length} characters; the limit is ${SKILL_DESCRIPTION_MAX}`);
+  }
+}
+
+// Skills live in the plugin's declared `skills` directory, or `skills/` by default.
+function checkPluginSkills(pluginName, pluginDir, declared) {
+  const dirs = declared === undefined ? ["skills/"] : Array.isArray(declared) ? declared : [declared];
+  for (const raw of dirs) {
+    if (typeof raw !== "string" || /[*?{}[\]]/.test(raw)) continue;
+    const dir = resolve(pluginDir, raw);
+    if (!existsSync(dir) || !statSync(dir).isDirectory()) continue;
+    for (const child of readdirSync(dir)) {
+      const skillDir = join(dir, child);
+      if (statSync(skillDir).isDirectory()) checkSkillFrontmatter(pluginName, skillDir);
+    }
+  }
 }
 
 // 1. Validate marketplace.json
@@ -90,9 +174,15 @@ for (const entry of marketplace.plugins ?? []) {
       `Plugin "${entry.name}": marketplace name does not match plugin.json name "${pluginJson.name}"`
     );
   }
+
+  // Check SKILL.md frontmatter for every skill the plugin ships
+  checkPluginSkills(entry.name, pluginDir, pluginJson.skills);
 }
 
 // 3. Report results
+if (warnings > 0) {
+  console.error(`\n${warnings} warning(s).`);
+}
 if (errors > 0) {
   console.error(`\nValidation failed with ${errors} error(s).`);
   process.exit(1);
