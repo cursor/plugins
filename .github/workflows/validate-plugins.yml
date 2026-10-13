@@ -6,6 +6,10 @@ on:
       - ".cursor-plugin/marketplace.json"
       - "**/plugin.json"
       - "schemas/**"
+      - "scripts/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/validate-plugins.yml"
 
 jobs:
   validate:
@@ -16,9 +20,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
       - name: Install dependencies
-        run: npm install --no-save ajv ajv-formats
+        run: npm ci
 
       - name: Validate plugin definitions
-        run: node scripts/validate-plugins.mjs
+        run: npm run validate
