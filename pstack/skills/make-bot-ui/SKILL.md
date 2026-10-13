@@ -1,5 +1,5 @@
 ---
-name: Make Bot UI
+name: make-bot-ui
 description: >-
   Build a custom UI (page, dashboard, buttons) that wakes a Grok Bot over a
   webhook, keeps the webhook sender key on the server, and optionally exposes
