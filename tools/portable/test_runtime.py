@@ -42,7 +42,7 @@ class PackageTests(unittest.TestCase):
                        'skills/deslop/LICENSE-CURSOR-TEAM-KIT', 'skills/deslop/DESLOP_SOURCE.md',
                        'skills/poteto-mode/references/LICENSE-CURSOR-TEAM-KIT',
                        'skills/poteto-mode/references/DESLOP_SOURCE.md',
-                       'skills/poteto-help/agents/openai.yaml']
+                       'skills/poteto-help/agents/openai.yaml', 'skills/ketchup/agents/openai.yaml']
             for name in dict.fromkeys(targets):
                 with self.subTest(name=name):
                     path = package / name
@@ -56,6 +56,22 @@ class PackageTests(unittest.TestCase):
             original = path.read_text()
             path.write_text(original.replace('${CLAUDE_PLUGIN_ROOT}/skills/poteto-mode/references/runtime-adaptation.md', '${CLAUDE_PLUGIN_ROOT}/compatibility.md'))
             with self.assertRaises(ValueError):
+                validate_resources(package, ROOT / 'pstack')
+
+    def test_ketchup_explicit_invocation_is_enforced_on_both_hosts(self):
+        from runtime import validate_resources
+        with tempfile.TemporaryDirectory() as temporary:
+            package = Path(temporary) / 'package'
+            shutil.copytree(ROOT / 'portable/pstack', package)
+            skill = package / 'skills/ketchup/SKILL.md'
+            original = skill.read_text()
+            skill.write_text(original.replace('disable-model-invocation: true\n', ''))
+            with self.assertRaisesRegex(ValueError, 'ketchup must require explicit invocation'):
+                validate_resources(package, ROOT / 'pstack')
+            skill.write_text(original)
+            policy = package / 'skills/ketchup/agents/openai.yaml'
+            policy.write_text('policy:\n  allow_implicit_invocation: true\n')
+            with self.assertRaisesRegex(ValueError, 'ketchup Codex invocation policy differs'):
                 validate_resources(package, ROOT / 'pstack')
 
     def test_metadata_duplicate_and_paths(self):

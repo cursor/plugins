@@ -56,7 +56,7 @@ Read [runtime adaptation](tools/portable/assets/skills/poteto-mode/references/ru
 
 ## Runtime parity and limits
 
-The adapter preserves upstream review roles, participant counts, fresh-agent policy, and completion gates. The shared bundle intentionally removes `disable-model-invocation` from workflow skills so poteto-mode can route to them. The new poteto-help entry point retains upstream's explicit-only invocation, including the matching Codex policy. This changes discovery and invocation availability; it does not grant permission for side effects. Capacity limits queue participants in waves. If the host cannot provide an independent reviewer or isolated context, that gate remains unverified. A self-review or a missing transcript does not count as passing evidence.
+The adapter preserves upstream review roles, participant counts, fresh-agent policy, and completion gates. The shared bundle intentionally removes `disable-model-invocation` from workflow skills so poteto-mode can route to them. The poteto-help and ketchup entry points retain upstream's explicit-only invocation, including matching Codex policies. This changes discovery and invocation availability; it does not grant permission for side effects. Capacity limits queue participants in waves. If the host cannot provide an independent reviewer or isolated context, that gate remains unverified. A self-review or a missing transcript does not count as passing evidence.
 
 Portable Comment Sicko is read-only. Its parent applies accepted, scoped comment deletions and checks the resulting diff before completing no-comments. A findings-only report does not complete the edit workflow.
 

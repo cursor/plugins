@@ -37,7 +37,7 @@ Reference prices for cost estimates. May drift; the live endpoint https://consol
 `GET /2/users` · `/2/users/:id` · `/2/users/by` · `/2/users/by/username/:username` · `/2/users/search` · `/2/users/:id/affiliates` · `/2/users/:id/followers`* · `/2/users/:id/following`* · `/2/users/:id/blocking`* · `/2/users/:id/muting`* · `/2/lists/:id/followers` · `/2/lists/:id/members` · `/2/tweets/:id/retweeted_by` · `/2/spaces/:id/buyers`
 
 ### Direct Messages — $0.01/event
-`GET /2/dm_events` · `/2/dm_events/:event_id` · `/2/dm_conversations/:id/dm_events` · `/2/dm_conversations/with/:participant_id/dm_events` · `/2/chat/conversations` · `/2/chat/conversations/:id` · `/2/chat/conversations/:id/events`
+`GET /2/dm_events` · `/2/dm_events/:event_id` · `/2/dm_conversations/:id/dm_events` · `/2/dm_conversations/with/:participant_id/dm_events`
 
 ### Lists — $0.005/list
 `GET /2/lists/:id` · `/2/users/:id/followed_lists`* · `/2/users/:id/list_memberships`* · `/2/users/:id/owned_lists`* · `/2/users/:id/pinned_lists`*
@@ -124,6 +124,7 @@ Reference prices for cost estimates. May drift; the live endpoint https://consol
 - Stream connection & management: stream rules, webhook & Account Activity configuration, replay
 - Compliance jobs, connections, usage endpoints
 - Chat/DM sends, communities create, notes
+- X Chat is free for this plugin. X Chat reads (`GET /2/chat/*`) and public key lookups (`GET /2/users/:id/public_keys` · `/2/users/public_keys`) are free everywhere, in Grok Bot and in Cursor.
 
 ## Cost-saving tips
 

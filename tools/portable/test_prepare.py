@@ -49,9 +49,11 @@ class PrepareTests(unittest.TestCase):
 
     def test_help_stays_explicit_while_workflow_skills_remain_routable(self):
         source = '---\nname: source\ndescription: Help\ndisable-model-invocation: true\n---\n\n# Help\n'
-        help_metadata, help_body = frontmatter(prepare(source, 'poteto-help'))
-        self.assertIs(help_metadata.get('disable-model-invocation'), True)
-        self.assertEqual(help_body, NOTICE + '# Help\n')
+        for name in ('poteto-help', 'ketchup'):
+            with self.subTest(skill=name):
+                metadata, body = frontmatter(prepare(source, name))
+                self.assertIs(metadata.get('disable-model-invocation'), True)
+                self.assertEqual(body, NOTICE + '# Help\n')
         workflow_metadata, _ = frontmatter(prepare(source, 'poteto-mode'))
         self.assertNotIn('disable-model-invocation', workflow_metadata)
 

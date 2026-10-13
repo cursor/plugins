@@ -111,12 +111,12 @@ def validate_resources(root, upstream):
             raise ValueError(f'Upstream skill body changed: {source.parent.name}')
         if any(key in metadata for key in ('mode', 'icon', 'color', 'reminder')):
             raise ValueError(f'Cursor metadata retained: {source.parent.name}')
-        if source.parent.name == 'poteto-help':
+        if source.parent.name in ('poteto-help', 'ketchup'):
             if metadata.get('disable-model-invocation') is not True:
-                raise ValueError('Poteto help must require explicit invocation')
-            policy = yaml.safe_load(local_path(root, 'skills/poteto-help/agents/openai.yaml').read_text())
+                raise ValueError(f'{source.parent.name} must require explicit invocation')
+            policy = yaml.safe_load(local_path(root, f'skills/{source.parent.name}/agents/openai.yaml').read_text())
             if policy != {'policy': {'allow_implicit_invocation': False}} or policy['policy']['allow_implicit_invocation'] is not False:
-                raise ValueError('Poteto help Codex invocation policy differs')
+                raise ValueError(f'{source.parent.name} Codex invocation policy differs')
         elif 'disable-model-invocation' in metadata:
             raise ValueError(f'Workflow skill cannot be routed: {source.parent.name}')
         if source.parent.name.startswith('principle-') and metadata.get('user-invocable') is not False:
