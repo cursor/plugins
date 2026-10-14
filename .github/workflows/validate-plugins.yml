@@ -4,8 +4,11 @@ on:
   pull_request:
     paths:
       - ".cursor-plugin/marketplace.json"
+      - ".claude-plugin/marketplace.json"
       - "**/plugin.json"
       - "schemas/**"
+      - "scripts/validate-plugins.mjs"
+      - ".github/workflows/validate-plugins.yml"
 
 jobs:
   validate:
@@ -22,3 +25,6 @@ jobs:
 
       - name: Validate plugin definitions
         run: node scripts/validate-plugins.mjs
+
+      - name: Validate Claude Code plugin definitions
+        run: npx --yes @anthropic-ai/claude-code@2.1.299 plugin validate .
