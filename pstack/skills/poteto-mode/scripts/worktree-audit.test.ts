@@ -72,15 +72,15 @@ fixture.setPrs([
 const result = fixture.audit();
 
 const expectations = [
-	["closed-unpushed", "ahead1", "#1/CLOSED", "hold-unpushed"],
-	["closed-pushed", "pushed", "#2/CLOSED", "review"],
+	["closed-unpushed", "ahead1", "#1/closed", "hold-unpushed"],
+	["closed-pushed", "pushed", "#2/closed", "review"],
 	["behind", "behind", "-", "review"],
-	["squash-pruned", "no-remote", "#4/MERGED", "safe"],
-	["squash-kept", "pushed", "#5/MERGED", "safe"],
-	["merged-then-more", "no-remote", "#6/MERGED", "hold-unpushed"],
+	["squash-pruned", "no-remote", "#4/merged", "safe"],
+	["squash-kept", "pushed", "#5/merged", "safe"],
+	["merged-then-more", "no-remote", "#6/merged", "hold-unpushed"],
 	["detached-off-base", "detached", "-", "hold-unpushed"],
 	["detached-gone", "detached", "-", "hold-unpushed"],
-	["reused-name", "no-remote", "#7/MERGED", "safe"],
+	["reused-name", "no-remote", "#7/merged", "safe"],
 ];
 for (const [worktree, remote, pr, bucket] of expectations) {
 	test(`worktree audit: ${worktree}`, () => {
