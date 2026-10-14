@@ -27,7 +27,7 @@ Open a todolist with one entry per phase before launching anything.
 
 ## Phase B: Fan out
 
-Spawn native workers with the active harness's subagent tool. In Cursor, use one message with `subagent_type: generalPurpose`, `environment: "cloud"`, and `run_in_background: true`, leaving `model` unset for `auto` or `inherit-parent`; use `environment: "local"` only when computer access is needed. An explicitly selected external worker uses its confirmed runner and its own checkout; drain it with the native workers before ranking results.
+Spawn native workers with the active harness's subagent tool. In Cursor, use one message with `subagent_type: generalPurpose`, `environment: "cloud"`, and `run_in_background: true`, leaving `model` unset for `auto` or `inherit-parent`; use `environment: "local"` only when computer access is needed. In another harness, translate these fields with the Harness reference in [model routing](../../docs/model-routing.md#harness-reference). An explicitly selected external worker uses its confirmed runner and its own checkout; drain it with the native workers before ranking results.
 
 When a worker must start from a non-default pushed branch, pass `cloud_base_branch`.
 

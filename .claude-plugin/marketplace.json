@@ -9,6 +9,11 @@
       "name": "origin-apps",
       "source": "./origin-apps",
       "description": "Skills for building on the Cursor Origin API. Fetch the live spec first, then follow the Origin rules for credentials, scopes, webhooks, paging, and errors. Includes a skill that plans the port of an existing GitHub App."
+    },
+    {
+      "name": "pstack",
+      "source": "./pstack",
+      "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence."
     }
   ]
 }

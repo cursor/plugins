@@ -50,9 +50,10 @@ race explicitly names other arms.
    `model` and `reasoning_effort` inputs; do not invent an effort-suffixed slug.
    Cursor may encode effort in a model variant. Omit unsupported effort fields.
    The consuming skills' `Task` examples may contain Cursor-only options such
-   as `subagent_type`, `readonly`, `environment`, and `run_in_background`;
-   translate their intent to the active tool's schema rather than passing
-   unsupported fields.
+   as `subagent_type`, `readonly`, `environment`, and `run_in_background`.
+   In Cursor, pass them as written. In another harness, translate them with
+   [Harness reference](#harness-reference) rather than passing unsupported
+   fields.
 2. `claude-cli`, `codex-cli`, `cursor-cli`, and `opencode-cli` are external runners.
    Use them for read-only review, investigation, or adversarial work only when
    the CLI is authenticated, the model is confirmed runnable, and a read-only
@@ -84,3 +85,57 @@ confirmed GPT, Grok, or other family for review. Cursor and OpenCode select
 their native primary family from the active session. When the native subagent
 tool exposes all desired families, use it for the whole panel; external CLIs
 are a fallback for families absent from that tool.
+
+## Harness reference
+
+Skills and agents are written with Cursor's names, fields, and paths. In
+Cursor, use them exactly as written. In another harness, translate each one
+with the tables below. Drop a field with no row here and say you dropped it;
+never invent a field or value the active tool's schema does not accept.
+
+### Subagent fields
+
+| Cursor | Claude Code |
+| --- | --- |
+| `subagent_type: generalPurpose` | `subagent_type: "general-purpose"` |
+| `subagent_type: poteto-agent`, `comment-sicko`, or another pstack agent | Prefix the plugin name: `pstack:poteto-agent`, `pstack:comment-sicko` |
+| `readonly: true` | `subagent_type: "Explore"`. It denies `Write` and `Edit` but keeps shell access, so also instruct no edits and confirm the checkout is unchanged afterward. |
+| `readonly: false` (for MCP access) | `general-purpose`, which inherits the session's MCP servers |
+| `environment: "cloud"` | `isolation: "remote"` when the tool offers it, else `isolation: "worktree"`. A worktree branches from the default branch, not the parent's `HEAD`, so tell the subagent which branch or commit to check out. |
+| `environment: "local"` | Omit the field. |
+| `run_in_background: true` | Omit the field. Claude Code runs subagents in the background in interactive sessions. |
+| Effort-suffixed model slug, such as `claude-opus-5-5-xhigh` | Separate `model` and `effort` (`low` through `max`). The call's `model` accepts only the aliases `opus`, `sonnet`, `haiku`, and `fable`. |
+| `inherit-parent` or `auto` | Omit `model`. Never pass `inherit` on a call; only agent frontmatter accepts it. |
+
+### Agent frontmatter
+
+Claude Code ignores frontmatter keys it does not recognize, so an agent file
+carries both harnesses' keys side by side.
+
+| Cursor | Claude Code |
+| --- | --- |
+| `is_background: true` | `background: true` |
+| `readonly: true` | `disallowedTools: Write, Edit`. Plugin agents ignore `permissionMode`. |
+| `model: inherit` | `model: inherit` |
+
+### Paths and names
+
+| | Cursor | Claude Code |
+| --- | --- | --- |
+| Plugin install root | `~/.cursor/plugins/` | `~/.claude/plugins/` |
+| Installed plugin manifest | `.cursor-plugin/plugin.json` | `.claude-plugin/plugin.json` |
+| Project skills | `.cursor/skills/` | `.claude/skills/` |
+| User skills | `~/.cursor/skills/` | `~/.claude/skills/` |
+| Slash command | `/poteto-mode` | `/pstack:poteto-mode` |
+| Transcript directory | `~/.cursor/projects/<slug>/agent-transcripts/`, named in the system prompt | `~/.claude/projects/<slug>/`, not named in the system prompt |
+| Transcript file | `<uuid>/<uuid>.jsonl` | `<uuid>.jsonl`; subagents under `<uuid>/subagents/agent-<id>.jsonl` |
+| Workspace slug | Workspace path without the leading `/`, with each `/` turned into `-` | Workspace path with each `/` and `.` turned into `-`, keeping the leading `-` |
+| Slug example for `/Users/you/proj` | `Users-you-proj` | `-Users-you-proj` |
+
+In Claude Code, the current session's transcript is the most recently modified
+`.jsonl` directly under the workspace's project directory. Claude Code deletes
+transcripts after `cleanupPeriodDays` (30 days by default). As in Cursor, read
+only the active workspace's directory; never glob across every project.
+
+Cursor Automations (`automations/`) have no Claude Code equivalent and stay
+Cursor-only.

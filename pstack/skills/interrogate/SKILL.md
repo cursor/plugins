@@ -31,7 +31,7 @@ Read [model routing](../../docs/model-routing.md) and the matching harness profi
 | Reviewer A | `claude-opus-5-5-xhigh` |
 | Reviewer B | `grok-4.7-xhigh-fast` |
 
-For each legacy Cursor Task reviewer (or the active tool's equivalent):
+For each legacy Cursor Task reviewer (in another harness, translate these fields with the Harness reference in [model routing](../../docs/model-routing.md#harness-reference)):
 - `subagent_type`: `generalPurpose`
 - `model`: the configured `interrogate reviewers` entry, or the table default with no configured line. For an `auto` or `inherit-parent` entry, omit `model` so that reviewer runs on the parent model.
 - `readonly`: `true`

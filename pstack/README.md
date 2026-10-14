@@ -18,6 +18,15 @@ fork it. improve it. make it yours. PRs are welcome!
 /add-plugin pstack
 ```
 
+in claude code:
+
+```bash
+/plugin marketplace add cursor/plugins
+/plugin install pstack@cursor-plugins
+```
+
+claude code prefixes plugin commands and agents, so `/poteto-mode` is `/pstack:poteto-mode`. the [harness reference](./docs/model-routing.md#harness-reference) lists every other difference.
+
 ## get started
 
 two steps:
@@ -266,7 +275,7 @@ when a default changes, a rule written before the change still pins the old defa
 
 pstack also ships a dormant [benny automation pack](./automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
 
-to set it up, point cursor at [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.md). setup copies the pack into the target repository at `.cursor/automations/benny/`, enables pstack there for shared skills, and keeps user configuration outside the copied pack.
+to set it up, point cursor at [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.md). setup copies the pack into the target repository at `.cursor/automations/benny/`, enables pstack there for shared skills, and keeps user configuration outside the copied pack. benny runs on cursor automations, so it is cursor-only.
 
 ## license
 

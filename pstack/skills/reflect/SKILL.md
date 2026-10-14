@@ -12,7 +12,7 @@ Invoke when the user says "reflect" or "/reflect". Skip when the conversation is
 
 ## 1. Locate the active transcript
 
-Before fanning out, find this conversation's transcript in the `agent-transcripts/` directory the system prompt names. Do not glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
+Before fanning out, find this conversation's transcript in the `agent-transcripts/` directory the system prompt names. Do not glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects. In a harness whose system prompt names no transcript directory, locate it with the Harness reference in [model routing](../../docs/model-routing.md#harness-reference), under the same rule.
 
 ```bash
 ls -t <agent-transcripts>/*.jsonl <agent-transcripts>/*/*.jsonl <agent-transcripts>/*/subagents/*.jsonl 2>/dev/null | head -10
@@ -22,7 +22,7 @@ That covers the legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), 
 
 ## 2. Spawn three reviewers in parallel
 
-One message, three `Task` calls, `subagent_type: generalPurpose`, agent mode (`readonly: false`). Reviewers need MCP access to look up the tickets, chat threads, and observability traces the transcript references, and readonly strips MCPs.
+One message, three `Task` calls, `subagent_type: generalPurpose`, agent mode (`readonly: false`). Reviewers need MCP access to look up the tickets, chat threads, and observability traces the transcript references, and readonly strips MCPs. In another harness, translate these fields with the Harness reference in [model routing](../../docs/model-routing.md#harness-reference).
 
 First read [model routing](../../docs/model-routing.md) and the matching harness profile. Native reviewers can launch together through this session's subagent tool. Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript); use an external runner only if its context is complete or the same tools are available. Otherwise use the profile's confirmed native fallback. With no profile, use the legacy three `Task` calls in Cursor; in another harness use three native `inherit-parent` reviewers. Use agent mode when readonly strips MCPs.
 

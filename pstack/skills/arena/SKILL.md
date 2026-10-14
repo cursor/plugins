@@ -22,7 +22,7 @@ Pick each subagent's reasoning level and speed for the job using the confirmed c
 
 ## Phase B: Fan out
 
-Spawn native candidates with the active harness's subagent tool (in Cursor, one message with `run_in_background: true`). Give each the task, the path to shared grounding, its own output path, and instructions to produce both the artifact and a short rationale. Dispatch explicitly configured external candidates through their confirmed runner in separate checkouts, then drain all candidates before judging.
+Spawn native candidates with the active harness's subagent tool (in Cursor, one message with `run_in_background: true`; in another harness, translate per the Harness reference in [model routing](../../docs/model-routing.md#harness-reference)). Give each the task, the path to shared grounding, its own output path, and instructions to produce both the artifact and a short rationale. Dispatch explicitly configured external candidates through their confirmed runner in separate checkouts, then drain all candidates before judging.
 
 If a candidate produces no output, proceed with N-1 and note the dropout.
 
