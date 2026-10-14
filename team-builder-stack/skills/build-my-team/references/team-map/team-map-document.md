@@ -59,7 +59,10 @@ None yet.
 ### Routines
 
 {{#routines}}
-- {{line}}
+- {{line}}{{mark}}
+{{#was}}
+  - Was: {{.}}
+{{/was}}
 {{/routines}}
 {{^routines}}
 None yet.

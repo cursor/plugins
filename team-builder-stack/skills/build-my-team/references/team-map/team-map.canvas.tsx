@@ -77,7 +77,7 @@ interface MapSystem extends Marked {
   howToRead?: string
   howToReadInferred?: boolean
 }
-interface MapRoutine {
+interface MapRoutine extends Marked {
   name: string
   schedule: string
   scheduleInferred?: boolean
@@ -360,7 +360,7 @@ function TeamLevel({ body, showChanges, go }: { body: MapBody; showChanges: bool
       </Stack>
       <Stack gap={12}>
         <H2>Routines</H2>
-        <RoutineList routines={body.routines ?? []} />
+        <RoutineList routines={body.routines ?? []} showChanges={showChanges} />
       </Stack>
     </Stack>
   )
@@ -464,29 +464,37 @@ function BotLevel({ body, bot, showChanges, go }: { body: MapBody; bot: MapBot; 
       </Grid>
       <Stack gap={12}>
         <H2>Routines</H2>
-        <RoutineList routines={routinesFor(body, bot)} />
+        <RoutineList routines={routinesFor(body, bot)} showChanges={showChanges} />
       </Stack>
     </Stack>
   )
 }
 
-function fact(step: MapStep, key: string, value: string | undefined) {
+type StepFact = 'does' | 'pullsFrom' | 'uses' | 'produces' | 'handsTo' | 'review'
+
+function fact({ step, key, value }: { step: MapStep; key: StepFact; value: string | undefined }) {
   if (step.inferred?.includes(key)) return value ? `Inferred: ${value}` : 'Inferred'
   return value || ''
 }
 
-function RoutineList({ routines }: { routines: MapRoutine[] }) {
+function RoutineList({ routines, showChanges }: { routines: MapRoutine[]; showChanges: boolean }) {
   if (!routines.length) return <Text tone="tertiary">None yet.</Text>
   return (
     <Stack gap={8}>
-      {routines.map((routine) => (
-        <Stack key={routine.name} gap={2}>
-          <Text weight="semibold">{routine.name}</Text>
-          <Text size="small" tone="secondary">{`Schedule: ${routine.scheduleInferred || !routine.schedule ? 'Inferred' : routine.schedule}`}</Text>
-          <Text size="small" tone="secondary">{`Skill: ${routine.skillInferred || !routine.skill ? 'Inferred' : routine.skill}`}</Text>
-          <Text size="small" tone="secondary">{`Prompt: ${routine.promptInferred || !routine.prompt ? 'Inferred' : routine.prompt}`}</Text>
-          {routine.relayedBy ? <Text size="small" tone="secondary">{`Relayed by: ${routine.relayedBy}`}</Text> : null}
-        </Stack>
+      {routines.map((routine, i) => (
+        <div key={`${i}|${routine.name}`} style={{ textDecoration: routine.change === 'removed' ? 'line-through' : 'none' }}>
+          <Stack gap={2}>
+            <Row gap={6} wrap>
+              <Text weight="semibold">{routine.name}</Text>
+              <Mark item={routine} showChanges={showChanges} />
+            </Row>
+            <Text size="small" tone="secondary">{`Schedule: ${routine.scheduleInferred || !routine.schedule ? 'Inferred' : routine.schedule}`}</Text>
+            <Text size="small" tone="secondary">{`Skill: ${routine.skillInferred || !routine.skill ? 'Inferred' : routine.skill}`}</Text>
+            <Text size="small" tone="secondary">{`Prompt: ${routine.promptInferred || !routine.prompt ? 'Inferred' : routine.prompt}`}</Text>
+            {routine.relayedBy ? <Text size="small" tone="secondary">{`Relayed by: ${routine.relayedBy}`}</Text> : null}
+            <Was item={routine} showChanges={showChanges} />
+          </Stack>
+        </div>
       ))}
     </Stack>
   )
@@ -526,22 +534,22 @@ function StepRow({ step, n, showChanges }: { step: MapStep; n: number; showChang
         </Row>
         <Grid columns="repeat(auto-fit, minmax(160px, 1fr))" gap={12}>
           <Field label="Does">
-            <Text>{fact(step, 'does', step.does)}</Text>
+            <Text>{fact({ step, key: 'does', value: step.does })}</Text>
           </Field>
           <Field label="Pulls from">
-            <Text>{fact(step, 'pullsFrom', step.pullsFrom)}</Text>
+            <Text>{fact({ step, key: 'pullsFrom', value: step.pullsFrom })}</Text>
           </Field>
           <Field label="Uses">
-            <Text>{fact(step, 'uses', step.usesText || (step.uses.length ? step.uses.join(', ') : ''))}</Text>
+            <Text>{fact({ step, key: 'uses', value: step.usesText || (step.uses.length ? step.uses.join(', ') : '') })}</Text>
           </Field>
           <Field label="Produces">
-            <Text>{fact(step, 'produces', step.produces)}</Text>
+            <Text>{fact({ step, key: 'produces', value: step.produces })}</Text>
           </Field>
           <Field label="Hands to">
-            <Text>{fact(step, 'handsTo', step.handsTo)}</Text>
+            <Text>{fact({ step, key: 'handsTo', value: step.handsTo })}</Text>
           </Field>
           <Field label="Your review">
-            <Text>{fact(step, 'review', step.review)}</Text>
+            <Text>{fact({ step, key: 'review', value: step.review })}</Text>
           </Field>
         </Grid>
         <Was item={step} showChanges={showChanges} />

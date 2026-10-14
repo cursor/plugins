@@ -2,6 +2,10 @@
 
 Changes to the Team Builder Stack, for people using it. Newer entries come first. A release turns Unreleased into a version entry.
 
+## 0.20.1 (2026-10-14)
+
+- A proposed change to the team map now marks routines as added, changed, or removed, the same way it marks bots, skills, steps, handoffs, and systems. A proposal that only changes routines is counted as a change instead of changing nothing. The canvas and the Markdown document both show the marks. A change to a routine's runs per week is marked, and its old count shows only in the document.
+
 ## 0.20.0 (2026-10-14)
 
 - Inform manager bot also runs when a check the manager bot asked a bot to run finishes, such as reading what a meeting decided once it ends. The note's header is `<Unit>: <item> checked.` It names the one item the manager bot tracks it by, gives the checked result in one sentence with its source link, and lists each task done, filed, or moved, or nothing. It keeps Waiting on, and Needed from you can name an unblock or an update to today's brief.

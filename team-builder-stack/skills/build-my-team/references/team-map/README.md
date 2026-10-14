@@ -32,6 +32,6 @@ If the script can't run, fill the canvas's data block by hand from the spec, fol
 The map shows a change before the person says yes:
 
 - **A new team:** add `--proposal "<one line on what will be built>"`. The map shows the proposed team, marked as a proposal.
-- **A change to a team:** write the proposed spec to a separate file, and add `--current <the current spec>`. The map marks each bot, skill, step, handoff, and system as added, changed, or removed, and the canvas switches between the proposed and the current team. Add `--current-skills` when the proposal changes skills too.
+- **A change to a team:** write the proposed spec to a separate file, and add `--current <the current spec>`. The map marks each bot, skill, step, handoff, system, and routine as added, changed, or removed, and the canvas switches between the proposed and the current team. Add `--current-skills` when the proposal changes skills too.
 
 After the yes, write the proposed spec over the current one and rebuild the map without `--proposal` or `--current`.

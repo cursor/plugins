@@ -798,20 +798,62 @@ def compare(now, before):
                 items.append(dict(o, change="removed"))
                 counts["removed"] += 1
 
+    # Group by heading under Routines, then match like handoffs. An exact
+    # routine stays put, so deleting one of two routines with the same heading
+    # removes that one. What is left pairs by position, as an edit.
+    def mark_routines(items, old_items):
+        fields = (("schedule", "Schedule"), ("runsPerWeek", "Runs per week"), ("skill", "Skill"), ("prompt", "Prompt"), ("relayedBy", "Relayed by"))
+
+        def was_lines(r, o):
+            return [f"{name}: {fmt(o.get(f, ''))}" for f, name in fields if o.get(f, "") != r.get(f, "")]
+
+        def grouped(rows):
+            out = {}
+            for r in rows:
+                out.setdefault(r["name"], []).append(r)
+            return out
+
+        old_groups = grouped(old_items)
+        unpaired_old = []
+        for heading, new_rows in grouped(items).items():
+            pool = list(old_groups.get(heading, []))
+            pending = []
+            for r in new_rows:
+                exact = next((o for o in pool if not was_lines(r, o)), None)
+                if exact is not None:
+                    pool.remove(exact)
+                else:
+                    pending.append(r)
+            for r, o in zip(pending, pool):
+                r["change"], r["was"] = "changed", was_lines(r, o)
+                counts["changed"] += 1
+            for r in pending[len(pool):]:
+                r["change"] = "added"
+                counts["added"] += 1
+            unpaired_old += pool[len(pending):]
+        new_headings = {r["name"] for r in items}
+        for o in old_items:
+            if o["name"] not in new_headings or any(o is u for u in unpaired_old):
+                items.append(dict(o, change="removed"))
+                counts["removed"] += 1
+
     mark(now["bots"], before["bots"], lambda b: b["id"], (("type", "Type"), ("blueprint", "Blueprint"), ("modelBot", "Model bot"), ("botTemplate", "Bot template"), ("skills", "Skills"), ("connectors", "Connectors")), "bot")
     mark(now["skills"], before["skills"], lambda s: s["id"], (("description", "Description"), ("templateLocation", "Template"), ("templateOwner", "Template owner")), "skill", steps)
     mark_handoffs(now["handoffs"], before["handoffs"])
     mark(now["systems"], before["systems"], lambda s: s["name"], (("connector", "Connector"), ("holds", "Holds"), ("uniqueId", "Unique ID"), ("recordFor", "System of record for"), ("howToRead", "How to read")), "system")
+    now.setdefault("routines", [])
+    mark_routines(now["routines"], before.get("routines", []))
     return counts
 
 
 # ---------- writing ----------
 
 def canvas_data(data):
-    """Drop runsPerWeek from the canvas payload.
+    """Drop runsPerWeek from the canvas payload, and its Was line on a changed routine.
 
     The value stays on each routine for --json and the document line. The canvas
-    file's routine type has no field for it, and that file stays unchanged.
+    file's routine type has no field for it, so the canvas does not draw it. A
+    routine whose only change is its count still shows as changed.
     """
     copied = json.loads(json.dumps(data))
     for key in ("now", "before"):
@@ -820,6 +862,8 @@ def canvas_data(data):
             continue
         for routine in body.get("routines") or []:
             routine.pop("runsPerWeek", None)
+            if "was" in routine:
+                routine["was"] = [w for w in routine["was"] if not w.startswith("Runs per week:")]
     return copied
 
 
@@ -946,7 +990,7 @@ def document_view(data):
         "systems": [{"name": name(s), "mark": mark(s), "was": was(s), "connector": filled(s["connector"], "its connector"),
                      "uniqueId": filled(s["uniqueId"], "what finds one unit"), "recordFor": filled(s["recordFor"], "the facts it settles"),
                      "howToRead": s.get("howToRead") or ""} for s in body["systems"]],
-        "routines": [routine_line(r) for r in body.get("routines", [])],
+        "routines": [dict(routine_line(r), mark=mark(r), was=was(r)) for r in body.get("routines", [])],
         "librarySkills": library_skills,
         "sharedSkillsLine": ", ".join(s["name"] for s in body["skills"] if s["source"] == "library" and not s["steps"]),
         "pluginSkillsLine": ", ".join(s["name"] for s in body["skills"] if s["source"] == "plugin"),
