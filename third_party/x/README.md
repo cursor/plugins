@@ -37,6 +37,7 @@ Or run `/add-plugin x` in chat.
           "bookmark.write",
           "dm.read",
           "dm.write",
+          "media.write",
           "developer.billing.write",
           "developer.write",
           "offline.access"
@@ -72,7 +73,7 @@ Requests run in your user context, so they count against your account's rate lim
 
 ## Scopes requested
 
-`tweet.read`, `users.read`, `follows.read`, `space.read`, `mute.read`, `like.read`, `list.read`, `list.write`, `block.read`, `block.write`, `bookmark.read`, `bookmark.write`, `dm.read`, `dm.write`, `developer.billing.write`, `developer.write`, `offline.access`
+`tweet.read`, `users.read`, `follows.read`, `space.read`, `mute.read`, `like.read`, `list.read`, `list.write`, `block.read`, `block.write`, `bookmark.read`, `bookmark.write`, `dm.read`, `dm.write`, `media.write`, `developer.billing.write`, `developer.write`, `offline.access`
 
 ## X documentation search
 
