@@ -6,7 +6,7 @@ Swap in the real paths, skills, and done checks. Informal wording works.
 
 - `/poteto-mode read <thread>. restate the underlying issue in your own words, in plain english.`
 - `/in-your-own-words <long or messy ask>`
-- `/deeper <your prompt>`, `/higher <your prompt>`, or `/wider <your prompt>`
+- `/sharpen <your prompt>`
 - `/poteto-mode investigate why <symptom>. give me what we know, what data you used, and your best hypotheses. don't change any code yet.`
 - `use /how to understand <subsystem>. then use /why to find out why it broke recently.`
 - `/recall my work on <topic> from last week, then read <issue>.`
