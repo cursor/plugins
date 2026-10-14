@@ -537,6 +537,11 @@
       "name": "highlevel",
       "source": "third_party/highlevel",
       "description": "Work with contacts, conversations, opportunities, calendars, and payments."
+    },
+    {
+      "name": "looot",
+      "source": "third_party/looot",
+      "description": "Find work emails, phones, companies and web data from one API key and prepaid balance."
     }
   ]
 }
