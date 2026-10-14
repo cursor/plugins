@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "juicebox": {
-      "type": "http",
-      "url": "https://mcp.juicebox.ai/v1"
-    }
-  }
-}

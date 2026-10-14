@@ -1,0 +1,15 @@
+{
+  "id": "webhook-durable-idempotence-portable-v1",
+  "description": "Portable process-local deduplication baseline, distinct from the historical f13dd84 fixture.",
+  "fixture": {"snapshot": "fixtures/webhook-baseline", "version": 1, "strip_committed_pstack": false},
+  "prompt": "_claimed is process memory, so a restart or a second worker re-welcomes every purchase it has not seen. Fix it so idempotence survives a restart and holds across workers.",
+  "playbook": "bug-fix",
+  "time_budget_seconds": 3600,
+  "oracle": {
+    "command": ["python3", "{evals}/oracle/webhook/oracle.py", "--tree", "{tree}", "--json", "{out}/oracle.json"],
+    "result_json": "{out}/oracle.json",
+    "time_budget_seconds": 1800,
+    "checks": ["restart", "workers", "crash_recovery", "slow_send", "clock_step", "mark_sent_outage", "release_outage", "failed_send_retry", "redeploy", "read_only_install"]
+  },
+  "harness_replay": {"command": ["python3", "run_tests.py"], "time_budget_seconds": 180}
+}

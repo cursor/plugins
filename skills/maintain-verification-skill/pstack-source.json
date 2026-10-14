@@ -1,0 +1,10 @@
+{
+  "name": "maintain-verification-skill",
+  "directory": "maintain-verification-skill",
+  "format": 1,
+  "upstreamCommit": "3357d59539a8dbe80f7a1d45bddda18abd632124",
+  "repository": "https://github.com/vagusX/pstack#codex/upstream-host-adaptation",
+  "requires": [
+    "create-verification-skill"
+  ]
+}

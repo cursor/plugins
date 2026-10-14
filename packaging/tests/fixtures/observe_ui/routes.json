@@ -1,0 +1,70 @@
+{
+  "bug-fix": {
+    "title": "Bug fix",
+    "phases": [
+      {"id": "reproduce", "label": "1. Reproduce", "step": 1},
+      {"id": "root-cause", "label": "2. Root cause", "step": 2},
+      {"id": "plan", "label": "3. Plan", "step": 3},
+      {"id": "implement", "label": "3. Implement", "step": 3},
+      {"id": "cleanup", "label": "4. Cleanup", "step": 4},
+      {"id": "review", "label": "4. Review", "step": 4},
+      {"id": "verify", "label": "4. Verify", "step": 4},
+      {"id": "commits", "label": "5. Commits", "step": 5},
+      {"id": "open-pr", "label": "6. Open PR", "step": 6}
+    ],
+    "edges": [
+      {"from": "reproduce", "to": "root-cause", "kind": "next"},
+      {"from": "root-cause", "to": "plan", "kind": "next"},
+      {"from": "plan", "to": "implement", "kind": "next"},
+      {"from": "implement", "to": "cleanup", "kind": "next"},
+      {"from": "cleanup", "to": "review", "kind": "next"},
+      {"from": "review", "to": "verify", "kind": "next"},
+      {"from": "verify", "to": "commits", "kind": "next"},
+      {"from": "commits", "to": "open-pr", "kind": "next"},
+      {"from": "implement", "to": "plan", "kind": "back", "label": "diff violates the design"},
+      {"from": "review", "to": "implement", "kind": "back", "label": "accepted finding"},
+      {"from": "verify", "to": "root-cause", "kind": "back", "label": "fail or inconclusive"},
+      {"from": "open-pr", "to": "implement", "kind": "back", "label": "edit to code or harness"}
+    ]
+  },
+  "feature": {
+    "title": "Feature",
+    "phases": [
+      {"id": "understand", "label": "1. Understand", "step": 1},
+      {"id": "design", "label": "2. Design", "step": 2},
+      {"id": "implement", "label": "3. Implement", "step": 3},
+      {"id": "test", "label": "4. Test", "step": 4},
+      {"id": "review", "label": "5. Review", "step": 5},
+      {"id": "verify", "label": "6. Verify", "step": 6},
+      {"id": "open-pr", "label": "7. Open PR", "step": 7}
+    ],
+    "edges": [
+      {"from": "understand", "to": "design", "kind": "next"},
+      {"from": "design", "to": "implement", "kind": "next"},
+      {"from": "implement", "to": "test", "kind": "next"},
+      {"from": "test", "to": "review", "kind": "next"},
+      {"from": "review", "to": "verify", "kind": "next"},
+      {"from": "verify", "to": "open-pr", "kind": "next"},
+      {"from": "review", "to": "implement", "kind": "back", "label": "finding accepted"},
+      {"from": "verify", "to": "implement", "kind": "back", "label": "verification failed"},
+      {"from": "implement", "to": "design", "kind": "back", "label": "design does not hold"}
+    ]
+  },
+  "investigation": {
+    "title": "Investigation",
+    "phases": [
+      {"id": "question", "label": "1. Question", "step": 1},
+      {"id": "gather", "label": "2. Gather", "step": 2},
+      {"id": "hypothesize", "label": "3. Hypothesize", "step": 3},
+      {"id": "test", "label": "4. Test", "step": 4},
+      {"id": "conclude", "label": "5. Conclude", "step": 5}
+    ],
+    "edges": [
+      {"from": "question", "to": "gather", "kind": "next"},
+      {"from": "gather", "to": "hypothesize", "kind": "next"},
+      {"from": "hypothesize", "to": "test", "kind": "next"},
+      {"from": "test", "to": "conclude", "kind": "next"},
+      {"from": "test", "to": "hypothesize", "kind": "back", "label": "refuted"}
+    ]
+  }
+}

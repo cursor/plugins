@@ -1,0 +1,1097 @@
+{
+  "name": "pstack-portable",
+  "version": "1.0.0",
+  "upstream": {
+    "project": "pstack",
+    "author": "Lauren Tan (poteto)",
+    "repo": "https://github.com/cursor/plugins/tree/main/pstack",
+    "license": "MIT",
+    "version": "0.15.15",
+    "commit": "ccb5507cec1546dc88135c1139c811e6c59115ba"
+  },
+  "port_owned": {
+    "skills/setup-pstack/SKILL.md": "d61b47256a18155a81c8e5ef95e3cc6569ce8c18317c35c4dd9c8015cf68cb59",
+    "skills/poteto-mode/SKILL.md": "31cd02290360ce63564ef22b74d69fc6d90e62181d05a644cbed8f6c47cc9412",
+    "skills/poteto-mode/scripts/worktree-audit.sh": "95b8530f3c0ccada8cabc4b0727c052fbc85c141531375aaace65c427af8aecc",
+    "skills/make-bot-ui/SKILL.md": "3624c8ef16cf2e48deb2a4049e72c6962a9431c8d6c6af90e7bd7ea0375224ec",
+    "automations/benny/skills/setup-benny/SKILL.md": "5a3cbe63360c9f6373b6cb6c79a1eaf7e0eba181bfaa1577e2e6431af3407282",
+    "playbooks/authoring-a-skill.md": "f6a13a445c360b48d6cd72780ac01955f45b82826476efe0e67c7559329407aa",
+    "playbooks/bug-fix.md": "018bbc146ae19145caa6c7e70591fee081b64447dda1c1c4b681c9974d928b13",
+    "playbooks/opening-a-pr.md": "ab40de7163c1c6e274f46ee559b2e53ef45673703f601f13f4931c199e6fb90f",
+    "skills/architect/SKILL.md": "922238947195f2fb825e90688bb6cfa520b81a35a7bee12223c73a6cf96ae64b",
+    "skills/arena/SKILL.md": "6e17736b5228b661569c3af054f8302c55cf9bf1649447652d53705cce38bed6",
+    "skills/no-comments/SKILL.md": "5c5b0882297d704c3a9720c52b7a793c68b013eaf717989f0945624efdfe2b05",
+    "playbooks/pause-safely.md": "77968cfe5f4a71a8cd33e0ae8ffcdbd88dd693a212c240457773e6c40c96c21d",
+    "agents/comment-sicko.md": "c0fd0383008da45fc78cfac17b9007d62c42f87ad1c8d5c2fb658b1fd01f7c82",
+    "automations/benny/FOR_AGENTS.md": "a125e317dec1b8731fdc71f404c669f1127a73af932f7a7b8b8744a5542328a7",
+    "automations/benny/README.md": "ca3c42cbb7f0bf7068f7407eb355815e6c234d5c2786942f3cbe751a3690024b",
+    "automations/benny/skills/reproduce-and-fix-issues/SKILL.md": "1363cc07343fe86aab42853b1bd4563288cbcbdf12f1c265b3b3b1afa25c09cb",
+    "automations/benny/skills/triage-issue-reports/SKILL.md": "216a758b8711e64d19a55e6032c496527daac6364d010611040f3c04ef1a448f",
+    "automations/benny/templates/reproduce-automation-prompt.md": "71ec574f1844e379394ae4ef14c48d7df10afbaa319d395c788d7f856f0e6899",
+    "automations/benny/templates/triage-automation-prompt.md": "e0bba594547834f013ec805915610eb597e7929efe3ffbe85ae00339ee16d474",
+    "docs/guide/01-setup.md": "86d0330f245d16254a2069955f993c15d96cf29cd1a73690a0164074b7ac1190",
+    "docs/guide/02-poteto-mode.md": "979f61ca3d44cb8e68affda40327d32797e93fa9cc53ced7444c15e2600897e1",
+    "docs/guide/05-build-and-clean.md": "a93cc7771f7b35c7b54d0120b6f66e8367794ce6791237e889a30e7585c190fa",
+    "docs/guide/06-verify-and-ship.md": "3ef0eed5ea084dfbbaf1b1ae9e08d84f2c8a2b536ffb3ef5226710bf105f70e6",
+    "playbooks/autopilot-full.md": "05ca30a16242c19d0c78ba1e88cca66f858d75252cb154fd740099fe292de802",
+    "playbooks/autopilot-stack.md": "007c0a3b12011954a224f54773ef4ad7b75918be0a311914c1b51ad4e794c1e5",
+    "playbooks/babysit.md": "a0346c37c2313f36a863b80f66ee7b98059c2242adf74fc7b3e48abdb9ec6f5a",
+    "playbooks/feature.md": "3a62cc4a8cbcf144bb9dd05f05420a15be0d38b784d3b141bb730a5852f50a62",
+    "playbooks/hillclimb.md": "244f289898fe67a458065e90fe8217c916c5acf61cdee8975ade3f9831a12e91",
+    "playbooks/multi-phase-plan.md": "27d310e3fc3937a60b8fcbe1318f9d249a7477a722907bf85b3e4eb3dc436b11",
+    "playbooks/orchestrate.md": "d42b4375f1bd4ce23da0b575a198571a2117df7eea10c3c9fc6d92ae1053f7be",
+    "playbooks/perf-issue.md": "2b88ad0f880e4d4d755ac19fe52414d6631d6baa816d060f53cf0a7429d7e14a",
+    "playbooks/refactoring.md": "50f4f7d3d301551f8b8a57c3303c99958c5ca630ae0d0051823b6987c0eb5b96",
+    "playbooks/worktree-cleanup.md": "fc464dc4121926df1704f483c5feca83717c0a40b4651d3e11bd3aedd89441b6",
+    "skills/architect/references/runner-prompt.md": "21dd5314aab778c5007228027a4591d97693fbec6ab86524037772b63f40948e",
+    "skills/create-verification-skill/SKILL.md": "644f2551403c1bca01a2855b34611b6e7be0ce0dc5b204514c376c0f6a6e6ac4",
+    "skills/interrogate/SKILL.md": "2f7e570ec23791ed2e485a09c98ed0597c46035e2050b351b84d3dc760ddd71f",
+    "skills/maintain-verification-skill/SKILL.md": "515c0eaa054b3f6be1b1fb06f2c2f173c80fddb58bbcac57576f89c479bc68e8",
+    "skills/poteto-mode/scripts/check-plan.mjs": "4f9432d9989880b6afc2bdda503d5b12a9d07d357ecf31936b7ab5e83bc80523",
+    "skills/swarm/SKILL.md": "bdcee4168e22428036e93d7cdeec3f391dbc4132f927f6db2540328c22db0273",
+    "playbooks/session-pickup.md": "1604fb463f7c7410d43fa024ca76c1c1824c166a01fd69d61f073d06fdca2a47",
+    "skills/poteto-mode/scripts/orch/orch.ts": "f091687df627a0b75fabd54af58945a9cd6c7039ef0622012ac9ed60cd8ec434",
+    "skills/poteto-mode/scripts/orch/store.ts": "0eae7cf69282e827b1227166f2e32cee3560f2f3e65b3f1f2faf6fb83d3b4c5b",
+    "skills/poteto-mode/scripts/orch/orch.test.ts": "773153ac74de6eb15f58d2682f487f5f30672d7efe3ef1d24a131aa9129d279b",
+    "skills/figure-it-out/SKILL.md": "0eb9485f0e7d84fee56b5d0f0af0faf4635e3ca87c8cba3970c01293b76ecc19",
+    "playbooks/eval.md": "b862bfa2fae2399abf047a8e80d3e3dddb64003af96fb1cebb625216131e36bb"
+  },
+  "runtime": [
+    "automations.md",
+    "capabilities.md",
+    "delegation.md",
+    "host-profile.md",
+    "interaction.md",
+    "roles.md",
+    "sticky-mode.md"
+  ],
+  "counts": {
+    "skills": 51,
+    "agents": 3,
+    "playbooks": 23,
+    "principles": 24,
+    "automations": 1,
+    "guide": 17
+  },
+  "automations": [
+    {
+      "name": "benny",
+      "requires": [
+        "TRIGGER",
+        "CHANNEL"
+      ],
+      "degrades": true,
+      "skills": [
+        "reproduce-and-fix-issues",
+        "setup-benny",
+        "triage-issue-reports"
+      ],
+      "files": 12
+    }
+  ],
+  "guide": [
+    "01-setup.md",
+    "02-poteto-mode.md",
+    "03-understand.md",
+    "04-design.md",
+    "05-build-and-clean.md",
+    "06-verify-and-ship.md",
+    "07-overnight.md",
+    "08-principles.md",
+    "09-make-it-yours.md",
+    "10-recipes-and-pitfalls.md",
+    "README.md",
+    "images/design.jpg",
+    "images/overnight.jpg",
+    "images/recipes.jpg",
+    "images/router.jpg",
+    "images/understanding.jpg",
+    "images/verification.jpg"
+  ],
+  "agents": [
+    {
+      "name": "comment-sicko",
+      "file": "comment-sicko.md",
+      "access": "write",
+      "class": "fast",
+      "description": "Use as the delegate for the no-comments skill: feed it a diff or a file scope, and it hunts narrating comments, suppressions, and workaround code. A deranged comment-hater that savors deletion and condemns workaround code."
+    },
+    {
+      "name": "pstack-reviewer",
+      "file": "pstack-reviewer.md",
+      "access": "read",
+      "class": "deep",
+      "description": "Use for a pstack leaf job that reads and reports without editing: /how explorers and explainers, /why investigators and synthesizers, /interrogate reviewers, the /arena cross-judge. Reads files, runs inspection commands, and queries tool servers. Does not edit the working tree."
+    },
+    {
+      "name": "pstack-worker",
+      "file": "pstack-worker.md",
+      "access": "write",
+      "class": "fast",
+      "description": "Default delegate for any pstack playbook step that writes code or drives a tool. Applies the full pstack principle set. Reads the poteto-mode skill in full, including its Principles index, before doing any work. A generic assistant substituted here skips that read and drifts from the playbook."
+    }
+  ],
+  "playbooks": [
+    {
+      "name": "authoring-a-skill",
+      "file": "authoring-a-skill.md",
+      "summary": "Writing or editing a SKILL.md.",
+      "requires": []
+    },
+    {
+      "name": "autonomous-run",
+      "file": "autonomous-run.md",
+      "summary": "Drive a long task to completion without stopping.",
+      "requires": [
+        "DELEGATE",
+        "BACKGROUND"
+      ]
+    },
+    {
+      "name": "autopilot-full",
+      "file": "autopilot-full.md",
+      "summary": "Run independent PRs to merged, one owner per PR, each head verified at the root.",
+      "requires": [
+        "DELEGATE",
+        "PARALLEL",
+        "BACKGROUND"
+      ]
+    },
+    {
+      "name": "autopilot-stack",
+      "file": "autopilot-stack.md",
+      "summary": "Build and verify one linear base-branch stack for the operator to land.",
+      "requires": [
+        "DELEGATE",
+        "PARALLEL",
+        "BACKGROUND"
+      ]
+    },
+    {
+      "name": "babysit",
+      "file": "babysit.md",
+      "summary": "Drive a PR or a stack to merge-ready: conflicts, review threads, CI.",
+      "requires": [
+        "DELEGATE"
+      ]
+    },
+    {
+      "name": "bug-fix",
+      "file": "bug-fix.md",
+      "summary": "Reproduce a defect, root-cause it, and fix it with runtime evidence.",
+      "requires": [
+        "DELEGATE"
+      ]
+    },
+    {
+      "name": "eval",
+      "file": "eval.md",
+      "summary": "Test how a skill or prompt change affects agent behavior, blinded.",
+      "requires": [
+        "DELEGATE",
+        "PARALLEL"
+      ]
+    },
+    {
+      "name": "feature",
+      "file": "feature.md",
+      "summary": "New or changed behavior, built from a named data shape.",
+      "requires": [
+        "DELEGATE"
+      ]
+    },
+    {
+      "name": "hillclimb",
+      "file": "hillclimb.md",
+      "summary": "Sustained improvement of one metric against a target, one commit per accepted win.",
+      "requires": [
+        "DELEGATE"
+      ]
+    },
+    {
+      "name": "investigation",
+      "file": "investigation.md",
+      "summary": "A read-only question: how does X work, why was Y built this way, are we sure.",
+      "requires": [
+        "DELEGATE",
+        "PARALLEL"
+      ]
+    },
+    {
+      "name": "multi-phase-plan",
+      "file": "multi-phase-plan.md",
+      "summary": "Work that spans phases or stacked PRs.",
+      "requires": [
+        "DELEGATE",
+        "PARALLEL"
+      ]
+    },
+    {
+      "name": "opening-a-pr",
+      "file": "opening-a-pr.md",
+      "summary": "Open a ready PR from small ordered commits. Invoked at the end of every playbook that ships a code change.",
+      "requires": []
+    },
+    {
+      "name": "orchestrate",
+      "file": "orchestrate.md",
+      "summary": "A standing multi-day project under one coordinator: many stacked PRs, fleets of delegates.",
+      "requires": [
+        "DELEGATE",
+        "PARALLEL",
+        "BACKGROUND"
+      ]
+    },
+    {
+      "name": "pause-safely",
+      "file": "pause-safely.md",
+      "summary": "Suspend in-flight work cleanly so it can be resumed later.",
+      "requires": []
+    },
+    {
+      "name": "perf-issue",
+      "file": "perf-issue.md",
+      "summary": "Trace a measured slowness and improve it against a baseline.",
+      "requires": [
+        "DELEGATE"
+      ]
+    },
+    {
+      "name": "prototype",
+      "file": "prototype.md",
+      "summary": "A throwaway sketch that settles a design or behavioral question by observation.",
+      "requires": []
+    },
+    {
+      "name": "refactoring",
+      "file": "refactoring.md",
+      "summary": "A behavior-preserving change to structure or shape.",
+      "requires": [
+        "DELEGATE"
+      ]
+    },
+    {
+      "name": "runtime-forensics",
+      "file": "runtime-forensics.md",
+      "summary": "Diagnose a live symptom (leak, idle-CPU spin, glitch) from instrumentation.",
+      "requires": []
+    },
+    {
+      "name": "session-pickup",
+      "file": "session-pickup.md",
+      "summary": "Resume or take over a prior agent's in-flight work.",
+      "requires": [
+        "DELEGATE",
+        "TRANSCRIPTS"
+      ]
+    },
+    {
+      "name": "shipping",
+      "file": "shipping.md",
+      "summary": "Independently verify a green stack, then land the contiguous verified run.",
+      "requires": [
+        "DELEGATE",
+        "PARALLEL"
+      ]
+    },
+    {
+      "name": "trace-forensics",
+      "file": "trace-forensics.md",
+      "summary": "Diagnose a captured profiling artifact handed to you after the fact.",
+      "requires": []
+    },
+    {
+      "name": "visual-parity",
+      "file": "visual-parity.md",
+      "summary": "Pixel-exact UI equivalence between two implementations.",
+      "requires": [
+        "DELEGATE"
+      ]
+    },
+    {
+      "name": "worktree-cleanup",
+      "file": "worktree-cleanup.md",
+      "summary": "Reclaim disk by pruning merged or abandoned worktrees, safety-gated.",
+      "requires": [
+        "TRANSCRIPTS"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "name": "architect",
+      "dir": "architect",
+      "kind": "workflow",
+      "description": "Sketch types, signatures, and module structure before code, then stay in the loop while implementation fills in. Use for /architect, 'architect this', 'design this', or non-trivial work where jumping to code would lock in the wrong shape.",
+      "paths": null,
+      "requires": [
+        "DELEGATE",
+        "PARALLEL",
+        "MODEL_CHOICE"
+      ],
+      "degrades": true,
+      "hosts": [
+        "*"
+      ],
+      "files": [
+        "references/design-red-flags.md",
+        "references/rationale-template.md",
+        "references/runner-prompt.md"
+      ]
+    },
+    {
+      "name": "arena",
+      "dir": "arena",
+      "kind": "workflow",
+      "description": "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use for /arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape.",
+      "paths": null,
+      "requires": [
+        "DELEGATE",
+        "PARALLEL",
+        "MODEL_CHOICE"
+      ],
+      "degrades": true,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "automate-me",
+      "dir": "automate-me",
+      "kind": "workflow",
+      "description": "Use for \\\"automate me\\\", \\\"create/update/refresh my -mode skill\\\", \\\"turn/capture my preferences or working style into a skill\\\", or wanting agents to follow how the user works. Drafts or revises a personal -mode skill via the authoring-a-skill playbook + unslop, optionally pulling fresh evidence from recent transcripts.",
+      "paths": null,
+      "requires": [
+        "TRANSCRIPTS",
+        "DELEGATE",
+        "PARALLEL"
+      ],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "benchmark-checklist",
+      "dir": "benchmark-checklist",
+      "kind": "workflow",
+      "description": "Vet a perf measurement (limiter, tuning, limits, errors, repeatability, relevance, and whether the work happened) before you report or act on it. Use when you run a benchmark or report a speedup or regression you measured.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "blast-radius",
+      "dir": "blast-radius",
+      "kind": "workflow",
+      "description": "Find what a change could break somewhere else before it ships, beyond the diff, and prove the one fact it's safe because of by running real code instead of writing it up. Use for 'blast radius of X', 'what could this break', or reviewing a small diff you don't trust.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "bro",
+      "dir": "bro",
+      "kind": "workflow",
+      "description": "Restate the last message in plain human language, with no jargon.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "correct",
+      "dir": "correct",
+      "kind": "workflow",
+      "description": "Find the mistakes agents keep repeating in this repo and make each one impossible. Try architecture first, then types, then a lint whose error names the fix, then a test, and write docs last. Prove each check fails on a real past mistake. Repeat this each time the operator corrects you. Use for /correct.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "create-verification-skill",
+      "dir": "create-verification-skill",
+      "kind": "workflow",
+      "description": "Generate a project-local verification skill that drives your app the way a user does \u2014 any language, framework, or platform. Use for /create-verification-skill, \\\"make a control skill for this repo\\\", or when a project has no scripted way to prove UI/CLI/service behavior.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": [
+        "references/feature-map-example/README.md",
+        "references/feature-map-example/create-note.md",
+        "references/feature-map-example/search.md"
+      ]
+    },
+    {
+      "name": "figure-it-out",
+      "dir": "figure-it-out",
+      "kind": "workflow",
+      "description": "Design an auditable playbook when no narrower one fits: a large migration, an ambitious multi-part change, or work a human reviews after stepping away. Scales rigor to the task, runs a hypothesis loop, and logs decisions via show-me-your-work. Use for /figure-it-out, 'figure it out', a large migration, or when no narrower playbook applies.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "how",
+      "dir": "how",
+      "kind": "workflow",
+      "description": "Use for \\\"how does X work\\\", code walkthroughs before changing something, and placement / ownership / layering questions (\\\"where should this live\\\", \\\"which package owns this\\\", \\\"is this the right layer\\\"). Explains subsystem architecture, runtime flow, onboarding mental models. Use why for motivation.",
+      "paths": null,
+      "requires": [
+        "DELEGATE"
+      ],
+      "degrades": true,
+      "hosts": [
+        "*"
+      ],
+      "files": [
+        "references/explainer-prompt.md",
+        "references/explorer-prompt.md"
+      ]
+    },
+    {
+      "name": "interrogate",
+      "dir": "interrogate",
+      "kind": "workflow",
+      "description": "Use for \\\"interrogate\\\", \\\"adversarial review\\\", \\\"multi-model review\\\", \\\"challenge this\\\", \\\"stress test this code\\\", \\\"find blind spots\\\", or \\\"tear this apart\\\". Multiple LLM reviewers challenge changes from independent angles.",
+      "paths": null,
+      "requires": [
+        "DELEGATE",
+        "PARALLEL",
+        "MODEL_CHOICE"
+      ],
+      "degrades": true,
+      "hosts": [
+        "*"
+      ],
+      "files": [
+        "references/code-quality-review.md",
+        "references/lead-judgment.md",
+        "references/reviewer-prompt.md",
+        "references/rubric.md"
+      ]
+    },
+    {
+      "name": "maintain-verification-skill",
+      "dir": "maintain-verification-skill",
+      "kind": "workflow",
+      "description": "Periodic pass that keeps a project's verification skill and feature map honest: parallel source readers per feature, one live session driving every feature, at most one PR of proven corrections. Use for /maintain-verification-skill or \\\"audit the verify skill\\\".",
+      "paths": null,
+      "requires": [
+        "DELEGATE",
+        "PARALLEL"
+      ],
+      "degrades": true,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "make-bot-ui",
+      "dir": "make-bot-ui",
+      "kind": "workflow",
+      "description": "Use when building a custom UI (page, dashboard, buttons) that should wake an agent over a webhook or trigger, when the user must supply a sender key, or when exposing that UI on Tailscale. Requires a host that can start an agent run from an event.",
+      "paths": null,
+      "requires": [
+        "TRIGGER"
+      ],
+      "degrades": true,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "no-comments",
+      "dir": "no-comments",
+      "kind": "workflow",
+      "description": "Spawn comment-sicko, fix accepted findings, and offer encodings for claimed constraints.",
+      "paths": null,
+      "requires": [
+        "DELEGATE"
+      ],
+      "degrades": true,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "poteto-help",
+      "dir": "poteto-help",
+      "kind": "workflow",
+      "description": "Guides users through pstack setup, /poteto-mode, and picking the skill, playbook, or principle for a task. Type /poteto-help with a question.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": [
+        "references/prompting.md",
+        "references/recipes.md"
+      ]
+    },
+    {
+      "name": "poteto-mode",
+      "dir": "poteto-mode",
+      "kind": "router",
+      "description": "pstack's engineering router. Matches a request to a playbook, copies its steps into a task list verbatim, delegates by role, and requires evidence before reporting success. Invoke explicitly for /poteto-mode, /pstack, poteto's style, or any task needing rigor. Not for casual questions.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": [
+        "references/automated-reviewer-triage.md",
+        "references/session-tracking.md",
+        "scripts/bootstrap.ts",
+        "scripts/bun.lock",
+        "scripts/check-plan.mjs",
+        "scripts/orch/orch.test.ts",
+        "scripts/orch/orch.ts",
+        "scripts/orch/store.ts",
+        "scripts/package.json",
+        "scripts/routes.json",
+        "scripts/run-record.py",
+        "scripts/watch-pr/cli.test.ts",
+        "scripts/watch-pr/cli.ts",
+        "scripts/watch-pr/fakes.test-helper.ts",
+        "scripts/watch-pr/github.test.ts",
+        "scripts/watch-pr/github.ts",
+        "scripts/watch-pr/policy.test.ts",
+        "scripts/watch-pr/policy.ts",
+        "scripts/watch-pr/render.ts",
+        "scripts/watch-pr/tsconfig.json",
+        "scripts/watch-pr/types.compile.ts",
+        "scripts/watch-pr/types.ts",
+        "scripts/watch-pr/watch-pr",
+        "scripts/worktree-audit.sh"
+      ]
+    },
+    {
+      "name": "principle-attack-the-premise",
+      "dir": "principle-attack-the-premise",
+      "kind": "principle",
+      "description": "Apply when two or more fixes that share one premise have failed the same gate. Take a census of which actors hold the imbalance before the next fix, then question the premise instead of writing another fix that assumes it.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-boundary-discipline",
+      "dir": "principle-boundary-discipline",
+      "kind": "principle",
+      "description": "Apply when wiring validation, error handling, or framework adapters. Concentrate guards at system boundaries (CLI, config, network, external APIs); trust internal types and keep business logic in pure functions.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-build-the-lever",
+      "dir": "principle-build-the-lever",
+      "kind": "principle",
+      "description": "Apply to any non-trivial work, not just bulk work: edits, migrations, analyses, checks. Build the tool that does it or proves it (codemod, script, generator, or a skill your subagents follow) instead of working by hand. The tool is the artifact a reviewer can rerun.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-encode-lessons-in-structure",
+      "dir": "principle-encode-lessons-in-structure",
+      "kind": "principle",
+      "description": "Apply when you catch yourself writing the same instruction a second time, or notice a recurring correction. Encode the rule as a lint, metadata flag, runtime check, or script instead of more text.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-exhaust-the-design-space",
+      "dir": "principle-exhaust-the-design-space",
+      "kind": "principle",
+      "description": "Apply when facing a novel UI interaction or architectural decision with no precedent in the codebase. Build 2-3 competing prototypes and compare side by side before committing.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-experience-first",
+      "dir": "principle-experience-first",
+      "kind": "principle",
+      "description": "Apply when product, UX, or feature-scope tradeoffs come up. Choose user delight over implementation convenience; ship fewer polished features over more rough ones.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-explain-the-number",
+      "dir": "principle-explain-the-number",
+      "kind": "principle",
+      "description": "Apply before you trust, report, or act on a number you measured: a speedup, a regression, a throughput, a latency, or an eval result. Find what limits it, and rule out that it measured something other than the work you think.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-fix-root-causes",
+      "dir": "principle-fix-root-causes",
+      "kind": "principle",
+      "description": "Apply when debugging. Trace each symptom to its root cause and fix it there; reproduce first, ask why until you reach it, resist nil-check guards that silence crashes.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-foundational-thinking",
+      "dir": "principle-foundational-thinking",
+      "kind": "principle",
+      "description": "Apply before writing logic: choosing core types and data structures, sequencing scaffold-vs-feature work, asking what concurrent actors share. Get the data structures right so downstream code becomes obvious.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-guard-the-context-window",
+      "dir": "principle-guard-the-context-window",
+      "kind": "principle",
+      "description": "Apply when context is filling up: large outputs, long files, repeated reads, fan-out planning. Route bulk to subagents; keep summaries in the main thread, not raw payloads.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-laziness-protocol",
+      "dir": "principle-laziness-protocol",
+      "kind": "principle",
+      "description": "Apply when refactoring, evaluating diff size, or tempted to add abstractions, layers, or signal threading. Bias toward deletion and the smallest change that solves the problem.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-make-operations-idempotent",
+      "dir": "principle-make-operations-idempotent",
+      "kind": "principle",
+      "description": "Apply when designing commands, lifecycle steps, or processing loops that run amid crashes, restarts, and retries. Converge to the same end state regardless of partial prior runs.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-migrate-callers-then-delete-legacy-apis",
+      "dir": "principle-migrate-callers-then-delete-legacy-apis",
+      "kind": "principle",
+      "description": "Apply when introducing a new internal API while old callers still exist. Migrate callers and delete the old API in the same wave instead of preserving compatibility layers.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-minimize-reader-load",
+      "dir": "principle-minimize-reader-load",
+      "kind": "principle",
+      "description": "Apply when reviewing or shaping code that's hard to trace. Count layers between question and answer, and hidden state in the reader's head; collapse one-caller wrappers and shrink mutable scope.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-model-the-domain",
+      "dir": "principle-model-the-domain",
+      "kind": "principle",
+      "description": "Apply when writing stateful logic, or when code branches a lot or repeats a shape assumption across files. Encode the domain in a structure instead of scattered conditionals.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-never-block-on-the-human",
+      "dir": "principle-never-block-on-the-human",
+      "kind": "principle",
+      "description": "Apply when tempted to ask 'should I do X?' on reversible work. Proceed, present the result, let the human course-correct after the fact; reserve confirmation for irreversible actions.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-outcome-oriented-execution",
+      "dir": "principle-outcome-oriented-execution",
+      "kind": "principle",
+      "description": "Apply during planned rewrites and migrations with explicit phase boundaries. Converge on the target architecture; don't preserve smooth intermediate states with throwaway compatibility code.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-prove-it-works",
+      "dir": "principle-prove-it-works",
+      "kind": "principle",
+      "description": "Apply after completing a task, before declaring done. Verify against the real artifact (run the feature, read the actual value, inspect the diff), not a proxy, self-report, or 'it compiles.'",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-redesign-from-first-principles",
+      "dir": "principle-redesign-from-first-principles",
+      "kind": "principle",
+      "description": "Apply when integrating a new requirement into an existing design. Redesign as if the requirement had been a foundational assumption from day one, instead of bolting it on.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-separate-before-serializing-shared-state",
+      "dir": "principle-separate-before-serializing-shared-state",
+      "kind": "principle",
+      "description": "Apply when concurrent actors might write to the same file, branch, key, or state object. Eliminate the sharing first; serialize structurally only when one shared writer is a real invariant.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-sequence-verifiable-units",
+      "dir": "principle-sequence-verifiable-units",
+      "kind": "principle",
+      "description": "Apply to multi-step work (sweeps, migrations, runs of similar edits) and to how you stack commits and PRs. Break work into small units that each end in a verifiable state, check each before the next, and order delivery so the sequence proves itself to a reviewer.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-subtract-before-you-add",
+      "dir": "principle-subtract-before-you-add",
+      "kind": "principle",
+      "description": "Apply when sequencing an addition, refactor, or rewrite. Remove dead code, redundant validators, and stub references first, then build on the simpler base.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-test-behavior-not-implementation",
+      "dir": "principle-test-behavior-not-implementation",
+      "kind": "principle",
+      "description": "Apply when you write, change, or keep a test. Call the code the way its users do and assert the result they observe against a literal expected value. If the test would still pass when every imported function returns undefined, rewrite the assertion or delete the test.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "principle-type-system-discipline",
+      "dir": "principle-type-system-discipline",
+      "kind": "principle",
+      "description": "Apply when designing types, reviewing a function signature, or writing code in any statically-typed language. Make illegal states unrepresentable, brand semantic primitives, parse external data at boundaries, refuse to lie to the compiler, exhaust variants, derive from authoritative schemas.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "recall",
+      "dir": "recall",
+      "kind": "workflow",
+      "description": "Reconstruct your recent working context from your own chat history, live state, and the shared record (user reports, prior fixes, incidents), then hand back a tight current-state brief. Use for 'recall my work on X', 'catch me up', 'what have I been working on', 'where did I leave off', before starting or resuming work.",
+      "paths": null,
+      "requires": [
+        "TRANSCRIPTS",
+        "DELEGATE",
+        "PARALLEL"
+      ],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "reflect",
+      "dir": "reflect",
+      "kind": "workflow",
+      "description": "Spawn three parallel review subagents over the active transcript, surface learnings, and route each to a concrete edit on an existing skill. Use when the user says reflect.",
+      "paths": null,
+      "requires": [
+        "DELEGATE",
+        "PARALLEL",
+        "MODEL_CHOICE"
+      ],
+      "degrades": true,
+      "hosts": [
+        "*"
+      ],
+      "files": [
+        "references/divergent-reviewer.md",
+        "references/judgment-reviewer.md",
+        "references/synthesizer.md",
+        "references/tooling-reviewer.md"
+      ]
+    },
+    {
+      "name": "setup-pstack",
+      "dir": "setup-pstack",
+      "kind": "setup",
+      "description": "Detect the current agent host, probe what it can actually do, and write the pstack config that every other pstack skill reads. Use for /setup-pstack, first-time pstack setup, 'configure pstack', changing pstack's model roles or reasoning budget, or when pstack skills are degrading unexpectedly.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "show-me-your-work",
+      "dir": "show-me-your-work",
+      "kind": "workflow",
+      "description": "Keep a reviewable decision trail for long-running or unattended work: a TSV log with one row per decision (what, why, evidence, result). Local by default; commit it when a reviewer needs the trail to trust the result. Use for /show-me-your-work, autonomous or multi-phase runs, or work a human reviews after stepping away.",
+      "paths": null,
+      "requires": [
+        "DELEGATE",
+        "MODEL_CHOICE"
+      ],
+      "degrades": true,
+      "hosts": [
+        "*"
+      ],
+      "files": [
+        "references/decision-log-template.tsv",
+        "scripts/log.sh"
+      ]
+    },
+    {
+      "name": "swarm",
+      "dir": "swarm",
+      "kind": "workflow",
+      "description": "Fan out N parallel workers, drain them, and return one report. Use for /swarm, 'swarm this', or parallel coverage, races, gauntlets, and exploration.",
+      "paths": null,
+      "requires": [
+        "DELEGATE",
+        "PARALLEL"
+      ],
+      "degrades": true,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "tdd",
+      "dir": "tdd",
+      "kind": "workflow",
+      "description": "Use only when the user explicitly asks for TDD, a failing test, or a regression test, OR when the bug has an obvious cheap local test target. Skip when the test path is unclear, expensive, integration-heavy, or not requested.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "teach",
+      "dir": "teach",
+      "kind": "workflow",
+      "description": "Explain a body of work plainly so a person actually understands it. Runs the `how` and `why` skills and weaves what they find into one clear explanation. Use for 'teach me this', 'help me really understand X', 'explain this change or subsystem to me'.",
+      "paths": null,
+      "requires": [
+        "DELEGATE",
+        "PARALLEL"
+      ],
+      "degrades": true,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "technical-writing",
+      "dir": "technical-writing",
+      "kind": "workflow",
+      "description": "Layered technical-writing standard: Di\u00e1taxis structure, Google developer style sentences, STE instruction rules, Global English syntax. Use for /technical-writing or when writing or reviewing docs, RFCs, readmes, PR descriptions, or commit messages.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "typescript-best-practices",
+      "dir": "typescript-best-practices",
+      "kind": "workflow",
+      "description": "TypeScript best practices. Use when reading or editing any .ts or .tsx file.",
+      "paths": "[\"**/*.ts\", \"**/*.tsx\"]",
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": [
+        "references/patterns.md"
+      ]
+    },
+    {
+      "name": "unslop",
+      "dir": "unslop",
+      "kind": "workflow",
+      "description": "Cut AI tells from any writing. Must always apply.",
+      "paths": null,
+      "requires": [],
+      "degrades": false,
+      "hosts": [
+        "*"
+      ],
+      "files": []
+    },
+    {
+      "name": "why",
+      "dir": "why",
+      "kind": "workflow",
+      "description": "Use for 'why does X work this way', 'why we picked Y', design rationale, regressions, postmortems, or data-backed thresholds. Discovers available MCPs and queries each evidence category (source control, issue tracker, long-form docs, real-time chat, infrastructure observability, error tracking, product analytics warehouse) in parallel, then returns a cited read on decisions and tradeoffs. Use how for runtime behavior.",
+      "paths": null,
+      "requires": [
+        "DELEGATE",
+        "MCP"
+      ],
+      "degrades": true,
+      "hosts": [
+        "*"
+      ],
+      "files": [
+        "references/epistemics.md",
+        "references/investigator-prompt.md",
+        "references/source-playbook.md",
+        "references/sources/code-archaeology.md",
+        "references/sources/databricks.md",
+        "references/sources/datadog.md",
+        "references/sources/incident-postmortem.md",
+        "references/sources/linear.md",
+        "references/sources/notion.md",
+        "references/sources/sentry.md",
+        "references/sources/slack.md",
+        "references/synthesizer-prompt.md"
+      ]
+    }
+  ]
+}

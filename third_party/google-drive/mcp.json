@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "google-drive": {
-      "type": "http",
-      "url": "https://api.cursor.com/rest-mcp/google-drive/mcp"
-    }
-  }
-}

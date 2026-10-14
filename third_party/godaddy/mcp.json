@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "godaddy": {
-      "type": "http",
-      "url": "https://api.godaddy.com/v1/domains/mcp"
-    }
-  }
-}

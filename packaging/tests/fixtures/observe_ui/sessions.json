@@ -1,0 +1,160 @@
+{
+  "_comment": "Synthetic sessions for observe_mock_server.py. A string \"@-N\" is a time N seconds before the mock started. Events carry no seq; the mock assigns it.",
+  "sessions": [
+    {
+      "host": "claude",
+      "id": "9a1c2e7b-edge-proxy",
+      "title": "Fix stale cache headers after deploy",
+      "state": "idle",
+      "events": [
+        {"ts": "@-7400", "agent": "main", "kind": "session_start", "cwd": "/home/dev/src/edge-proxy", "branch": "fix/cache-headers", "model": "claude-opus-4-5", "title": "Fix stale cache headers after deploy"},
+        {"ts": "@-7398", "agent": "main", "kind": "prompt", "text": "Responses behind the proxy keep a stale Cache-Control header after a deploy. Fix it with the bug-fix playbook."},
+        {"ts": "@-7390", "agent": "main", "kind": "message", "text": "Starting a bug-fix run. First I will reproduce the stale header with a test."},
+        {"ts": "@-7388", "agent": "main", "kind": "tool_start", "id": "t1", "tool": "Bash", "summary": "python run-record.py init --route bug-fix --task 'stale cache headers'", "input": {"command": "python run-record.py init --route bug-fix --task 'stale cache headers'"}},
+        {"ts": "@-7387", "agent": "main", "kind": "tool_end", "id": "t1", "ok": true, "summary": "run 20260910T100500-bug-fix started. Record: .pstack/runs/20260910T100500-bug-fix.json"},
+        {"ts": "@-7380", "agent": "main", "kind": "tool_start", "id": "t2", "tool": "Read", "summary": "src/proxy/headers.go", "input": {"file_path": "src/proxy/headers.go"}},
+        {"ts": "@-7379", "agent": "main", "kind": "tool_end", "id": "t2", "ok": true, "summary": "212 lines"},
+        {"ts": "@-7300", "agent": "main", "kind": "tool_start", "id": "t3", "tool": "Bash", "summary": "go test ./proxy -run TestCacheHeaders", "input": {"command": "go test ./proxy -run TestCacheHeaders"}},
+        {"ts": "@-7294", "agent": "main", "kind": "tool_end", "id": "t3", "ok": false, "summary": "--- FAIL: TestCacheHeaders (0.02s)\n    headers_test.go:41: Cache-Control = \"max-age=86400\", want \"no-cache\""},
+        {"ts": "@-7200", "agent": "main", "kind": "tool_start", "id": "t4", "tool": "Agent", "summary": "Trace how upstream headers are merged", "input": {"description": "Trace how upstream headers are merged", "subagent_type": "Explore"}},
+        {"ts": "@-7200", "agent": "main", "kind": "agent_start", "agent_id": "a-trace", "parent": "main", "type": "Explore", "model": "claude-haiku-4-5", "description": "Trace how upstream headers are merged", "background": false, "tool_id": "t4"},
+        {"ts": "@-7190", "agent": "a-trace", "kind": "tool_start", "id": "t5", "tool": "Grep", "summary": "Cache-Control", "input": {"pattern": "Cache-Control"}},
+        {"ts": "@-7189", "agent": "a-trace", "kind": "tool_end", "id": "t5", "ok": true, "summary": "7 matches in 3 files"},
+        {"ts": "@-7100", "agent": "a-trace", "kind": "message", "text": "mergeHeaders copies the cached upstream map by reference, so a deploy never replaces it."},
+        {"ts": "@-7098", "agent": "main", "kind": "agent_end", "agent_id": "a-trace", "ok": true, "summary": "Header map is shared by reference across deploys."},
+        {"ts": "@-7098", "agent": "main", "kind": "tool_end", "id": "t4", "ok": true, "summary": "Header map is shared by reference across deploys."},
+        {"ts": "@-6900", "agent": "main", "kind": "tool_start", "id": "t6", "tool": "Edit", "summary": "src/proxy/headers.go", "input": {"file_path": "src/proxy/headers.go"}},
+        {"ts": "@-6899", "agent": "main", "kind": "tool_end", "id": "t6", "ok": true, "summary": "1 edit"},
+        {"ts": "@-6800", "agent": "main", "kind": "tool_start", "id": "t7", "tool": "Bash", "summary": "go test ./...", "input": {"command": "go test ./..."}},
+        {"ts": "@-6770", "agent": "main", "kind": "tool_end", "id": "t7", "ok": true, "summary": "ok  edge-proxy/proxy 0.41s"},
+        {"ts": "@-6700", "agent": "main", "kind": "usage", "input_tokens": 182340, "output_tokens": 9120, "cost_usd": 1.93},
+        {"ts": "@-6000", "agent": "main", "kind": "notice", "level": "warn", "text": "Permission denied: git push origin fix/cache-headers (asked the user)"},
+        {"ts": "@-5500", "agent": "main", "kind": "message", "text": "Fixed. The header map is now cloned per request; PR #311 is open and `run-record.py check` reports complete."},
+        {"ts": "@-5499", "agent": "main", "kind": "turn_end", "reason": "end_turn"}
+      ],
+      "runs": [
+        {
+          "id": "20260910T100500-bug-fix",
+          "route": "bug-fix",
+          "task": "stale cache headers",
+          "created": "@-7387",
+          "linked_by": "session",
+          "session": {"host": "claude", "id": "9a1c2e7b-edge-proxy"},
+          "checked_at": "@-5510",
+          "marks": [
+            {"phase": "reproduce", "status": "done", "note": "fails for the header reason", "at": "@-7290"},
+            {"phase": "root-cause", "status": "done", "note": "", "at": "@-7090"},
+            {"phase": "plan", "status": "skip", "note": "fix inside one function", "at": "@-7000"},
+            {"phase": "implement", "status": "done", "note": "", "at": "@-6890"},
+            {"phase": "cleanup", "status": "done", "note": "", "at": "@-6850"},
+            {"phase": "review", "status": "skip", "note": "no durable state or retries touched", "at": "@-6840"},
+            {"phase": "verify", "status": "done", "note": "", "at": "@-6760"},
+            {"phase": "commits", "status": "done", "note": "", "at": "@-6600"},
+            {"phase": "open-pr", "status": "done", "note": "PR #311", "at": "@-6100"},
+            {"phase": "implement", "status": "done", "note": "slop pass edited headers.go", "at": "@-5900"},
+            {"phase": "cleanup", "status": "done", "note": "", "at": "@-5880"},
+            {"phase": "verify", "status": "done", "note": "rerun after edit", "at": "@-5800"},
+            {"phase": "commits", "status": "done", "note": "", "at": "@-5700"},
+            {"phase": "open-pr", "status": "done", "note": "force-pushed PR #311", "at": "@-5600"}
+          ],
+          "evidence": [
+            {"kind": "repro", "result": "fail", "command": "go test ./proxy -run TestCacheHeaders", "output": "/tmp/repro.txt", "harness": "current", "seq": 2, "at": "@-7292"},
+            {"kind": "verify", "result": "pass", "command": "go test ./...", "output": "/tmp/verify1.txt", "harness": "current", "seq": 9, "at": "@-6765"},
+            {"kind": "verify", "result": "pass", "command": "go test ./...", "output": "/tmp/verify2.txt", "harness": "current", "seq": 17, "at": "@-5805"}
+          ],
+          "delegates": [],
+          "findings": [],
+          "pauses": []
+        }
+      ]
+    },
+    {
+      "host": "codex",
+      "id": "019f3c55-billing",
+      "title": null,
+      "state": "waiting",
+      "events": [
+        {"ts": "@-960", "agent": "main", "kind": "session_start", "cwd": "/home/dev/src/billing", "branch": "feat/invoice-notes", "model": "gpt-5-codex", "title": null},
+        {"ts": "@-955", "agent": "main", "kind": "prompt", "text": "Add a free-text notes field to invoices, shown on the PDF. Use the feature playbook and stop before the migration so I can review the design."},
+        {"ts": "@-950", "agent": "main", "kind": "tool_start", "id": "c1", "tool": "shell", "summary": "python run-record.py init --route feature --task 'invoice notes'", "input": {"command": "python run-record.py init --route feature --task 'invoice notes'"}},
+        {"ts": "@-949", "agent": "main", "kind": "tool_end", "id": "c1", "ok": true, "summary": "run 20260910T171200-feature started. Record: .pstack/runs/20260910T171200-feature.json"},
+        {"ts": "@-900", "agent": "main", "kind": "tool_start", "id": "c2", "tool": "shell", "summary": "rg -n 'class Invoice' src", "input": {"command": "rg -n 'class Invoice' src"}},
+        {"ts": "@-899", "agent": "main", "kind": "tool_end", "id": "c2", "ok": true, "summary": "src/billing/models.py:88:class Invoice(Base):"},
+        {"ts": "@-800", "agent": "main", "kind": "message", "text": "Design: a nullable `notes` TEXT column, a 2000 character limit enforced in the schema, and a new block in the PDF template under the totals."},
+        {"ts": "@-700", "agent": "main", "kind": "usage", "input_tokens": 40210, "output_tokens": 3120, "cost_usd": null},
+        {"ts": "@-300", "agent": "main", "kind": "message", "text": "Paused before the migration as asked. The design is in the run record; say go and I will write it."},
+        {"ts": "@-298", "agent": "main", "kind": "turn_end", "reason": "end_turn"}
+      ],
+      "runs": [
+        {
+          "id": "20260910T171200-feature",
+          "route": "feature",
+          "task": "invoice notes",
+          "created": "@-949",
+          "linked_by": "output",
+          "session": null,
+          "checked_at": "@-297",
+          "marks": [
+            {"phase": "understand", "status": "done", "note": "", "at": "@-890"},
+            {"phase": "design", "status": "done", "note": "nullable TEXT column", "at": "@-790"}
+          ],
+          "evidence": [],
+          "delegates": [
+            {"job": "design-review", "status": "returned", "role": "reviewer", "model": "gpt-5", "budget": 10, "reason": "", "result": "design holds", "seq": 3, "at": "@-780"}
+          ],
+          "findings": [
+            {"id": "F1", "source": "design-review", "severity": "consider", "summary": "Consider markdown rendering in the PDF block", "status": "open", "reason": "", "seq": 4, "at": "@-770"}
+          ],
+          "pauses": [
+            {"next": "Write the migration adding invoices.notes", "reason": "user asked to review the design first", "open_delegates": [], "phases_reached": ["understand", "design"], "resumed": null, "seq": 5, "at": "@-299"}
+          ]
+        }
+      ]
+    },
+    {
+      "host": "copilot",
+      "id": "5d2b8e41",
+      "title": "Upgrade the lint config",
+      "state": "stalled",
+      "agent_states": {"main": "stalled"},
+      "events": [
+        {"ts": "@-1500", "agent": "main", "kind": "session_start", "cwd": "/home/dev/src/web-app", "branch": "chore/eslint-9", "model": "gpt-4.1", "title": "Upgrade the lint config"},
+        {"ts": "@-1490", "agent": "main", "kind": "prompt", "text": "Move us to the eslint 9 flat config."},
+        {"ts": "@-1400", "agent": "main", "kind": "tool_start", "id": "p1", "tool": "view", "summary": ".eslintrc.cjs", "input": {"path": ".eslintrc.cjs"}},
+        {"ts": "@-1399", "agent": "main", "kind": "tool_end", "id": "p1", "ok": true, "summary": "84 lines"},
+        {"ts": "@-1200", "agent": "main", "kind": "notice", "level": "error", "text": "API error 529: overloaded. Retrying in 30s."},
+        {"ts": "@-800", "agent": "main", "kind": "tool_start", "id": "p2", "tool": "bash", "summary": "npx eslint . --max-warnings=0", "input": {"command": "npx eslint . --max-warnings=0"}}
+      ],
+      "runs": []
+    },
+    {
+      "host": "vscode-copilot",
+      "id": "chat-4411",
+      "title": "Explain the retry decorator",
+      "state": "idle",
+      "x_future_summary_key": {"ignored": true},
+      "events": [
+        {"ts": "@-180000", "agent": "main", "kind": "session_start", "cwd": "/home/dev/src/uploader", "branch": "main", "model": "gpt-4o", "title": "Explain the retry decorator"},
+        {"ts": "@-179990", "agent": "main", "kind": "prompt", "text": "What does @retry(backoff=2) do when the function raises TimeoutError?"},
+        {"ts": "@-179980", "agent": "main", "kind": "future_kind", "payload": {"x": 1}},
+        {"ts": "@-179970", "agent": "main", "kind": "message", "text": "It retries up to the default five attempts, doubling the delay each time, and re-raises the last TimeoutError.", "x_future_event_key": "ignored"},
+        {"ts": "@-179969", "agent": "main", "kind": "turn_end", "reason": "end_turn"}
+      ],
+      "runs": []
+    }
+  ],
+  "generated": [
+    {
+      "host": "codex",
+      "id": "bulk-3000",
+      "title": "Large session (3000 events)",
+      "state": "idle",
+      "count": 3000,
+      "span_s": 10800,
+      "end_ago_s": 4000,
+      "cwd": "/home/dev/src/monorepo",
+      "branch": "perf/cold-start",
+      "model": "gpt-5-codex"
+    }
+  ]
+}

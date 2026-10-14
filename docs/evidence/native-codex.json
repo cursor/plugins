@@ -1,0 +1,58 @@
+{
+  "cliVersion": "0.161.0",
+  "liveProject": "/var/folders/nz/8s3wl4rj7kg6hxc1dms3gr780000gn/T/pstack-upstream-live-s47b1upx/codex/project",
+  "namedAgentCalls": [
+    {
+      "task_name": "ground",
+      "agent_type": "poteto-agent",
+      "call_id": "call_9e4059e778f74aea9eae6572b786bfdf"
+    },
+    {
+      "task_name": "investigate",
+      "agent_type": "poteto-agent",
+      "call_id": "call_6ba77cf3becc4052adf64843ceef1c93"
+    },
+    {
+      "task_name": "candidate_direct",
+      "agent_type": "poteto-agent",
+      "call_id": "call_c02badbbf7314afd8b71ea6a9732cc90"
+    },
+    {
+      "task_name": "candidate_object",
+      "agent_type": "poteto-agent",
+      "call_id": "call_a1c60ece4e8341a6aef8c4aa9b1fb4e0"
+    },
+    {
+      "task_name": "why_synthesis",
+      "agent_type": "poteto-agent",
+      "call_id": "call_3fec25ef533843b79269f08595581338"
+    },
+    {
+      "task_name": "cross_judge",
+      "agent_type": "poteto-agent",
+      "call_id": "call_c69805651bb642738f9270134816c844"
+    },
+    {
+      "task_name": "comment_review",
+      "agent_type": "comment-sicko",
+      "call_id": "call_cc3ed9f9d645487b8278d3165ec992bc"
+    },
+    {
+      "task_name": "implement",
+      "agent_type": "poteto-agent",
+      "call_id": "call_0669de43e5524979a9b714f4d77b30f3"
+    },
+    {
+      "task_name": "alpha_named",
+      "agent_type": "poteto-agent",
+      "call_id": "call_babbcea65f4140349d9ada277c454e1c"
+    },
+    {
+      "task_name": "comments_named",
+      "agent_type": "comment-sicko",
+      "call_id": "call_38665d56073e4ab1920f3790e13e3579"
+    }
+  ],
+  "proof": "add verified",
+  "note": "Actual registered-agent native calls after setup; earlier pre-setup test had no named selector. No general agents substituted."
+}

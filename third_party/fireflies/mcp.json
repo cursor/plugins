@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "fireflies": {
-      "type": "http",
-      "url": "https://api.fireflies.ai/mcp"
-    }
-  }
-}

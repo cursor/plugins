@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "mailerlite": {
-      "type": "http",
-      "url": "https://mcp.mailerlite.com/mcp"
-    }
-  }
-}

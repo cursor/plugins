@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "navan": {
-      "type": "http",
-      "url": "https://mcp.navan.com/mcp"
-    }
-  }
-}

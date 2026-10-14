@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "finance": {
-      "type": "http",
-      "url": "https://connectors-gateway.grok.com/gateway/v1/finance/mcp"
-    }
-  }
-}

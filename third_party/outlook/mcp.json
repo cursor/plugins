@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "outlook": {
-      "type": "http",
-      "url": "https://api.cursor.com/rest-mcp/outlook/mcp"
-    }
-  }
-}

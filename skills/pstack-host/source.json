@@ -1,0 +1,223 @@
+{
+  "upstreamCommit": "3357d59539a8dbe80f7a1d45bddda18abd632124",
+  "upstreamTree": "7bd1e77c112fab2bac404ccc939a95f0c57820aa",
+  "format": 1,
+  "skills": [
+    {
+      "directory": "architect",
+      "name": "architect"
+    },
+    {
+      "directory": "arena",
+      "name": "arena"
+    },
+    {
+      "directory": "automate-me",
+      "name": "automate-me"
+    },
+    {
+      "directory": "benchmark-checklist",
+      "name": "benchmark-checklist"
+    },
+    {
+      "directory": "blast-radius",
+      "name": "blast-radius"
+    },
+    {
+      "directory": "bro",
+      "name": "bro"
+    },
+    {
+      "directory": "correct",
+      "name": "correct"
+    },
+    {
+      "directory": "create-verification-skill",
+      "name": "create-verification-skill"
+    },
+    {
+      "directory": "figure-it-out",
+      "name": "figure-it-out"
+    },
+    {
+      "directory": "how",
+      "name": "how"
+    },
+    {
+      "directory": "in-your-own-words",
+      "name": "in-your-own-words"
+    },
+    {
+      "directory": "interrogate",
+      "name": "interrogate"
+    },
+    {
+      "directory": "ketchup",
+      "name": "ketchup"
+    },
+    {
+      "directory": "maintain-verification-skill",
+      "name": "maintain-verification-skill"
+    },
+    {
+      "directory": "make-bot-ui",
+      "name": "Make Bot UI"
+    },
+    {
+      "directory": "no-comments",
+      "name": "no-comments"
+    },
+    {
+      "directory": "poteto-help",
+      "name": "poteto-help"
+    },
+    {
+      "directory": "poteto-mode",
+      "name": "Poteto Mode"
+    },
+    {
+      "directory": "principle-attack-the-premise",
+      "name": "principle-attack-the-premise"
+    },
+    {
+      "directory": "principle-boundary-discipline",
+      "name": "principle-boundary-discipline"
+    },
+    {
+      "directory": "principle-build-the-lever",
+      "name": "principle-build-the-lever"
+    },
+    {
+      "directory": "principle-encode-lessons-in-structure",
+      "name": "principle-encode-lessons-in-structure"
+    },
+    {
+      "directory": "principle-exhaust-the-design-space",
+      "name": "principle-exhaust-the-design-space"
+    },
+    {
+      "directory": "principle-experience-first",
+      "name": "principle-experience-first"
+    },
+    {
+      "directory": "principle-explain-the-number",
+      "name": "principle-explain-the-number"
+    },
+    {
+      "directory": "principle-fix-root-causes",
+      "name": "principle-fix-root-causes"
+    },
+    {
+      "directory": "principle-foundational-thinking",
+      "name": "principle-foundational-thinking"
+    },
+    {
+      "directory": "principle-guard-the-context-window",
+      "name": "principle-guard-the-context-window"
+    },
+    {
+      "directory": "principle-laziness-protocol",
+      "name": "principle-laziness-protocol"
+    },
+    {
+      "directory": "principle-make-operations-idempotent",
+      "name": "principle-make-operations-idempotent"
+    },
+    {
+      "directory": "principle-migrate-callers-then-delete-legacy-apis",
+      "name": "principle-migrate-callers-then-delete-legacy-apis"
+    },
+    {
+      "directory": "principle-minimize-reader-load",
+      "name": "principle-minimize-reader-load"
+    },
+    {
+      "directory": "principle-model-the-domain",
+      "name": "principle-model-the-domain"
+    },
+    {
+      "directory": "principle-never-block-on-the-human",
+      "name": "principle-never-block-on-the-human"
+    },
+    {
+      "directory": "principle-outcome-oriented-execution",
+      "name": "principle-outcome-oriented-execution"
+    },
+    {
+      "directory": "principle-prove-it-works",
+      "name": "principle-prove-it-works"
+    },
+    {
+      "directory": "principle-redesign-from-first-principles",
+      "name": "principle-redesign-from-first-principles"
+    },
+    {
+      "directory": "principle-separate-before-serializing-shared-state",
+      "name": "principle-separate-before-serializing-shared-state"
+    },
+    {
+      "directory": "principle-sequence-verifiable-units",
+      "name": "principle-sequence-verifiable-units"
+    },
+    {
+      "directory": "principle-subtract-before-you-add",
+      "name": "principle-subtract-before-you-add"
+    },
+    {
+      "directory": "principle-test-behavior-not-implementation",
+      "name": "principle-test-behavior-not-implementation"
+    },
+    {
+      "directory": "principle-type-system-discipline",
+      "name": "principle-type-system-discipline"
+    },
+    {
+      "directory": "recall",
+      "name": "recall"
+    },
+    {
+      "directory": "reflect",
+      "name": "reflect"
+    },
+    {
+      "directory": "setup-pstack",
+      "name": "setup-pstack"
+    },
+    {
+      "directory": "sharpen",
+      "name": "sharpen"
+    },
+    {
+      "directory": "show-me-your-work",
+      "name": "show-me-your-work"
+    },
+    {
+      "directory": "swarm",
+      "name": "swarm"
+    },
+    {
+      "directory": "tdd",
+      "name": "tdd"
+    },
+    {
+      "directory": "teach",
+      "name": "teach"
+    },
+    {
+      "directory": "technical-writing",
+      "name": "technical-writing"
+    },
+    {
+      "directory": "typescript-best-practices",
+      "name": "typescript-best-practices"
+    },
+    {
+      "directory": "unslop",
+      "name": "unslop"
+    },
+    {
+      "directory": "why",
+      "name": "why"
+    }
+  ]
+}

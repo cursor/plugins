@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pstack-cli"
+version = "1.0.0"
+description = "Install pstack, a rigor-first agent workflow, into any project on any agent host."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Lauren Tan" }]
+keywords = ["pstack", "agent", "claude-code", "codex", "copilot", "cursor", "workflow"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Build Tools",
+]
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=7", "build>=1"]
+
+[project.urls]
+Homepage = "https://github.com/cursor/plugins/tree/main/pstack"
+
+[project.scripts]
+pstack = "pstack_cli.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pstack_cli"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/pstack_cli", "README.md", "pyproject.toml"]

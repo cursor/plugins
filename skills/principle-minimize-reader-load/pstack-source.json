@@ -1,0 +1,10 @@
+{
+  "name": "principle-minimize-reader-load",
+  "directory": "principle-minimize-reader-load",
+  "format": 1,
+  "upstreamCommit": "3357d59539a8dbe80f7a1d45bddda18abd632124",
+  "repository": "https://github.com/vagusX/pstack#codex/upstream-host-adaptation",
+  "requires": [
+    "principle-guard-the-context-window"
+  ]
+}

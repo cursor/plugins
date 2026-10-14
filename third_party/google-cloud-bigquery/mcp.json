@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "google-cloud-bigquery": {
-      "type": "http",
-      "url": "https://bigquery.googleapis.com/mcp"
-    }
-  }
-}

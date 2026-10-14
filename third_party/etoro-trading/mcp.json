@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "etoro-trading": {
-      "type": "http",
-      "url": "https://mcp.public-api.etoro.com",
-      "placement": "server"
-    }
-  }
-}

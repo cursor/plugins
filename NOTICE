@@ -1,0 +1,12 @@
+This project is a port of pstack.
+
+  pstack — Copyright (c) 2026 Lauren Tan — MIT License
+  https://github.com/cursor/plugins/tree/main/pstack
+
+The playbooks, principles, and skill content in core/skills, core/playbooks and core/agents are
+derived from that work and remain under its MIT license, reproduced in LICENSE.upstream.
+
+Changes made in this port are recorded in docs/PORTING.md. In summary: host-specific delegation
+arguments, model slugs, config paths, frontmatter, and tool names were replaced with the
+vendor-neutral runtime layer in core/runtime, and build/ compiles that source into per-host
+distributions under dist/.
