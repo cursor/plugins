@@ -1,6 +1,6 @@
 ---
 name: triage-work
-description: "Called by a skill when work arrives as a stream of items; sorts each item to a skill on this bot, the bot that owns it, or the person."
+description: "Called by a skill when work arrives as a stream of items; sorts each item to a skill, a bot, or the person."
 ---
 
 # Triage work

@@ -15,7 +15,15 @@ python3 build_team_map.py --spec /workspace/team-builder-stack/team-spec.md --sk
   --canvas /workspace/team-builder-stack/team-map.canvas.tsx --document /workspace/team-builder-stack/team-map.md
 ```
 
-Then write the canvas from the generated module, by its canvas id under Records and logs, or the document when canvases aren't available. It stops with a plain message when the spec doesn't hold together, such as a workflow that runs on a bot the spec doesn't list, a handoff to an unknown bot, or a template recorded as content instead of a location. It warns about what can wait, such as a skill the spec names that isn't in the library yet.
+Then write the canvas from the generated module, by its canvas id under Records and logs, or the document when canvases aren't available. It stops with a plain message when the spec doesn't hold together, such as a workflow that runs on a bot the spec doesn't list, a handoff to an unknown bot, or a template recorded as content instead of a location. It warns about what can wait, such as a skill the spec names that isn't in the library yet. The map reads the labeled fields only. A fact it cannot find is marked inferred. It is not filled in.
+
+Check the draft before saving it:
+
+```bash
+python3 build_team_map.py --check --spec /workspace/team-builder-stack/team-spec.md --skills <folder of library skills>
+```
+
+`--check` writes nothing. It exits non-zero and prints a plain list of what is missing, per bot and skill.
 
 If the script can't run, fill the canvas's data block by hand from the spec, following the types at the top of the module, and fill the document's slots the same way. Change nothing outside the data block and the slots.
 

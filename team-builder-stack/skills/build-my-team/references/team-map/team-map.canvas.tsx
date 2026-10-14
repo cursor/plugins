@@ -16,11 +16,23 @@ interface MapStep extends Marked {
   uses: string[]
   template: string
   review: string
+  pullsFrom?: string
+  usesText?: string
+  produces?: string
+  handsTo?: string
+  /** Field keys the spec or skill did not label. Shown as inferred, never filled in. */
+  inferred?: string[]
+}
+interface MapPhase {
+  title: string
+  lines: string[]
+  parsed: Record<string, unknown>
 }
 interface MapSkill extends Marked {
   id: string
   name: string
   description: string
+  type?: string
   source: 'plugin' | 'library' | 'not found'
   templateLocation: string
   templateOwner: string
@@ -29,6 +41,7 @@ interface MapSkill extends Marked {
   record: string
   handOff: string
   steps: MapStep[]
+  phases?: MapPhase[]
 }
 interface MapBot extends Marked {
   id: string
@@ -41,12 +54,18 @@ interface MapBot extends Marked {
   botTemplate: string
   skills: string[]
   systems: string[]
+  connectors?: string
+  connectorsInferred?: boolean
 }
 interface MapHandoff extends Marked {
   from: string
   to: string
   what: string
   how: string
+  waits?: string
+  waitsInferred?: boolean
+  fromName?: string
+  toName?: string
 }
 interface MapSystem extends Marked {
   name: string
@@ -55,6 +74,19 @@ interface MapSystem extends Marked {
   holds: string
   uniqueId: string
   recordFor: string
+  howToRead?: string
+  howToReadInferred?: boolean
+}
+interface MapRoutine {
+  name: string
+  schedule: string
+  scheduleInferred?: boolean
+  skill: string
+  skillInferred?: boolean
+  prompt: string
+  promptInferred?: boolean
+  relayedBy?: string
+  relayedByInferred?: boolean
 }
 interface MapBody {
   spec: { version: string; date: string; changeLog: string }
@@ -68,6 +100,7 @@ interface MapBody {
   skills: MapSkill[]
   handoffs: MapHandoff[]
   systems: MapSystem[]
+  routines?: MapRoutine[]
 }
 interface TeamMap {
   /** Set while the person decides: what changes, and the spec version it changes, or empty for a new team */
@@ -88,6 +121,7 @@ const MAP: TeamMap = /* TEAM_MAP_DATA_START */ {
     skills: [],
     handoffs: [],
     systems: [],
+    routines: [],
   },
   before: null,
 } /* TEAM_MAP_DATA_END */
@@ -101,6 +135,11 @@ const TYPE_LABEL: Record<string, string> = { builder: 'Builder', manager: 'Manag
 const CHANGE_LABEL: Record<Change, string> = { added: 'Added', changed: 'Changed', removed: 'Removed' }
 const CHANGE_TONE: Record<Change, 'added' | 'renamed' | 'deleted'> = { added: 'added', changed: 'renamed', removed: 'deleted' }
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
+
+function needsReview(value: string | undefined) {
+  const text = (value ?? '').trim()
+  return text.length > 0 && !/^none\b/i.test(text)
+}
 
 function Value({ text, slot }: { text: string; slot: string }) {
   return text ? <Text>{text}</Text> : <Text tone="quaternary" italic>{`To fill in: ${slot}`}</Text>
@@ -182,7 +221,7 @@ function Crumbs({ parts, go }: { parts: { label: string; to?: Place }[]; go: (p:
 
 function BotTile({ bot, body, showChanges, go }: { bot: MapBot; body: MapBody; showChanges: boolean; go: (p: Place) => void }) {
   const skills = bot.skills.map((id) => body.skills.find((s) => s.id === id)).filter((s): s is MapSkill => !!s)
-  const reviews = skills.reduce((n, s) => n + s.steps.filter((st) => st.review).length, 0)
+  const reviews = skills.reduce((n, s) => n + s.steps.filter((st) => needsReview(st.review)).length, 0)
   return (
     <Tile item={bot} onOpen={bot.blank ? undefined : () => go({ level: 'bot', bot: bot.id })}>
       <Stack gap={8}>
@@ -278,6 +317,9 @@ function TeamLevel({ body, showChanges, go }: { body: MapBody; showChanges: bool
                       {h.how}
                     </Text>
                   )}
+                  <Text size="small" tone="tertiary">
+                    {h.waits && !h.waitsInferred ? `Waits: ${h.waits}` : 'Waits: Inferred'}
+                  </Text>
                   <Mark item={h} showChanges={showChanges} />
                 </Row>
                 <Was item={h} showChanges={showChanges} />
@@ -305,11 +347,20 @@ function TeamLevel({ body, showChanges, go }: { body: MapBody; showChanges: bool
                 <Field label="System of record for">
                   <Value text={s.recordFor} slot="the facts it settles" />
                 </Field>
+                {s.howToRead ? (
+                  <Field label="How to read">
+                    <Text>{s.howToRead}</Text>
+                  </Field>
+                ) : null}
                 <Was item={s} showChanges={showChanges} />
               </Stack>
             </Tile>
           ))}
         </Grid>
+      </Stack>
+      <Stack gap={12}>
+        <H2>Routines</H2>
+        <RoutineList routines={body.routines ?? []} />
       </Stack>
     </Stack>
   )
@@ -362,9 +413,9 @@ function BotLevel({ body, bot, showChanges, go }: { body: MapBody; bot: MapBot; 
                   </Stack>
                   <Row gap={6}>
                     {s.steps.length > 0 && <Pill size="sm">{plural(s.steps.length, 'step')}</Pill>}
-                    {s.steps.some((st) => st.review) && (
+                    {s.steps.some((st) => needsReview(st.review)) && (
                       <Pill size="sm" tone="info">
-                        {plural(s.steps.filter((st) => st.review).length, 'review')}
+                        {plural(s.steps.filter((st) => needsReview(st.review)).length, 'review')}
                       </Pill>
                     )}
                     <Pill size="sm">{s.source === 'plugin' ? 'Team Builder Stack' : s.source === 'library' ? 'Your library' : 'Not found'}</Pill>
@@ -378,17 +429,11 @@ function BotLevel({ body, bot, showChanges, go }: { body: MapBody; bot: MapBot; 
       </Stack>
       <Grid columns="repeat(auto-fit, minmax(260px, 1fr))" gap={24}>
         <Stack gap={12}>
-          <H2>Systems its skills use</H2>
-          {bot.systems.length ? (
-            <Row gap={6} wrap>
-              {bot.systems.map((s) => (
-                <Pill key={s} size="sm">
-                  {s}
-                </Pill>
-              ))}
-            </Row>
+          <H2>Connectors</H2>
+          {bot.connectors && !bot.connectorsInferred ? (
+            <Text>{bot.connectors}</Text>
           ) : (
-            <Text tone="tertiary">Worked out from its skills' steps once they're written.</Text>
+            <Text tone="tertiary">Inferred</Text>
           )}
         </Stack>
         <Stack gap={12}>
@@ -405,6 +450,9 @@ function BotLevel({ body, bot, showChanges, go }: { body: MapBody; bot: MapBot; 
                     <Text size="small" tone="secondary">
                       {h.what}
                     </Text>
+                    <Text size="small" tone="tertiary">
+                      {h.waits && !h.waitsInferred ? `Waits: ${h.waits}` : 'Waits: Inferred'}
+                    </Text>
                   </Stack>
                 </div>
               ))}
@@ -414,8 +462,42 @@ function BotLevel({ body, bot, showChanges, go }: { body: MapBody; bot: MapBot; 
           )}
         </Stack>
       </Grid>
+      <Stack gap={12}>
+        <H2>Routines</H2>
+        <RoutineList routines={routinesFor(body, bot)} />
+      </Stack>
     </Stack>
   )
+}
+
+function fact(step: MapStep, key: string, value: string | undefined) {
+  if (step.inferred?.includes(key)) return value ? `Inferred: ${value}` : 'Inferred'
+  return value || ''
+}
+
+function RoutineList({ routines }: { routines: MapRoutine[] }) {
+  if (!routines.length) return <Text tone="tertiary">None yet.</Text>
+  return (
+    <Stack gap={8}>
+      {routines.map((routine) => (
+        <Stack key={routine.name} gap={2}>
+          <Text weight="semibold">{routine.name}</Text>
+          <Text size="small" tone="secondary">{`Schedule: ${routine.scheduleInferred || !routine.schedule ? 'Inferred' : routine.schedule}`}</Text>
+          <Text size="small" tone="secondary">{`Skill: ${routine.skillInferred || !routine.skill ? 'Inferred' : routine.skill}`}</Text>
+          <Text size="small" tone="secondary">{`Prompt: ${routine.promptInferred || !routine.prompt ? 'Inferred' : routine.prompt}`}</Text>
+          {routine.relayedBy ? <Text size="small" tone="secondary">{`Relayed by: ${routine.relayedBy}`}</Text> : null}
+        </Stack>
+      ))}
+    </Stack>
+  )
+}
+
+function routinesFor(body: MapBody, bot: MapBot) {
+  const prefix = `${bot.name.toLowerCase()}:`
+  return (body.routines ?? []).filter((routine) => {
+    const name = routine.name.toLowerCase()
+    return name === bot.name.toLowerCase() || name.startsWith(prefix)
+  })
 }
 
 function StepRow({ step, n, showChanges }: { step: MapStep; n: number; showChanges: boolean }) {
@@ -424,7 +506,7 @@ function StepRow({ step, n, showChanges }: { step: MapStep; n: number; showChang
     <div
       style={{
         border: `1px solid ${theme.stroke.secondary}`,
-        borderLeft: `3px solid ${step.review ? theme.accent.primary : theme.stroke.secondary}`,
+        borderLeft: `3px solid ${needsReview(step.review) ? theme.accent.primary : theme.stroke.secondary}`,
         borderRadius: 10,
         padding: 14,
         background: theme.bg.elevated,
@@ -435,23 +517,31 @@ function StepRow({ step, n, showChanges }: { step: MapStep; n: number; showChang
         <Row gap={8} wrap>
           <Text tone="tertiary">{String(n)}</Text>
           <Text weight="semibold">{step.name}</Text>
-          {step.review && (
+          {needsReview(step.review) && (
             <Pill size="sm" tone="info">
               Your review
             </Pill>
           )}
           <Mark item={step} showChanges={showChanges} />
         </Row>
-        {step.does && <Text tone="secondary">{step.does}</Text>}
         <Grid columns="repeat(auto-fit, minmax(160px, 1fr))" gap={12}>
-          <Field label="Uses">
-            <Text>{step.uses.length ? step.uses.join(', ') : 'Nothing new'}</Text>
+          <Field label="Does">
+            <Text>{fact(step, 'does', step.does)}</Text>
           </Field>
-          <Field label="Template">
-            <Text>{step.template || 'None'}</Text>
+          <Field label="Pulls from">
+            <Text>{fact(step, 'pullsFrom', step.pullsFrom)}</Text>
+          </Field>
+          <Field label="Uses">
+            <Text>{fact(step, 'uses', step.usesText || (step.uses.length ? step.uses.join(', ') : ''))}</Text>
+          </Field>
+          <Field label="Produces">
+            <Text>{fact(step, 'produces', step.produces)}</Text>
+          </Field>
+          <Field label="Hands to">
+            <Text>{fact(step, 'handsTo', step.handsTo)}</Text>
           </Field>
           <Field label="Your review">
-            <Text>{step.review || 'Runs on its own'}</Text>
+            <Text>{fact(step, 'review', step.review)}</Text>
           </Field>
         </Grid>
         <Was item={step} showChanges={showChanges} />
@@ -508,7 +598,7 @@ function SkillLevel({ bot, skill, showChanges, go }: { bot: MapBot; skill: MapSk
               </Field>
             )}
             <Field label="Waits for your review at">
-              <Text>{skill.steps.filter((s) => s.review).map((s) => s.name).join(', ') || 'No step'}</Text>
+              <Text>{skill.steps.filter((s) => needsReview(s.review)).map((s) => s.name).join(', ') || 'No step'}</Text>
             </Field>
           </Grid>
           <Divider />

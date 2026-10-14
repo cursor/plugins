@@ -13,6 +13,7 @@ The agenda matches the decision list:
 
 1. Urgent
 2. Team
-3. Skill updates
-4. Memory
-5. Questions
+3. Plugin update
+4. Skill updates
+5. Memory
+6. Questions

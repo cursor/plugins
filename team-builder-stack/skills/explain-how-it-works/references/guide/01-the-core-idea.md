@@ -18,7 +18,7 @@ Otherwise it’s a skill or an item. Short tasks, one-off requests, and items in
 1. **Decide who owns what.** Start from outcomes: what the person is accountable for, meaning what their leader judges them on, not their task list. Find the units that carry their own history, such as accounts, projects, or roles, and size each one to the person’s scope of work. A queue or a book of work is one unit one owner bot owns.
 2. **Connect your systems.** Give each bot the systems it needs, and pick the record where each workflow’s output is written.
 3. **Turn your workflows into skills.** For each unit, list the workflows done repeatedly and turn each one into a skill.
-4. **Check the work.** A fresh checker reviews every draft, and each real mistake becomes a verification step or a rule inside the skill.
+4. **Check the work.** By default, a fresh checker reviews every draft, and each real mistake becomes a verification step or a rule inside the skill.
 5. **Coordinate the team.** When a bot finishes its part, it hands the next step to the bot that owns it, and the manager keeps track of what’s stuck.
 6. **Scale the team.** Add bots as the work grows, one at a time.
 7. **Adapt as your work changes.** Once a week, review the team and put corrections into the skills.

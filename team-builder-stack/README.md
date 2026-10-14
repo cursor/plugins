@@ -29,7 +29,7 @@ You build the team the same way you'd bring on real people.
 1. **Decide who owns what.** Give a bot to each part of your work that carries its own history, and size each part to your scope of work. If you look after a handful of strategic accounts, each one gets its own bot. If you handle 150 renewals, one bot owns the renewal book. Work that doesn't carry its own history becomes a skill, not a bot.
 2. **Connect your systems.** Like a new hire's IT setup on day one, each bot gets access to the systems it needs, such as your CRM, notes, calendar, and docs. It checks those systems before it asks you anything, and reads them fresh before each piece of work.
 3. **Turn your workflows into skills.** For each piece of work a bot owns, list the workflows you repeat, like a weekly account update or a renewal note, and turn each one into a skill. A skill is the playbook you'd hand a new hire: the steps, the template, and what good looks like. Your bots share one skill library, so a fix to a skill reaches every bot that uses it.
-4. **Check the work.** No one grades their own work well, so a fresh checker reviews every draft against its sources and the skill's definition of good before you see it. Anything that sends a message, changes a record, or can't be undone waits for your yes.
+4. **Check the work.** No one grades their own work well, so a fresh checker is the default. It reviews every draft that states facts from your sources, or that goes outside your team, against those sources and the skill's definition of good before you see it. A plan made only of facts you gave it may get a self-review, labeled as one, and a yes or no question a script can settle about files or exact text, such as whether some text is present, may get a script check. Anything that sends a message, changes a record, or can't be undone waits for your yes.
 5. **Coordinate the team.** When a bot finishes its part, it hands the next step straight to the bot that owns it. Your manager keeps track of the work across the team: it delegates new requests, follows up on anything stuck, and briefs you on what needs you.
 6. **Scale the team.** Add bots as your work grows, one at a time. Team Builder recommends a new bot when it sees one missing from your work, such as an owner for a new account or a specialist when several owners keep needing the same know-how.
 7. **Adapt as your work changes.** Once a week, you and Team Builder review the team. It checks each bot, gathers feedback on skills, flags outdated memory, and brings you one list of decisions. Corrections go into skills instead of one-off fixes, so the team improves every week and changes as your work does.
@@ -39,7 +39,7 @@ You still make the calls. The bots do the reading, drafting, and follow-up.
 ## What's in the stack
 
 <!-- team-builder-stack:begin counts -->
-19 skills, one principles file with 10 principles, a blank team spec, and a 6-chapter guide.
+21 skills, one principles file with 10 principles, a blank team spec, and a 6-chapter guide.
 <!-- team-builder-stack:end counts -->
 
 ### Team Builder
@@ -71,9 +71,10 @@ Workflow skills call these shared steps instead of copying them, and every workf
 
 - **[Plan the work](./skills/plan-the-work/SKILL.md).** Sizes a run before the work splits: stages, checks, and when to stop.
 - **[Delegate work](./skills/delegate-work/SKILL.md).** Sends pieces of work to fresh helpers on the same bot, or to the bot that owns them.
-- **[Verify work](./skills/verify-work/SKILL.md).** A fresh checker reopens each source and tests each claim before anything is saved or shown.
+- **[Verify work](./skills/verify-work/SKILL.md).** By default, a fresh checker reopens each source and tests each claim before anything is saved or shown.
 - **[Triage work](./skills/triage-work/SKILL.md).** Sorts a stream of incoming items to the right skill, the bot that owns it, or you.
-- **[Inform manager bot](./skills/inform-manager-bot/SKILL.md).** Tells your manager when a task finishes or gets stuck, and only interrupts it for a block, a decision, or a deadline.
+- **[Inform manager bot](./skills/inform-manager-bot/SKILL.md).** Updates the task and tells the manager bot when a task finishes, is blocked, or the person changes it in chat, or when a check it asked for ends. It asks the manager bot to act now only for a block, a decision, a deadline, or a change to today's brief.
+- **[Inform Team Builder](./skills/inform-team-builder/SKILL.md).** Tells Team Builder when a bot's skill, operating guide, routine, or standing rule should change, and asks Team Builder to act now only when a run failed or a write was wrong.
 - **[Run review panel](./skills/run-review-panel/SKILL.md) (optional).** For a high-stakes draft, a few fresh reviewers and a separate judge suggest changes, and you pick which to keep.
 
 ### The guide
@@ -83,7 +84,7 @@ The [Team Builder Stack guide](./skills/explain-how-it-works/references/guide/RE
 <!-- team-builder-stack:begin readme-guide -->
 1. [The core idea](./skills/explain-how-it-works/references/guide/01-the-core-idea.md). Give a bot to what carries its own history, and turn each repeated workflow into a skill. (Basics)
 2. [Your first owner bot](./skills/explain-how-it-works/references/guide/02-your-first-owner-bot.md). One owner bot for one unit, proved by hand, then put on a routine. (Basics)
-3. [Utility and standard skills](./skills/explain-how-it-works/references/guide/03-utility-skills.md). Six utility skills every bot uses, the standard skills every skill follows, and where each one lives in the stack. (Going further)
+3. [Utility and standard skills](./skills/explain-how-it-works/references/guide/03-utility-skills.md). Seven utility skills every bot uses, the standard skills every skill follows, and where each one lives in the stack. (Going further)
 4. [The system map](./skills/explain-how-it-works/references/guide/04-the-system-map.md). Where the tailoring lives: your systems, how they store data, and how they tie to your units. (Going further)
 5. [Growing the team](./skills/explain-how-it-works/references/guide/05-growing-the-team.md). Manager, owner, and specialist bots, how they work together, and adding bots as the work grows. (Going further)
 6. [Making it yours](./skills/explain-how-it-works/references/guide/06-making-it-yours.md). Teach the stack how you work, and keep your skills current. (Going further)
@@ -97,7 +98,7 @@ Install the Team Builder Stack from Marketplace in Grok Bot, or from your team's
 /add-plugin team-builder-stack
 ```
 
-Then ask your primary bot to run [Set up Team Builder](./skills/set-up-team-builder/SKILL.md). If you already have Team Builder, it asks that bot to run the plugin updates in its own chat instead of making a second one.
+Then ask your primary bot to run [Set up Team Builder](./skills/set-up-team-builder/SKILL.md). If you already have Team Builder, it asks that bot to run Apply a plugin update in its own chat instead of making a second one.
 
 Most requests to Team Builder land in one of three skills:
 
@@ -120,25 +121,27 @@ Improvements reach you through the installed plugin, so don't save copies of its
 <!-- team-builder-stack:begin readme-skills -->
 | Skill | Type | Slug | Description |
 | --- | --- | --- | --- |
-| [Set up Team Builder](./skills/set-up-team-builder/SKILL.md) | workflow | `set-up-team-builder` | Use when the person asks to set up Team Builder; creates one Team Builder bot from the plugin after a yes, or asks an existing one to run the plugin updates in its own chat. |
-| [Build my team](./skills/build-my-team/SKILL.md) | workflow | `build-my-team` | Use when the person wants their team built or has no team spec; writes the team spec and map and builds the first bot, checking existing bots first. |
-| [Build a bot](./skills/build-a-bot/SKILL.md) | workflow | `build-a-bot` | Use when the person needs one more owner, specialist, or manager bot; creates it from its type's operating guide with its about line, profile facts, and setup. |
-| [Write a workflow skill](./skills/write-a-workflow-skill/SKILL.md) | workflow | `write-a-workflow-skill` | Use when a repeated workflow should become a skill; writes one five-step workflow skill from the person's real systems and examples, named to the standard. |
-| [Coach my bots](./skills/coach-my-bots/SKILL.md) | workflow | `coach-my-bots` | Use when a bot got something wrong or the work changed; makes the smallest fix to the one skill, template, operating guide, or spec line that holds it. |
-| [Check my bots](./skills/check-my-bots/SKILL.md) | workflow | `check-my-bots` | Use when the person wants their bots or setup checked; read only, compares bots with the team spec and principles, refreshes the map, and proposes fixes. |
-| [Run the weekly bot review](./skills/run-the-weekly-bot-review/SKILL.md) | workflow | `run-the-weekly-bot-review` | Use when the weekly bot review is coming up or under way; checks the bots, gathers skill feedback and wins, flags outdated memory, builds one decision list, and applies what the person approves. |
-| [Clean up memory](./skills/clean-up-memory/SKILL.md) | workflow | `clean-up-memory` | Use when a bot's memory may be stale or crowded, or the weekly review asks for a report; lists outdated, duplicate, and contradicted facts, applies only what was approved, and reports the counts. |
-| [Retire a bot](./skills/retire-a-bot/SKILL.md) | workflow | `retire-a-bot` | Use when a bot or group chat is replaced or its unit ended; saves its history, moves lasting facts to the records, and leaves deleting to the person. |
-| [Set my writing voice](./skills/set-my-writing-voice/SKILL.md) | workflow | `set-my-writing-voice` | Use when bots should sound like the person or their voice changed; writes their Writing voice standard skill from their own writing, after a yes. |
-| [Save what we learned](./skills/save-what-we-learned/SKILL.md) | workflow | `save-what-we-learned` | Use when a task took too long or went wrong; proposes edits to the skills this session used, and changes nothing until the person picks them. |
-| [Explain how it works](./skills/explain-how-it-works/SKILL.md) | workflow | `explain-how-it-works` | Use when the person asks why or how the Team Builder Stack works; answers in their words from the principles and guide, naming the part used. |
-| [Team Builder operating guide](./skills/team-builder-operating-guide/SKILL.md) | standard | `team-builder-operating-guide` | Follow whenever you are Team Builder and start any task; your job, skills, connectors, rules, and handoffs, as the Team Builder Stack plugin ships them. |
-| [Triage work](./skills/triage-work/SKILL.md) | utility | `triage-work` | Called by a skill when work arrives as a stream of items; sorts each item to a skill on this bot, the bot that owns it, or the person. |
-| [Delegate work](./skills/delegate-work/SKILL.md) | utility | `delegate-work` | Called by a skill when work splits or a step belongs to another bot; runs the pieces in subagents by the plan, or sends them to the owning bot. |
-| [Verify work](./skills/verify-work/SKILL.md) | utility | `verify-work` | Called by every Verify step before anything is saved or shown; a fresh checker reopens each source and checks each claim against the standard. |
-| [Plan the work](./skills/plan-the-work/SKILL.md) | utility | `plan-the-work` | Called by Do the work when work splits or outgrows the skill's pattern; writes a plan sized to the work: stages, worker contracts, checks, and stop rules. |
-| [Inform manager bot](./skills/inform-manager-bot/SKILL.md) | utility | `inform-manager-bot` | Called by Hand off when a task finishes or is blocked; marks it done and sends the manager bot a linked note, waking it only for a block, decision, or deadline. |
-| [Run review panel](./skills/run-review-panel/SKILL.md) | utility | `run-review-panel` | Called by a skill after Verify work when a high-stakes draft needs review; fresh reviewers and a separate judge advise, and the person picks the changes. |
+| [Set up Team Builder](./skills/set-up-team-builder/SKILL.md) | workflow | `set-up-team-builder` | Use when the person asks to set up Team Builder; creates that one bot from the plugin after a yes. |
+| [Build my team](./skills/build-my-team/SKILL.md) | workflow | `build-my-team` | Use when the person wants a team built or has no team spec; writes the spec, the map, and the first bot. |
+| [Build a bot](./skills/build-a-bot/SKILL.md) | workflow | `build-a-bot` | Use when the person needs one more owner, specialist, or manager bot; creates it from that type's guide. |
+| [Write a workflow skill](./skills/write-a-workflow-skill/SKILL.md) | workflow | `write-a-workflow-skill` | Use when a repeated workflow should become a skill; writes one five-step skill from real examples. |
+| [Coach my bots](./skills/coach-my-bots/SKILL.md) | workflow | `coach-my-bots` | Use when a bot got something wrong or the work changed; fixes the one skill, guide, or spec line that holds it. |
+| [Check my bots](./skills/check-my-bots/SKILL.md) | workflow | `check-my-bots` | Use when the person wants their bots or setup checked; compares them with the spec and proposes fixes. |
+| [Run the weekly bot review](./skills/run-the-weekly-bot-review/SKILL.md) | workflow | `run-the-weekly-bot-review` | Use when the weekly bot review is coming up or under way; builds one decision list and applies the yeses. |
+| [Apply a plugin update](./skills/apply-a-plugin-update/SKILL.md) | workflow | `apply-a-plugin-update` | Use when the installed plugin is newer than the team spec records; applies only the approved changes. |
+| [Clean up memory](./skills/clean-up-memory/SKILL.md) | workflow | `clean-up-memory` | Use when a bot's memory may be stale, or the weekly review asks; lists stale facts and applies the yeses. |
+| [Retire a bot](./skills/retire-a-bot/SKILL.md) | workflow | `retire-a-bot` | Use when a bot or group chat is replaced or its unit ended; saves history and leaves deleting to the person. |
+| [Set my writing voice](./skills/set-my-writing-voice/SKILL.md) | workflow | `set-my-writing-voice` | Use when bots should sound like the person; writes their Writing voice skill from their own writing, after a yes. |
+| [Save what we learned](./skills/save-what-we-learned/SKILL.md) | workflow | `save-what-we-learned` | Use when a task took too long or went wrong; proposes skill edits and sends them through Inform Team Builder. |
+| [Explain how it works](./skills/explain-how-it-works/SKILL.md) | workflow | `explain-how-it-works` | Use when the person asks why or how this stack works; answers from the principles and the guide. |
+| [Team Builder operating guide](./skills/team-builder-operating-guide/SKILL.md) | standard | `team-builder-operating-guide` | Follow whenever you are Team Builder and start a task; the job, skills, rules, and handoffs this plugin ships. |
+| [Triage work](./skills/triage-work/SKILL.md) | utility | `triage-work` | Called by a skill when work arrives as a stream of items; sorts each item to a skill, a bot, or the person. |
+| [Delegate work](./skills/delegate-work/SKILL.md) | utility | `delegate-work` | Called by a skill when work splits or a step belongs to another bot; runs the pieces or sends them on. |
+| [Verify work](./skills/verify-work/SKILL.md) | utility | `verify-work` | Called by every Verify step before anything is saved or shown; by default a fresh checker checks each claim. |
+| [Plan the work](./skills/plan-the-work/SKILL.md) | utility | `plan-the-work` | Called by Do the work when work splits or outgrows the pattern; writes the stages, contracts, and stops. |
+| [Inform manager bot](./skills/inform-manager-bot/SKILL.md) | utility | `inform-manager-bot` | Called by Hand off when a task is done, blocked, or changed in chat, or a manager's check ends; updates and notes it. |
+| [Inform Team Builder](./skills/inform-team-builder/SKILL.md) | utility | `inform-team-builder` | Called by a bot when a skill, guide, routine, or rule should change; sends Team Builder the evidence. |
+| [Run review panel](./skills/run-review-panel/SKILL.md) | utility | `run-review-panel` | Called by a skill after Verify work on a high-stakes draft; reviewers advise and the person picks the changes. |
 <!-- team-builder-stack:end readme-skills -->
 
 ### Three types of skill

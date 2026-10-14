@@ -27,9 +27,11 @@ Unit of work is what carries its own history, sized to the person’s scope of w
 
 One bot blueprint for each kind of unit, plus Team Builder, and the handoffs between bots. Each blueprint links to its bot template and never copies it.
 
-Who verifies names the specialist or manager bot that checks a bot’s work when the bot can’t start a fresh checker itself, or says none: then the bot writes nothing and tells the manager bot, or the person if there’s no manager bot, that the check couldn’t run. Add one block for each bot blueprint or single bot, named the way the person names it. Type is manager, owner, specialist, or builder. Operating guide names the skill this bot reads at the start of every task, one per bot type. Blueprint is yes when every unit of that kind gets a bot built from one bot template, and no for a single bot. A queue one owner bot owns, such as tickets or candidates, is one block. Skills are named by their slugs, never copied. Team Builder’s skills come from the installed Team Builder Stack plugin.
+Who verifies names the specialist or manager bot that checks a bot’s work when the bot can’t start a fresh checker itself, or says none: then the bot writes nothing and tells the manager bot, or the person if there’s no manager bot, that the check couldn’t run. Add one block for each bot blueprint or single bot, named the way the person names it. Type is manager, owner, specialist, or builder. Operating guide names the skill this bot reads at the start of every task, one per bot type. Blueprint is yes when every unit of that kind gets a bot built from one bot template, and no for a single bot. A queue one owner bot owns, such as tickets or candidates, is one block. Skills are named by their slugs, never copied. Connectors names the connectors this bot uses, or none and why. Team Builder’s skills come from the installed Team Builder Stack plugin. Plugin maintainer is optional. It names who maintains this plugin for the person. Plugin delivery is installed, or synced into the library by the plugin maintainer. Installed is the default. Synced means there is no plugin install, and the maintainer copies the stack skills into the person’s library. Those copies are how every bot reads them. An approved change to a skill this plugin ships is a suggestion, the way Run the weekly bot review says. If that name is a bot, send it with Delegate work. If it is a person, or the line is empty, Team Builder gives the person the text to send. A handoff’s ends are a bot named under Your team, You, or Every bot. Waits says whether the sender waits, and for what, or no and why.
 
 - Who verifies:
+- Plugin maintainer:
+- Plugin delivery: installed
 
 ### Team Builder
 
@@ -38,7 +40,9 @@ Who verifies names the specialist or manager bot that checks a bot’s work when
 - Blueprint: no
 - Model bot:
 - Bot template:
-- Skills: set-up-team-builder, build-my-team, build-a-bot, write-a-workflow-skill, coach-my-bots, check-my-bots, run-the-weekly-bot-review, clean-up-memory, retire-a-bot, set-my-writing-voice, save-what-we-learned, explain-how-it-works, triage-work, delegate-work, verify-work, plan-the-work, inform-manager-bot, run-review-panel, team-builder-operating-guide
+- Plugin version applied:
+- Connectors:
+- Skills: set-up-team-builder, build-my-team, build-a-bot, write-a-workflow-skill, coach-my-bots, check-my-bots, run-the-weekly-bot-review, apply-a-plugin-update, clean-up-memory, retire-a-bot, set-my-writing-voice, save-what-we-learned, explain-how-it-works, triage-work, delegate-work, verify-work, plan-the-work, inform-manager-bot, inform-team-builder, run-review-panel, team-builder-operating-guide
 
 ### <Kind of unit> bot
 
@@ -47,11 +51,12 @@ Who verifies names the specialist or manager bot that checks a bot’s work when
 - Blueprint:
 - Model bot:
 - Bot template:
+- Connectors:
 - Skills:
 
 ### Handoffs
 
-- <From bot> to <to bot>: <what passes>. How: <how it passes>.
+- <From bot> to <to bot>: <what passes>. How: <how it passes>. Waits: <yes, for what, or no and why>.
 
 ## Your workflows
 
@@ -76,7 +81,7 @@ Add one block for each workflow. Runs on names a block under Your team. Template
 
 For each system: its connector, what it holds, the unique ID that finds one unit, and what it’s the system of record for. How far back to read is set in each workflow skill’s load step, not here.
 
-Add one block for each system, named the way the person names it. Unique ID is what finds one unit there, such as the account ID.
+Add one block for each system, named the way the person names it. Unique ID is what finds one unit there, such as the account ID. How to read is optional. It names which tool to use and the known pitfalls, or no connector.
 
 ### <System name>
 
@@ -84,6 +89,7 @@ Add one block for each system, named the way the person names it. Unique ID is w
 - Holds:
 - Unique ID:
 - System of record for:
+- How to read:
 
 ## Records and logs
 
@@ -107,14 +113,36 @@ Finished work is where each finished piece is filed, such as one folder or page 
 - Review list:
 - Skill notes:
 
+## Routines
+
+Saved here only. The bot that runs a routine creates or changes the live routine from this text, in its own chat, after a yes. The weekly check compares each live routine with this section.
+
+One block per routine. The heading is the bot and the routine’s name. Trigger is the schedule. Runs per week is how many times it runs in a normal week, counted from the trigger, such as 5 for once each weekday. For an event trigger, write about how many, and where the number came from. The weekly bot review checks it. Skill is the one skill that routine runs. Prompt is the full prompt text. Relayed by is optional. Fill it with the other bot's routine, such as the morning kickoff, when this routine works from the dated file that routine writes. Otherwise write none and the reason, or leave the line out. Copy a block for each routine.
+
+### Team Builder: Weekly review prep
+
+- Trigger: Weekly, starting 2 hours before the weekly bot review, in the home time zone from Your role; flexible, never late
+- Runs per week: 1
+- Skill: run-the-weekly-bot-review
+- Prompt: Read Team Builder operating guide and follow it. Then run Run the weekly bot review, prep part.
+- Relayed by: none, this routine starts on its own schedule
+
+### <Bot name>: <Routine name>
+
+- Trigger:
+- Runs per week:
+- Skill:
+- Prompt:
+- Relayed by:
+
 ## Kept elsewhere, not here
 
 The spec holds only what Grok Bot doesn't already keep, and points to the rest:
 
 - Each workflow’s steps and its “you review this” marks: the workflow skill.
 - Rules about what needs a yes, and decisions that stay with the person: each bot type’s operating guide, a skill in your library, and for a rule that must never be broken, the person’s Auto Review rules too.
-- A kind of bot’s operating guide, skills, and routines: its operating guide skill and the bot template its model bot exported.
-- When a workflow runs: the routines of the bot that runs it.
+- A kind of bot’s operating guide and skills: its operating guide skill and the bot template its model bot exported.
+- The live routine on the bot is created from the Routines section. A routine is saved only from that section.
 - How far back a workflow reads: that workflow skill’s load step.
 - What’s connected: the connectors.
 - How the bots write: the writing voice skill.

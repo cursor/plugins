@@ -1,6 +1,6 @@
 ---
 name: build-my-team
-description: "Use when the person wants their team built or has no team spec; writes the team spec and map and builds the first bot, checking existing bots first."
+description: "Use when the person wants a team built or has no team spec; writes the spec, the map, and the first bot."
 ---
 
 # Build my team
@@ -12,17 +12,89 @@ Builds the team for the person in this chat, in their own account, starting with
 ## Steps
 
 1. Read the team spec and the [principles file](../explain-how-it-works/references/principles.md) in full. Look in the person's skill library for a skill with the same name as a Team Builder skill. It takes the installed plugin skill's place, so bots run it instead, and it may be the person's own skill, so never offer to remove it: summarize each in one plain line, and offer to rename it, after a yes.
+   Does: Read the spec and principles, and list library skills that share a Team Builder name.
+   Pulls from: the team spec and the principles file
+   Uses: none, this step only reads files
+   Produces: a one-line summary of each copied skill
+   Hands to: the next step, and it does not wait
+   Needs your review: the rename, after a yes
 2. **Someone with bots already, the faster path:** run Check my bots first. It reads their current setup, learns how they really use their bots, and builds or refreshes the team map. From their bots, skills, routines, and chats, work out what they're working on, and propose a team tailored to it, following the principles, on the map as in step 9. Ask only to confirm it or fill gaps, with the purpose questions in step 3 tailored to what you found. No generic interview.
+   Does: Run Check my bots and propose a team from the setup it finds.
+   Pulls from: the person's bots, skills, routines, and chats
+   Uses: none, Check my bots does the lookups
+   Produces: a proposed team on the map
+   Hands to: the person, and it waits for them to confirm or fill gaps
+   Needs your review: confirm the proposal, or fill the gaps
 3. **Your role and purpose.** Ask their role, and the business outcomes they drive and how each is measured, in their words: "As a CSM, I drive renewals, adoption, and expansion." Ask the three purpose questions: what they need to know, what it's for, and how it should reach them. Ask their home time zone. Every routine schedule is written in it, wherever they are when it's made.
+   Does: Ask role, outcomes, purpose, and home time zone.
+   Pulls from: the person's answers
+   Uses: none, this step only asks
+   Produces: the Your role answers
+   Hands to: the next step, and it waits for the answers
+   Needs your review: role, outcomes, purpose, and home time zone
 4. **Their units.** Ask what they manage to get there: the things that carry their own history, such as accounts or projects, and how many. Size the unit to the person's scope of work. A handful of strategic accounts each get a bot. 150 renewals are one renewal book one owner bot owns. Use the test in [Context isolation and traceability](../explain-how-it-works/references/principles.md#context-isolation-and-traceability). Ask "many things or one": items in a queue, such as tickets, candidates, or leads, don't get bots. One owner bot owns the queue, and the spec gets one entry for it. When a unit is short-lived, say what you'd recommend and why, and ask.
+   Does: Ask what they manage, how many, and whether each item is a unit or a queue.
+   Pulls from: the person's answers and the principles file
+   Uses: none, this step only asks
+   Produces: the unit of work and how many they carry
+   Hands to: the next step, and it waits for the answers
+   Needs your review: the unit of work, and any short-lived case
 5. **Their workflows.** Ask which workflows they repeat for each unit, by their real names, five at most. Pick one with them, usually the one they run most often. Offer Coach my bots to find more from their recent chats.
+   Does: Ask which workflows they repeat, and pick one to write first.
+   Pulls from: the person's answers
+   Uses: none, this step only asks
+   Produces: the first workflow to write
+   Hands to: the next step, and it waits for the choice
+   Needs your review: which workflow to write first
 6. **The workflow skill.** Write it with Write a workflow skill. It interviews from the last real run, and reads it all back before it writes.
+   Does: Write the chosen workflow with Write a workflow skill.
+   Pulls from: the last real run, through that skill
+   Uses: none, Write a workflow skill tries the connectors
+   Produces: the skill, read back before it is written
+   Hands to: the next step, and it waits for that read-back
+   Needs your review: the read-back, before the skill is written
 7. **Systems of record.** For each system the workflow reads: its connector, what it holds, the unique ID that finds one unit, and what it's the system of record for. Try each connector once, read only, on a real record. The person adds a missing connector from Marketplace and signs in themselves. Don't record how far back to read: each workflow skill's load step says that.
+   Does: Record each system's connector, what it holds, its unique ID, and what it settles.
+   Pulls from: one real record in each system
+   Uses: each system's connector, one read-only lookup
+   Produces: the Systems of record blocks
+   Hands to: the next step, and it does not wait
+   Needs your review: none, a missing connector is added by the person in Marketplace
 8. **Records and logs.** Ask where each unit's record, drafts, and log go, and where reports across units go. Ask where tasks are tracked and marked done: the task list. Ask whether finished pieces should be filed in one place, and where; it's optional. Recommend what each log records, and for sensitive work what to leave out, such as keeping to IDs and links. Agree it with them. Ask who verifies when a bot can't start a fresh checker: a specialist or manager bot, or none, so the bot writes nothing and tells the manager bot, or them.
-9. **The proposed team.** When the person's primary bot already takes their requests across their work, include it in the proposal as the manager bot, keeping its name. Most people already have one. Fill in the [blank team spec](references/team-spec-template.md) from what you learned, holding only what Grok Bot doesn't already keep. Build the team map from it with the [team map template](references/team-map/README.md), marked as a proposal: a canvas when canvases are available on the account, or the Markdown document when they aren't. Show the map, summarize every bot, skill, and operating guide it will create in one plain line each, and ask before anything is built; the yes covers exactly what's listed. Then save the spec, with the version, date, and change log updated. Every later change goes into the spec first.
+   Does: Ask where records, drafts, logs, tasks, and finished work go, and who verifies.
+   Pulls from: the person's answers
+   Uses: none, this step only asks
+   Produces: the Records and logs lines, agreed with them
+   Hands to: the next step, and it waits for the agreement
+   Needs your review: where each record goes, and who verifies
+9. **The proposed team.** When the person's primary bot already takes their requests across their work, include it in the proposal as the manager bot, keeping its name. Most people already have one. Fill in the [blank team spec](references/team-spec-template.md) from what you learned, holding only what Grok Bot doesn't already keep. Copy each live routine into Routines, with its trigger and full prompt, and leave Plugin version applied blank until Apply a plugin update records it. Build the team map from it with the [team map template](references/team-map/README.md), [build_team_map.py](references/team-map/build_team_map.py), [team-map.canvas.tsx](references/team-map/team-map.canvas.tsx), and [team-map-document.md](references/team-map/team-map-document.md), marked as a proposal: a canvas when canvases are available on the account, or the Markdown document when they aren't. Show the map, summarize every bot, skill, and operating guide it will create in one plain line each, and ask before anything is built; the yes covers exactly what's listed. Then save the spec, with the version, date, and change log updated. Every later change goes into the spec first.
+   Does: Fill the blank team spec, copy live routines, and show the map as a proposal.
+   Pulls from: what you learned, the live routines, and the blank team spec
+   Uses: none, the map is built from files
+   Produces: the proposed spec and map
+   Hands to: the person, and it waits for a yes before anything is built
+   Needs your review: the proposal, before anything is built
 10. **The first bot.** Build it with Build a bot. Its type's operating guide holds the rules about what waits for a yes. For a rule that must never be broken, tell the person to add it to their Auto Review rules in Grok Bot settings too; only they can set those. Run it once by hand together, and write each fix into the skill, its template, or its type's operating guide.
+   Does: Build the first bot with Build a bot, run it once by hand, and write each fix into the skill or guide.
+   Pulls from: the saved spec and that bot's operating guide
+   Uses: none, Build a bot does the setup
+   Produces: the first bot, after one hand run
+   Hands to: the next step, and it waits while you review the hand run
+   Needs your review: the hand run, and each fix
 11. **The team map.** Rebuild the map from the saved spec with the [team map template](references/team-map/README.md), and save its canvas id or document link under Records and logs. Rebuild it after each change, while the person is in your chat. Don't post its link in a group chat unless everyone there may see it.
-12. Confirm the weekly bot review. Set up Team Builder offers it and turns on [Weekly review prep](../set-up-team-builder/references/team-builder/routines/weekly-review-prep.md), the one routine, 2 hours before the slot, in the home time zone. If the slot is missing from Your role, offer the [weekly bot review](../set-up-team-builder/references/weekly-bot-review.md) and save the day, time, and length after a yes. Do not add a second routine here. Check my bots stays available on request.
+   Does: Rebuild the map from the saved spec and record its canvas id or document link.
+   Pulls from: the saved team spec
+   Uses: none, the map is built from files
+   Produces: the rebuilt map, and its id or link under Records and logs
+   Hands to: the next step, and it does not wait
+   Needs your review: none, the spec was already saved
+12. Confirm the weekly bot review. Set up Team Builder offers it and turns on [Weekly review prep](../set-up-team-builder/references/team-builder/routines/weekly-review-prep.md), the one routine. Its schedule lives in that routine file, in the home time zone from Your role. Do not copy the time into this skill. If the slot is missing from Your role, offer the [weekly bot review](../set-up-team-builder/references/weekly-bot-review.md) and save the day, time, and length after a yes. Do not add a second routine here. Check my bots stays available on request.
+   Does: Confirm the weekly bot review and turn on Weekly review prep from its routine file.
+   Pulls from: Your role, and the weekly bot review reference if the slot is missing
+   Uses: none, the routine file holds the schedule
+   Produces: the Weekly bot review line, and Weekly review prep under Routines
+   Hands to: the person, and it waits if the slot is missing
+   Needs your review: the day, time, and length, after a yes, when the slot is missing
 
 **Reply.** What exists now, when the weekly bot review is, what waits for the person's yes, whether Weekly review prep is on, and the next step: the first bot exports itself as the bot template for its kind of unit, Build a bot builds the next units' bots from it, and the person improves them from their feedback with Coach my bots.
 

@@ -1,6 +1,6 @@
 ---
 name: plan-the-work
-description: "Called by Do the work when work splits or outgrows the skill's pattern; writes a plan sized to the work: stages, worker contracts, checks, and stop rules."
+description: "Called by Do the work when work splits or outgrows the pattern; writes the stages, contracts, and stops."
 ---
 
 # Plan the work
@@ -9,7 +9,7 @@ description: "Called by Do the work when work splits or outgrows the skill's pat
 
 The skill sets the default way the work splits and its limits; this skill fits them to the run in front of the bot, as [Dynamic orchestration](../explain-how-it-works/references/principles.md#dynamic-orchestration) says. Plans scale with the work, and most runs need one line. The shapes of a plan and a worker contract are in [template.md](template.md).
 
-The bot runs every stage itself: its subagents can't start subagents, it is woken as each one finishes, and each one's report lands in its own conversation. So keep plans small, start at most four subagents at once, and have each one write its result to a file with the same fields, so the bot reads one merged result instead of many reports.
+The bot runs every stage itself: its subagents can't start subagents, the bot takes each result as it finishes, and each one's report lands in its own conversation. So keep plans small, start at most four subagents at once, and have each one write its result to a file with the same fields, so the bot reads one merged result instead of many reports.
 
 ## Steps
 
@@ -30,7 +30,7 @@ The bot runs every stage itself: its subagents can't start subagents, it is woke
    - **Departures:** what differs from the skill's pattern, and why.
 
    Work another bot owns leaves the plan and goes to that bot with Delegate work's handoff. A manager bot sends each unit to its owner bot; it doesn't run subagents on units it doesn't own.
-3. **Verify.** The plan gets no separate check; what it produces does, against its contracts. At the Ask first size, the person's yes is the check.
+3. **Verify.** The plan gets no separate check; what it produces does, against its contracts. At the Ask first size, a plan made only of facts the person set or gave in this chat is shown labeled "Self-reviewed, not independently checked", and the person's yes is the check. A plan that states facts from sources gets Verify work's full check first, as its When a fresh checker isn't needed section says.
 4. **Record.** Add a line to the unit's log only when the plan departed from the skill's pattern: what changed, and why. The plan itself lives in the bot's to-do list.
 5. **Hand off.** Return the plan to the calling step. [Delegate work](../delegate-work/SKILL.md) runs the pieces by it. Once the calling skill's Record step has written the run's record and log line, delete the run folder. If the run stopped or is waiting, keep the folder until the run finishes, and delete it after seven days at the latest.
 

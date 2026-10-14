@@ -50,11 +50,20 @@ None yet.
 ### Systems of record
 
 {{#systems}}
-- **{{name}}**{{mark}}. Connector: {{connector}}. Unique ID for one unit: {{uniqueId}}. System of record for: {{recordFor}}.
+- **{{name}}**{{mark}}. Connector: {{connector}}. Unique ID for one unit: {{uniqueId}}. System of record for: {{recordFor}}.{{#howToRead}} How to read: {{howToRead}}.{{/howToRead}}
 {{#was}}
   - Was: {{.}}
 {{/was}}
 {{/systems}}
+
+### Routines
+
+{{#routines}}
+- {{line}}
+{{/routines}}
+{{^routines}}
+None yet.
+{{/routines}}
 
 ## Bots
 
@@ -68,7 +77,7 @@ None yet.
 - **Bot template:** {{botTemplate}}
 {{/showTemplate}}
 - **Skills:** {{skillsLine}}
-- **Systems its skills use:** {{systemsLine}}
+- **Connectors:** {{systemsLine}}
 {{#was}}
 - Was: {{.}}
 {{/was}}
@@ -93,11 +102,17 @@ None yet.
 1. **Load.** {{load}}
 2. **Do the work.** Your own named steps:
 {{#steps}}
-   {{n}}. **{{name}}**{{mark}}. {{does}} Uses: {{usesLine}}. Template: {{template}}. Your review: {{review}}.
+   {{n}}. **{{name}}**{{mark}}.
+   Does: {{does}}
+   Pulls from: {{pullsFrom}}
+   Uses: {{usesLine}}
+   Produces: {{produces}}
+   Hands to: {{handsTo}}
+   Needs your review: {{review}}
 {{#was}}
       - Was: {{.}}
 {{/was}}
-{{/steps}}
+   {{/steps}}
 3. **Verify.** {{verify}}
 4. **Record.** {{record}}
 5. **Hand off.** {{handOff}}

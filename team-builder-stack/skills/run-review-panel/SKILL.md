@@ -1,6 +1,6 @@
 ---
 name: run-review-panel
-description: "Called by a skill after Verify work when a high-stakes draft needs review; fresh reviewers and a separate judge advise, and the person picks the changes."
+description: "Called by a skill after Verify work on a high-stakes draft; reviewers advise and the person picks the changes."
 ---
 
 # Run review panel

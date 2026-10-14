@@ -25,7 +25,7 @@ Team Builder recommends the next bot when it sees one missing.
 
 | Bot | Tells | When, and how |
 | --- | --- | --- |
-| Owner bot | The manager bot | A task finished: marks it done, then a note that doesn’t wake it, with Inform manager bot. Blocked, a decision needed, or a deadline at risk: a note that wakes it. |
+| Owner bot | The manager bot | A task finished, the person changes one in chat, or a check the manager bot asked for ends: the task list is updated, then the owner bot sends a note with Inform manager bot. Blocked, a decision needed, a deadline at risk, or a change to today’s brief: a note the manager bot acts on now. |
 | Owner bot | The owner of the next step | The next step is another bot’s: a handoff with Delegate work. |
 | Owner bot | A specialist bot | It needs that topic’s know-how: a question with Delegate work. |
 | Specialist bot | The bot that asked | Answers with sources. The bot that asked tells the manager bot. |
@@ -35,7 +35,7 @@ Team Builder recommends the next bot when it sees one missing.
 | You | Any bot | Ask it directly about its unit or topic. It answers in that chat. |
 | You | The bot doing the action | Each yes, in that bot’s own chat. |
 
-Notes keep your manager bot current, so it has the latest when you go to it. It doesn’t reply to you about them. Its daily brief reads the task list and each unit’s record, not the notes, and lists every task closed without your word.
+Notes keep your manager bot current, so it has the latest when you go to it. It doesn’t reply to you about them. Its daily brief reads the task list and each unit’s record, not the notes, and lists every task closed without your word. When a note says a change makes today’s brief out of date, it corrects those lines in place and sends you nothing. The task list stays the record.
 
 ## Working as a team
 
@@ -46,8 +46,8 @@ Notes keep your manager bot current, so it has the latest when you go to it. It 
 
 Group chats aren’t a unit’s home, and they’re optional. The product itself steers ordinary work to a single bot, because group chats use more of the included usage. There are two kinds.
 
-- **A group chat with people in it.** It holds up to three bots. Only people’s messages wake the bots, and a bot can’t collect a yes there. Use it when people need to see several bots’ answers side by side.
-- **A group chat of only bots.** It holds up to six. Every bot wakes on each post unless one is named. Use it for a push across several units that no single bot owns, such as a two-week effort across five accounts.
+- **A group chat with people in it.** It holds up to three bots. Only a person’s message starts a bot’s next chat turn, and a bot can’t collect a yes there. Use it when people need to see several bots’ answers side by side.
+- **A group chat of only bots.** It holds up to six. Every bot starts its next chat turn on each post unless one is named. Use it for a push across several units that no single bot owns, such as a two-week effort across five accounts.
 
 In both kinds, keep approvals and handoffs in each bot’s own chat.
 
@@ -69,6 +69,6 @@ Maintenance isn’t a utility skill. Health checks on skills and routines, clean
 
 ## In the Team Builder Stack
 
-Ask Team Builder to add a bot for another unit, a specialist bot, or a manager bot. Team Builder recommends a missing bot in the weekly review, and builds it with [Build a bot](../../../build-a-bot/SKILL.md) on a yes. When the manager is the person’s existing primary bot, Build a bot sets it up rather than creating a new bot. Build a bot builds the new bot from its bot blueprint, so every bot of one kind follows the same operating guide and skills, and is named by its unit only. Every bot, including a manager bot and Team Builder, follows an operating guide with the same five sections and shared rules; only its job, skills, connectors, its own rules, and its handoffs differ by type, and its unit comes from your team spec. Once you have a manager bot, it runs one morning kickoff that starts each owner bot, so owner bots keep no routines of their own. To replace or retire a bot or a group chat, it runs [Retire a bot](../../../retire-a-bot/SKILL.md).
+Ask Team Builder to add a bot for another unit, a specialist bot, or a manager bot. Team Builder recommends a missing bot in the weekly review, and builds it with [Build a bot](../../../build-a-bot/SKILL.md) on a yes. When the manager is the person’s existing primary bot, Build a bot sets it up rather than creating a new bot. Build a bot builds the new bot from its bot blueprint, so every bot of one kind follows the same operating guide and skills, and is named by its unit only. Every bot, including a manager bot and Team Builder, follows an operating guide with the same five sections and shared rules; only its job, skills, connectors, its own rules, and its handoffs differ by type, and its unit comes from your team spec. Once you have a manager bot, its morning kickoff writes each owner bot's ask to a dated file and names the owner bot that reads it. Owner bots keep no routines of their own unless you ask for one. To replace or retire a bot or a group chat, it runs [Retire a bot](../../../retire-a-bot/SKILL.md).
 
 Next: [Making it yours](06-making-it-yours.md).

@@ -117,7 +117,7 @@ Apply when a skill spins up subagents, a run is bigger than its skill’s patter
 - **Plans.** When the work splits, or is bigger than the pattern covers, the bot runs Plan the work first. A small job gets a one-line plan. A big job, or one no skill covers, gets a full plan in the bot’s to-do list. A plan that needs more than four subagents at once, changes code, or costs a lot is shown to the person first.
 - **Worker contracts.** For each stage, the plan writes one contract that every subagent in that stage shares: the same brief, only its own piece, the exact fields to return, one file per piece in the run folder, and a done test. The results then combine by those fields, and Verify work checks each one against the same contract.
 - **Subagents.** Fresh subagents run side by side, one for each unit, source, or point of view, each handed only its own material. They can’t start subagents of their own, so the bot runs every stage itself.
-- **Routines.** A routine starts the skill. In a scheduled run with nobody around, the bot stays inside the skill’s pattern and limits.
+- **Routines.** A routine starts the skill. In a scheduled run with nobody around, the bot stays inside the skill’s pattern and limits. Every run spends usage, so a routine runs only as often as its deadline needs, and its skill ends early when nothing has changed.
 - **Direct messages.** Work that another bot owns goes to that bot by direct message, not to a subagent.
 
 **Example.** Account A’s research skill reads the CRM, the calls, and the email side by side, one subagent each. This Monday there are also 12 new tickets, so the plan adds a stage: four subagents at a time, three tickets each, every one returning the same fields to its own file. The bot combines the files, runs one Verify work check per source, and logs that this run departed from the skill’s pattern and why.
@@ -150,6 +150,7 @@ Apply when a skill produces anything that will be written down or shown to a per
 
 - **Subagents.** A fresh subagent, started with a new conversation, reopens each source and checks each claim.
 - **Skills.** The check is the verify step of every workflow skill. It checks the draft against the template and what good looks like, and the record step waits for it.
+- **When a fresh checker isn't needed.** The narrow exceptions are in [Verify work](../../verify-work/SKILL.md#when-a-fresh-checker-isnt-needed)'s When a fresh checker isn't needed: a script check, a labeled self-review, and a scheduled run that finds nothing changed.
 
 **Example.** Account A drafts the update and starts the check. The check finds that five of five facts match their sources and that the update leads with the decision, as the template asks, and only then does the bot write account A’s page.
 
@@ -178,8 +179,8 @@ Apply when work crosses from one bot to another.
 
 **What to do.**
 
-- **Direct messages.** Bots message each other directly. In a group with people in it only people wake bots, so an @mention there doesn’t start the next bot.
+- **Direct messages.** Bots message each other directly. In a group with people in it, only a person's message starts a bot's next chat turn, so an @mention there doesn’t start the next bot.
 - **Operating guides.** A manager bot’s operating guide says it routes the work and doesn’t do the owners’ work. Each bot’s operating guide says, under Handoffs, who it tells, and when.
-- **Informing.** When an owner bot finishes a task, it marks the task done and tells the manager bot with Inform manager bot, without waking it. A block, a decision, or a deadline at risk wakes it.
+- **Informing.** When an owner bot finishes a task, the person changes one in chat, or a check the manager bot asked for ends, it updates the task list and sends the manager bot the note with Inform manager bot. A block, a decision, a deadline at risk, or a change to today’s brief is sent so the manager bot acts on it now.
 
 **Example.** When Account A needs to know what can be offered, it messages the product specialist directly with the question and the account’s context. When you ask the manager bot for account B’s QBR prep, it sends the request to Account B and moves on.
