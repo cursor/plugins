@@ -35,6 +35,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `playwright` | [Playwright](third_party/playwright/) | Cursor | Integrations | Navigate, click, screenshot, and test in a real browser. |
 | `github` | [GitHub](third_party/github/) | Cursor | Integrations | Manage repos, issues, pull requests, and Actions. |
 | `ashby` | [Ashby](third_party/ashby/) | Cursor | Integrations | Search candidates, prep interviews, and manage pipeline tasks. |
+| `greenhouse` | [Greenhouse](third_party/greenhouse/) | Cursor | Integrations | Search candidates, jobs, and applications, and review scorecards in Greenhouse Recruiting. |
 | `hubspot` | [HubSpot](third_party/hubspot/) | Cursor | Integrations | Search and update contacts, companies, deals, and tickets. |
 | `intercom` | [Intercom](third_party/intercom/) | Cursor | Integrations | Search conversations, contacts, and Help Center articles. |
 | `zoom` | [Zoom](third_party/zoom/) | Cursor | Integrations | Search meetings, pull transcripts, and work with Zoom Docs. |
@@ -79,6 +80,9 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `gamma` | [Gamma](third_party/gamma/) | Cursor | Integrations | Generate presentations, documents, and webpages. |
 | `teams` | [Teams](third_party/teams/) | Cursor | Productivity | Search, read, and send Microsoft Teams chats and channel messages. |
 | `sharepoint` | [SharePoint](third_party/sharepoint/) | Cursor | Productivity | Search and read Microsoft SharePoint sites, document libraries, files, and lists. |
+| `onedrive` | [OneDrive](third_party/onedrive/) | Cursor | Productivity | Browse, search, and read Microsoft OneDrive files. |
+| `outlook` | [Outlook](third_party/outlook/) | Cursor | Productivity | Search, read, and send Microsoft Outlook email, and look up contacts. |
+| `outlook-calendar` | [Outlook Calendar](third_party/outlook-calendar/) | Cursor | Productivity | List, create, update, and cancel Microsoft Outlook calendar events. |
 | `finance` | [Finance](third_party/finance/) | Cursor | Integrations | Securely connect your accounts so Grok can help with questions about your spending, subscriptions, balances, and investments. |
 | `webull` | [Webull](third_party/webull/) | Cursor | Integrations | View accounts, positions, orders, watchlists, and market data. |
 | `sp-global` | [S&P Global](third_party/sp-global/) | Cursor | Integrations | Query S&P Capital IQ financials, prices, and transcripts. |
@@ -97,6 +101,12 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `workday` | [Workday](third_party/workday/) | Cursor | Integrations | Look up workers, organizations, time off, payroll, and recruiting data in Workday. |
 | `square` | [Square](third_party/square/) | Cursor | Integrations | Work with payments, orders, catalog, customers, and invoices. |
 | `tailscale` | [Tailscale](third_party/tailscale/) | Cursor | Integrations | Let Grok Bot reach MCP servers on your private Tailscale network. Sign in to Tailscale to connect your tailnet; Grok Bot joins it as one tagged device and only reaches the hosts you grant to tag:grokbot. |
+| `beehiiv` | [beehiiv](third_party/beehiiv/) | Cursor | Integrations | Run your beehiiv newsletter from chat: draft and edit posts, organize subscribers with tags, custom fields, and segments, build automations, and review publication, post, and website performance. |
+| `buffer` | [Buffer](third_party/buffer/) | Cursor | Integrations | Manage social media with Buffer: draft, schedule, and publish posts across connected channels, manage the queue and ideas, and review post performance. |
+| `plaud` | [Plaud](third_party/plaud/) | Cursor | Integrations | Work with your Plaud recordings: list and search meetings and voice notes, read full transcripts with speaker labels, and pull AI summaries, action items, and key topics into your workflow. |
+| `posthog-mcp` | [PostHog MCP](third_party/posthog-mcp/) | Cursor | Integrations | Work with PostHog from chat: query product analytics and run SQL, manage feature flags and experiments, triage error tracking issues, and review session replays, surveys, and dashboards (URL-only connector to PostHog's hosted MCP server). |
+| `tinyfish` | [TinyFish](third_party/tinyfish/) | Cursor | Integrations | Browse and automate the web with TinyFish: run multi-step web automations, search the web, extract clean page content, and drive remote stealth browser sessions. |
+| `trello` | [Trello](third_party/trello/) | Cursor | Integrations | Manage your Trello workspace from chat: browse and create boards, view and move lists, create, update, move, archive, and complete cards with labels and due dates, manage checklists, capture Inbox cards, schedule Planner focus time, and search across boards. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
@@ -104,7 +114,7 @@ Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `p
 This is a multi-plugin marketplace repository. The root `.cursor-plugin/marketplace.json` lists all plugins, and each plugin has its own manifest:
 
 ```
-plugins/
+cursor/plugins/
 ├── .cursor-plugin/
 │   └── marketplace.json       # Marketplace manifest (lists all plugins)
 ├── plugin-name/
