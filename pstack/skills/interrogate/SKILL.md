@@ -24,16 +24,19 @@ Before spawning reviewers, state the intent in one clear paragraph from the user
 
 ## Step 3, Spawn Reviewers
 
-Launch all reviewers in a single message with the Task tool, one per entry on the `interrogate reviewers` line in `~/.cursor/rules/pstack-models.mdc`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
+Read [model routing](../../docs/model-routing.md) and the matching harness profile's `interrogate reviewers` entries. Use one reviewer per entry, extending or shrinking the Reviewer A/B/C labels below. Launch native reviewers together through this session's subagent tool; confirmed external reviewers use their read-only CLI runner with the same brief and rubric. Drain them together before synthesis. With no profile, use the legacy rule or table defaults through Task in Cursor; in another harness use native `inherit-parent` reviewers and report that the review is not cross-family.
 
 | Subagent | Default model |
 |----------|---------------|
 | Reviewer A | `claude-opus-5-5-xhigh` |
 | Reviewer B | `grok-4.7-xhigh-fast` |
 
-Each reviewer gets `subagent_type: generalPurpose`, `readonly: true`, and `model` set to its configured entry, or its table default when there is no configured line. Omit `model` for an `auto` or `inherit-parent` entry, so that reviewer runs on the parent model.
+For each legacy Cursor Task reviewer (or the active tool's equivalent):
+- `subagent_type`: `generalPurpose`
+- `model`: the configured `interrogate reviewers` entry, or the table default with no configured line. For an `auto` or `inherit-parent` entry, omit `model` so that reviewer runs on the parent model.
+- `readonly`: `true`
 
-If the Task tool rejects a configured entry, run that reviewer on its family's table default and say so. Families go by prefix: `claude-*`, and `grok-*` with `cursor-grok-*` and `composer-*`. A refused `composer-*` entry runs on Reviewer B's default. With no family match, use Reviewer A's default. If it rejects a table default, spawn with the closest equivalent from the valid slugs in its error message (prefer the same family and reasoning tier), and open a separate PR to update the default table. Do not block the review on the slug issue. Never treat an alias entry as a rejected slug or apply either fallback to it.
+If a configured runner or model is rejected, report which seat failed and use the matching profile's confirmed fallback. With no profile, choose a confirmed Task slug of the same family from the tool's error message. Do not silently claim a different-family review occurred. Never treat `auto` or `inherit-parent` as rejected slugs.
 
 Read `references/reviewer-prompt.md` and fill in the same template for every reviewer with the stated intent, the diff or file contents, the rubric from `references/rubric.md`, and the code-quality lens from `references/code-quality-review.md`. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **poteto-mode** skill.
 
