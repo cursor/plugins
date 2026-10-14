@@ -2,6 +2,22 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.6.6 — media.write scope
+
+- Requested `media.write`.
+- Existing installs need to sign in to X again to pick up the new scope.
+
+## 2.6.5 — Unread and chat summaries focus on the main inbox
+
+- For what's unread and for reading or summarizing chats, read only inbox conversations. Don't list, open, or decrypt message requests. If `meta.has_message_requests` is true, end with one line offering to go through them.
+- Message requests are still read in full when the owner asks about them, and searched when a person the owner names isn't in the inbox.
+
+## 2.6.4 — Exact unread messages, 1000-conversation inbox pages
+
+- List conversations with `get_chat_conversations` `max_results` 1000.
+- To find the unread messages, page `get_chat_conversation_events` newest first, past empty pages that still have a `next_token`, and stop at the first event at or below `last_read_event_id`. Leave out the owner's own messages.
+- `mark_chat_conversation_read` takes only `id` and always marks the whole conversation read. Marking a conversation unread does not set `unread`.
+
 ## 2.6.3 — Built-in public reads, unread state, message requests, no congrats line
 
 - Built-in public reads need no X connection, credits check, or cost estimate. Grok Bot reads public posts, users, search, trends, and news on its own, and a missing `get_usage_credits` or `get_users_me` next to those reads is not an error.
