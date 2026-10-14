@@ -203,6 +203,34 @@ for (const entry of claudeMarketplace.plugins ?? []) {
   }
 }
 
+// 4. Every plugin directory in the repo must be listed in marketplace.json.
+// A directory with a .cursor-plugin/plugin.json that marketplace.json does not
+// reference is invisible to the marketplace and to the checks above, so a
+// forgotten listing (or a typo in `source`) would otherwise pass silently.
+const listedDirs = new Set(
+  (marketplace.plugins ?? []).map((entry) => resolve(root, entry.source))
+);
+
+function pluginDirsUnder(dir) {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((name) => !name.startsWith("."))
+    .map((name) => resolve(dir, name))
+    .filter(
+      (path) =>
+        statSync(path).isDirectory() &&
+        existsSync(resolve(path, ".cursor-plugin/plugin.json"))
+    );
+}
+
+for (const dir of [...pluginDirsUnder(root), ...pluginDirsUnder(resolve(root, "third_party"))]) {
+  if (!listedDirs.has(dir)) {
+    fail(
+      `Unlisted plugin: "${dir.slice(root.length + 1)}" has a .cursor-plugin/plugin.json but no entry in marketplace.json`
+    );
+  }
+}
+
 const manifestPaths = [
   ".cursor-plugin/plugin.json",
   ".claude-plugin/plugin.json",
@@ -231,7 +259,7 @@ for (const [pluginDir, name] of sources) {
   }
 }
 
-// 3. Report results
+// 5. Report results
 if (warnings > 0) {
   console.error(`\n${warnings} warning(s).`);
 }
