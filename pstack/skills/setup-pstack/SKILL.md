@@ -92,9 +92,23 @@ which Arena selects **one** different-family judge when possible.
 | Panels | `arena runners`; `arena cross-judge pool`; `architect runners`; `interrogate reviewers` |
 
 Write-capable roles use native subagents by default. External writers require
-explicit user selection and an isolated checkout. Respect an existing
-confirmed custom family, list length, or alias on a re-run. Do not replace it
-merely because another family's default changed.
+explicit user selection and an isolated checkout.
+
+Build the table in this order, on a first run and a re-run alike:
+
+1. Rebuild every role from the defaults above, not from the current profile
+   or rule. In Cursor these are the skill defaults.
+2. Apply the step 3 budget to every real entry, panel entries included.
+3. Overlay from step 2 only a confirmed custom family, list length, or alias
+   (`inherit-parent`, `auto`), with the budget applied to it. Never keep an
+   earlier model variant or effort, so a new budget reaches every real entry.
+   Do not replace a custom family merely because another family's default
+   changed.
+
+In Cursor, `unlimited` turns `claude-opus-5-5-xhigh` into
+`claude-opus-5-5-max`. Grok slugs top out at `xhigh`, so `grok-4.7-xhigh-fast`
+stays as it is. `large` keeps both defaults, and `small` turns them into
+`claude-opus-5-5-medium` and `grok-4.7-medium-fast`.
 
 ## 5. Show, confirm, and validate
 
@@ -116,9 +130,11 @@ Write or update **only this harness** in `~/.config/pstack/models.json` using
 the schema in `docs/model-routing.md`; preserve other profiles. Validate the
 result with a JSON parser and read it back. If the active harness is Cursor,
 also write `~/.cursor/rules/pstack-models.mdc` with `alwaysApply: true`, a
-`# budget` line, and the same role labels. Put confirmed native Task model
-slugs there; represent external-only entries with the safe native fallback and
-note that the portable profile supplies the external runner. Never write an
+`# budget: <label> (<target effort>)` line such as `# budget: large (xhigh)`,
+and the same role labels. Overwrite the whole file so re-runs stay
+idempotent. Put confirmed native Task model slugs there; represent
+external-only entries with the safe native fallback and note that the
+portable profile supplies the external runner. Never write an
 unverified slug to either file.
 
 Tell the user which profile was written, the selected budget, runner families,
