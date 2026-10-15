@@ -10,7 +10,7 @@ This is HubSpot's remote CRM MCP server — not the [developer MCP server](https
 
 1. Open **Cursor Settings → Plugins**.
 2. Search for **HubSpot**.
-3. Click **Install**, then set the client ID and secret (below) and complete the HubSpot sign-in prompt.
+3. Click **Install** and complete the HubSpot sign-in prompt. Leave the client ID and secret blank to use Grok's HubSpot app where it is available; otherwise set them from your own app (below).
 
 Or run `/add-plugin hubspot` in chat.
 
@@ -32,6 +32,8 @@ Or run `/add-plugin hubspot` in chat.
 ```
 
 ## Setup
+
+Cursor is rolling out Grok's HubSpot app. Where it is available, leave **HubSpot Client ID** and **HubSpot Client Secret** blank and skip the steps below. If Cursor reports that the plugin's OAuth client is not configured, set up your own app.
 
 HubSpot's remote MCP server requires a dedicated MCP auth app with OAuth (PKCE). An administrator or developer has to create that app before anyone can connect.
 

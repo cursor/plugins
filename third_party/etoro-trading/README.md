@@ -1,4 +1,4 @@
-# eToro Trading
+# etoro
 
 Cursor plugin that connects agents to [eToro](https://api-portal.etoro.com/core/vibe-code/cursor) through eToro's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server for the eToro Public API.
 
@@ -9,7 +9,7 @@ This plugin is for operating an eToro account from chat. For writing code agains
 ## Install
 
 1. Open **Cursor Settings → Plugins**.
-2. Search for **eToro Trading**.
+2. Search for **etoro**.
 3. Click **Install**, then complete the eToro sign-in prompt.
 
 Or run `/add-plugin etoro-trading` in chat.

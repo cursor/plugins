@@ -1,0 +1,29 @@
+{
+  "name": "origin-apps",
+  "displayName": "Origin Apps",
+  "version": "0.1.0",
+  "description": "Skills for building on the Cursor Origin API. Fetch the live spec first, then follow the Origin rules for credentials, scopes, webhooks, paging, and errors. Includes a skill that plans the port of an existing GitHub App.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://cursor.com/docs/api/origin",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "cursor-plugin",
+    "origin",
+    "origin-api",
+    "origin-app",
+    "webhooks",
+    "github-app"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "origin",
+    "origin-api",
+    "webhooks",
+    "github-app"
+  ],
+  "skills": "./skills/"
+}

@@ -20,6 +20,7 @@
           "bookmark.write",
           "dm.read",
           "dm.write",
+          "media.write",
           "developer.billing.write",
           "developer.write",
           "offline.access"
