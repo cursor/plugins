@@ -2,10 +2,6 @@ name: Validate plugins
 
 on:
   pull_request:
-    paths:
-      - ".cursor-plugin/marketplace.json"
-      - "**/plugin.json"
-      - "schemas/**"
 
 jobs:
   validate:
