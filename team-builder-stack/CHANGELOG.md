@@ -2,6 +2,12 @@
 
 Changes to the Team Builder Stack, for people using it. Newer entries come first. A release turns Unreleased into a version entry.
 
+## 0.21.1 (2026-10-15)
+
+- A bot with a Color that isn't on the map's palette and an empty Shape no longer stops the team map build or the look recording. The bot keeps its Color and gets a shape from its id. Recording looks fills only its Shape line.
+- When a bot's set Shape or Color leaves no free look, or every look is taken, the map gives it the nearest look, warns that it shares a shape and color, and keeps building.
+- Bots without a set look keep the same defaults as in 0.21.0.
+
 ## 0.21.0 (2026-10-14)
 
 - Each bot on the team map has its own look: a colored shape with its initials, drawn with plain CSS. The shapes are circle, square, hexagon, capsule, leaf, and drop, in a calm palette with no red, amber, or gray.

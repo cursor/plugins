@@ -647,8 +647,14 @@ def assign_looks(bots, current=None):
         start = look_start(b["id"])
         ring = LOOK_PAIRS[start:] + LOOK_PAIRS[:start]
         options = [p for p in ring if (not shape or p[0] == shape) and (not color or p[1] == color)]
+        if not options:
+            # A Color off the palette matches no pair on the ring. Walk the ring
+            # with the bot's own Color in place of each pair's, so it still
+            # gets a shape in ring order and keeps its Color.
+            options = list(dict.fromkeys((shape or s, color or c) for s, c in ring))
         free = [p for p in options if p not in held and p not in reserved]
-        claim(b, free[0] if free else next((p for p in options if p not in held), options[0]))
+        unheld = [p for p in options if p not in held]
+        claim(b, free[0] if free else unheld[0] if unheld else options[0])
 
 
 def png_chunks(data):
