@@ -1,6 +1,6 @@
 {
   "name": "thermos",
-  "version": "1.0.0-portable.g1dcc2bacde73.a74854e499000",
+  "version": "1.0.0-portable.ge5136d82418d.a74854e499000",
   "description": "Thermos correctness and code-quality reviews for Claude Code and Codex.",
   "author": {
     "name": "yxhta"

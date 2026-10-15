@@ -87,9 +87,9 @@
     },
     {
       "id": 15,
-      "name": "orchestrate-without-graphite",
-      "prompt": "Run orchestrate frontier discovery. Bun and gh work, but gt and the stack metadata are unavailable.",
-      "expected_output": "Use explicit writable store and actual repo paths for supported bookkeeping. Mark frontier discovery blocked. Do not invent a gh-native frontier, initialize empty verified frontier data, or install tooling without authority."
+      "name": "orchestrate-frontier-blocked",
+      "prompt": "Run orchestrate frontier discovery. Bun works, but gh is not authenticated for the target repository.",
+      "expected_output": "Use explicit writable store and actual repo paths for supported bookkeeping. Mark frontier discovery blocked on forge access. Do not reintroduce a gt requirement, invent a frontier from guessed branch order, initialize empty verified frontier data, or authenticate or install tooling without authority."
     },
     {
       "id": 16,
@@ -126,6 +126,12 @@
       "name": "upstream-two-seat-default",
       "prompt": "The updated upstream Arena and Architect defaults each list two models. No portable model sheet exists and only the inherited model is available. An existing Interrogate configuration separately lists three inherit-parent entries.",
       "expected_output": "Use two independent inherited-model candidates for each default panel and three reviewers for the configured Interrogate panel. Preserve the upstream or configured counts and disclose reduced model diversity. Do not send Cursor model slugs to Codex."
+    },
+    {
+      "id": 22,
+      "name": "claude-per-job-effort",
+      "prompt": "Claude Code Agent tool accepts model and effort but has no speed option. Sheet has '# budget: medium (high)' and 'feature, refactoring: sonnet'. CI on trunk is red; delegate a routine one-line rename, then a subtle concurrency fix to 'hardest tasks: opus'.",
+      "expected_output": "Dispatch the rename on sonnet with effort low or medium and the concurrency fix on opus with effort xhigh. Keep each role's model. Dispatch at standard speed and report the fast choice as unapplied without toggling session fast mode. Do not invent Cursor slugs or a speed argument."
     }
   ]
 }
