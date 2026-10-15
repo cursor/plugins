@@ -100,6 +100,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `tailscale` | [Tailscale](third_party/tailscale/) | Cursor | Integrations | Let Grok Bot reach MCP servers on your private Tailscale network. Sign in to Tailscale to connect your tailnet; Grok Bot joins it as one tagged device and only reaches the hosts you grant to tag:grokbot. |
 | `highlevel` | [HighLevel](third_party/highlevel/) | Cursor | Integrations | Work with contacts, conversations, opportunities, calendars, and payments. |
 | `finary` | [Finary](third_party/finary/) | Cursor | Integrations | Read your net worth, accounts, holdings, spending, and budgets. |
+| `mailtea` | [Mailtea](third_party/mailtea/) | Cursor | Integrations | Send email and newsletters from chat: transactional email, scheduled newsletters, contacts, segments, senders, domains and delivery status, plus three skills for email, email design and website design. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
