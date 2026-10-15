@@ -53,13 +53,13 @@ Replace or retire one bot or group chat, so nothing it knew is lost and nothing 
    Produces: the proposed map
    Hands to: the person, and it waits for a yes
    Needs your review: the plan, before anything changes
-7. **After the yes.** Write the spec first. Then move the facts, fix the references, and build any replacement with Build a bot. The next weekly review flags facts about the retired bot in every other bot, as Memory: remove, for Clean up memory.
-   Does: After the yes, write the spec, move the facts, fix the references, and build any replacement.
+7. **After the yes.** Write the spec first. Record each bot's look in the proposed spec, with the current spec as the one it replaces, as [Record the looks](../build-my-team/references/team-map/README.md#record-the-looks) says, then write it over the current one. Then move the facts, fix the references, and build any replacement with Build a bot. The next weekly review flags facts about the retired bot in every other bot, as Memory: remove, for Clean up memory.
+   Does: After the yes, record each bot's look, write the spec, move the facts, fix the references, and build any replacement.
    Pulls from: the approved plan
    Uses: the connectors for the systems the facts move into
-   Produces: the updated spec, and the replacement if there is one
+   Produces: the updated spec with each bot's Shape and Color recorded, and the replacement if there is one
    Hands to: the next step, and it does not wait
-   Needs your review: none, the yes already happened
+   Needs your review: none, the yes in step 6 already covers the spec and the looks it records
 8. **Keep the old setup paused, not deleted.** Ask the old bot to pause its routines, or guide the person to. Keep the bot and its group chats until the replacement's first clean run.
    Does: Ask the old bot to pause its routines, or guide the person to.
    Pulls from: the old bot's routines

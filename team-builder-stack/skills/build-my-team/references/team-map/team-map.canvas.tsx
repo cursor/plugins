@@ -56,6 +56,12 @@ interface MapBot extends Marked {
   systems: string[]
   connectors?: string
   connectorsInferred?: boolean
+  /** One of the shapes in BOT_SHAPES, drawn with CSS */
+  shape?: string
+  /** A hex color such as #2563eb */
+  color?: string
+  /** A small PNG, JPEG, GIF, or WebP data URI built from the person's picture, or empty */
+  picture?: string
 }
 interface MapHandoff extends Marked {
   from: string
@@ -135,6 +141,73 @@ const TYPE_LABEL: Record<string, string> = { builder: 'Builder', manager: 'Manag
 const CHANGE_LABEL: Record<Change, string> = { added: 'Added', changed: 'Changed', removed: 'Removed' }
 const CHANGE_TONE: Record<Change, 'added' | 'renamed' | 'deleted'> = { added: 'added', changed: 'renamed', removed: 'deleted' }
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
+
+// Each shape is plain CSS on a div, so the map carries no image files and no vector artwork.
+const BOT_SHAPES: Record<string, { radius?: string; clip?: string; wide?: boolean }> = {
+  circle: { radius: '50%' },
+  square: { radius: '22%' },
+  hexagon: { clip: 'polygon(25% 6%, 75% 6%, 100% 50%, 75% 94%, 25% 94%, 0% 50%)' },
+  capsule: { radius: '999px', wide: true },
+  leaf: { radius: '50% 0' },
+  drop: { radius: '50% 50% 50% 0' },
+}
+const HEX_COLOR = /^#[0-9a-fA-F]{6}$/
+// The same cap build_team_map.py uses. A longer or other kind of picture is not drawn.
+const PICTURE_CAP = 24 * 1024
+const PICTURE_URI = /^data:image\/(?:png|jpeg|gif|webp);base64,[A-Za-z0-9+/]+=*$/
+
+function initials(name: string) {
+  const words = name.split(/\s+/).filter((w) => /^[A-Za-z0-9]/.test(w))
+  const kept = words.length > 1 ? words.filter((w) => !/^bots?$/i.test(w)) : words
+  return kept.slice(0, 2).map((w) => w[0].toUpperCase()).join('')
+}
+
+function textOn(color: string) {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(color.slice(i, i + 2), 16) / 255)
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.6 ? 'rgba(0, 0, 0, 0.78)' : '#ffffff'
+}
+
+function BotMark({ bot, size }: { bot: MapBot; size: number }) {
+  const theme = useHostTheme()
+  // The source that failed to load. A different source, such as the other view's picture, gets a fresh try.
+  const [failed, setFailed] = useState('')
+  const look = BOT_SHAPES[bot.shape ?? ''] ?? BOT_SHAPES.circle
+  const color = bot.color && HEX_COLOR.test(bot.color) ? bot.color : theme.accent.primary
+  const picture = bot.picture ?? ''
+  if (picture !== failed && picture.length <= PICTURE_CAP && PICTURE_URI.test(picture)) {
+    return (
+      <img
+        src={picture}
+        alt=""
+        width={size}
+        height={size}
+        onError={() => setFailed(picture)}
+        style={{ width: size, height: size, objectFit: 'cover', borderRadius: '22%', border: `2px solid ${color}`, flexShrink: 0 }}
+      />
+    )
+  }
+  return (
+    <div
+      aria-hidden
+      style={{
+        width: look.wide ? Math.round(size * 1.5) : size,
+        height: size,
+        background: color,
+        borderRadius: look.radius,
+        clipPath: look.clip,
+        color: HEX_COLOR.test(color) ? textOn(color) : '#ffffff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: Math.round(size * 0.38),
+        fontWeight: 600,
+        flexShrink: 0,
+      }}
+    >
+      {initials(bot.name)}
+    </div>
+  )
+}
 
 function needsReview(value: string | undefined) {
   const text = (value ?? '').trim()
@@ -235,7 +308,10 @@ function BotTile({ bot, body, showChanges, go }: { bot: MapBot; body: MapBody; s
           {body.verifier === bot.id && <Pill size="sm">Verifies</Pill>}
           <Mark item={bot} showChanges={showChanges} />
         </Row>
-        <H3>{bot.name}</H3>
+        <Row gap={10}>
+          <BotMark bot={bot} size={40} />
+          <H3>{bot.name}</H3>
+        </Row>
         <Text size="small" tone="secondary">
           {bot.blank
             ? 'One block in Your team. Every unit of this kind gets a bot built from its bot template.'
@@ -383,7 +459,10 @@ function BotLevel({ body, bot, showChanges, go }: { body: MapBody; bot: MapBot; 
           )}
           <Mark item={bot} showChanges={showChanges} />
         </Row>
-        <H1>{bot.name}</H1>
+        <Row gap={12}>
+          <BotMark bot={bot} size={56} />
+          <H1>{bot.name}</H1>
+        </Row>
         <Was item={bot} showChanges={showChanges} />
       </Stack>
       {bot.blueprint && (

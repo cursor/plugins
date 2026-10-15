@@ -134,13 +134,13 @@ One more bot. Set the person up, then improve the bots from their feedback with 
    Needs your review: the guide change, before it is saved
    - Show the change, save it after a yes, and have Verify work read it back.
    - A change to a profile fact still goes to each bot of that type, listed in one plain line per bot. Each bot saves its own facts, so message each one the new fact. It shows up after that bot's next summary.
-13. Update Your team after a yes: the blueprint, its model bot and bot template link, the skills it runs, and its handoffs. Then rebuild the team map.
-   Does: Update Your team after a yes, then rebuild the map.
+13. Update Your team after a yes: the blueprint, its model bot and bot template link, the skills it runs, and its handoffs. Make the change in a copy of the spec, record each bot's look in the copy with the saved spec as the one it replaces, as [Record the looks](../build-my-team/references/team-map/README.md#record-the-looks) says, and save the copy over the spec. Then rebuild the team map.
+   Does: Update Your team after a yes, record each bot's look, then rebuild the map.
    Pulls from: the team spec
    Uses: none, the map is built from the spec
-   Produces: the updated spec and map
+   Produces: the updated spec with each bot's Shape and Color recorded, and the map
    Hands to: the person, and it waits for the yes
-   Needs your review: the blueprint, template link, skills, and handoffs
+   Needs your review: the blueprint, template link, skills, handoffs, and the looks recorded
 
 **Reply.** The new bot, what it owns, what came from the template and what didn't, who messages it, and when it runs next.
 

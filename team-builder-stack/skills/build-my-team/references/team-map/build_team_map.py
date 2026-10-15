@@ -12,9 +12,12 @@ spec, checks it, and writes the data in. Python 3 standard library only.
 --proposal     marks the map as a proposal, with this one-line summary, before the person says yes
 --current      the current spec, when the proposal changes it: the map marks what's added, changed and removed
 --current-skills  the current skills folder, when the proposal changes skills too (defaults to --skills)
+--pictures     a folder of pictures for the bots, one file each named by bot id, such as account-bot.png
 --json         also writes the data as JSON
 --check        checks the spec fields and the skill library, writes nothing, and exits non-zero
                with a plain list of what is missing, per bot and skill
+--record-looks writes each bot's assigned look into its empty Shape and Color lines in --spec, seeded
+               from --current when given, and builds no map. A Shape or Color already set is kept
 
 It exits with an error when the spec can't be read or doesn't hold together, and prints a warning for
 anything to fix later, such as a skill the spec names that isn't in the library yet. With --check it
@@ -22,10 +25,14 @@ does not build the map. A fact the map cannot find in a labeled field is marked 
 """
 
 import argparse
+import base64
 import difflib
+import hashlib
 import json
 import re
+import struct
 import sys
+import zlib
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -103,6 +110,21 @@ TYPE_PREFIX = {
     "utility skill": "Called by ",
     "standard skill": "Follow whenever ",
 }
+
+# How the map draws a bot. The canvas draws each shape with CSS, so the map
+# ships no image files. The palette holds calm colors only: no red, amber, or
+# gray, which read as a warning or a blocked state.
+BOT_SHAPES = ("circle", "square", "hexagon", "capsule", "leaf", "drop")
+BOT_PALETTE = ("#2563eb", "#0d9488", "#7c3aed", "#0891b2", "#4f46e5", "#65a30d", "#c026d3", "#0369a1")
+COLOR_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
+# A picture is embedded in the map as a data URI no longer than PICTURE_CAP
+# characters. The canvas refuses a longer one, so keep the two caps the same.
+PICTURE_CAP = 24 * 1024
+PICTURE_SIDES = (96, 72, 56, 40, 32)
+PICTURE_FILE_LIMIT = 8 * 1024 * 1024
+PICTURE_PIXEL_LIMIT = 2048 * 2048
+PICTURE_EXTENSIONS = (".png", ".jpg", ".jpeg", ".gif", ".webp")
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
 warnings = []
 
@@ -547,9 +569,362 @@ def parse_handoff(line, by_name):
     }}
 
 
+# ---------- how each bot looks ----------
+
+def look_problems(name, fields):
+    """Plain lines for a Shape or Color the map can't use."""
+    problems = []
+    shape = value(fields.get("Shape", ""))
+    color = value(fields.get("Color", ""))
+    if shape and shape.lower() not in BOT_SHAPES:
+        problems.append(f"bot {name}: Shape {shape} is not one of {', '.join(BOT_SHAPES)}")
+    if color and not COLOR_RE.match(color):
+        problems.append(f"bot {name}: Color {color} is not a hex color such as {BOT_PALETTE[0]}")
+    return problems
+
+
+# Every shape and color pair, in a ring where each pair differs from the next
+# in both shape and color, so a bot that moves on one step still looks different.
+LOOK_PAIRS = tuple(
+    (BOT_SHAPES[k % len(BOT_SHAPES)], BOT_PALETTE[(k // len(BOT_SHAPES) + k) % len(BOT_PALETTE)])
+    for k in range(len(BOT_SHAPES) * len(BOT_PALETTE))
+)
+
+
+def look_start(bot_id):
+    """Where a bot starts on the ring of pairs, from a hash of its id."""
+    return int.from_bytes(hashlib.sha256(bot_id.encode("utf-8")).digest()[:8], "big") % len(LOOK_PAIRS)
+
+
+def assign_looks(bots, current=None):
+    """Give each bot a shape and a color. An explicit Shape or Color wins.
+
+    A missing one comes from the ring of pairs, starting where a hash of the
+    bot's id lands. Explicit pairs are placed first. The rest are taken by
+    their start on the ring, then by id, never by spec order, and each takes
+    the first pair from its start that no other bot holds. A bot whose start
+    pair is free moves no one else.
+
+    current is the current map's bots, on a proposal. A bot there whose Shape
+    and Color lines are unchanged keeps its current look, so it looks the same
+    in both views. A bot the proposal removes keeps its pair, and the other
+    bots take free pairs first, so a removed bot shares no look while a free
+    pair is left.
+    """
+    held = {}
+
+    def claim(bot, pair):
+        if pair in held:
+            warnings.append(f"bot {bot['name']}: shares its shape and color with {held[pair]}")
+        held.setdefault(pair, bot["name"])
+        bot["shape"], bot["color"] = pair
+
+    wanted = []
+    for b in bots:
+        for problem in look_problems(b["name"], {"Shape": b["shapeSet"], "Color": b["colorSet"]}):
+            warnings.append(f"{problem}. The map uses a default instead")
+        shape = b["shapeSet"].lower() if b["shapeSet"].lower() in BOT_SHAPES else ""
+        color = b["colorSet"].lower() if COLOR_RE.match(b["colorSet"]) else ""
+        wanted.append((b, shape, color))
+    for b, shape, color in wanted:
+        if shape and color:
+            claim(b, (shape, color))
+    ids = {b["id"] for b in bots}
+    previous = {
+        c["id"]: c for c in (current or []) if c.get("shape") and c.get("color") and c.get("change") != "removed"
+    }
+    reserved = {(c["shape"], c["color"]) for cid, c in previous.items() if cid not in ids}
+    rest = sorted((w for w in wanted if not (w[1] and w[2])), key=lambda w: (look_start(w[0]["id"]), w[0]["id"]))
+    fresh = []
+    for b, shape, color in rest:
+        was = previous.get(b["id"])
+        pair = (was["shape"], was["color"]) if was else None
+        if pair and pair not in held and (was["shapeSet"], was["colorSet"]) == (b["shapeSet"], b["colorSet"]):
+            claim(b, pair)
+        else:
+            fresh.append((b, shape, color))
+    for b, shape, color in fresh:
+        start = look_start(b["id"])
+        ring = LOOK_PAIRS[start:] + LOOK_PAIRS[:start]
+        options = [p for p in ring if (not shape or p[0] == shape) and (not color or p[1] == color)]
+        free = [p for p in options if p not in held and p not in reserved]
+        claim(b, free[0] if free else next((p for p in options if p not in held), options[0]))
+
+
+def png_chunks(data):
+    """The chunks of a PNG, in order. A broken file raises ValueError."""
+    if data[:8] != PNG_SIGNATURE:
+        raise ValueError("it is not a PNG")
+    chunks, pos = [], 8
+    while pos < len(data):
+        if pos + 12 > len(data):
+            raise ValueError("it ends partway through a chunk")
+        length, kind = struct.unpack(">I4s", data[pos:pos + 8])
+        body = data[pos + 8:pos + 8 + length]
+        crc = data[pos + 8 + length:pos + 12 + length]
+        if len(body) != length or len(crc) != 4:
+            raise ValueError("it ends partway through a chunk")
+        if zlib.crc32(kind + body) != struct.unpack(">I", crc)[0]:
+            raise ValueError("a chunk fails its checksum")
+        chunks.append((kind, body))
+        pos += 12 + length
+        if kind == b"IEND":
+            break
+    kinds = [kind for kind, _ in chunks]
+    if not kinds or kinds[0] != b"IHDR" or b"IDAT" not in kinds or kinds[-1] != b"IEND":
+        raise ValueError("it is missing a header, image data, or an end chunk")
+    return chunks
+
+
+def unfilter(raw, height, stride, step):
+    rows, prior = [], bytearray(stride)
+    for y in range(height):
+        start = y * (stride + 1)
+        kind, row = raw[start], bytearray(raw[start + 1:start + 1 + stride])
+        if kind == 1:
+            for i in range(step, stride):
+                row[i] = (row[i] + row[i - step]) & 255
+        elif kind == 2:
+            for i in range(stride):
+                row[i] = (row[i] + prior[i]) & 255
+        elif kind == 3:
+            for i in range(stride):
+                left = row[i - step] if i >= step else 0
+                row[i] = (row[i] + ((left + prior[i]) >> 1)) & 255
+        elif kind == 4:
+            for i in range(stride):
+                a = row[i - step] if i >= step else 0
+                b = prior[i]
+                c = prior[i - step] if i >= step else 0
+                p = a + b - c
+                pa, pb, pc = abs(p - a), abs(p - b), abs(p - c)
+                row[i] = (row[i] + (a if pa <= pb and pa <= pc else b if pb <= pc else c)) & 255
+        elif kind != 0:
+            raise ValueError("a row has an unknown filter")
+        rows.append(row)
+        prior = row
+    return rows
+
+
+def png_rgba(data):
+    """(width, height, rows of RGBA bytes) for a PNG this reader can open.
+
+    Returns None for a sound PNG it doesn't open: interlaced, 16-bit, or larger
+    than PICTURE_PIXEL_LIMIT. A broken PNG raises ValueError.
+    """
+    chunks = png_chunks(data)
+    header = chunks[0][1]
+    if len(header) != 13:
+        raise ValueError("its header is the wrong length")
+    width, height, depth, color, compression, filtering, interlace = struct.unpack(">IIBBBBB", header)
+    channels = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}.get(color)
+    depths = {0: (1, 2, 4, 8, 16), 2: (8, 16), 3: (1, 2, 4, 8), 4: (8, 16), 6: (8, 16)}.get(color, ())
+    if not width or not height or depth not in depths or compression or filtering or interlace > 1:
+        raise ValueError("its header is not a valid PNG header")
+    palette = b"".join(body for kind, body in chunks if kind == b"PLTE")
+    alpha = b"".join(body for kind, body in chunks if kind == b"tRNS")
+    stride = (width * channels * depth + 7) // 8
+    expected = height * (stride + 1)
+    if width * height > PICTURE_PIXEL_LIMIT:
+        return None
+    inflater = zlib.decompressobj()
+    try:
+        raw = inflater.decompress(b"".join(body for kind, body in chunks if kind == b"IDAT"), expected + 1)
+    except zlib.error:
+        raise ValueError("its image data does not decompress")
+    if interlace or depth != 8 and not (color == 3 and depth in (1, 2, 4)):
+        return None
+    if len(raw) != expected:
+        raise ValueError("its image data is the wrong size")
+    rows = unfilter(raw, height, stride, max(1, channels * depth // 8))
+    out = []
+    for row in rows:
+        rgba = bytearray(width * 4)
+        for x in range(width):
+            if color == 3:
+                per = 8 // depth
+                index = (row[x // per] >> (8 - depth * (x % per + 1))) & ((1 << depth) - 1)
+                if index * 3 + 3 > len(palette):
+                    raise ValueError("a pixel names a color its palette doesn't have")
+                pixel = palette[index * 3:index * 3 + 3] + bytes([alpha[index] if index < len(alpha) else 255])
+            elif color == 0:
+                pixel = bytes([row[x]] * 3 + [255])
+            elif color == 4:
+                pixel = bytes([row[2 * x]] * 3 + [row[2 * x + 1]])
+            elif color == 2:
+                pixel = bytes(row[3 * x:3 * x + 3]) + b"\xff"
+            else:
+                pixel = bytes(row[4 * x:4 * x + 4])
+            rgba[4 * x:4 * x + 4] = pixel
+        out.append(rgba)
+    return width, height, out
+
+
+def shrink(width, height, rows, side):
+    """Box-average the picture so its longer side is at most side pixels."""
+    scale = max(width, height) / side if max(width, height) > side else 1
+    tw, th = max(1, round(width / scale)), max(1, round(height / scale))
+    sums = [[0, 0, 0, 0, 0] for _ in range(tw * th)]
+    for y, row in enumerate(rows):
+        base = (y * th // height) * tw
+        for x in range(width):
+            r, g, b, a = row[4 * x:4 * x + 4]
+            cell = sums[base + x * tw // width]
+            cell[0] += r * a
+            cell[1] += g * a
+            cell[2] += b * a
+            cell[3] += a
+            cell[4] += 1
+    out = []
+    for y in range(th):
+        line = bytearray()
+        for x in range(tw):
+            r, g, b, a, n = sums[y * tw + x]
+            line += bytes([r // a, g // a, b // a, a // n] if a else [0, 0, 0, 0])
+        out.append(line)
+    return tw, th, out
+
+
+def png_bytes(width, height, rows):
+    def chunk(kind, body):
+        return struct.pack(">I", len(body)) + kind + body + struct.pack(">I", zlib.crc32(kind + body))
+
+    raw = b"".join(b"\x00" + bytes(row) for row in rows)
+    return (
+        PNG_SIGNATURE
+        + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0))
+        + chunk(b"IDAT", zlib.compress(raw, 9))
+        + chunk(b"IEND", b"")
+    )
+
+
+PNG_METADATA = {b"tEXt", b"zTXt", b"iTXt", b"eXIf", b"tIME"}
+
+
+def png_without_metadata(data):
+    """The same PNG without its text, EXIF, and time chunks."""
+    def chunk(kind, body):
+        return struct.pack(">I", len(body)) + kind + body + struct.pack(">I", zlib.crc32(kind + body))
+
+    return PNG_SIGNATURE + b"".join(chunk(kind, body) for kind, body in png_chunks(data) if kind not in PNG_METADATA)
+
+
+def jpeg_without_metadata(data):
+    """The same JPEG without EXIF, XMP, comments, or other application segments.
+
+    Segments before the first scan are kept except APP1 to APP15 and COM. APP0
+    stays when it is JFIF, and APP14 when it is Adobe, since a decoder reads
+    those for the color layout. Everything from the first scan on is copied as
+    it is. A broken segment list raises ValueError.
+    """
+    out, pos = bytearray(data[:2]), 2
+    while True:
+        while pos < len(data) and data[pos] == 0xFF and pos + 1 < len(data) and data[pos + 1] == 0xFF:
+            pos += 1
+        if pos + 4 > len(data) or data[pos] != 0xFF:
+            raise ValueError("its segments are broken")
+        marker = data[pos + 1]
+        length = struct.unpack(">H", data[pos + 2:pos + 4])[0]
+        end = pos + 2 + length
+        if length < 2 or end > len(data):
+            raise ValueError("a segment runs past the end of the file")
+        if marker == 0xDA:
+            out += data[pos:]
+            return bytes(out)
+        body = data[pos + 4:end]
+        application = 0xE0 <= marker <= 0xEF or marker == 0xFE
+        kept = (marker == 0xE0 and body.startswith(b"JFIF\x00")) or (marker == 0xEE and body.startswith(b"Adobe"))
+        if not application or kept:
+            out += data[pos:end]
+        pos = end
+
+
+def data_uri(mime, data):
+    return f"data:{mime};base64,{base64.b64encode(data).decode('ascii')}"
+
+
+def picture_kind(data):
+    """The picture's type from its first bytes, or empty for anything else."""
+    if data.startswith(PNG_SIGNATURE):
+        return "image/png"
+    if data.startswith(b"\xff\xd8\xff") and data.rstrip(b"\x00").endswith(b"\xff\xd9"):
+        return "image/jpeg"
+    if data[:6] in (b"GIF87a", b"GIF89a") and data.endswith(b"\x3b"):
+        return "image/gif"
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP" and struct.unpack("<I", data[4:8])[0] + 8 == len(data):
+        return "image/webp"
+    return ""
+
+
+def picture_uri(path):
+    """(data URI, "") for a usable picture, or ("", why not).
+
+    A PNG is read, shrunk to at most PICTURE_SIDES[0] pixels a side, and
+    written again, smaller each time until it fits PICTURE_CAP. Writing it again
+    also drops anything else the file carried. A JPEG, GIF, or WebP, or a PNG
+    this reader doesn't open, can't be shrunk with the Python standard library,
+    so it is embedded only when it already fits. Such a JPEG or PNG first loses
+    its metadata segments or chunks. A GIF or WebP keeps what it carries.
+    """
+    path = Path(path)
+    if not path.is_file():
+        return "", "the file is not there"
+    if path.stat().st_size > PICTURE_FILE_LIMIT:
+        return "", f"the file is over {PICTURE_FILE_LIMIT // (1024 * 1024)} MB"
+    data = path.read_bytes()
+    kind = picture_kind(data)
+    if not kind:
+        return "", "it is not a PNG, JPEG, GIF, or WebP picture"
+    if kind == "image/png":
+        try:
+            opened = png_rgba(data)
+        except ValueError as problem:
+            return "", f"the PNG can't be read: {problem}"
+        if opened:
+            small = shrink(*opened, PICTURE_SIDES[0])
+            for side in PICTURE_SIDES:
+                uri = data_uri(kind, png_bytes(*shrink(*small, side)))
+                if len(uri) <= PICTURE_CAP:
+                    return uri, ""
+            return "", "it doesn't fit the size cap even when shrunk"
+        data = png_without_metadata(data)
+    elif kind == "image/jpeg":
+        try:
+            data = jpeg_without_metadata(data)
+        except ValueError as problem:
+            return "", f"the JPEG can't be read: {problem}"
+    uri = data_uri(kind, data)
+    if len(uri) <= PICTURE_CAP:
+        return uri, ""
+    return "", f"it is over the {PICTURE_CAP // 1024} KB cap, and only a PNG this script can open is shrunk. Save it as a PNG or a smaller file"
+
+
+def assign_pictures(bots, pictures_dir, spec_dir):
+    """A bot's Picture path comes first, then a file named by its id in the pictures folder."""
+    folder = Path(pictures_dir) if pictures_dir else None
+    for b in bots:
+        b["picture"] = ""
+        candidates = []
+        if b["pictureSet"]:
+            given = Path(b["pictureSet"]).expanduser()
+            candidates.append(("Picture", given if given.is_absolute() else Path(spec_dir or ".") / given))
+        if folder:
+            for ext in PICTURE_EXTENSIONS:
+                for name in (b["id"] + ext, b["id"] + ext.upper()):
+                    if (folder / name).is_file():
+                        candidates.append(("the pictures folder", folder / name))
+                        break
+        for where, path in candidates:
+            uri, problem = picture_uri(path)
+            if uri:
+                b["picture"] = uri
+                break
+            warnings.append(f"bot {b['name']}: the picture from {where}, {path.name}, can't be used: {problem}. The map draws its shape and color instead")
+
+
 # ---------- the map's data ----------
 
-def body_of(spec, skills_dir):
+def body_of(spec, skills_dir, pictures_dir=None, spec_dir=None, current_bots=None):
     team = spec["Your team"]
     work = spec["Your workflows"]
     role = spec["Your role"]["fields"]
@@ -573,10 +948,15 @@ def body_of(spec, skills_dir):
             "systems": [] if not connectors or connectors.lower().startswith("none") else [
                 part.strip() for part in re.split(r",\s*", connectors) if part.strip()
             ],
+            "shapeSet": value(f.get("Shape", "")),
+            "colorSet": value(f.get("Color", "")),
+            "pictureSet": value(f.get("Picture", "")),
         })
     for b in bots:
         if b["type"] and b["type"] not in TYPE_LABEL:
             sys.exit(f"Your team: {b['name']} has type {b['type']}. Type is manager, owner, specialist, or builder.")
+    assign_looks(bots, current_bots)
+    assign_pictures(bots, pictures_dir, spec_dir)
     by_name = {b["name"].lower(): b["id"] for b in bots}
     verifier = value(team["fields"].get("Who verifies", ""))
     if verifier:
@@ -837,7 +1217,7 @@ def compare(now, before):
                 items.append(dict(o, change="removed"))
                 counts["removed"] += 1
 
-    mark(now["bots"], before["bots"], lambda b: b["id"], (("type", "Type"), ("blueprint", "Blueprint"), ("modelBot", "Model bot"), ("botTemplate", "Bot template"), ("skills", "Skills"), ("connectors", "Connectors")), "bot")
+    mark(now["bots"], before["bots"], lambda b: b["id"], (("type", "Type"), ("blueprint", "Blueprint"), ("modelBot", "Model bot"), ("botTemplate", "Bot template"), ("skills", "Skills"), ("connectors", "Connectors"), ("shapeSet", "Shape"), ("colorSet", "Color"), ("pictureSet", "Picture")), "bot")
     mark(now["skills"], before["skills"], lambda s: s["id"], (("description", "Description"), ("templateLocation", "Template"), ("templateOwner", "Template owner")), "skill", steps)
     mark_handoffs(now["handoffs"], before["handoffs"])
     mark(now["systems"], before["systems"], lambda s: s["name"], (("connector", "Connector"), ("holds", "Holds"), ("uniqueId", "Unique ID"), ("recordFor", "System of record for"), ("howToRead", "How to read")), "system")
@@ -853,13 +1233,18 @@ def canvas_data(data):
 
     The value stays on each routine for --json and the document line. The canvas
     file's routine type has no field for it, so the canvas does not draw it. A
-    routine whose only change is its count still shows as changed.
+    routine whose only change is its count still shows as changed. A bot's
+    Shape, Color, and Picture lines as written stay out too: the canvas draws
+    the shape, color, and picture they resolved to.
     """
     copied = json.loads(json.dumps(data))
     for key in ("now", "before"):
         body = copied.get(key)
         if not isinstance(body, dict):
             continue
+        for bot in body.get("bots") or []:
+            for field in ("shapeSet", "colorSet", "pictureSet"):
+                bot.pop(field, None)
         for routine in body.get("routines") or []:
             routine.pop("runsPerWeek", None)
             if "was" in routine:
@@ -949,6 +1334,7 @@ def document_view(data):
             "botTemplate": filled(b["botTemplate"], "the link the model bot exported"),
             "skillsLine": ", ".join(s["name"] for s in own) or "to fill in",
             "systemsLine": b["connectors"] if b.get("connectors") else "Inferred",
+            "lookLine": f"{b.get('shape', 'circle')}, {b.get('color', '')}" + (", with a picture on the canvas" if b.get("picture") else ""),
             "runs": not (b["blank"] or b["blueprint"] or b["type"] == "owner"),
         })
     library_skills = []
@@ -1237,6 +1623,7 @@ def check_spec_fields(spec):
             problems.append(f"bot {entry['name']}: Connectors is blank")
         elif none_without_reason(connectors):
             problems.append(f"bot {entry['name']}: Connectors is none without a reason")
+        problems.extend(look_problems(entry["name"], fields))
         if entry["name"].lower() == "team builder" and "Plugin version applied" not in fields:
             problems.append("bot Team Builder: Plugin version applied is missing")
     for line in team["lists"].get("Handoffs", []):
@@ -1301,6 +1688,64 @@ def warn_runs_per_week(name, fields):
         )
 
 
+def record_looks(spec_path, current_path=None):
+    """Write each bot's assigned look into its empty Shape and Color lines in the spec.
+
+    The looks are the ones the map draws for this spec, seeded from the current
+    spec when there is one, so they match what a proposal showed. A Shape or
+    Color the person set is never changed. A missing line is added after
+    Connectors, or at the end of the bot's fields. Returns one line per bot written.
+    """
+    before = body_of(read_spec(current_path), None, None, Path(current_path).parent) if current_path else None
+    now = body_of(read_spec(spec_path), None, None, Path(spec_path).parent, before["bots"] if before else None)
+    looks = {b["name"]: {"Shape": b["shape"], "Color": b["color"]} for b in now["bots"] if not b["blank"]}
+    lines = Path(spec_path).read_text(encoding="utf-8").split("\n")
+    blocks, section, block = [], None, None
+    for index, line in enumerate(lines):
+        h2 = re.match(r"^## (.+?)\s*$", line)
+        h3 = re.match(r"^### (.+?)\s*$", line)
+        if h2:
+            section, block = h2.group(1), None
+        elif h3 and section == "Your team":
+            name = h3.group(1)
+            block = None if name in LISTS or is_slot(name) else {"name": name, "fields": {}, "last": index}
+            if block:
+                blocks.append(block)
+        elif block is not None:
+            field = re.match(r"^- ([^:]+):\s*(.*)$", line)
+            if field:
+                block["fields"][field.group(1).strip()] = (index, field.group(2).strip())
+                block["last"] = index
+    edits, written = [], []
+    for block in blocks:
+        look = looks.get(block["name"])
+        if not look:
+            continue
+        filled = []
+        for label in ("Shape", "Color"):
+            if label in block["fields"]:
+                index, text = block["fields"][label]
+                if value(text):
+                    continue
+                edits.append((index, "replace", f"- {label}: {look[label]}"))
+            else:
+                anchor = block["fields"].get("Connectors", (block["last"], ""))[0]
+                if label == "Color" and "Shape" in block["fields"]:
+                    anchor = block["fields"]["Shape"][0]
+                edits.append((anchor, "after", f"- {label}: {look[label]}"))
+            filled.append(f"{label} {look[label]}")
+        if filled:
+            written.append(f"{block['name']}: {', '.join(filled)}")
+    for index, kind, text in sorted(edits, key=lambda e: (e[0], e[2].startswith("- Color")), reverse=True):
+        if kind == "replace":
+            lines[index] = text
+        else:
+            lines.insert(index + 1, text)
+    if edits:
+        Path(spec_path).write_text("\n".join(lines), encoding="utf-8")
+    return written
+
+
 def run_check(spec_path, skills_dir):
     problems = []
     # Library check clears warnings, so it runs first and a spec warning still prints.
@@ -1323,7 +1768,9 @@ def main():
     ap.add_argument("--canvas")
     ap.add_argument("--document")
     ap.add_argument("--json")
+    ap.add_argument("--pictures")
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--record-looks", action="store_true")
     args = ap.parse_args()
     if args.check:
         problems = run_check(args.spec, args.skills)
@@ -1337,11 +1784,20 @@ def main():
         return
     if not args.spec:
         sys.exit("say which spec to read: --spec")
+    if args.record_looks:
+        written = record_looks(args.spec, args.current)
+        for w in warnings:
+            if w.startswith("bot "):
+                print(f"warning: {w}", file=sys.stderr)
+        print("Looks recorded: " + "; ".join(written) + "." if written else "Looks recorded: every bot already has its Shape and Color.")
+        return
     if not (args.canvas or args.document or args.json):
         sys.exit("say where to write the map: --canvas, --document, or both")
 
-    now = body_of(read_spec(args.spec), args.skills)
-    before = body_of(read_spec(args.current), args.current_skills or args.skills) if args.current else None
+    if args.pictures and not Path(args.pictures).is_dir():
+        warnings.append(f"--pictures {args.pictures} is not a folder, so the map draws each bot's shape and color")
+    before = body_of(read_spec(args.current), args.current_skills or args.skills, args.pictures, Path(args.current).parent) if args.current else None
+    now = body_of(read_spec(args.spec), args.skills, args.pictures, Path(args.spec).parent, before["bots"] if before else None)
     summary = args.proposal
     if before:
         counts = compare(now, before)

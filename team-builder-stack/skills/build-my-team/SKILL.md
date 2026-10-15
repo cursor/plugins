@@ -67,13 +67,13 @@ Builds the team for the person in this chat, in their own account, starting with
    Produces: the Records and logs lines, agreed with them
    Hands to: the next step, and it waits for the agreement
    Needs your review: where each record goes, and who verifies
-9. **The proposed team.** When the person's primary bot already takes their requests across their work, include it in the proposal as the manager bot, keeping its name. Most people already have one. Fill in the [blank team spec](references/team-spec-template.md) from what you learned, holding only what Grok Bot doesn't already keep. Copy each live routine into Routines, with its trigger and full prompt, and leave Plugin version applied blank until Apply a plugin update records it. Build the team map from it with the [team map template](references/team-map/README.md), [build_team_map.py](references/team-map/build_team_map.py), [team-map.canvas.tsx](references/team-map/team-map.canvas.tsx), and [team-map-document.md](references/team-map/team-map-document.md), marked as a proposal: a canvas when canvases are available on the account, or the Markdown document when they aren't. Show the map, summarize every bot, skill, and operating guide it will create in one plain line each, and ask before anything is built; the yes covers exactly what's listed. Then save the spec, with the version, date, and change log updated. Every later change goes into the spec first.
-   Does: Fill the blank team spec, copy live routines, and show the map as a proposal.
-   Pulls from: what you learned, the live routines, and the blank team spec
+9. **The proposed team.** When the person's primary bot already takes their requests across their work, include it in the proposal as the manager bot, keeping its name. Most people already have one. Fill in the [blank team spec](references/team-spec-template.md) from what you learned, holding only what Grok Bot doesn't already keep. Copy each live routine into Routines, with its trigger and full prompt, and leave Plugin version applied blank until Apply a plugin update records it. Build the team map from it with the [team map template](references/team-map/README.md), [build_team_map.py](references/team-map/build_team_map.py), [team-map.canvas.tsx](references/team-map/team-map.canvas.tsx), and [team-map-document.md](references/team-map/team-map-document.md), marked as a proposal: a canvas when canvases are available on the account, or the Markdown document when they aren't. The map draws each bot with its own shape and color by default; tell the person that, and that they can give pictures for their bots to fill in the map if they want. Save each picture they give on the computer the bots share, and write its path on that bot's Picture line. Show the map, summarize every bot, skill, and operating guide it will create in one plain line each, and ask before anything is built; the yes covers exactly what's listed. Then record each bot's look in the spec, as [Record the looks](references/team-map/README.md#record-the-looks) says, so each empty Shape and Color line holds the look the map showed and a look the person set stays as it is. Save the spec, with the version, date, and change log updated. Every later change goes into the spec first.
+   Does: Fill the blank team spec, copy live routines, show the map as a proposal, and after the yes record each bot's look and save the spec.
+   Pulls from: what you learned, the live routines, the blank team spec, and any pictures the person gives for their bots
    Uses: none, the map is built from files
-   Produces: the proposed spec and map
+   Produces: the proposed spec and map, then the saved spec with each bot's Shape and Color recorded
    Hands to: the person, and it waits for a yes before anything is built
-   Needs your review: the proposal, before anything is built
+   Needs your review: the proposal, before anything is built or the spec and its looks are saved
 10. **The first bot.** Build it with Build a bot. Its type's operating guide holds the rules about what waits for a yes. For a rule that must never be broken, tell the person to add it to their Auto Review rules in Grok Bot settings too; only they can set those. Run it once by hand together, and write each fix into the skill, its template, or its type's operating guide.
    Does: Build the first bot with Build a bot, run it once by hand, and write each fix into the skill or guide.
    Pulls from: the saved spec and that bot's operating guide
@@ -83,7 +83,7 @@ Builds the team for the person in this chat, in their own account, starting with
    Needs your review: the hand run, and each fix
 11. **The team map.** Rebuild the map from the saved spec with the [team map template](references/team-map/README.md), and save its canvas id or document link under Records and logs. Rebuild it after each change, while the person is in your chat. Don't post its link in a group chat unless everyone there may see it.
    Does: Rebuild the map from the saved spec and record its canvas id or document link.
-   Pulls from: the saved team spec
+   Pulls from: the saved team spec, and the bot pictures its Picture lines name
    Uses: none, the map is built from files
    Produces: the rebuilt map, and its id or link under Records and logs
    Hands to: the next step, and it does not wait

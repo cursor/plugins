@@ -2,6 +2,16 @@
 
 Changes to the Team Builder Stack, for people using it. Newer entries come first. A release turns Unreleased into a version entry.
 
+## 0.21.0 (2026-10-14)
+
+- Each bot on the team map has its own look: a colored shape with its initials, drawn with plain CSS. The shapes are circle, square, hexagon, capsule, leaf, and drop, in a calm palette with no red, amber, or gray.
+- The team spec adds optional Shape, Color, and Picture lines to each bot block under Your team. A value set there wins. When one is empty, the map picks it from the bot's id, never from the bot's place in the spec, so the same bots always draw the same map and no two bots on one map share both a shape and a color. On a proposed change, a bot whose Shape and Color lines don't change looks the same in the proposed and the current view, and a removed bot shares a look with no remaining bot.
+- A Shape off the list or a Color that isn't a six-digit hex color is listed by the spec check. When the map is built anyway, it warns and uses the default for that field.
+- You can give pictures for your bots, by a Picture line or a folder of files named by bot id. The map script shrinks a PNG and embeds it as a small data URI of at most 24 KB. A JPEG, GIF, or WebP is embedded only when it is already under that size. A JPEG loses its EXIF, XMP, and comment segments first. A GIF or WebP keeps any metadata it carries. A picture that is missing, unreadable, or too large gets a warning, and the map shows the shape and color instead. Pictures are read when the map is built and are never copied into the plugin.
+- After your yes, the steps that save a changed team spec in Build my team, Check my bots, Build a bot, Retire a bot, and Set up Team Builder write each bot's look into its empty Shape and Color lines, the look the map showed you. A look you set is never changed. From then on every look is fixed in the spec, so a later rebuild moves none.
+- The Markdown team map lists each bot's look.
+- The apply checklist adds the three lines to each bot block in the team spec after your yes, and records the looks the map shows today.
+
 ## 0.20.1 (2026-10-14)
 
 - A proposed change to the team map now marks routines as added, changed, or removed, the same way it marks bots, skills, steps, handoffs, and systems. A proposal that only changes routines is counted as a change instead of changing nothing. The canvas and the Markdown document both show the marks. A change to a routine's runs per week is marked, and its old count shows only in the document.

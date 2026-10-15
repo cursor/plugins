@@ -60,13 +60,13 @@ The person's primary bot runs this. It creates one bot named Team Builder from t
    Produces: the request for that report
    Hands to: Team Builder, and it does not wait in this turn
    Needs your review: none, the report is not a yes
-8. If the team spec exists, update Your team after a yes: Team Builder, type builder, and the skills its operating guide names. Add Weekly review prep under Routines, with its trigger and full prompt from the routine file, and leave Plugin version applied blank until Apply a plugin update records it. Then rebuild the team map with the [team map template](../build-my-team/references/team-map/README.md). If the spec is missing, don't write one here.
-   Does: If the spec exists, update Your team after a yes and add Weekly review prep under Routines.
+8. If the team spec exists, update Your team after a yes: Team Builder, type builder, and the skills its operating guide names. Add Weekly review prep under Routines, with its trigger and full prompt from the routine file, and leave Plugin version applied blank until Apply a plugin update records it. Make the change in a copy of the spec, record each bot's look in the copy with the saved spec as the one it replaces, as [Record the looks](../build-my-team/references/team-map/README.md#record-the-looks) says, and save the copy over the spec. Then rebuild the team map with the [team map template](../build-my-team/references/team-map/README.md). If the spec is missing, don't write one here.
+   Does: If the spec exists, update Your team after a yes, add Weekly review prep under Routines, and record each bot's look.
    Pulls from: the team spec and the routine file
    Uses: none, the map is rebuilt from the spec
-   Produces: the updated spec and map
+   Produces: the updated spec with each bot's Shape and Color recorded, and the map
    Hands to: the person, and it waits for the yes
-   Needs your review: the Team Builder block and the routine, before they are written
+   Needs your review: the Team Builder block, the routine, and the looks recorded, before they are written
 
 **Reply.** Whether Team Builder was created or already existed, which routines are on, what still waits for a yes, and where to talk to Team Builder.
 

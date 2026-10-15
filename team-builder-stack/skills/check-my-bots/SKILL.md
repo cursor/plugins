@@ -85,13 +85,13 @@ This is discovery, not only an audit: learn how the person really uses their bot
    Produces: one outcome, and one finding per line
    Hands to: the person, and it waits for which items to start
    Needs your review: which findings to start, after a yes
-9. Build or refresh the team map from the spec with the same template. If there's no spec yet, draft it from what you found, show it on the map as a proposal, and save it after a yes. Save the map's canvas id, or its document link when canvases aren't available, under Records and logs after a yes. Then stop.
-   Does: Build or refresh the map, and save a new spec only after a yes.
+9. Build or refresh the team map from the spec with the same template. If there's no spec yet, draft it from what you found, show it on the map as a proposal, and save it after a yes, after you record each bot's look in it as [Record the looks](../build-my-team/references/team-map/README.md#record-the-looks) says. Save the map's canvas id, or its document link when canvases aren't available, under Records and logs after a yes. Then stop.
+   Does: Build or refresh the map, and save a new spec, with each bot's look recorded, only after a yes.
    Pulls from: the team spec, or a draft from what you found
    Uses: none, the map is built from files
-   Produces: the map, and its canvas id or document link
+   Produces: the map, its canvas id or document link, and after a yes the new spec with each bot's Shape and Color recorded
    Hands to: the person, and it waits for the yes to save
-   Needs your review: the draft spec, before it is saved
+   Needs your review: the draft spec and the looks it records, before it is saved
 
 ## Spot check
 

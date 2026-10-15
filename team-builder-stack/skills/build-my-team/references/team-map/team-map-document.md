@@ -81,6 +81,7 @@ None yet.
 {{/showTemplate}}
 - **Skills:** {{skillsLine}}
 - **Connectors:** {{systemsLine}}
+- **Look:** {{lookLine}}
 {{#was}}
 - Was: {{.}}
 {{/was}}

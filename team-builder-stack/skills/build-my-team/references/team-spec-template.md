@@ -29,6 +29,8 @@ One bot blueprint for each kind of unit, plus Team Builder, and the handoffs bet
 
 Who verifies names the specialist or manager bot that checks a bot’s work when the bot can’t start a fresh checker itself, or says none: then the bot writes nothing and tells the manager bot, or the person if there’s no manager bot, that the check couldn’t run. Add one block for each bot blueprint or single bot, named the way the person names it. Type is manager, owner, specialist, or builder. Operating guide names the skill this bot reads at the start of every task, one per bot type. Blueprint is yes when every unit of that kind gets a bot built from one bot template, and no for a single bot. A queue one owner bot owns, such as tickets or candidates, is one block. Skills are named by their slugs, never copied. Connectors names the connectors this bot uses, or none and why. Team Builder’s skills come from the installed Team Builder Stack plugin. Plugin maintainer is optional. It names who maintains this plugin for the person. Plugin delivery is installed, or synced into the library by the plugin maintainer. Installed is the default. Synced means there is no plugin install, and the maintainer copies the stack skills into the person’s library. Those copies are how every bot reads them. An approved change to a skill this plugin ships is a suggestion, the way Run the weekly bot review says. If that name is a bot, send it with Delegate work. If it is a person, or the line is empty, Team Builder gives the person the text to send. A handoff’s ends are a bot named under Your team, You, or Every bot. Waits says whether the sender waits, and for what, or no and why.
 
+Shape, Color, and Picture are optional, and only change how the team map draws that bot. Shape is circle, square, hexagon, capsule, leaf, or drop. Color is a hex color, such as #2563eb. Leave either empty and the map picks one from the bot's id, which is its name in lowercase with hyphens, so no two bots on the map share both. Picture is the path to a picture file on the computer your bots share, such as a PNG. The map shrinks it and shows it in place of the shape; without one, or when it can't be read, the map shows the shape and color. See the [team map template](team-map/README.md#how-each-bot-looks).
+
 - Who verifies:
 - Plugin maintainer:
 - Plugin delivery: installed
@@ -42,6 +44,9 @@ Who verifies names the specialist or manager bot that checks a bot’s work when
 - Bot template:
 - Plugin version applied:
 - Connectors:
+- Shape:
+- Color:
+- Picture:
 - Skills: set-up-team-builder, build-my-team, build-a-bot, write-a-workflow-skill, coach-my-bots, check-my-bots, run-the-weekly-bot-review, apply-a-plugin-update, clean-up-memory, retire-a-bot, set-my-writing-voice, save-what-we-learned, explain-how-it-works, triage-work, delegate-work, verify-work, plan-the-work, inform-manager-bot, inform-team-builder, run-review-panel, team-builder-operating-guide
 
 ### <Kind of unit> bot
@@ -52,6 +57,9 @@ Who verifies names the specialist or manager bot that checks a bot’s work when
 - Model bot:
 - Bot template:
 - Connectors:
+- Shape:
+- Color:
+- Picture:
 - Skills:
 
 ### Handoffs
