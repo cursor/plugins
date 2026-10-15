@@ -2,7 +2,7 @@
 
 Read `${CODEX_HOME:-$HOME/.codex}/pstack-models.md` immediately before dispatch. Preserve the upstream setup-pstack roles and budget confirmation. Missing roles use `inherit-parent`. Parse `model @level` into model and reasoning effort. `inherit-parent` and `auto` omit model overrides. `default effort: session` inherits session effort; an explicit entry effort takes precedence over a supported default level.
 
-Inspect the actual spawn_agent schema, delegation instructions and the available model list in this session. Supply model or reasoning_effort only when allowed by that schema and when confirmed supported. Claude aliases, Cursor suffixes and Claude effort levels are not a Codex model catalog.
+Inspect the actual spawn_agent schema, delegation instructions and the available model list in this session. Supply model or reasoning_effort only when allowed by that schema and when confirmed supported. Claude aliases, Cursor suffixes and Claude effort levels are not a Codex model catalog. Apply upstream's per-job matching to `reasoning_effort` only, from the entry's level or the budget target, within levels the schema accepts. A `-fast` slug has no Codex equivalent; dispatch at standard speed and report the unapplied speed choice.
 
 Apply the runtime adaptation's shared delegation and lifecycle rules for capacity, nested stages, placement, fresh agents, and terminal results. Comment Sicko uses its read-only parent-application bridge.
 
