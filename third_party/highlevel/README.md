@@ -19,7 +19,7 @@ Or run `/add-plugin highlevel` in chat.
   "mcpServers": {
     "highlevel": {
       "type": "http",
-      "url": "https://services.leadconnectorhq.com/mcp/"
+      "url": "https://services.leadconnectorhq.com/mcp/cursor/v2"
     }
   }
 }
@@ -29,33 +29,31 @@ Auth is OAuth with Dynamic Client Registration and PKCE. Cursor registers itself
 
 ## What agents can do
 
-Tools depend on the scopes granted to the connection. HighLevel's docs list tools in these areas:
+HighLevel's client-specific `/v2` endpoints expose a small set of unified tools that reach the full operation catalog:
 
-| Area | Example tools |
+| Tool | Purpose |
 | --- | --- |
-| Contacts | `contacts_get-contacts`, `contacts_get-contact`, `contacts_create-contact`, `contacts_update-contact`, `contacts_upsert-contact`, `contacts_add-tags`, `contacts_remove-tags`, `contacts_get-all-tasks` |
-| Conversations | `conversations_search-conversation`, `conversations_get-messages`, `conversations_send-a-new-message` |
-| Opportunities | `opportunities_search-opportunity`, `opportunities_get-pipelines`, `opportunities_get-opportunity`, `opportunities_update-opportunity` |
-| Calendars | `calendars_get-calendar-events`, `calendars_get-appointment-notes` |
-| Locations | `locations_get-location`, `locations_get-custom-fields` |
-| Payments | `payments_get-order-by-id`, `payments_list-transactions` |
-| Blogs | `blogs_get-blogs`, `blogs_get-blog-post`, `blogs_create-blog-post`, `blogs_update-blog-post` |
-| Email templates | `emails_fetch-template`, `emails_create-template` |
-| Social posts | `socialmediaposting_get-posts`, `socialmediaposting_create-post`, `socialmediaposting_edit-post`, `socialmediaposting_get-social-media-statistics` |
+| `list_locations` | List the sub-accounts this connection can use, or return the one bound sub-account |
+| `search_operations` | Discover operations by intent, including record searches and create, update, or delete actions |
+| `describe_operation` | Inspect an operation's inputs, example payload, required scopes, and safety information |
+| `execute_operation` | Run an operation, subject to OAuth scopes, permissions, and built-in safety checks |
+
+Behind those tools sit more than 550 operations across 38 domains, including contacts, conversations and messages, opportunities and pipelines, calendars and appointments, payments, products and store, invoices and estimates, social planner, blogs, emails, forms and surveys, funnels, workflows, Voice AI, custom objects and fields, and users. The operations available depend on the scopes granted.
 
 The hosted runtime is the source of truth for tool names and schemas.
 
 ## Notes
 
 - The server can write as well as read — including sending messages, updating contacts and opportunities, and creating posts. Approve only the access agents need, and test on a non-production sub-account first.
-- Each connection works against the sub-account chosen at sign-in.
-- HighLevel also publishes client-specific OAuth endpoints for Claude (`/mcp/anthropic/v2`) and OpenAI clients (`/mcp/openai/v2/`) that expose a broader operation catalog through a small set of unified tools. This plugin uses the universal endpoint.
+- Every request runs against one sub-account chosen at sign-in. Agencies that install with the multi-sub-account option can switch between the selected sub-accounts in the same chat.
+- Sensitive and irreversible operations go through additional confirmation and safety checks.
+- This plugin uses HighLevel's Cursor endpoint (`/mcp/cursor/v2`). The universal endpoint (`/mcp/`) exposes a smaller set of named tools.
 
 ## Docs
 
 - MCP server help article: https://help.leadconnectorhq.com/support/solutions/articles/155000008185
 - Developer docs: https://marketplace.gohighlevel.com/docs/other/mcp/
-- Server URL: https://services.leadconnectorhq.com/mcp/
+- Server URL: https://services.leadconnectorhq.com/mcp/cursor/v2
 
 Logo is HighLevel's official arrow mark, taken from the wordmark on gohighlevel.com.
 

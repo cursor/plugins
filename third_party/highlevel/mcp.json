@@ -2,7 +2,7 @@
   "mcpServers": {
     "highlevel": {
       "type": "http",
-      "url": "https://services.leadconnectorhq.com/mcp/"
+      "url": "https://services.leadconnectorhq.com/mcp/cursor/v2"
     }
   }
 }
