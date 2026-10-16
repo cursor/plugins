@@ -1,0 +1,3 @@
+name = "cloudflare-worker-fixture"
+main = "src/worker.ts"
+compatibility_date = "2026-08-19"

@@ -1,0 +1,7 @@
+{
+  "name": "genuine-cli-fixture",
+  "type": "module",
+  "bin": {
+    "genuine-cli": "./bin/genuine-cli.mjs"
+  }
+}
