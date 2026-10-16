@@ -6,12 +6,12 @@ const test = require('node:test');
 const vm = require('node:vm');
 
 function deferred() {
-  let resolve;
-  const promise = new Promise((r) => { resolve = r; });
-  return { promise, resolve };
+  let resolve, reject;
+  const promise = new Promise((r, j) => { resolve = r; reject = j; });
+  return { promise, resolve, reject };
 }
 
-function setup() {
+function setup({ deferPlay = false, playError } = {}) {
   const skill = fs.readFileSync(path.join(__dirname, '../skills/add-read-aloud/SKILL.md'), 'utf8');
   const snippet = skill.match(/```ts\n\/\/ client\n([\s\S]*?)\n```/)[1];
   const requests = [], playing = new Set(), urls = new Set(), audios = [];
@@ -19,8 +19,12 @@ function setup() {
   class Audio {
     constructor(url) { this.url = url; this.listeners = {}; audios.push(this); }
     addEventListener(name, fn) { this.listeners[name] = fn; }
-    pause() { playing.delete(this); }
-    async play() { playing.add(this); }
+    pause() { playing.delete(this); this.pendingPlay?.reject(Object.assign(new Error("Playback cancelled"), { name: "AbortError" })); }
+    async play() {
+      if (playError) throw playError;
+      playing.add(this);
+      if (deferPlay) { this.pendingPlay = deferred(); await this.pendingPlay.promise; }
+    }
     end() { playing.delete(this); this.listeners.ended(); }
   }
   const context = vm.createContext({
@@ -90,5 +94,34 @@ test('stop during body download prevents delayed playback', async () => {
   body.resolve(new Blob(['audio']));
   await pending;
   assert.equal(s.playing.size, 0);
+  assert.equal(s.urls.size, 0);
+});
+
+
+test('stop while play is pending treats pause rejection as cancellation', async () => {
+  const s = setup({ deferPlay: true });
+  const pending = s.context.readAloud('pending playback'); s.finish(0);
+  await new Promise(setImmediate);
+  s.context.stop();
+  await assert.doesNotReject(pending);
+  assert.equal(s.urls.size, 0);
+});
+
+test('replacing pending playback does not reject the cancelled request', async () => {
+  const s = setup({ deferPlay: true });
+  const first = s.context.readAloud('first'); s.finish(0);
+  await new Promise(setImmediate);
+  const second = s.context.readAloud('second'); s.finish(1);
+  await assert.doesNotReject(first);
+  await new Promise(setImmediate);
+  s.audios[1].pendingPlay.resolve();
+  await second;
+  assert.equal(s.playing.size, 1);
+});
+
+test('an active playback failure still rejects and releases its URL', async () => {
+  const s = setup({ playError: new Error('Audio decode failed') });
+  const pending = s.context.readAloud('broken'); s.finish(0);
+  await assert.rejects(pending, /Audio decode failed/);
   assert.equal(s.urls.size, 0);
 });
