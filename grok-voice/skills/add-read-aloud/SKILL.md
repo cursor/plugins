@@ -122,8 +122,27 @@ new WebSocketServer({ port: 8789 }).on("connection", (client) => {
   const q = new URLSearchParams({ language: "en", voice: "eve", codec: "pcm", sample_rate: "24000" /* optimize_streaming_latency: "1" */ });
   const up = new WebSocket(`wss://api.x.ai/v1/tts?${q}`, { headers: { Authorization: `Bearer ${process.env.XAI_API_KEY}` } });
   up.on("message", (d) => client.send(d.toString()));                                   // audio.delta, audio.done, audio.clear, session.updated, error
-  client.on("message", (d) => up.readyState === WebSocket.OPEN && up.send(d.toString())); // text.delta, text.done, text.clear, session.update
-  const end = () => { client.close(); up.close(); };
+  // The browser connection opens before the upstream handshake completes.
+  // Preserve early text.delta/text.done order, with a bounded pre-open queue.
+  let pending: string[] = [], pendingBytes = 0;
+  const end = () => { pending = []; pendingBytes = 0; client.close(); up.close(); };
+  up.on("open", () => {
+    if (client.readyState !== WebSocket.OPEN) return;
+    pending.forEach((message) => up.send(message));
+    pending = []; pendingBytes = 0;
+  });
+  client.on("message", (d) => {
+    const message = d.toString();
+    if (up.readyState === WebSocket.OPEN) up.send(message);
+    else if (up.readyState === WebSocket.CONNECTING) {
+      pendingBytes += Buffer.byteLength(message);
+      if (pendingBytes > 64 * 1024) {
+        pending = []; pendingBytes = 0;
+        client.close(1009, "Upstream not ready; pending text limit exceeded");
+        up.close();
+      } else pending.push(message);
+    }
+  });
   up.on("close", end); up.on("error", end); client.on("close", end);
 });
 ```
