@@ -24,7 +24,7 @@ function setup() {
   vm.runInContext(stripTypeScriptTypes(snippet), context);
   recorder.ondataavailable({ data: new Blob(['recorded audio']) });
   return { tracks, recorder, inserted, body: () => body,
-    resolve() { resolveRequest({ async json() { return { text: 'hello' }; } }); },
+    resolve() { resolveRequest(new Response(JSON.stringify({ text: 'hello' }), { status: 200 })); },
     reject() { rejectRequest(new Error('offline')); },
   };
 }
