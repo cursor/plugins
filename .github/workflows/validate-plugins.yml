@@ -33,3 +33,6 @@ jobs:
 
       - name: Test pstack skill scripts
         run: node --test pstack/skills/*/scripts/test/*.test.mjs
+
+      - name: Test harness tree path portability
+        run: node --experimental-vm-modules --test scripts/generate-pstack-harness-trees.test.mjs
