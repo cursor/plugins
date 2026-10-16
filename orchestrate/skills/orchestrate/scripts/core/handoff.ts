@@ -85,7 +85,7 @@ export function parseHandoffFailureMode(handoff: string): FailureMode | null {
 export function parseHandoffPrNumber(handoff: string): number | null {
   // An explicit artifact section wins over links to dependencies or examples.
   // If it says no PR, do not attribute an unrelated reference to this task.
-  const hasSection = /^##\s+(?:PR|Pull Request)\s*\r?\n/m.test(handoff);
+  const hasSection = /^##\s+(?:PR|Pull Request)\s*(?:\r?\n|$)/m.test(handoff);
   const fromSection =
     readSectionValue({ handoff, heading: "PR" }) ??
     readSectionValue({ handoff, heading: "Pull Request" });
