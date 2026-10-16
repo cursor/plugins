@@ -66,13 +66,15 @@ for concrete issues. No praise-only comments. If nothing to flag, say so.`;
     const result = await run.wait();
     if (result.status !== "finished") {
       console.error(`[review] run ${result.id} ended as ${result.status}`);
-      process.exit(2);
+      process.exitCode = 2;
+      return;
     }
     console.log(`[review] done: ${result.durationMs}ms`);
   } catch (err) {
     if (err instanceof CursorAgentError) {
       console.error(`[review] startup failed: ${err.message}`);
-      process.exit(err.isRetryable ? 75 : 1); // EX_TEMPFAIL for transient
+      process.exitCode = err.isRetryable ? 75 : 1; // EX_TEMPFAIL for transient
+      return;
     }
     throw err;
   }
@@ -85,6 +87,7 @@ Why this shape:
 
 - Cloud runtime (needs to post GitHub comments; works independently of the runner).
 - `skipReviewerRequest: true` keeps the action quiet in CI.
+- Set `process.exitCode` and return so `await using` finishes asynchronous cleanup before the process exits.
 - Exit codes: `0` finished, `1` permanent startup failure, `2` run finished with status `error`, `75` transient retryable failure.
 
 ---
