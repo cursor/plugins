@@ -163,6 +163,10 @@ ws.addEventListener("message", (e) => {
     const ch = buf.getChannelData(0);
     for (let i = 0; i < pcm.length; i++) ch[i] = pcm[i] / 32768;
     const src = ctx.createBufferSource(); src.buffer = buf; src.connect(ctx.destination);
+    src.onended = () => {
+      src.disconnect();
+      sources = sources.filter((source) => source !== src); // retain queued/playing audio only
+    };
     playhead = Math.max(playhead, ctx.currentTime + 0.15);   // ~150 ms lead so chunks butt together
     src.start(playhead); playhead += buf.duration; sources.push(src);
   } else if (ev.type === "audio.done") { /* utterance finished; socket stays open */ }
@@ -209,7 +213,7 @@ r.raise_for_status(); audio_bytes = r.content  # audio/mpeg
    - Batch: `curl -X POST https://api.x.ai/v1/tts -H "Authorization: Bearer $XAI_API_KEY" -H "Content-Type: application/json" -d '{"text":"Hello from read aloud.","voice_id":"eve","language":"en"}' --output /tmp/hello.mp3` → 200 `audio/mpeg` (MP3, 24 kHz, 128 kbps, mono), plays. Omit `language` → 422 (observed; the docs’ table only lists 400). `voice_id: "nope"` → 404.
    - In the app: no speaker while a reply streams; it appears when the reply ends. Click → spinner → stop square → back to speaker when audio ends; click again mid-play → stops at once; click a second reply while the first plays → first stops, second plays. Click two replies before either fetch resolves, resolving the older one last → only the latest plays. Stop during fetch or body download → nothing starts afterward; stopped/replaced audio releases its blob URL. Safari: first play works from the click, `URL.revokeObjectURL` fires on `ended`.
    - Text prep: a reply with a fenced block, a table, a `[1]` citation and a stray `[laugh]` → spoken as “Code block omitted”, one sentence per row, the citation intact, the tag gone. Unit-test this; it is pure.
-   - Streaming: send a two-sentence reply token by token; audio should start before `text.done`. Send `text.clear` mid-utterance → `audio.clear`, playback stops with nothing stale. Second utterance on the same socket → fresh `audio.delta`s, no bleed from the first.
+   - Streaming: send a two-sentence reply token by token; audio should start before `text.done`. Send `text.clear` mid-utterance → `audio.clear`, playback stops with nothing stale. Second utterance on the same socket → fresh `audio.delta`s, no bleed from the first. After playback drains, the active-source collection is empty; finished chunks and their PCM buffers are released between utterances.
    - Search the client bundle for `XAI_API_KEY`; it must not be there. Against a running dev server, fetch `/`, collect the `/_next/static/chunks/*.js` (or equivalent) URLs it references, and grep each; do not rely on a production build you have not made.
    - Debug from logs with `/debug-voice`; swap its hook points to `audio.delta` (byte counts), `audio.done`, `audio.clear`, `error`.
 
