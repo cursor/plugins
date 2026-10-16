@@ -50,8 +50,14 @@ const SKILL_DESCRIPTION_MAX = 1024;
 // continuation lines are indented. Returns null when there is no frontmatter.
 function parseFrontmatter(text) {
   if (!text.startsWith("---")) return null;
-  const end = text.indexOf("\n---", 3);
-  if (end === -1) return null;
+  // The terminator is a line that is exactly `---`; an indented continuation
+  // line that merely starts with `---` (a markdown rule inside a block
+  // scalar) must not end the frontmatter early.
+  const terminator = /\r?\n---[ \t]*(?:\r?\n|$)/g;
+  terminator.lastIndex = 3;
+  const match = terminator.exec(text);
+  if (!match) return null;
+  const end = match.index;
   const lines = text.slice(text.indexOf("\n") + 1, end).split("\n");
   const fields = {};
   for (let i = 0; i < lines.length; i++) {
