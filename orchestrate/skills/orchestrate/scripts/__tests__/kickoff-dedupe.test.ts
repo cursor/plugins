@@ -146,6 +146,14 @@ describe("kickoff dedupe", () => {
     expect(result.stdout).toContain('"adopted":true');
   });
 
+  test("kickoff recognizes SSH and HTTPS aliases on listed agents", () => {
+    for (const repo of ["git@github.com:example-org/example-repo.git", "ssh://git@github.com/example-org/example-repo.git"]) {
+      const result = spawnKickoff(false, repo);
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain('"adopted":true');
+    }
+  });
+
   test("infers root slug from an explicit kickoff prefix", () => {
     expect(inferKickoffRootSlug("refactor-ui: shrink Settings")).toBe(
       "refactor-ui"
