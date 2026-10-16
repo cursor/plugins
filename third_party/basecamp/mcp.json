@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "basecamp": {
+      "type": "http",
+      "url": "https://mcp.basecamp.com/mcp",
+      "placement": "server"
+    }
+  }
+}
