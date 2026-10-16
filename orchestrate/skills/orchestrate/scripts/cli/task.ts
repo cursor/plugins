@@ -151,7 +151,9 @@ export function registerTaskCommands(program: Command): void {
           const url = resolveKickoffRepoUrl(opts.repo);
           const rootSlug = inferKickoffRootSlug(goal);
           if (!opts.force) {
-            const active = await findActiveRootPlanner(sdk.Agent, rootSlug);
+            const active = await findActiveRootPlanner(
+              sdk.Agent, rootSlug, Date.now(), url
+            );
             if (active) {
               console.log(`adopting ${active.agentId}`);
               console.log(
@@ -478,7 +480,8 @@ export function registerTaskCommands(program: Command): void {
 export async function findActiveRootPlanner(
   agentApi: AgentListApi,
   rootSlug: string,
-  nowMs: number = Date.now()
+  nowMs: number = Date.now(),
+  repoUrl?: string
 ): Promise<ActiveRootPlanner | null> {
   const list = await agentApi.list({ runtime: "cloud", limit: 50 });
   // Exact match, not startsWith: a prefix slug would otherwise adopt another
@@ -488,6 +491,19 @@ export async function findActiveRootPlanner(
     const name = stringField(item, "name");
     if (!name) continue;
     if (name !== rootPlannerName) continue;
+    // A goal slug is only unique within a repository. Cloud list results expose
+    // `repos`; missing metadata cannot establish that this is the requested run.
+    if (repoUrl !== undefined) {
+      const repos = field(item, "repos");
+      if (
+        !Array.isArray(repos) ||
+        !repos.some(
+          repo =>
+            typeof repo === "string" &&
+            normalizeRepoUrl(repo) === normalizeRepoUrl(repoUrl)
+        )
+      ) continue;
+    }
     const createdAt = timeMs(field(item, "createdAt"));
     if (createdAt === null || nowMs - createdAt > MAX_BOOT_MS) continue;
     const agentId =
@@ -505,6 +521,10 @@ export async function findActiveRootPlanner(
     };
   }
   return null;
+}
+
+function normalizeRepoUrl(repo: string): string {
+  return repo.trim().replace(/\/+$/, "").replace(/\.git$/, "");
 }
 
 export function inferKickoffRootSlug(goal: string): string {
