@@ -2,6 +2,10 @@
 
 Changes to the Team Builder Stack, for people using it. Newer entries come first. A release turns Unreleased into a version entry.
 
+## 0.21.2 (2026-10-16)
+
+- The README's About me section uses the company's new name, SpaceX Super Intelligence, and its short form, SpaceXSI. No skill, template, or check changes.
+
 ## 0.21.1 (2026-10-15)
 
 - A bot with a Color that isn't on the map's palette and an empty Shape no longer stops the team map build or the look recording. The bot keeps its Color and gets a shape from its id. Recording looks fills only its Shape line.

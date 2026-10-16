@@ -3,9 +3,9 @@
 ## About me
 
 <!-- team-builder-stack:begin about -->
-I'm Danny Graziosi, an AI Deployment Manager at SpaceXAI. I help large enterprises shape their AI deployment strategy, run enablement across the SpaceXAI product suite, and put agentic workflows into production.
+I'm Danny Graziosi, an AI Deployment Manager at SpaceX Super Intelligence. I help large enterprises shape their AI deployment strategy, run enablement across the SpaceXSI product suite, and put agentic workflows into production.
 
-Before SpaceXAI, I spent two years leading agentic workflow rollouts for Fortune 500 companies in financial services, healthcare, and consumer goods. The work spanned marketing, sales, finance, investment banking, portfolio management, and document processing.
+Before SpaceXSI, I spent two years leading agentic workflow rollouts for Fortune 500 companies in financial services, healthcare, and consumer goods. The work spanned marketing, sales, finance, investment banking, portfolio management, and document processing.
 
 Along the way I built a framework and a set of design principles for putting agents to work in any business process. Team Builder Stack packages both as a set of skills and a bot template, so you can build your own team of bots.
 
