@@ -53,7 +53,7 @@ for (const entry of marketplace.plugins ?? []) {
   // The schema allows `source` to be a remote URL. Nothing here fetches it, so
   // say so instead of resolving it as a path (which turns "https://x" into
   // "<root>/https:/x" and reports a missing directory).
-  if (/^https?:\/\//.test(entry.source)) {
+  if (/^https?:\/\//i.test(entry.source)) {
     console.log(
       `INFO: Plugin "${entry.name}": remote source "${entry.source}" is not validated locally`
     );
