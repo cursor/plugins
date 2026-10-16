@@ -119,6 +119,7 @@ new WebSocketServer({ port: 8788 }).on("connection", (client) => {
     }
   }); // audio + finalize/audio.done
   up.on("close", end); up.on("error", end); client.on("close", end);
+  client.on("error", end); // contain browser transport failures
 });
 ```
 
