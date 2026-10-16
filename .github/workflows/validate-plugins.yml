@@ -2,10 +2,6 @@ name: Validate plugins
 
 on:
   pull_request:
-    paths:
-      - ".cursor-plugin/marketplace.json"
-      - "**/plugin.json"
-      - "schemas/**"
 
 jobs:
   validate:
@@ -19,6 +15,9 @@ jobs:
 
       - name: Install dependencies
         run: npm install --no-save ajv ajv-formats
+
+      - name: Test plugin validation
+        run: node --test scripts/validate-plugins.test.mjs
 
       - name: Validate plugin definitions
         run: node scripts/validate-plugins.mjs
