@@ -26,3 +26,8 @@ test("out-of-tolerance, unit mismatch, and nonnumeric strings remain rejected", 
   expect(check("1e3 KB", "1000 MB").outcome).toBe("value-mismatch");
   expect(check("answer", "other").outcome).toBe("value-mismatch");
 });
+
+test("subunit exponents respect relative drift", () => {
+  expect(check("1e-6", "1e-7").outcome).toBe("value-mismatch");
+  expect(check("1.05e-7", "1e-7").outcome).toBe("match");
+});
