@@ -1,5 +1,5 @@
 ---
-name: X MCP guide
+name: x-api-mcp-guide
 description: >-
   ALWAYS read this when a user connects the X plugin or any X MCP, before using
   any X tool, including Grok Bot's built-in public reads (no X connection or
