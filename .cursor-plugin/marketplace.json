@@ -547,6 +547,11 @@
       "name": "finary",
       "source": "third_party/finary",
       "description": "Read your net worth, accounts, holdings, spending, and budgets."
+    },
+    {
+      "name": "iflytek-skills",
+      "source": "third_party/iflytek-skills",
+      "description": "Speech, OCR, translation, proofreading, and multimodal workflows powered by iFLYTEK APIs."
     }
   ]
 }
