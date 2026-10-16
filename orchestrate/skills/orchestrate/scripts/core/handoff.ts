@@ -82,16 +82,29 @@ export function parseHandoffFailureMode(handoff: string): FailureMode | null {
 }
 
 export function parseHandoffPrNumber(handoff: string): number | null {
-  for (const rawUrl of handoff.match(/https?:\/\/[^\s<>|)]+/g) ?? []) {
-    const number = prNumberFromUrl(rawUrl);
-    if (number !== null) return number;
-  }
+  // An explicit artifact section wins over links to dependencies or examples.
+  // If it says no PR, do not attribute an unrelated reference to this task.
+  const hasSection = /^##\s+(?:PR|Pull Request)\s*\r?\n/m.test(handoff);
   const fromSection =
     readSectionValue({ handoff, heading: "PR" }) ??
     readSectionValue({ handoff, heading: "Pull Request" });
-  if (!fromSection) return null;
-  const number = Number.parseInt(fromSection.replace(/^#/, ""), 10);
-  return Number.isInteger(number) && number > 0 ? number : null;
+  if (hasSection) {
+    if (!fromSection) return null;
+    const fromUrl = firstPrNumberFromUrl(fromSection);
+    if (fromUrl !== null) return fromUrl;
+    if (!/^#?\d+$/.test(fromSection)) return null;
+    const number = Number(fromSection.replace(/^#/, ""));
+    return Number.isSafeInteger(number) && number > 0 ? number : null;
+  }
+  return firstPrNumberFromUrl(handoff);
+}
+
+function firstPrNumberFromUrl(text: string): number | null {
+  for (const rawUrl of text.match(/https?:\/\/[^\s<>|)]+/g) ?? []) {
+    const number = prNumberFromUrl(rawUrl);
+    if (number !== null) return number;
+  }
+  return null;
 }
 
 function prNumberFromUrl(rawUrl: string): number | null {
