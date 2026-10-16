@@ -21,6 +21,7 @@ import {
   loadOrBail,
   parsePositiveIntegerOrBail,
   parseRespawnSourceOrBail,
+  normalizeKickoffRepoUrl,
   resolveKickoffRepoUrl,
   resolveKickoffSlackChannelOrBail,
   resolveWorkspaceSlackChannelOrBail,
@@ -524,7 +525,8 @@ export async function findActiveRootPlanner(
 }
 
 function normalizeRepoUrl(repo: string): string {
-  return repo.trim().replace(/\/+$/, "").replace(/\.git$/, "");
+  return normalizeKickoffRepoUrl(repo.trim().replace(/\/+$/, ""))
+    .replace(/\/+$/, "").replace(/\.git$/, "");
 }
 
 export function inferKickoffRootSlug(goal: string): string {
