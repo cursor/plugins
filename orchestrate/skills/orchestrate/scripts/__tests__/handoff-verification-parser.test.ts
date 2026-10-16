@@ -117,6 +117,14 @@ describe("parseHandoffPrNumber", () => {
     }
   });
 
+  test("Empty trailing PR headings do not inherit dependency links", () => {
+    for (const heading of ["## PR", "## Pull Request", "##\tPR  ", "## Pull Request\t"]) {
+      const body = `## What I did\nFollowed https://github.com/example/dependency/pull/7\n${heading}`;
+      expect(parseHandoffPrNumber(body)).toBe(null);
+      expect(parseHandoffPrNumber(body.trim())).toBe(null);
+    }
+  });
+
   test("Canonical section whitespace and CRLF match the section reader", () => {
     const body = "## What I did\r\nhttps://github.com/example/dependency/pull/7\r\n##\tPR  \r\n\r\n`#42`\r\n";
     expect(parseHandoffPrNumber(body)).toBe(42);
