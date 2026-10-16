@@ -759,3 +759,92 @@ describe("orch CLI", () => {
     expect(missingLedger.stderr).toBe("");
   });
 });
+
+describe("Store same-handle ordering", () => {
+  it("retains concurrent unit writes before a following read", async () => {
+    const { store } = await initializedStore();
+    const writes = Array.from({ length: 12 }, (_, index) =>
+      store.units.add({ id: `parallel-${index}`, track: "build" })
+    );
+    const read = store.units.list();
+    await Promise.all(writes);
+    expect((await read).map((unit) => unit.id)).toEqual(
+      Array.from({ length: 12 }, (_, index) => `parallel-${index}`)
+    );
+  });
+
+  it("retains concurrent ledger, gate and standing-order updates", async () => {
+    const { store } = await initializedStore();
+    await Promise.all(Array.from({ length: 4 }, (_, index) =>
+      store.ledger.record({
+        pr: index + 1,
+        sha: `sha-${index}`,
+        verdict: "unit-test-verified",
+        evidence: `evidence-${index}`,
+      })
+    ));
+    await Promise.all(Array.from({ length: 4 }, (_, index) =>
+      store.gates.park({
+        id: `gate-${index}`,
+        question: "Choose an option",
+        options: "one or two",
+        defaultAnswer: "one",
+      })
+    ));
+    await Promise.all(Array.from({ length: 4 }, (_, index) =>
+      store.standing.add({ line: `Preserve order ${index}` })
+    ));
+    expect(await store.ledger.summary()).toEqual({ "unit-test-verified": 4 });
+    expect(await store.gates.list()).toHaveLength(4);
+    expect((await store.standing.show()).map((row) => row.number)).toEqual([1, 2, 3, 4]);
+  });
+
+  it("orders inbox pushes and drains without losing accepted messages", async () => {
+    const { store } = await initializedStore();
+    const first = store.inbox.push({ agent: "owner", unit: "one", status: "done" });
+    const second = store.inbox.push({ agent: "owner", unit: "two", status: "done" });
+    const drained = store.inbox.drain();
+    const remaining = store.inbox.peek();
+    const outcomes = await Promise.allSettled([first, second, drained, remaining]);
+    expect(outcomes.map((result) => result.status)).toEqual([
+      "fulfilled", "fulfilled", "fulfilled", "fulfilled",
+    ]);
+    expect((await drained).map((row) => row.unit).sort()).toEqual(["one", "two"]);
+    expect(await remaining).toEqual([]);
+  });
+
+  it("a rejected write does not poison later queued operations", async () => {
+    const { store } = await initializedStore();
+    await store.units.add({ id: "existing", track: "build" });
+    const outcomes = await Promise.allSettled([
+      store.units.add({ id: "existing", track: "build" }),
+      store.units.add({ id: "following", track: "build" }),
+    ]);
+    expect(outcomes.map((result) => result.status)).toEqual(["rejected", "fulfilled"]);
+    expect((await store.units.list()).map((unit) => unit.id)).toEqual(["existing", "following"]);
+  });
+
+  it("close waits for accepted initialization and writes before releasing the lock", async () => {
+    const directory = await makeDirectory();
+    const store = useStore(directory);
+    const initialized = store.init();
+    const written = store.units.add({ id: "accepted", track: "build" });
+    const closed = store.close();
+    const rejected = store.units.add({ id: "too-late", track: "build" });
+    const outcomes = await Promise.allSettled([initialized, written, closed, rejected]);
+    expect(outcomes.map((result) => result.status)).toEqual([
+      "fulfilled", "fulfilled", "fulfilled", "rejected",
+    ]);
+    const late = outcomes[3];
+    if (late?.status === "rejected") {
+      expect(String(late.reason)).toContain("store is closed");
+    }
+    expect(await readFile(join(directory, "units.tsv"), "utf8")).toContain("accepted");
+    expect(await readdir(directory)).not.toContain(".orch.lock");
+    const reopened = useStore(directory);
+    await reopened.units.add({ id: "new-handle", track: "build" });
+    expect((await reopened.units.list()).map((unit) => unit.id)).toEqual(["accepted", "new-handle"]);
+    await expect(store.units.list()).rejects.toThrow("store is closed");
+    await store.close();
+  });
+});
