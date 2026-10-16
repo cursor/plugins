@@ -98,7 +98,8 @@ Goal: every morning, resume yesterday's triage agent and ask it to triage today'
 
 ```typescript
 import { Agent, CursorAgentError } from "@cursor/sdk";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, rename, rm } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 
 const STATE_PATH = "/var/lib/triage/state.json";
 
@@ -149,10 +150,19 @@ async function main() {
 
 async function readState(): Promise<{ agentId?: string; lastRunId?: string }> {
   try { return JSON.parse(await readFile(STATE_PATH, "utf-8")); }
-  catch { return {}; }
+  catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return {};
+    throw err; // damaged or unreadable state must not silently create a new agent
+  }
 }
 async function writeState(s: { agentId: string; lastRunId: string }) {
-  await writeFile(STATE_PATH, JSON.stringify(s));
+  const temporary = `${STATE_PATH}.${randomUUID()}.tmp`;
+  try {
+    await writeFile(temporary, JSON.stringify(s));
+    await rename(temporary, STATE_PATH); // replace only a completely written state file
+  } finally {
+    await rm(temporary, { force: true }).catch(() => {});
+  }
 }
 
 main();
