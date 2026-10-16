@@ -77,18 +77,35 @@ export async function speak(text: string, voice_id = "eve", language = "auto") {
 
 ```ts
 // client
+// Keep this player in the shared store, not in each message button.
 let current: HTMLAudioElement | null = null;
-async function readAloud(text: string, voiceId = "eve") {
-  current?.pause(); current = null;                       // one utterance at a time
-  const res = await fetch("/api/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, voice_id: voiceId }) });
-  if (!res.ok) throw new Error("TTS request failed");
-  const url = URL.createObjectURL(await res.blob());
-  const audio = new Audio(url);
-  audio.addEventListener("ended", () => URL.revokeObjectURL(url)); // avoid blob leaks
-  current = audio;
-  await audio.play();                                      // call from the click handler’s promise chain
+let currentUrl: string | null = null;
+let generation = 0;
+function stop() {
+  generation++; // invalidate pending requests as well as active playback
+  current?.pause(); current = null;
+  if (currentUrl) URL.revokeObjectURL(currentUrl);
+  currentUrl = null;
 }
-function stop() { current?.pause(); current = null; }
+async function readAloud(text: string, voiceId = "eve") {
+  stop();
+  const request = generation;
+  const res = await fetch("/api/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, voice_id: voiceId }) });
+  if (request !== generation) return;
+  if (!res.ok) throw new Error("TTS request failed");
+  const blob = await res.blob();
+  if (request !== generation) return; // stop/new click may occur while reading the body
+  const url = URL.createObjectURL(blob);
+  const audio = new Audio(url);
+  current = audio; currentUrl = url;
+  audio.addEventListener("ended", () => { if (current === audio) stop(); });
+  try {
+    await audio.play(); // call from the click handler's promise chain
+  } catch (error) {
+    if (current === audio) stop();
+    throw error;
+  }
+}
 ```
 
    - Safari: `audio.duration` is `Infinity` on blob URLs. If you need a progress bar, decode with `AudioContext.decodeAudioData(buf.slice(0))` or request `with_timestamps: true` and read `duration` from the JSON envelope (audio is then base64 in `audio`).
@@ -170,7 +187,7 @@ r.raise_for_status(); audio_bytes = r.content  # audio/mpeg
 
 7. **Smoke**
    - Batch: `curl -X POST https://api.x.ai/v1/tts -H "Authorization: Bearer $XAI_API_KEY" -H "Content-Type: application/json" -d '{"text":"Hello from read aloud.","voice_id":"eve","language":"en"}' --output /tmp/hello.mp3` → 200 `audio/mpeg` (MP3, 24 kHz, 128 kbps, mono), plays. Omit `language` → 422 (observed; the docs’ table only lists 400). `voice_id: "nope"` → 404.
-   - In the app: no speaker while a reply streams; it appears when the reply ends. Click → spinner → stop square → back to speaker when audio ends; click again mid-play → stops at once; click a second reply while the first plays → first stops, second plays. Safari: first play works from the click, `URL.revokeObjectURL` fires on `ended`.
+   - In the app: no speaker while a reply streams; it appears when the reply ends. Click → spinner → stop square → back to speaker when audio ends; click again mid-play → stops at once; click a second reply while the first plays → first stops, second plays. Click two replies before either fetch resolves, resolving the older one last → only the latest plays. Stop during fetch or body download → nothing starts afterward; stopped/replaced audio releases its blob URL. Safari: first play works from the click, `URL.revokeObjectURL` fires on `ended`.
    - Text prep: a reply with a fenced block, a table, a `[1]` citation and a stray `[laugh]` → spoken as “Code block omitted”, one sentence per row, the citation intact, the tag gone. Unit-test this; it is pure.
    - Streaming: send a two-sentence reply token by token; audio should start before `text.done`. Send `text.clear` mid-utterance → `audio.clear`, playback stops with nothing stale. Second utterance on the same socket → fresh `audio.delta`s, no bleed from the first.
    - Search the client bundle for `XAI_API_KEY`; it must not be there. Against a running dev server, fetch `/`, collect the `/_next/static/chunks/*.js` (or equivalent) URLs it references, and grep each; do not rely on a production build you have not made.
