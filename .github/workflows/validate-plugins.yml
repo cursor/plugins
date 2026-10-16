@@ -30,3 +30,6 @@ jobs:
 
       - name: Check generated pstack harness trees
         run: node scripts/generate-pstack-harness-trees.mjs --check
+
+      - name: Test harness tree path portability
+        run: node --experimental-vm-modules --test scripts/generate-pstack-harness-trees.test.mjs
