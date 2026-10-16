@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "directmailamerica": {
+      "type": "http",
+      "url": "https://directmailamerica.com/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${DIRECTMAILAMERICA_API_KEY}"
+      }
+    }
+  }
+}

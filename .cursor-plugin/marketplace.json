@@ -547,6 +547,11 @@
       "name": "finary",
       "source": "third_party/finary",
       "description": "Read your net worth, accounts, holdings, spending, and budgets."
+    },
+    {
+      "name": "directmailamerica",
+      "source": "third_party/directmailamerica",
+      "description": "Print and mail USPS letters and postcards, run Email to Letter rules, and track orders."
     }
   ]
 }
