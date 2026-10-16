@@ -102,6 +102,7 @@ async function readAloud(text: string, voiceId = "eve") {
   try {
     await audio.play(); // call from the click handler's promise chain
   } catch (error) {
+    if (request !== generation) return; // stop/replacement can reject a pending play()
     if (current === audio) stop();
     throw error;
   }
