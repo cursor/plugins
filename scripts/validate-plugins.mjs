@@ -31,6 +31,54 @@ function fail(message) {
   errors++;
 }
 
+// Cursor runtime interpolation is not user-configured plugin configuration.
+// https://cursor.com/docs/reference/plugins#variables
+// https://cursor.com/docs/mcp#config-interpolation
+const runtimeVariables = new Set([
+  "CURSOR_PLUGIN_ROOT", "CLAUDE_PLUGIN_ROOT", "userHome", "workspaceFolder",
+  "workspaceFolderBasename", "pathSeparator", "/",
+]);
+
+function checkMcpVariables(plugin, pluginDir, name) {
+  const declared = plugin.variables?.properties ?? {};
+  const configs = plugin.mcpServers === undefined
+    ? (existsSync(resolve(pluginDir, "mcp.json")) ? ["mcp.json"] : [])
+    : (Array.isArray(plugin.mcpServers) ? plugin.mcpServers : [plugin.mcpServers]);
+
+  function visit(value, location) {
+    if (typeof value === "string") {
+      for (const [, variable] of value.matchAll(/\$\{([^{}]+)\}/g)) {
+        // Leave environment references and shell/default expressions alone;
+        // only plain ${VAR} references are plugin-variable declarations.
+        if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(variable) ||
+            runtimeVariables.has(variable) || Object.hasOwn(declared, variable)) continue;
+        fail(`Plugin "${name}": ${location} references undeclared variable "${variable}" (declare it in variables.properties)`);
+      }
+    } else if (Array.isArray(value)) {
+      value.forEach((item, index) => visit(item, `${location}[${index}]`));
+    } else if (value && typeof value === "object") {
+      for (const [key, item] of Object.entries(value)) visit(item, `${location}.${key}`);
+    }
+  }
+
+  for (const [index, config] of configs.entries()) {
+    if (typeof config !== "string") {
+      visit(config, `mcpServers[${index}]`);
+      continue;
+    }
+    const path = resolve(pluginDir, config);
+    let content;
+    try {
+      content = loadJSON(path);
+    } catch (error) {
+      const reason = error instanceof SyntaxError ? "invalid JSON" : error.code;
+      fail(`Plugin "${name}": cannot read MCP config "${config}" (${reason})`);
+      continue;
+    }
+    visit(content, config);
+  }
+}
+
 // 1. Validate marketplace.json
 const marketplacePath = resolve(root, ".cursor-plugin/marketplace.json");
 
@@ -83,6 +131,8 @@ for (const entry of marketplace.plugins ?? []) {
       console.error(`  ${err.instancePath || "/"}: ${detail}`);
     }
   }
+
+  checkMcpVariables(pluginJson, pluginDir, entry.name);
 
   // Check that marketplace name matches plugin name
   if (pluginJson.name && pluginJson.name !== entry.name) {
