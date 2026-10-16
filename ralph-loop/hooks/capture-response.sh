@@ -30,7 +30,7 @@ done
 
 # Extract completion promise from state file frontmatter. A missing key is an
 # empty value, not a hook failure (see stop-hook.sh).
-FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
+FRONTMATTER=$(awk 'NR == 1 && /^---$/ { next } /^---$/ { exit } { print }' "$STATE_FILE")
 COMPLETION_PROMISE=$(echo "$FRONTMATTER" | { grep '^completion_promise:' || true; } | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
 
 # No promise configured, nothing to check
