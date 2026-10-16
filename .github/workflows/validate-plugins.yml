@@ -6,6 +6,7 @@ on:
       - ".cursor-plugin/marketplace.json"
       - "**/plugin.json"
       - "schemas/**"
+      - "scripts/**"
 
 jobs:
   validate:
