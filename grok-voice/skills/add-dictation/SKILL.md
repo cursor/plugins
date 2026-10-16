@@ -80,7 +80,9 @@ rec.onstop = async () => {
   stream.getTracks().forEach((track) => track.stop()); // MediaRecorder.stop() does not release the microphone
   const fd = new FormData();
   fd.append("file", new Blob(parts, { type: mime }), "dictation");
-  const { text } = await (await fetch("/api/dictation", { method: "POST", body: fd })).json();
+  const res = await fetch("/api/dictation", { method: "POST", body: fd });
+  if (!res.ok) throw new Error(`Dictation ${res.status}`); // surface through the app's existing error UI
+  const { text } = await res.json();
   insertAtCursor(text);
 };
 rec.start(); // second tap: rec.stop()
