@@ -204,7 +204,7 @@ interface NumericWithUnit {
  * fall through to string comparison instead of pretending it's numeric.
  */
 function parseNumericWithUnit(value: string): NumericWithUnit | null {
-  const match = /^([-+]?\d+(?:\.\d+)?)\s*([a-zA-Z%]+)?$/.exec(value.trim());
+  const match = /^([-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)\s*([a-zA-Z%]+)?$/.exec(value.trim());
   if (!match) return null;
   const numeric = Number.parseFloat(match[1]);
   if (!Number.isFinite(numeric)) return null;
@@ -214,7 +214,7 @@ function parseNumericWithUnit(value: string): NumericWithUnit | null {
 function parseFiniteNumber(value: string): number | null {
   // Used for the `measuredNumeric` display field: lenient leading-numeric
   // strip, separate from the end-anchored unit-aware comparison.
-  const match = /^[-+]?\d+(?:\.\d+)?/.exec(value.trim());
+  const match = /^[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?/.exec(value.trim());
   if (!match) return null;
   const parsed = Number.parseFloat(match[0]);
   return Number.isFinite(parsed) ? parsed : null;
