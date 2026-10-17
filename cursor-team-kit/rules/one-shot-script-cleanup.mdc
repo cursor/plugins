@@ -1,0 +1,72 @@
+---
+description: Delete one-shot helper scripts and temp payload files when the task that created them ships
+alwaysApply: true
+---
+
+# One-shot script cleanup
+
+Agent sessions often generate throwaway helper scripts and temp payload
+files to drive a single task -- claim a work item, extract one field
+from an API response, feed a CLI a file it insists on reading from
+disk. Left behind, they bury every future `git status` under an
+untracked `_tmp-*` haystack. The same session that creates a one-shot
+artifact is responsible for deleting it.
+
+## What counts
+
+- Temp helper scripts written to run once: `_tmp-*.ps1`, `_tmp-*.sh`,
+  `_tmp-*.py`, `_tmp-*.js`, etc.
+- Temp JSON / text payloads fed to a single API or CLI call:
+  `_tmp-<ticket>-wi.json`, `_tmp-<ticket>-desc.txt`,
+  `_tmp-<ticket>-ac.txt`.
+- Extract or parse scripts written to pull one value out of an API
+  response and then never used again.
+- PR-body markdown drafts written to disk only because a CLI wants a
+  file (`_tmp-*-pr-body.md`, `PR_BODY.md` used only as `--body-file`).
+
+## What does not count
+
+Never auto-delete these -- they need review, not silent removal:
+
+- Real project source, migrations, or tests.
+- Scripts under a documented, git-tracked `scripts/` folder that has a
+  README explaining what stays.
+- Anything already tracked by git. If a real file has drifted, discuss
+  it, do not silently `rm`.
+
+## Naming and layout
+
+Prefix single-use artifacts with `_tmp-` (or match the repo's existing
+scratch prefix if it already has one). When a task will produce more
+than a couple of files, prefer a per-task subfolder such as
+`scripts/_scratch/<task>/` and delete the whole subfolder at the end
+of the task.
+
+## Delete when done
+
+When the task the artifact was written for ships -- PR merged, work
+item closed, question answered -- the same session removes the
+artifact. Do not leave `_tmp-*` files behind for the next session to
+puzzle over.
+
+## Session-end sweep
+
+Before ending a session, check for untracked `_tmp-*` files the current
+session created and delete them. Do not touch `_tmp-*` files another
+running session might still be using: if you did not create it and you
+are not sure, leave it alone and mention it in your final summary.
+
+## Never
+
+- Delete anything that looks like a secret: `.env*`, `.pat*`, `*.key`,
+  `*.pem`, VAPID / JWT / token blobs. If a secret leaked to disk, tell
+  the user; do not silently `rm`.
+- Run `git clean -fd` (or equivalent broad sweeps) in a shared
+  workspace without explicit user approval.
+- Delete files under `.git/`, `node_modules/`, `venv/`, `.next/`, or
+  other tool-managed directories.
+
+## Reporting
+
+List any `_tmp-*` cruft you leave behind, with a reason, in your final
+summary. Silent orphans defeat the whole point.
