@@ -1,0 +1,12 @@
+{
+  "name": "kevintram-plugins",
+  "interface": { "displayName": "Kevin's plugins" },
+  "plugins": [
+    {
+      "name": "pstack",
+      "source": { "source": "local", "path": "./harness/pstack/codex" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Developer Tools"
+    }
+  ]
+}

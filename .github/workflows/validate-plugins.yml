@@ -5,6 +5,7 @@ on:
     paths:
       - ".cursor-plugin/marketplace.json"
       - ".claude-plugin/marketplace.json"
+      - ".agents/plugins/marketplace.json"
       - "**/plugin.json"
       - "schemas/**"
       - "pstack/**"
@@ -30,3 +31,9 @@ jobs:
 
       - name: Check generated pstack harness trees
         run: node scripts/generate-pstack-harness-trees.mjs --check
+
+      - name: Check generated Codex package
+        run: node scripts/generate-pstack-codex.mjs --check
+
+      - name: Test native package generation
+        run: node --test scripts/pstack-harness.test.mjs

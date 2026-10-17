@@ -1,0 +1,11 @@
+{
+  "name": "pstack",
+  "version": "0.15.25",
+  "description": "Shared pstack workflows adapted for Codex tools and delegation.",
+  "author": {
+    "name": "Kevin Tram; upstream pstack by Lauren Tan"
+  },
+  "repository": "https://github.com/kevintram/plugins",
+  "license": "MIT",
+  "skills": "./skills/"
+}

@@ -152,7 +152,9 @@ for (const link of dangling) console.log(`FAIL ${link}`);
 if (dangling.length > 0) process.exit(1);
 
 if (process.argv.includes("--check")) {
-  const onDisk = new Map(existsSync(OUT) ? walk(OUT).map((path) => [relative(OUT, path), file(path)]) : []);
+  // Other generators share OUT, so compare only what this one writes.
+  const owned = [join(OUT, "README.md"), ...(existsSync(join(OUT, TREE)) ? walk(join(OUT, TREE)) : [])];
+  const onDisk = new Map(owned.filter(existsSync).map((path) => [relative(OUT, path), file(path)]));
   const drifted = [...new Set([...rendered.keys(), ...onDisk.keys()])].sort().filter((path) => {
     const [want, have] = [rendered.get(path), onDisk.get(path)];
     return !want || !have || !want.bytes.equals(have.bytes) || want.executable !== have.executable;
@@ -164,7 +166,7 @@ if (process.argv.includes("--check")) {
   }
   console.log("harness/pstack is up to date.");
 } else {
-  rmSync(OUT, { recursive: true, force: true });
+  rmSync(join(OUT, TREE), { recursive: true, force: true });
   for (const [path, { bytes, executable }] of rendered) {
     mkdirSync(dirname(join(OUT, path)), { recursive: true });
     writeFileSync(join(OUT, path), bytes);
