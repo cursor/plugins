@@ -372,7 +372,7 @@ export function applyMeasurementParser(
           reason: `invalid regex: ${errorMessage(err)}`,
         };
       }
-      const match = stdout.match(re);
+      const match = re.exec(stdout);
       if (!match) {
         return { ok: false, reason: "regex did not match command stdout" };
       }
