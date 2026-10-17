@@ -1,5 +1,8 @@
 # Cursor plugins
 
+> [!NOTE]
+> This is a fork of [`cursor/plugins`](https://github.com/cursor/plugins) that adds a native Codex build of pstack. The build is generated into `harness/pstack/codex/` and installs from `.agents/plugins/marketplace.json`. The upstream plugins are otherwise unchanged. See [PSTACK-NATIVE.md](PSTACK-NATIVE.md) for setup.
+
 Official Cursor plugins for popular developer tools, frameworks, and SaaS products. Each plugin is a standalone directory at the repository root with its own `.cursor-plugin/plugin.json` manifest.
 
 ## Plugins
