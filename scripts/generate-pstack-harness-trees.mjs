@@ -11,15 +11,16 @@ const SKILLS = join(PSTACK, "skills");
 const OUT = join(ROOT, "harness", "pstack");
 const TREE = "claude-code";
 const ADAPTER = "docs/harness/claude-code.md";
+const GUIDE = "docs/guide";
 const MANIFESTS = ["plugin.json", ".claude-plugin/plugin.json"];
 const COMMAND = "node scripts/generate-pstack-harness-trees.mjs";
 const GITHUB = "https://github.com/cursor/plugins";
 const LINK = /\]\(([^)\s]+)\)/g;
 const README = `# pstack harness tree
 
-This folder is generated from \`pstack/skills\`, \`pstack/agents\`, \`pstack/${ADAPTER}\`, \`pstack/LICENSE\`, and \`pstack/plugin.json\`. Do not edit it by hand.
+This folder is generated from \`pstack/skills\`, \`pstack/agents\`, \`pstack/${GUIDE}\`, \`pstack/${ADAPTER}\`, \`pstack/README.md\`, \`pstack/LICENSE\`, and \`pstack/plugin.json\`. Do not edit it by hand.
 
-Cursor uses \`pstack/\` directly, and Claude Code installs \`${TREE}/\`. The tree leaves out the rest of \`pstack/docs\` and \`pstack/README.md\`. A relative link to a pstack file that the tree leaves out points at that file on GitHub \`main\` instead.
+Cursor uses \`pstack/\` directly, and Claude Code installs \`${TREE}/\`. The tree leaves out the rest of \`pstack/\`, such as \`pstack/automations\` and \`pstack/assets\`. A relative link to a pstack file that the tree leaves out points at that file on GitHub \`main\` instead.
 
 After editing those sources, run \`${COMMAND}\` from the repository root and commit the result.
 `;
@@ -115,8 +116,14 @@ function has(files, path) {
 }
 
 function render() {
-  // Skills read the adapter at runtime. The guide and the README stay on GitHub.
-  const copies = [...walk(SKILLS), ...walk(join(PSTACK, "agents")), join(PSTACK, ADAPTER)];
+  // Skills read the adapter, the guide, and the README at runtime, so Claude Code never fetches them.
+  const copies = [
+    ...walk(SKILLS),
+    ...walk(join(PSTACK, "agents")),
+    ...walk(join(PSTACK, GUIDE)),
+    join(PSTACK, ADAPTER),
+    join(PSTACK, "README.md"),
+  ];
   const files = new Map(copies.map((path) => [relative(PSTACK, path), file(path)]));
   const line =
     `In Claude Code, read [the Claude Code adapter](../../${ADAPTER}) once per session before you follow this skill. ` +
