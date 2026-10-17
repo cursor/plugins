@@ -105,6 +105,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `finary` | [Finary](third_party/finary/) | Cursor | Integrations | Read your net worth, accounts, holdings, spending, and budgets. |
 | `tiktok-for-business` | [TikTok for Business](third_party/tiktok-for-business/) | Cursor | Integrations | Manage TikTok ad campaigns, ad groups, ads, audiences, creatives, and reports. |
 | `gusto` | [Gusto](third_party/gusto/) | Cursor | Integrations | Work with payroll, employees, contractors, time off, and reports. |
+| `gopuff` | [Gopuff](third_party/gopuff/) | Cursor | Integrations | Shop Gopuff from Grok Bot through Gopuff's official MCP server. Sign in with your Gopuff account; Gopuff handles the sign-in, and your searches, carts, and orders go to Gopuff under that account, so any order you place is charged and delivered like a normal Gopuff order. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
