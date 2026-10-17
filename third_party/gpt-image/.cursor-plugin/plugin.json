@@ -1,23 +1,26 @@
 {
   "name": "gpt-image",
-  "displayName": "GPT Image",
-  "version": "1.0.0",
+  "displayName": "GPT Image by Ace Data Cloud",
+  "version": "1.0.1",
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Generate GPT Image pictures and retrieve the finished image.",
+  "description": "Generate or edit GPT Image pictures with Ace Data Cloud; retrieve completed images using the original task ID.",
   "author": {
     "name": "Ace Data Cloud Dev",
     "email": "dev@acedata.cloud"
   },
-  "homepage": "https://platform.acedata.cloud/models",
+  "homepage": "https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_manifest_pricing",
   "repository": "https://github.com/AceDataCloud/GPTImageCursor",
   "license": "MIT",
   "logo": "assets/logo.png",
   "keywords": [
-    "gpt-image",
     "gpt image",
-    "image",
+    "gpt-image",
+    "gpt image 2",
+    "image generation",
+    "image editing",
+    "ace data cloud",
     "acedatacloud",
     "mcp"
   ],
@@ -25,7 +28,7 @@
   "tags": [
     "gpt-image",
     "image",
-    "mcp"
+    "acedatacloud"
   ],
   "variables": {
     "type": "object",

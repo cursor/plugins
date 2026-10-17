@@ -1,0 +1,51 @@
+{
+  "service": "GPT Image",
+  "sources": [
+    {
+      "file": "get-api-key-en.png",
+      "type": "real_ace_console_screenshot",
+      "source_url": "https://raw.githubusercontent.com/AceDataCloud/SunoDify/8d3d03570e73324220f111f7fe343da0792a8071/_assets/tutorial/get-api-key-en.png",
+      "official_page_url": "https://github.com/AceDataCloud/SunoDify/blob/8d3d03570e73324220f111f7fe343da0792a8071/README.md",
+      "checked_at": "2026-10-18",
+      "original_capture_date": "not recorded",
+      "edit_date": null,
+      "limits": "Original token/ID/balance obscured; Dify tutorial key name is an example, use Cursor-specific name.",
+      "sha256": "b63787f2bd15af82fef9ab61c99e11c454355ac86e91f7f94559386b795069b7"
+    },
+    {
+      "file": "create-api-key-en.png",
+      "type": "real_ace_console_screenshot",
+      "source_url": "https://raw.githubusercontent.com/AceDataCloud/SunoDify/8d3d03570e73324220f111f7fe343da0792a8071/_assets/tutorial/create-api-key-en.png",
+      "official_page_url": "https://github.com/AceDataCloud/SunoDify/blob/8d3d03570e73324220f111f7fe343da0792a8071/README.md",
+      "checked_at": "2026-10-18",
+      "original_capture_date": "not recorded",
+      "edit_date": null,
+      "limits": "Original token/ID/balance obscured; Dify tutorial key name is an example, use Cursor-specific name.",
+      "sha256": "5411ffe75d8a8efa6806a78fc68fce6a20735225d8e9818c94bbc238da4f4590"
+    },
+    {
+      "file": "tool-confirm.png",
+      "type": "official_screenshot",
+      "source_url": "https://cursor.com/docs-static/images/context/mcp/tool-confirm.png",
+      "official_page_url": "https://cursor.com/docs/mcp",
+      "checked_at": "2026-10-18",
+      "original_capture_date": "not recorded",
+      "edit_date": null,
+      "limits": "PostgreSQL official reference, not Ace execution.",
+      "sha256": "0404c2a6e15a83817cf7dd08b177097c835316345e4af629e411ecc369ec7f09"
+    },
+    {
+      "file": "tool-call.png",
+      "type": "official_screenshot",
+      "source_url": "https://cursor.com/docs-static/images/context/mcp/tool-call.png",
+      "official_page_url": "https://cursor.com/docs/mcp",
+      "checked_at": "2026-10-18",
+      "original_capture_date": "not recorded",
+      "edit_date": null,
+      "limits": "PostgreSQL official reference, not Ace execution.",
+      "sha256": "af88bda0de0929b73a955883b0b79ee394ee2f94d96e18329b0fa6db636529e7"
+    }
+  ],
+  "credential_values_present": false,
+  "current_configure_screenshot": "pending native UI capture, not substituted with a fake screenshot"
+}
