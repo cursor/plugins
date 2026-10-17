@@ -12,6 +12,16 @@ Two hooks drive the loop. An `afterAgentResponse` hook watches each response for
 /add-plugin ralph-loop
 ```
 
+## Requirements
+
+The hooks are Bash scripts and need `jq` and `perl` on the `PATH` of the shell Cursor uses to run hooks. `perl` ships with macOS and most Linux distributions; `jq` usually does not:
+
+- macOS: `brew install jq`
+- Debian/Ubuntu: `sudo apt install jq`
+- Fedora: `sudo dnf install jq`
+
+If `jq` is missing, the hooks print a `Ralph loop: jq is required` line to the hook output and stop without changing the loop state.
+
 ## Quick start
 
 > Start a ralph loop: "Build a REST API for todos. CRUD operations, input validation, tests. Output COMPLETE when done." --completion-promise "COMPLETE" --max-iterations 50
