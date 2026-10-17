@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "veo": {
+      "type": "http",
+      "url": "https://veo.mcp.acedata.cloud/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ACEDATACLOUD_API_TOKEN}"
+      }
+    }
+  }
+}
