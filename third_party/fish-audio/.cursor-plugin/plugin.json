@@ -1,0 +1,44 @@
+{
+  "name": "fish-audio",
+  "displayName": "Fish Audio",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Generate Fish Audio speech and retrieve the finished audio.",
+  "author": {
+    "name": "Ace Data Cloud Dev",
+    "email": "dev@acedata.cloud"
+  },
+  "homepage": "https://platform.acedata.cloud/models",
+  "repository": "https://github.com/AceDataCloud/FishAudioCursor",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "fish-audio",
+    "fish audio",
+    "audio",
+    "acedatacloud",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "fish-audio",
+    "audio",
+    "mcp"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "ACEDATACLOUD_API_TOKEN": {
+        "type": "string",
+        "title": "Ace Data Cloud API token",
+        "description": "Service API key from https://platform.acedata.cloud/console/applications with Fish Audio access."
+      }
+    },
+    "required": [
+      "ACEDATACLOUD_API_TOKEN"
+    ]
+  },
+  "mcpServers": "./mcp.json"
+}
