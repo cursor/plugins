@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Read-only worktree prune audit. Classifies every git worktree by size, merge
-# state, uncommitted work, remote/PR state, and the most recent chat that
-# operated in it. Emits a table sorted by size with a suggested bucket. Never
-# deletes anything; deletion stays a human-gated step in the playbook.
+# Worktree prune audit. Classifies every git worktree by size, merge state,
+# uncommitted work, remote/PR state, and the most recent chat that operated in
+# it. Emits a table sorted by size with a suggested bucket. Never deletes
+# anything; deletion stays a human-gated step in the playbook. The only write
+# is the best-effort fetch of the base ref for the merge check.
 #
 # Usage: worktree-audit.sh [-b|--base <ref>] [repo-path]
 #   repo-path defaults to the current repo.
@@ -54,10 +55,10 @@ prs=$(mktemp)
 if command -v origin >/dev/null 2>&1 \
 	&& raw=$(origin pr list --author "@me" --state all --limit 1000 \
 		--json number,status,headRef 2>/dev/null); then
-	printf '%s' "$raw" | jq '[.[] | {number, state: .status, head: .headRef}]' > "$prs" 2>/dev/null
+	printf '%s' "$raw" | jq '[.[] | {number, state: .status, head: .headRef, head_oid: ""}]' > "$prs" 2>/dev/null
 elif raw=$(gh pr list --author "@me" --state all --limit 1000 \
-	--json number,state,headRefName 2>/dev/null); then
-	printf '%s' "$raw" | jq '[.[] | {number, state: (.state | ascii_downcase), head: .headRefName}]' > "$prs" 2>/dev/null
+	--json number,state,headRefName,headRefOid 2>/dev/null); then
+	printf '%s' "$raw" | jq '[.[] | {number, state: (.state | ascii_downcase), head: .headRefName, head_oid: (.headRefOid // "")}]' > "$prs" 2>/dev/null
 fi
 [ -s "$prs" ] || echo "[]" > "$prs"
 
@@ -94,10 +95,15 @@ git worktree list --porcelain | awk '/^worktree /{print $2}' | while read -r wt;
 		[ "$(git -C "$wt" rev-parse "origin/$branch" 2>/dev/null)" = "$head" ] \
 			&& remote=pushed \
 			|| remote="ahead$(git -C "$wt" rev-list --count "origin/$branch..HEAD" 2>/dev/null)"
+		[ "$remote" = ahead0 ] && remote=behind
 	else remote=no-remote; fi
 
-	pr=$([ -n "$branch" ] && jq -r --arg b "$branch" \
-		'.[] | select(.head==$b) | "#\(.number)/\(.state)"' "$prs" 2>/dev/null | head -1)
+	# Several PRs can share a branch name; prefer the one whose head is HEAD.
+	pr_record=$([ -n "$branch" ] && jq -r --arg b "$branch" --arg h "$head" \
+		'[.[] | select(.head==$b)] | (map(select(.head_oid==$h)) + .)[0]
+		| select(.) | "#\(.number)/\(.state)\t\(.head_oid // "")"' "$prs" 2>/dev/null)
+	pr=${pr_record%%$'\t'*}
+	pr_head=${pr_record#*$'\t'}
 	[ -z "$pr" ] && pr="-"
 
 	# Most recent chat whose transcript operated in this worktree. Match path
@@ -111,10 +117,19 @@ git worktree list --porcelain | awk '/^worktree /{print $2}' | while read -r wt;
 	fi
 	recent=$([ "$last_ts" -gt 0 ] 2>/dev/null && [ $(( (now - last_ts) / 86400 )) -le 4 ] && echo yes || echo no)
 
+	# An exact PR head proves the commits were pushed even if origin has no
+	# branch (deleted after merging, or hosted on a fork). A closed PR still
+	# proves nothing about whether those commits were merged.
+	case "$pr" in */merged) pr_merged=yes ;; *) pr_merged=no ;; esac
+	case "$remote" in ahead*|no-remote|detached) unpushed=yes ;; *) unpushed=no ;; esac
+	[ "$merged" = YES ] && unpushed=no
+	[ -n "$pr_head" ] && [ "$head" = "$pr_head" ] && unpushed=no
+
 	case "$dirty" in wip:*) bucket=hold-wip ;; *)
 		case "$pr" in */open|*/draft) bucket=hold-open-pr ;; *)
-			if [ "$recent" = yes ]; then bucket=verify-recent-chat
-			elif [ "$merged" = YES ] || [ "$pr" != "-" ]; then bucket=safe
+			if [ "$unpushed" = yes ]; then bucket=hold-unpushed
+			elif [ "$recent" = yes ]; then bucket=verify-recent-chat
+			elif [ "$merged" = YES ] || [ "$pr_merged" = yes ]; then bucket=safe
 			else bucket=review; fi ;;
 		esac ;;
 	esac
