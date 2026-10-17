@@ -544,6 +544,11 @@
       "description": "Work with payments, orders, catalog, customers, and invoices."
     },
     {
+      "name": "face-transform",
+      "source": "third_party/face-transform",
+      "description": "Analyze and transform faces through Ace Data Cloud."
+    },
+    {
       "name": "tailscale",
       "source": "third_party/tailscale",
       "description": "Let Grok Bot reach MCP servers on your private Tailscale network. On your own tailnet it joins as one tag:grokbot device; on your team's company tailnet, turned on by a team admin, it uses each member's own device.",

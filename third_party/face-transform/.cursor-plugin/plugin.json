@@ -1,0 +1,44 @@
+{
+  "name": "face-transform",
+  "displayName": "Face Transform",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Analyze and transform faces through Ace Data Cloud.",
+  "author": {
+    "name": "Ace Data Cloud Dev",
+    "email": "dev@acedata.cloud"
+  },
+  "homepage": "https://platform.acedata.cloud/models",
+  "repository": "https://github.com/AceDataCloud/FaceTransformCursor",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "face-transform",
+    "face transform",
+    "face analysis",
+    "acedatacloud",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "face-transform",
+    "face analysis",
+    "mcp"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "ACEDATACLOUD_API_TOKEN": {
+        "type": "string",
+        "title": "Ace Data Cloud API token",
+        "description": "Service API key from https://platform.acedata.cloud/console/applications with Face Transform access."
+      }
+    },
+    "required": [
+      "ACEDATACLOUD_API_TOKEN"
+    ]
+  },
+  "mcpServers": "./mcp.json"
+}
