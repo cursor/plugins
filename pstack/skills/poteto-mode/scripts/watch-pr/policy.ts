@@ -3,6 +3,11 @@ import {
   resolveChecks,
   resolveReviewThreads,
 } from "./github.ts";
+import {
+  DEFAULT_REVIEW_BOTS,
+  isReviewBotCheck,
+  type ReviewBots,
+} from "./review-bots.ts";
 import type * as T from "./types.ts";
 import { nonEmpty } from "./types.ts";
 export function assessGitHubMerge(args: {
@@ -50,24 +55,20 @@ async function mergeAssessment(
     }),
   };
 }
-const AUTOMATION_TOKENS = [
-  "bugbot",
-  "security review",
-  "pr review automation",
-  "review automation",
-] as const;
 export async function readSnapshot(args: {
   readonly reader: T.GitHubReader;
   readonly context: T.PrContext;
   readonly pendingHistory: "include" | "omit";
   readonly allowDraft: boolean;
+  readonly reviewBots?: ReviewBots;
 }): Promise<T.PrSnapshot> {
+  const bots = args.reviewBots ?? DEFAULT_REVIEW_BOTS;
   const facts = await args.reader.pullRequest(args.context);
   if (facts.state === "MERGED" || facts.mergedAt !== null)
     return { kind: "merged", context: args.context, facts };
   if (facts.state === "CLOSED")
     return { kind: "closed", context: args.context, facts };
-  const threads = await resolveReviewThreads(args.reader, args.context);
+  const threads = await resolveReviewThreads(args.reader, args.context, bots);
   const checks = await resolveChecks(args.reader, args.context);
   const failed = nonEmpty(
     checks.checks.filter(
@@ -130,11 +131,7 @@ export async function readSnapshot(args: {
     threads,
     ci,
     reviewAutomationRunning: checks.checks.some(
-      (check) =>
-        check.kind === "pending" &&
-        AUTOMATION_TOKENS.some((token) =>
-          check.name.toLowerCase().includes(token)
-        )
+      (check) => check.kind === "pending" && isReviewBotCheck(check.name, bots)
     ),
   };
 }
@@ -348,6 +345,7 @@ export interface RunDependencies {
   readonly reader: T.GitHubReader;
   readonly clock: WatchClock;
   readonly emit: (verdict: T.ProgressVerdict) => void;
+  readonly reviewBots?: ReviewBots;
 }
 const deadlinePassed = (
   started: number,
@@ -431,6 +429,7 @@ export async function runSimple(args: {
           context,
           pendingHistory: "include",
           allowDraft: args.options.allowDraft,
+          reviewBots: args.dependencies.reviewBots,
         })
       );
     const complete = nonEmpty(rows);
@@ -744,6 +743,7 @@ export async function runQueued(args: {
       context,
       pendingHistory: "omit",
       allowDraft: args.options.allowDraft,
+      reviewBots: args.dependencies.reviewBots,
     });
     const applied = applyQueueSnapshot(
       state,

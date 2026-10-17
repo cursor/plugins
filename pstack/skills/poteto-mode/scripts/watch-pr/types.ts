@@ -61,12 +61,13 @@ export interface ReviewComment {
   readonly path: string | null;
   readonly line: number | null;
   readonly createdAt: string;
+  readonly reviewedCommit: string | null;
 }
 export interface ReviewThread {
   readonly id: string;
   readonly firstComment: ReviewComment | null;
-  readonly isBugbot: boolean;
-  readonly bugbotReviewPasses: number;
+  readonly reviewBot: string | null;
+  readonly reviewBotPasses: number;
 }
 interface CheckDetails {
   readonly name: string;
