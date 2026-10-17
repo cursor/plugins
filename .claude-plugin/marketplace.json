@@ -1,8 +1,7 @@
 {
-  "name": "cursor-plugins",
+  "name": "kevintram-plugins",
   "owner": {
-    "name": "Cursor",
-    "email": "plugins@cursor.com"
+    "name": "Kevin Tram"
   },
   "plugins": [
     {
