@@ -127,6 +127,41 @@ describe("kickoff dedupe", () => {
     expect(active?.runId).toBe("run-active");
   });
 
+  test("kickoff does not adopt a matching slug from another repository", () => {
+    const result = spawnKickoff(false, "https://github.com/other-org/other-repo");
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('"agentId":"bc-new"');
+    expect(result.stdout).not.toContain('"adopted":true');
+  });
+
+  test("kickoff does not adopt a matching slug with unknown repositories", () => {
+    const result = spawnKickoff(false, null);
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('"agentId":"bc-new"');
+  });
+
+  test("kickoff recognizes equivalent HTTPS repository suffixes", () => {
+    const result = spawnKickoff(false, "https://github.com/example-org/example-repo.git/");
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('"adopted":true');
+  });
+
+  test("kickoff recognizes SSH and HTTPS aliases on listed agents", () => {
+    for (const repo of ["git@github.com:example-org/example-repo.git", "ssh://git@github.com/example-org/example-repo.git"]) {
+      const result = spawnKickoff(false, repo);
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain('"adopted":true');
+    }
+  });
+
+  test("kickoff recognizes explicit SSH repository aliases", () => {
+    for (const repo of ["git@github.com:example-org/example-repo.git", "ssh://git@github.com/example-org/example-repo.git"]) {
+      const result = spawnKickoff(false, "https://github.com/example-org/example-repo", repo);
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain('"adopted":true');
+    }
+  });
+
   test("infers root slug from an explicit kickoff prefix", () => {
     expect(inferKickoffRootSlug("refactor-ui: shrink Settings")).toBe(
       "refactor-ui"
@@ -149,7 +184,7 @@ describe("kickoff dedupe", () => {
   });
 });
 
-function spawnKickoff(force: boolean) {
+function spawnKickoff(force: boolean, repo: string | null = "https://github.com/example-org/example-repo", requestedRepo = "https://github.com/example-org/example-repo") {
   const script = `
     import { mock } from "bun:test";
     mock.module("@cursor/sdk", () => ({
@@ -160,6 +195,7 @@ function spawnKickoff(force: boolean) {
           return {
             items: [{
               agentId: "bc-existing",
+              repos: ${JSON.stringify(repo ? [repo] : [])},
               name: "refactor-ui-root",
               createdAt: Date.now(),
               latestRun: { id: "run-existing", status: "running" }
@@ -179,7 +215,7 @@ function spawnKickoff(force: boolean) {
       "kickoff",
       "refactor-ui: shrink Settings",
       "--repo",
-      "https://github.com/example-org/example-repo",
+      ${JSON.stringify(requestedRepo)},
       "--dispatcher-name",
       "Alex",
       ${force ? '"--force",' : ""}
