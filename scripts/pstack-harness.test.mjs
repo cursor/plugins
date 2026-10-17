@@ -8,8 +8,9 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const read = (path) => readFileSync(path, "utf8");
+const walk = (dir) => readdirSync(dir, { recursive: true }).map((path) => join(dir, path));
 
-test("the Codex marketplace installs every upstream skill with its description and invocation policy", () => {
+test("the Codex marketplace installs every portable upstream skill with its description and invocation policy", () => {
   const marketplace = JSON.parse(read(join(root, ".agents/plugins/marketplace.json")));
   const plugin = marketplace.plugins.find(({ name }) => name === "pstack");
   const installed = join(root, plugin.source.path);
@@ -17,7 +18,7 @@ test("the Codex marketplace installs every upstream skill with its description a
   assert.equal(manifest.name, plugin.name);
   assert.equal(manifest.version, JSON.parse(read(join(root, "pstack/plugin.json"))).version);
   assert.ok(existsSync(join(installed, "docs/harness/codex.md")));
-  const skills = readdirSync(join(root, "pstack/skills")).filter((name) => existsSync(join(root, "pstack/skills", name, "SKILL.md")));
+  const skills = readdirSync(join(root, "pstack/skills")).filter((name) => name !== "make-bot-ui" && existsSync(join(root, "pstack/skills", name, "SKILL.md")));
   assert.deepEqual(readdirSync(join(installed, manifest.skills)).sort(), skills.sort());
   for (const name of skills) {
     const [, source] = read(join(root, "pstack/skills", name, "SKILL.md")).split("---\n");
@@ -26,6 +27,16 @@ test("the Codex marketplace installs every upstream skill with its description a
     assert.ok(frontmatter.includes(source.match(/^description:.*(?:\n[ \t]+.*)*/m)[0]), `${name} lost its description`);
     const implicit = !/^disable-model-invocation:\s*true\s*$/m.test(source);
     assert.equal(read(join(installed, "skills", name, "agents/openai.yaml")), `policy:\n  allow_implicit_invocation: ${implicit}\n`);
+  }
+});
+
+test("neither package ships or links to the Grok Bot skill", () => {
+  for (const tree of ["claude-code", "codex"]) {
+    const installed = join(root, "harness/pstack", tree);
+    assert.ok(!existsSync(join(installed, "skills/make-bot-ui")));
+    for (const path of walk(installed).filter((path) => path.endsWith(".md"))) {
+      assert.ok(!read(path).includes("make-bot-ui"), `${path} mentions make-bot-ui`);
+    }
   }
 });
 

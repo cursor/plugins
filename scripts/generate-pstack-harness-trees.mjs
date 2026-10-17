@@ -62,7 +62,9 @@ function file(path) {
   return { bytes: readFileSync(path), executable: (statSync(path).mode & 0o111) !== 0 };
 }
 
-const skills = readdirSync(SKILLS).filter((name) => existsSync(join(SKILLS, name, "SKILL.md")));
+// Grok Bot skills need host tools Claude Code lacks. The tree drops them and any line that links to them.
+const GROK_BOT_ONLY = ["make-bot-ui"];
+const skills = readdirSync(SKILLS).filter((name) => !GROK_BOT_ONLY.includes(name) && existsSync(join(SKILLS, name, "SKILL.md")));
 
 function classify(skill) {
   const dir = join(SKILLS, skill);
@@ -110,7 +112,7 @@ function has(files, path) {
 
 function render() {
   // Skills read the adapter at runtime. The guide and the README stay on GitHub.
-  const copies = [...walk(SKILLS), ...walk(join(PSTACK, "agents")), join(PSTACK, ADAPTER)];
+  const copies = [...skills.flatMap((skill) => walk(join(SKILLS, skill))), ...walk(join(PSTACK, "agents")), join(PSTACK, ADAPTER)];
   const files = new Map(copies.map((path) => [relative(PSTACK, path), file(path)]));
   const line =
     `In Claude Code, read [the Claude Code adapter](../../${ADAPTER}) once per session before you follow this skill. ` +
@@ -124,7 +126,10 @@ function render() {
   for (const manifest of MANIFESTS) files.set(manifest, file(join(PSTACK, "plugin.json")));
   for (const [path, entry] of files) {
     if (!path.endsWith(".md")) continue;
-    const text = entry.bytes.toString("utf8").replace(LINK, (link, href) => {
+    const linksToDropped = (line) =>
+      [...line.matchAll(LINK)].some(([, href]) => GROK_BOT_ONLY.includes(resolve(path, href)?.match(/^skills\/([^/]+)/)?.[1]));
+    const kept = entry.bytes.toString("utf8").split("\n").filter((line) => !linksToDropped(line)).join("\n");
+    const text = kept.replace(LINK, (link, href) => {
       const target = resolve(path, href);
       if (!target || target.split("/")[0] === ".." || has(files, target)) return link;
       const kind = statSync(join(PSTACK, target)).isDirectory() ? "tree" : "blob";

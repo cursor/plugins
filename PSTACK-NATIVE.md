@@ -7,7 +7,7 @@
 | Claude Code | `pstack/docs/harness/claude-code.md` | `harness/pstack/claude-code/` |
 | Codex | `pstack/docs/harness/codex.md` | `harness/pstack/codex/` |
 
-Like the Claude Code package, the Codex package translates the shared prose at runtime through its adapter instead of forking it. Every Codex skill links to the adapter before the shared instructions, takes its directory name as its skill name, and maps upstream `disable-model-invocation` to `allow_implicit_invocation` in `agents/openai.yaml`. The agent Markdown files are portable prompts, not registered Codex agents. Like the Claude Code tree, the package ships skills, agents, and the adapter; links to the guide and README point at GitHub.
+Like the Claude Code package, the Codex package translates the shared prose at runtime through its adapter instead of forking it. Every Codex skill links to the adapter before the shared instructions, takes its directory name as its skill name, and maps upstream `disable-model-invocation` to `allow_implicit_invocation` in `agents/openai.yaml`. The agent Markdown files are portable prompts, not registered Codex agents. Like the Claude Code tree, the package ships skills, agents, and the adapter; links to the guide and README point at GitHub. Both packages leave out `make-bot-ui` and the lines that link to it, because it needs Grok Bot host tools; it stays in `pstack/` for Cursor.
 
 ## Regenerate and verify
 

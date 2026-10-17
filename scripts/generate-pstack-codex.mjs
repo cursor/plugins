@@ -44,8 +44,18 @@ function text(value) {
   return { bytes: Buffer.from(value), executable: false };
 }
 
-const skills = readdirSync(SKILLS).filter((name) => existsSync(join(SKILLS, name, "SKILL.md")));
-const copies = [...walk(SKILLS), ...walk(join(PSTACK, "agents")), join(PSTACK, ADAPTER)];
+// The pstack-relative path that a relative link in `from` points at, if that path exists.
+function resolve(from, href) {
+  const target = href.replace(/[#?].*/, "");
+  if (!target || /^[a-z][a-z0-9+.-]*:/i.test(target)) return undefined;
+  const path = posix.join(posix.dirname(from), target).replace(/\/$/, "");
+  return existsSync(join(PSTACK, path)) ? path : undefined;
+}
+
+// Grok Bot skills need host tools Codex lacks. The package drops them and any line that links to them.
+const GROK_BOT_ONLY = ["make-bot-ui"];
+const skills = readdirSync(SKILLS).filter((name) => !GROK_BOT_ONLY.includes(name) && existsSync(join(SKILLS, name, "SKILL.md")));
+const copies = [...skills.flatMap((skill) => walk(join(SKILLS, skill))), ...walk(join(PSTACK, "agents")), join(PSTACK, ADAPTER)];
 const files = new Map(copies.map((path) => [relative(PSTACK, path), file(path)]));
 const problems = [];
 
@@ -77,15 +87,15 @@ for (const [path, entry] of files) {
 // A relative link to a pstack file the package leaves out points at that file on GitHub `main` instead.
 for (const [path, entry] of files) {
   if (!path.endsWith(".md")) continue;
+  const linksToDropped = (line) =>
+    [...line.matchAll(LINK)].some(([, href]) => GROK_BOT_ONLY.includes(resolve(path, href)?.match(/^skills\/([^/]+)/)?.[1]));
+  const kept = entry.bytes.toString("utf8").split("\n").filter((line) => !linksToDropped(line)).join("\n");
   entry.bytes = Buffer.from(
-    entry.bytes.toString("utf8").replace(LINK, (link, href) => {
-      const target = href.replace(/[#?].*/, "");
-      if (!target || /^[a-z][a-z0-9+.-]*:/i.test(target)) return link;
-      const resolved = posix.join(posix.dirname(path), target).replace(/\/$/, "");
-      if (resolved.split("/")[0] === ".." || !existsSync(join(PSTACK, resolved))) return link;
-      if (files.has(resolved) || [...files.keys()].some((key) => key.startsWith(`${resolved}/`))) return link;
-      const kind = statSync(join(PSTACK, resolved)).isDirectory() ? "tree" : "blob";
-      return `](${GITHUB}/${kind}/main/pstack/${resolved}${href.slice(href.search(/[#?]|$/))})`;
+    kept.replace(LINK, (link, href) => {
+      const target = resolve(path, href);
+      if (!target || target.split("/")[0] === ".." || files.has(target) || [...files.keys()].some((key) => key.startsWith(`${target}/`))) return link;
+      const kind = statSync(join(PSTACK, target)).isDirectory() ? "tree" : "blob";
+      return `](${GITHUB}/${kind}/main/pstack/${target}${href.slice(href.search(/[#?]|$/))})`;
     }),
   );
 }
