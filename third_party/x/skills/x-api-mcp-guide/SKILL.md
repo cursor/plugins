@@ -13,7 +13,10 @@ description: >-
   live in THIS file: clone xchat-grokbot-helper and run xchat_lite.py locally —
   do not wait for the user to name the helper or another skill. Missing chat
   tools or dm.read/dm.write while other X tools work: reconnect the X plugin.
-  Estimate every X call and confirm before anything expensive.
+  Scheduled X calls use schedule_call, list_scheduled_calls, get_scheduled_call,
+  update_scheduled_call, cancel_scheduled_call, and respond_to_scheduled_call.
+  Missing those tools or calls.read/calls.write while other X tools work:
+  reconnect the X plugin. Estimate every X call and confirm before anything expensive.
 ---
 # X MCP guide
 
@@ -97,6 +100,7 @@ Once tools exist and `{credits}` is cached, send this once. Adapt the wording to
 > - **News & trends** — search X news stories and get trends by location
 > - **Bookmarks** — list, add, and remove bookmarks, and organize them into folders
 > - **Chat** — read and reply to X Chat, and list, open, or accept message requests (needs a Chat PIN via secret-request, not pasted here). Posting tweets is not supported.
+> - **Calls** — list the X calls on your calendar, schedule or change one, and RSVP to an invitation
 >
 > You have about $X.XX in credits.
 >
@@ -135,6 +139,8 @@ If status is `connected` but tools=0, that is #2, not this.
 Do **not** treat `get_usage_credits` not found as #2 by itself. If other `user-X-*` tools work, that is a missing endpoint or an outage — follow the 5xx / could-not-read-balance copy, not “create a Default Project and App.”
 
 Missing **Chat** tools (`get_chat_conversations`, `send_chat_message`, …) while timeline/search/`get_users_me` work is **not** #2. That is [X Chat scopes](#x-chat-scopes) — reconnect for `dm.read` / `dm.write`.
+
+Missing **call** tools (`schedule_call`, `list_scheduled_calls`, …) while other X tools work is **not** #2. That is [X call scopes](#x-call-scopes) — reconnect for `calls.read` / `calls.write`.
 
 **When (fallback):** `client-forbidden`; `user-not-enrolled`; `client-not-enrolled`; Client Forbidden; 403 on timeline / mentions / search / bookmarks after Connect.
 
@@ -202,6 +208,16 @@ Then follow [error 1](#1-sign-in-failed) or [error 2](#2-account-not-ready). Do 
 
 Do not tell them to create a Project or App. Do not ask for a Bearer token. After reconnect, follow [X Chat](#x-chat): clone the helper yourself, use a [saved key](#saved-key) or secret-request **only** the Chat PIN into `CHAT_PIN`, then read/reply.
 
+### X call scopes
+
+**When:** the user wants to list, schedule, change, cancel, or RSVP to an X call, other X tools work, but the call tools are missing or a call 403s for `calls.read` / `calls.write`.
+
+**Say:**
+
+> X calls need an extra sign-in. Reconnect the X plugin in this chat and approve access to your calls. Then I'll retry. Don't paste keys or tokens.
+
+Do not tell them to create a Project or App. Do not ask for a Bearer token. After reconnect, follow [Scheduled calls](#scheduled-calls).
+
 ## Other errors
 
 `not-authorized-for-resource` (private account they don't own): stop. Their own timeline/bookmarks: probe current user, retry once with that id.
@@ -258,6 +274,8 @@ When X calls are required this session: confirm tools exist, then `get_users_me`
 Every X call can charge the user. Estimate the cost **before** calling. Read [references/pricing.md](references/pricing.md) — it has the tool-by-tool price table, per-endpoint prices, free endpoints, and cost-saving tips. Once per session, fetch live pricing from https://console.x.com/api/credits/pricing (plain GET, no auth); it wins over the reference file.
 
 X Chat is free for this plugin. X Chat reads (`GET /2/chat/*`) and public key lookups are free everywhere, in Grok Bot and in Cursor. Do not estimate a cost, ask for confirmation, or check or require credits for `get_chat_conversations`, `get_chat_message_requests`, `get_chat_message_request`, `accept_chat_message_request`, `get_chat_conversation`, `get_chat_conversation_events`, public key lookups, `add_conversation_keys`, `send_chat_message`, typing indicators, or marking a conversation read.
+
+Scheduled X calls are free, including on Grok Bot. Do not estimate a cost, ask for confirmation, or check or require credits for `list_scheduled_calls`, `get_scheduled_call`, `schedule_call`, `update_scheduled_call`, `cancel_scheduled_call`, or `respond_to_scheduled_call`.
 
 The live payload:
 
@@ -339,6 +357,26 @@ When they ask what they can do, re-fetch `{credits}`, say how many they have lef
 - Bookmarks: list `{me}`. Save: parse status id, create bookmark.
 - One post: parse status id, lookup.
 - X Chat / inbox / DMs / message requests: [X Chat](#x-chat). Clone the helper if missing — do not ask the user to find it. Use a [saved key](#saved-key) or secret-request the Chat PIN only. Owner must approve outbound text unless they already said to send or reply. Accept a request only when they said to accept.
+- X calls on the calendar: [Scheduled calls](#scheduled-calls). List or open when they ask. Schedule, update, cancel, or RSVP only when they asked.
+
+## Scheduled calls
+
+These tools are the owner's X Calls calendar. They are not X Chat and not a livestream. Do not clone the Chat helper, ask for a Chat PIN, or send a chat message to schedule a call.
+
+| Tool | Does | Scope |
+| --- | --- | --- |
+| `list_scheduled_calls` | X calls on the calendar in a window (defaults to the next 24 hours, at most 7 days) | `calls.read` |
+| `get_scheduled_call` | One scheduled call by `id` | `calls.read` |
+| `schedule_call` | Put a call on the calendar and invite people | `calls.write` |
+| `update_scheduled_call` | Move, rename, or re-invite a call the owner organizes | `calls.write` |
+| `cancel_scheduled_call` | Cancel a call the owner organizes | `calls.write` |
+| `respond_to_scheduled_call` | RSVP. `response` is `accepted`, `declined`, or `tentative` | `calls.write` |
+
+List or open a call when they ask. Schedule, update, cancel, or RSVP only when they asked, and repeat the time, who is invited, and the RSVP before you do it. A write can email invitees.
+
+`id` is the scheduled-call id from a list or schedule result. On a recurring call, pass `scope` and `occurrence_start_time` only when they said which occurrences: one, this one and the ones after it, or all of them. Default is all.
+
+If the tools are missing or a call returns 403 for `calls.read` / `calls.write`, that is [X call scopes](#x-call-scopes). Reconnect. Do not create a Project or App.
 
 ## X Chat
 
@@ -560,6 +598,8 @@ If `add_conversation_keys` returns `UNAUTHORIZED_REQUESTING_USER` or similar: yo
 - Quote `total_balance` or `free_grants` as “you received $X”. Gift size by plan is the starter table, and only if they ask **and** you know the plan. Always say remaining balance (`You have about $X.XX in credits.`, including $0.00).
 - Treat tools=0 / `user-X-*` not found as a paywall. That is [error 2](#2-account-not-ready).
 - Treat missing Chat tools as “create a Project and App.” If other X tools work, that is [X Chat scopes](#x-chat-scopes) — reconnect.
+- Treat missing call tools as “create a Project and App.” If other X tools work, that is [X call scopes](#x-call-scopes) — reconnect.
+- Schedule, update, cancel, or RSVP to an X call unless the owner asked. Do not use the X Chat helper for calls.
 - Wait for the user to name `xchat_lite`, the helper repo, or a second X Chat skill. Clone it yourself.
 - Treat a reply as accepting a message request. Accept only with `accept_chat_message_request`, and only when the owner said to accept.
 - Call `get_chat_message_request` while scanning requests. That marks them delivered. List with `get_chat_message_requests`.

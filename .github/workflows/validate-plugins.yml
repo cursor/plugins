@@ -4,8 +4,13 @@ on:
   pull_request:
     paths:
       - ".cursor-plugin/marketplace.json"
+      - ".claude-plugin/marketplace.json"
       - "**/plugin.json"
       - "schemas/**"
+      - "pstack/**"
+      - "harness/**"
+      - "scripts/**"
+      - ".github/workflows/validate-plugins.yml"
 
 jobs:
   validate:
@@ -22,3 +27,6 @@ jobs:
 
       - name: Validate plugin definitions
         run: node scripts/validate-plugins.mjs
+
+      - name: Check generated pstack harness trees
+        run: node scripts/generate-pstack-harness-trees.mjs --check

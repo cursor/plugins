@@ -20,6 +20,8 @@
           "bookmark.write",
           "dm.read",
           "dm.write",
+          "calls.read",
+          "calls.write",
           "media.write",
           "developer.billing.write",
           "developer.write",

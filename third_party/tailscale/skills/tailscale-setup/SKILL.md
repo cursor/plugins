@@ -7,6 +7,8 @@ description: Walk a user through connecting Grok Bot to their Tailscale tailnet 
 
 Grok Bot joins the user's tailnet as one device tagged `tag:grokbot`. It can reach only the hosts and ports the tailnet policy file grants to that tag, so set up the policy before signing in.
 
+On a team's company tailnet, which a Grok Bot team admin turns on in the Tailscale plugin, each member connects their own Grok Bot device from the team row instead, and no `tag:grokbot` policy is needed. If signing in on the personal row fails with a `tag:grokbot` error on a company tailnet, use the company tailnet.
+
 ## 1. Define the tag and grant access
 
 In the Tailscale admin console, open **Access controls** and edit the policy file:
@@ -52,5 +54,6 @@ Click **Remove** on the Tailscale plugin page in Grok Bot.
 
 ## Troubleshooting
 
+- **Checking whether a host is reachable:** use the Tailscale plugin's Check host tool, not curl from the bot computer, which only uses the personal connection. To use a server, add it as an MCP server.
 - **Cannot reach a host:** check that a grant from `tag:grokbot` covers that host and port, and that the device is approved (and signed, with Tailnet Lock).
 - **Sign-in cannot apply the tag:** the signing-in user is not an owner of `tag:grokbot` in `tagOwners`.

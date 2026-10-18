@@ -2,6 +2,12 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.7.0 — Scheduled X calls
+
+- Requested `calls.read` and `calls.write` so agents can list, schedule, update, cancel, and RSVP to X calls on `https://api.x.com/mcp`.
+- The guide covers `schedule_call`, `list_scheduled_calls`, `get_scheduled_call`, `update_scheduled_call`, `cancel_scheduled_call`, and `respond_to_scheduled_call`. Schedule, update, cancel, and RSVP only when the owner asked. Missing call tools while other X tools work means reconnect, not a new Project or App.
+- Existing installs need to sign in to X again to pick up the new scopes.
+
 ## 2.6.6 — media.write scope
 
 - Requested `media.write`.

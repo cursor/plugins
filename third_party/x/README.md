@@ -2,7 +2,7 @@
 
 Cursor plugin that connects agents to the [X API](https://docs.x.com) through X's official hosted [Model Context Protocol](https://modelcontextprotocol.io/) server at `https://api.x.com/mcp`.
 
-This plugin signs you in with OAuth as your own X account. It is no longer read-only: alongside searching and reading public X data, agents can manage your lists, bookmarks, blocks, and mutes, and call X Chat endpoints.
+This plugin signs you in with OAuth as your own X account. It is no longer read-only: alongside searching and reading public X data, agents can manage your lists, bookmarks, blocks, and mutes, call X Chat endpoints, and schedule X calls.
 
 ## Install
 
@@ -37,6 +37,8 @@ Or run `/add-plugin x` in chat.
           "bookmark.write",
           "dm.read",
           "dm.write",
+          "calls.read",
+          "calls.write",
           "media.write",
           "developer.billing.write",
           "developer.write",
@@ -61,6 +63,7 @@ Or run `/add-plugin x` in chat.
 | Bookmarks | Read and manage your bookmarks |
 | Blocks & mutes | Read your blocks and mutes; add or remove blocks |
 | Chat | List conversations, fetch events, send messages, typing, and read receipts; list, open, and accept message requests |
+| Calls | List and open scheduled X calls; schedule, update, or cancel one; RSVP to an invitation |
 | Developer account | Read your X developer account settings and credit balance |
 
 Posting is not included: the plugin does not request the `tweet.write` scope, so agents cannot publish posts as you.
@@ -73,7 +76,7 @@ Requests run in your user context, so they count against your account's rate lim
 
 ## Scopes requested
 
-`tweet.read`, `users.read`, `follows.read`, `space.read`, `mute.read`, `like.read`, `list.read`, `list.write`, `block.read`, `block.write`, `bookmark.read`, `bookmark.write`, `dm.read`, `dm.write`, `media.write`, `developer.billing.write`, `developer.write`, `offline.access`
+`tweet.read`, `users.read`, `follows.read`, `space.read`, `mute.read`, `like.read`, `list.read`, `list.write`, `block.read`, `block.write`, `bookmark.read`, `bookmark.write`, `dm.read`, `dm.write`, `calls.read`, `calls.write`, `media.write`, `developer.billing.write`, `developer.write`, `offline.access`
 
 ## X documentation search
 

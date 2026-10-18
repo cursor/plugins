@@ -1,6 +1,6 @@
 # QuickBooks Online
 
-Cursor plugin that connects agents to [QuickBooks Online](https://quickbooks.intuit.com) — Intuit's cloud accounting product — through a [Model Context Protocol](https://modelcontextprotocol.io/) server that Cursor hosts and credentials.
+Cursor plugin that connects agents to [QuickBooks Online](https://quickbooks.intuit.com) — Intuit's cloud accounting product — through Intuit's remote [Model Context Protocol](https://modelcontextprotocol.io/) server, which Cursor credentials for you.
 
 Read a company file's accounting data: invoices, bills, expenses, payments, customers and vendors, the chart of accounts, journal entries, and the standard financial reports.
 
@@ -14,11 +14,18 @@ Or run `/add-plugin quickbooks-online` in chat.
 
 ## MCP
 
-This plugin ships no `mcp.json`, and that is deliberate.
+```json
+{
+  "mcpServers": {
+    "quickbooks-online": {
+      "type": "http",
+      "url": "https://mcp-e2e.quickbooks.intuit.com/mcp"
+    }
+  }
+}
+```
 
-Every other connector in this repository either points at a vendor's hosted endpoint or runs a package locally over stdio, so it carries its own server definition. QuickBooks Online does not: Cursor runs the server, and the plugin exists only as the opt-in that turns it on for your account. Installing the plugin is what makes the server available; there is no command to run, no endpoint to reach, and no API key or client secret to paste.
-
-One consequence worth knowing: because the server is not declared here, you will not find it in a local `mcp.json` and you cannot point another MCP client at it. It is reachable from Cursor only.
+Intuit hosts the server. Auth is OAuth against Intuit, which Cursor runs when the plugin connects — there is no command to run, and no API key or client secret to paste.
 
 ## Before you connect
 
@@ -51,6 +58,7 @@ The server is the source of truth for tool names and schemas.
 - QuickBooks Online: https://quickbooks.intuit.com
 - Intuit Developer: https://developer.intuit.com
 - Model Context Protocol: https://modelcontextprotocol.io
+- Server URL: https://mcp-e2e.quickbooks.intuit.com/mcp
 
 Logo is QuickBooks' official mark, from `quickbooks.intuit.com`.
 
