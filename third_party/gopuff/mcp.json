@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "gopuff": {
+      "type": "http",
+      "url": "https://mcp.gopuff.com/mcp",
+      "placement": "server",
+      "auth": {
+        "CLIENT_ID": "mcp-grok-bot"
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "quickbooks-online",
   "displayName": "QuickBooks Online",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "minClientVersions": {
     "cursor": "3.19.0"
   },
@@ -32,5 +32,6 @@
     "accounting",
     "finance",
     "mcp"
-  ]
+  ],
+  "mcpServers": "./mcp.json"
 }
