@@ -218,6 +218,10 @@ Do not tell them to create a Project or App. Do not ask for a Bearer token. Afte
 
 Do not tell them to create a Project or App. Do not ask for a Bearer token. After reconnect, follow [Scheduled calls](#scheduled-calls).
 
+### New tools after a connector update
+
+Tools added to the X connector (for example the chat media upload tools) show up only after the user reinstalls the X plugin. Restarting the MCP is not enough. If a documented tool is missing while other X tools work and reconnecting didn't add it, tell them to remove and reinstall the X plugin.
+
 ## Other errors
 
 `not-authorized-for-resource` (private account they don't own): stop. Their own timeline/bookmarks: probe current user, retry once with that id.
@@ -409,8 +413,9 @@ else
 fi
 [ -e "$XCHAT_ROOT/.git" ] && git -C "$XCHAT_ROOT" pull -q --ff-only 2>/dev/null || true
 if [ ! -x "$XCHAT_ROOT/.venv/bin/python" ]; then
-  python3 -m venv "$XCHAT_ROOT/.venv" && "$XCHAT_ROOT/.venv/bin/pip" install -U pip chatxdk
+  python3 -m venv "$XCHAT_ROOT/.venv"
 fi
+"$XCHAT_ROOT/.venv/bin/pip" install -q -U pip "chatxdk<0.6"
 HELPER="$XCHAT_ROOT/.venv/bin/python"
 SCRIPT="$XCHAT_ROOT/xchat_lite.py"
 
@@ -419,11 +424,13 @@ $HELPER $SCRIPT --user-id "$X_USER_ID" --key-version "$VER" --juicebox "$JUICEBO
 
 Not in git with this plugin. Reuse that same `XCHAT_ROOT` on later turns.
 
+Keep `chatxdk` below 0.6: 0.6 replaces the stream calls that `encrypt-media` and `decrypt-media` use. The install line moves an existing venv to the latest 0.5.x.
+
 **Chat PIN only.** Secret-request into `CHAT_PIN`. Never echo it. Never ask them to paste the PIN into the transcript. The helper also reads Grok Bot `box-secrets.json` → `card.CHAT_PIN` if env is empty. Do not ask for anything else (no Bearer token, no password, no juicebox dump). Do not ask for the PIN when a saved key works, and ask the remember question every time you do ask — see [Saved key](#saved-key).
 
 `--user-id` is the numeric X id from `get_users_me`. Do not use the shell’s `$UID` (Unix account id).
 
-MCP owns OAuth (`dm.read` / `dm.write`) and ciphertext. Local `chatxdk` + `xchat_lite.py` own Juicebox unlock, decrypt, encrypt, prepare-keys.
+MCP owns OAuth (`dm.read` / `dm.write`) and ciphertext. Local `chatxdk` + `xchat_lite.py` own Juicebox unlock, decrypt, encrypt, encrypt-media, prepare-keys.
 
 ### MCP tools (wire)
 
@@ -440,6 +447,7 @@ MCP owns OAuth (`dm.read` / `dm.write`) and ciphertext. Local `chatxdk` + `xchat
 | `get_chat_conversation_events` | `data[].encoded_event` + **`meta.conversation_key_events`** |
 | `send_chat_message` | Pre-encrypted `message_id` + `encoded_message_create_event` (+ signature) |
 | `add_conversation_keys` | Output of local `prepare-keys` / `session-encrypt.add_conversation_keys` |
+| `chat_media_upload_initialize` / `_append` / `_finalize` | Upload an image encrypted by `encrypt-media`. Needs `media.write`. See [Send an image](#send-an-image) |
 | `send_chat_typing_indicator` | Optional UX (do not hammer) |
 | `mark_chat_conversation_read` | Optional after handling. Takes only `id` and always marks the whole conversation read |
 
@@ -476,6 +484,14 @@ $HELPER $SCRIPT ... session-encrypt <<'JSON'
   "prepare": null
 }
 JSON
+
+# image to send: encrypt under the conversation key into upload parts (see Send an image)
+$HELPER $SCRIPT ... encrypt-media <<'JSON'
+{"conversation_id":"AAA-BBB", "events":["..."], "conversation_key_events":["..."],
+ "signing_keys":{"data":[...]}, "media":[{"input":"/path/to/photo.jpg"}]}
+JSON
+# stdout: upload_conversation_id (colon form), upload_dir, media[] (total_bytes, num_parts,
+#         parts[] with segment_index and a mode-600 file of that part's base64, conversation_key_version)
 
 # owner said yes to remembering: unlock with the PIN and save the key (flag before the command)
 $HELPER $SCRIPT --user-id "$X_USER_ID" --key-version "$VER" --juicebox "$JUICEBOX_PATH" --remember-key unlock-check
@@ -576,6 +592,20 @@ Do not accept while you are still paging the list.
 **No conversation key yet** (first message, or only unencrypted messages): self + peer public keys (`public_key` = identity, `key_version` = `public_key_version`) → `session-encrypt` with `prepare` set → MCP `add_conversation_keys` (conversation `id` = thread id from inbox when known) → MCP `send_chat_message` → confirm.
 
 If `add_conversation_keys` returns `UNAUTHORIZED_REQUESTING_USER` or similar: you likely cannot rotate/init keys for that conversation, or the peer is not on XChat — stop and report; do not send ciphertext under an unpublished key.
+
+### Send an image
+
+Same approval rule as text. Needs `media.write`; if the upload tools are missing or 403, that is [X Chat scopes](#x-chat-scopes). The upload tools take the colon conversation id (`AAA:BBB`); every other Chat tool takes the hyphen form (`AAA-BBB`).
+
+1. Page `get_chat_conversation_events` only until you have the latest conversation key change, in `data` or `meta.conversation_key_events` (usually the first page). Get signing keys for those pages' senders, including the key change's sender.
+2. `encrypt-media` with those events and keys, `conversation_id`, and `"media": [{"input": "/path/to/photo.jpg"}]`. PNG, JPEG, GIF or WebP, at most 5 MiB each, up to 10 images.
+3. `chat_media_upload_initialize` with `conversation_id` = `upload_conversation_id` and the image's `total_bytes`. Keep `session_id`, `media_hash_key`, `conversation_id`.
+4. `chat_media_upload_append` once per part: `id` = `session_id`, `media` = that part file's base64 (4 MiB or less), its `segment_index`, plus `conversation_id` and `media_hash_key`.
+5. `session-encrypt` with the same events and keys, optional caption in `text`, and `media`: the image's `encrypt-media` entry plus its `media_hash_key`. Keep `message_id`.
+6. `chat_media_upload_finalize`: `id` = `session_id`, `conversation_id`, `media_hash_key`, `num_parts` as a string (`"2"`), `message_id` (and `ttl_msec` as a string for a disappearing message).
+7. `send_chat_message` with step 5's hyphen `id`, `message_id`, `encoded_message_create_event`, `encoded_message_event_signature`. Then delete `upload_dir`.
+
+The whole `/mcp` request is capped at 8 MiB, so never put more than one part in a call. If `session-encrypt` fails on `conversation_key_version` (the key changed), rerun `encrypt-media` and upload again. A new conversation needs its first text message (`prepare`) before an image.
 
 ### Chat safety
 

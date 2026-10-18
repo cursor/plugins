@@ -2,6 +2,12 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.8.0 — Send images in X Chat
+
+- The guide covers sending an image: `encrypt-media`, `chat_media_upload_initialize` and `chat_media_upload_append` (colon conversation id, `media.write`), `session-encrypt` with `media`, `chat_media_upload_finalize`, then `send_chat_message` (hyphen conversation id).
+- The helper install pins `chatxdk<0.6`.
+- Tools added to the X connector show up only after reinstalling the plugin; restarting the MCP is not enough.
+
 ## 2.7.0 — Scheduled X calls
 
 - Requested `calls.read` and `calls.write` so agents can list, schedule, update, cancel, and RSVP to X calls on `https://api.x.com/mcp`.
