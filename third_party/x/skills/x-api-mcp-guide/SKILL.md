@@ -16,7 +16,9 @@ description: >-
   Scheduled X calls use schedule_call, list_scheduled_calls, get_scheduled_call,
   update_scheduled_call, cancel_scheduled_call, and respond_to_scheduled_call.
   Missing those tools or calls.read/calls.write while other X tools work:
-  reconnect the X plugin. Estimate every X call and confirm before anything expensive.
+  reconnect the X plugin. chat_media_download needs media.write. A media.write
+  403, or that tool missing while other X tools work: reconnect the X plugin.
+  Estimate every X call and confirm before anything expensive.
 ---
 # X MCP guide
 
@@ -142,6 +144,8 @@ Missing **Chat** tools (`get_chat_conversations`, `send_chat_message`, …) whil
 
 Missing **call** tools (`schedule_call`, `list_scheduled_calls`, …) while other X tools work is **not** #2. That is [X call scopes](#x-call-scopes) — reconnect for `calls.read` / `calls.write`.
 
+Missing **`chat_media_download`**, or a Chat media call 403 for `media.write`, while other X tools work is **not** #2. That is [Media scope](#media-scope) — reconnect for `media.write`.
+
 **When (fallback):** `client-forbidden`; `user-not-enrolled`; `client-not-enrolled`; Client Forbidden; 403 on timeline / mentions / search / bookmarks after Connect.
 
 **Say:**
@@ -217,6 +221,16 @@ Do not tell them to create a Project or App. Do not ask for a Bearer token. Afte
 > X calls need an extra sign-in. Reconnect the X plugin in this chat and approve access to your calls. Then I'll retry. Don't paste keys or tokens.
 
 Do not tell them to create a Project or App. Do not ask for a Bearer token. After reconnect, follow [Scheduled calls](#scheduled-calls).
+
+### Media scope
+
+**When:** the user wants a photo, video, or file from an X Chat, other X tools work, but `chat_media_download` is missing or the download 403s for `media.write`.
+
+**Say:**
+
+> Downloading chat media needs an extra sign-in. Reconnect the X plugin in this chat and approve media access. Then I'll retry. Don't paste keys or tokens.
+
+Do not tell them to create a Project or App. Do not ask for a Bearer token. After reconnect, use `chat_media_download`. The bytes are ciphertext. Decrypt them locally with the Chat helper. Do not treat the download as a viewable file.
 
 ## Other errors
 
@@ -423,7 +437,7 @@ Not in git with this plugin. Reuse that same `XCHAT_ROOT` on later turns.
 
 `--user-id` is the numeric X id from `get_users_me`. Do not use the shell’s `$UID` (Unix account id).
 
-MCP owns OAuth (`dm.read` / `dm.write`) and ciphertext. Local `chatxdk` + `xchat_lite.py` own Juicebox unlock, decrypt, encrypt, prepare-keys.
+MCP owns OAuth (`dm.read` / `dm.write` / `media.write`) and ciphertext. Local `chatxdk` + `xchat_lite.py` own Juicebox unlock, decrypt, encrypt, prepare-keys.
 
 ### MCP tools (wire)
 
@@ -438,6 +452,7 @@ MCP owns OAuth (`dm.read` / `dm.write`) and ciphertext. Local `chatxdk` + `xchat
 | `accept_chat_message_request` | Accept a received request into the inbox. Owner must say to accept. A reply does not |
 | `get_chat_conversation` | One thread metadata, including `participant_ids` / `member_ids` |
 | `get_chat_conversation_events` | `data[].encoded_event` + **`meta.conversation_key_events`** |
+| `chat_media_download` | Encrypted media bytes for one conversation id and media hash. Needs `media.write`. Ciphertext, not a viewable file |
 | `send_chat_message` | Pre-encrypted `message_id` + `encoded_message_create_event` (+ signature) |
 | `add_conversation_keys` | Output of local `prepare-keys` / `session-encrypt.add_conversation_keys` |
 | `send_chat_typing_indicator` | Optional UX (do not hammer) |
@@ -599,6 +614,7 @@ If `add_conversation_keys` returns `UNAUTHORIZED_REQUESTING_USER` or similar: yo
 - Treat tools=0 / `user-X-*` not found as a paywall. That is [error 2](#2-account-not-ready).
 - Treat missing Chat tools as “create a Project and App.” If other X tools work, that is [X Chat scopes](#x-chat-scopes) — reconnect.
 - Treat missing call tools as “create a Project and App.” If other X tools work, that is [X call scopes](#x-call-scopes) — reconnect.
+- Treat a `chat_media_download` 403 for `media.write` as “create a Project and App.” That is [Media scope](#media-scope) — reconnect.
 - Schedule, update, cancel, or RSVP to an X call unless the owner asked. Do not use the X Chat helper for calls.
 - Wait for the user to name `xchat_lite`, the helper repo, or a second X Chat skill. Clone it yourself.
 - Treat a reply as accepting a message request. Accept only with `accept_chat_message_request`, and only when the owner said to accept.

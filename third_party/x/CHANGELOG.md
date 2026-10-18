@@ -2,6 +2,11 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.7.1 — media.write in the guide
+
+- `chat_media_download` needs `media.write`. The bytes are X Chat ciphertext. A `media.write` 403, or that tool missing while other X tools work, means reconnect, not a new Project or App.
+- The scope is already requested. Existing installs that signed in before `media.write` was added still need to sign in to X again.
+
 ## 2.7.0 — Scheduled X calls
 
 - Requested `calls.read` and `calls.write` so agents can list, schedule, update, cancel, and RSVP to X calls on `https://api.x.com/mcp`.
