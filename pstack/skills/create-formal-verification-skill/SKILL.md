@@ -34,7 +34,7 @@ Write a project-local skill with frontmatter that names the area and says when t
 
 ## Prove it before you hand off
 
-Follow the generated skill once, as the next agent would, on a scratch change that breaks the property in the real code. It must catch the break. Then drop the scratch change and confirm that everything passes again. A verify skill that was never run is a draft. If a step fails, fix the skill or the verification, not the scratch change.
+Follow the generated skill once, as the next agent would, on a scratch change that breaks the property in the real code. It must catch the break. Then drop the scratch change and confirm that the check is back where it started: passing, or failing only on the findings you will report. A verify skill that was never run is a draft. If the skill misses the break or a step does not run, fix the skill or the verification, not the scratch change.
 
 ## Hand off
 
