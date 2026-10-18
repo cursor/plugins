@@ -12,6 +12,8 @@ Generate Seedance videos and retrieve the finished clip. 插件复用 [Ace Data 
 
 **发布状态：**[官方收录申请](https://github.com/cursor/plugins/pull/549)仍待审核；源码公开或检查成功不等于市场已上架。准确条目不存在时，不要安装同名无关插件。可选的`~/.cursor/plugins/local/seedance/`源码本地审查属于手动路径，不能计作官方分发。本插件提供工具，不会在 Cursor 聊天模型服务商列表新增 Ace 预设。
 
+准确官方条目尚未发布时，按[固定候选本地审查步骤](../docs/local-review.md)复制已跟踪文件并记录commit，不猜市场地址。加载前核已有安装、允许本地导入，再Reload；指向外部源码目录的软链接会被跳过，同名市场安装优先。本地加载不计官方安装成功。
+
 ## 2. 注册/登录并取得服务 API Token
 
 1. 打开 [Ace Data Cloud](https://platform.acedata.cloud/?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=seedance_cursor_shared_readme_register_signin_zh_hans)注册或登录，再进入 [Applications 应用管理](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=seedance_cursor_shared_readme_api_key_zh_hans)；若尚无通用应用，先点 **Initialize General Application**。

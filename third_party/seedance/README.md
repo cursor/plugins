@@ -12,6 +12,8 @@ Open the [Cursor Marketplace](https://cursor.com/marketplace) or **Customize** i
 
 **Publication status:** [the official submission](https://github.com/cursor/plugins/pull/549) is pending review; an available source repository or a passing check does not prove a live Marketplace listing. If the exact listing is absent, do not install a similarly named unrelated plugin. An optional source/local review under `~/.cursor/plugins/local/seedance/` is a manual route, not official distribution. This is a tool integration, not an Ace preset in Cursor's chat-model provider list.
 
+For an unpublished candidate, use the [pinned local-review procedure](docs/local-review.md) rather than guessing a Marketplace URL. It copies the tracked candidate files, checks for an existing installation, and records the exact commit. Local loading needs a reload and allowed local imports; an external-repository symlink is skipped, and a same-name Marketplace install takes precedence. This procedure does not claim official installation.
+
 ## 2. Register or sign in and get a service API token
 
 1. [Open Ace Data Cloud](https://platform.acedata.cloud/?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=seedance_cursor_shared_readme_register_signin_en) and register or sign in. Then open [Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=seedance_cursor_shared_readme_api_key_en). If no General application exists, select **Initialize General Application**.
