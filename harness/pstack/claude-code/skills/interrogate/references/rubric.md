@@ -16,6 +16,16 @@ Does the code actually do what the intent says it should?
 
 When you find a potential bug, trace the execution path. Don't just flag "this could be nil". Show the call chain that makes it nil.
 
+## Scope and Grounding
+
+Did the change stay inside the intent, and is everything it relies on real? These are the failures agents make most often. Check each one against the stated intent and the diff.
+
+- Kitchen sink: the intent asked for one thing and the diff also restructures, renames, or "improves" unrelated code. List each change the intent does not explain.
+- Runaway refactor: the change started in one place and spread across many files. Ask whether each touched file needed to change for the intent, or whether one edit forced the next.
+- Optimistic path: only the happy path is handled. Name the failure the code ignores, such as an empty result, a timeout, a partial write, or a rejected call, show where it would surface, and ask for a test that exercises it.
+- Knowledge hallucination: the code calls an API, flag, parameter, config key, or CLI option that does not exist in the version the project uses. Verify each unfamiliar call against the dependency's source, types, or docs before trusting it.
+- Invisible decision: the diff makes a design choice (a new dependency, a data format, a storage or concurrency model, a public contract) without saying so in the PR or a decision record. Name the choice and ask for it to be stated with the alternatives considered.
+
 ## Root Causes vs. Symptoms
 
 Is the code fixing the actual problem or papering over a symptom?
