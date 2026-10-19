@@ -107,7 +107,7 @@ A verification skill proves the paths you drive. Some bugs live on paths nobody 
 /create-formal-verification-skill the job lease and retry logic. a job must never run twice at once.
 ```
 
-The question picks the tool. Whether events can happen in a bad order suits a model checker over a small model of the design. Whether the code behaves for every input suits a verifier that runs on the code. A property that must hold at every size can need a proof. The agent tells you which tool it chose and why.
+The question picks the tool. Whether events can happen in a bad order suits a model checker over a small model of the design, and TLA+ is the default for that in any language. Whether the code behaves for every input suits a verifier that runs on the code. If no verifier runs on your language, the agent says so and tests the real code with generated inputs, not a hand-written model of the function. A property that must hold at every size can need a proof. The agent tells you which tool it chose and why.
 
 It verifies one property and shows that property failing on a broken variant of the code, because a check you've never seen fail proves nothing. When the current code already breaks the property, you get the counterexample as a short sequence of steps in your code's terms. The property stays as stated, so the finding stays a finding. Product code doesn't change unless you ask.
 
