@@ -1,7 +1,7 @@
 {
   "name": "x",
   "displayName": "X",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "minClientVersions": {
     "cursor": "3.13.0"
   },

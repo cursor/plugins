@@ -261,7 +261,7 @@ Do not tell them to create a Project or App. Do not ask for a Bearer token. Afte
 
 > I'll retry in a minute.
 
-400 `invalid-request`: fix params, don't retry unchanged.
+400 `invalid-request`: fix params, don't retry unchanged. A prepared `add_conversation_keys` body is single-use and must never be saved and re-posted.
 
 5xx / **503** / **`get_usage_credits` missing while other X tools work**: backoff once or twice. Do not treat it as $0 credits, a missing app, or [error 2](#2-account-not-ready). Other endpoints may still work. Then say:
 
@@ -645,7 +645,7 @@ Do not accept while you are still paging the list.
 
 **No conversation key yet** (first message, or only unencrypted messages): self + peer public keys (`public_key` = identity, `key_version` = `public_key_version`) → `session-encrypt` with `prepare` set → MCP `add_conversation_keys` (conversation `id` = thread id from inbox when known) → MCP `send_chat_message` → confirm.
 
-If `add_conversation_keys` returns `UNAUTHORIZED_REQUESTING_USER` or similar: you likely cannot rotate/init keys for that conversation, or the peer is not on XChat — stop and report; do not send ciphertext under an unpublished key.
+If `add_conversation_keys` returns `UNAUTHORIZED_REQUESTING_USER`, the other person can't receive encrypted chats from the owner, almost always because they don't follow the owner. This code is final for that conversation for this session: don't re-post, re-prepare keys, or send. Tell the owner the other person has to follow them first, and both accounts need X Chat keys.
 
 ### Chat safety
 

@@ -2,6 +2,11 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.8.1 — Stop on UNAUTHORIZED_REQUESTING_USER from add_conversation_keys
+
+- `UNAUTHORIZED_REQUESTING_USER` from `add_conversation_keys` means the other person can't receive encrypted chats from the owner, almost always because they don't follow the owner. It is final for that conversation for the session: don't re-post, re-prepare keys, or send. Tell the owner the other person has to follow them first, and both accounts need X Chat keys.
+- A prepared `add_conversation_keys` body is single-use and must never be saved and re-posted.
+
 ## 2.8.0 — Livestreams
 
 - Requested `broadcast.read` and `broadcast.write` so agents can manage the owner's X livestreams on `https://api.x.com/mcp`.
