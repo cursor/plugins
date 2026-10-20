@@ -1,0 +1,28 @@
+{
+	"name": "onprem",
+	"displayName": "onprem stack",
+	"version": "0.1.0",
+	"description": "on-prem model governance and operating doctrine for agent work: a closed allowlist hard lock, a stack of named principles, and an entry mode that applies them.",
+	"author": {
+		"name": "Jarrod Tran"
+	},
+	"license": "MIT",
+	"keywords": [
+		"onprem",
+		"on-prem",
+		"open-weight",
+		"model-governance",
+		"hard-lock",
+		"principles",
+		"agent-style"
+	],
+	"category": "developer-tools",
+	"tags": [
+		"workflow",
+		"principles",
+		"review",
+		"model-governance"
+	],
+	"skills": "./skills/",
+	"agents": "./agents/"
+}
