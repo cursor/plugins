@@ -30,6 +30,7 @@ Or run `/add-plugin jenni` in chat.
 | Tool | Purpose |
 | --- | --- |
 | `search_catalog` | Search the catalog, with an optional ZIP filter |
+| `find_stores` | Find stores available for a ZIP area |
 | `get_product` | Retrieve details for a product |
 | `get_buying_options` | Inspect buying options for a product and ZIP, including the available fulfillment options |
 | `start_checkout` | Begin checkout hosted by JENNi so the shopper can review and approve; the MCP call does not complete checkout or place an order |
