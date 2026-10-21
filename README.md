@@ -39,7 +39,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `hubspot` | [HubSpot](third_party/hubspot/) | Cursor | Integrations | Search and update contacts, companies, deals, and tickets. |
 | `intercom` | [Intercom](third_party/intercom/) | Cursor | Integrations | Search conversations, contacts, and Help Center articles. |
 | `zoom` | [Zoom](third_party/zoom/) | Cursor | Integrations | Search meetings, pull transcripts, and work with Zoom Docs. |
-| `x` | [X](third_party/x/) | Cursor | Integrations | Search posts, read timelines, pull trends, manage bookmarks, access X Chat, and schedule X calls. |
+| `x` | [X](third_party/x/) | Cursor | Integrations | Search posts, read timelines, pull trends, explore Spaces and communities, manage lists and bookmarks, access X Chat, schedule X calls, and manage livestreams. |
 | `clay` | [Clay](third_party/clay/) | Cursor | Integrations | Enrich people and companies, run AI research agents. |
 | `circleback` | [Circleback](third_party/circleback/) | Cursor | Integrations | Search meetings, transcripts, action items, and emails. |
 | `docusign` | [Docusign](third_party/docusign/) | Cursor | Integrations | Manage envelopes, templates, workflows, and agreements. |
@@ -75,6 +75,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `similarweb` | [Similarweb](third_party/similarweb/) | Cursor | Integrations | Analyze website traffic, audiences, and competitors. |
 | `xero` | [Xero](third_party/xero/) | Cursor | Integrations | Read and write invoices, contacts, reports, and payroll. |
 | `x-ads` | [X Ads](third_party/x-ads/) | Cursor | Integrations | Manage ad campaigns, create ads, track conversions, and pull performance stats. |
+| `meta-ads` | [Meta Ads](third_party/meta-ads/) | Cursor | Integrations | Manage campaigns, ads, audiences, and catalogs, and pull performance insights. |
 | `attio` | [Attio](third_party/attio/) | Cursor | Integrations | Search and update CRM records, lists, notes, and tasks. |
 | `hunter` | [Hunter](third_party/hunter/) | Cursor | Integrations | Find and verify emails, discover companies, and save leads. |
 | `gamma` | [Gamma](third_party/gamma/) | Cursor | Integrations | Generate presentations, documents, and webpages. |
@@ -107,6 +108,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `tiktok-for-business` | [TikTok for Business](third_party/tiktok-for-business/) | Cursor | Integrations | Manage TikTok ad campaigns, ad groups, ads, audiences, creatives, and reports. |
 | `gusto` | [Gusto](third_party/gusto/) | Cursor | Integrations | Work with payroll, employees, contractors, time off, and reports. |
 | `gopuff` | [Gopuff](third_party/gopuff/) | Cursor | Integrations | Shop Gopuff from Grok Bot through Gopuff's official MCP server. Sign in with your Gopuff account; Gopuff handles the sign-in, and your searches, carts, and orders go to Gopuff under that account, so any order you place is charged and delivered like a normal Gopuff order. |
+| `jobber` | [Jobber](third_party/jobber/) | Cursor | Integrations | Work with clients, requests, quotes, jobs, visits, and invoices. |
 | `notfair` | [NotFair](third_party/notfair/) | Notfair | Integrations | Operate Google, Meta, X, LinkedIn, Reddit, and TikTok Ads plus GA4, Search Console, GoHighLevel, and WordPress through one OAuth MCP. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 

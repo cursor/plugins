@@ -1,11 +1,11 @@
 {
   "name": "x",
   "displayName": "X",
-  "version": "2.7.0",
+  "version": "2.10.0",
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Search posts, read timelines, pull trends, manage bookmarks, access X Chat, and schedule X calls.",
+  "description": "Search posts, read timelines, pull trends, explore Spaces and communities, manage lists and bookmarks, access X Chat, schedule X calls, and manage livestreams.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"
@@ -21,9 +21,12 @@
     "search",
     "trends",
     "news",
+    "spaces",
+    "communities",
     "lists",
     "bookmarks",
     "calls",
+    "livestream",
     "chat",
     "social",
     "mcp"

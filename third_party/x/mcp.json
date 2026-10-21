@@ -22,6 +22,8 @@
           "dm.write",
           "calls.read",
           "calls.write",
+          "broadcast.read",
+          "broadcast.write",
           "media.write",
           "developer.billing.write",
           "developer.write",

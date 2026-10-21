@@ -18,7 +18,15 @@ Mechanics first, history second. Each skill's report tells you which sources it 
 /poteto-mode read this thread. restate the underlying issue in your own words, in plain english. don't change any code yet.
 ```
 
-A misreading shows up in the restatement, where it costs one message to correct. Keep your own theory to yourself until the agent has stated its own.
+A misreading shows up in the restatement, where it costs one message to correct. Keep your own theory to yourself until the agent has stated its own. `/in-your-own-words` asks for the restatement alone, with no playbook.
+
+## Sharpen a prompt before you send it
+
+```text
+/sharpen write the onboarding doc for the new billing service.
+```
+
+The agent names what an expert would do that you didn't ask for, the raw material they'd start from, their methods and tools, and an outside check that the result is right. It hands back your prompt rewritten to ask for that and doesn't do the task. Send the rewrite when it reads right.
 
 ## Prototype before you pick
 
@@ -75,6 +83,14 @@ The qualifiers do real work. "don't change anything yet" keeps it read-only, and
 ```
 
 "if it repros on main" lets the run stop early when the bug is already gone. The video lets you check the fix before you read the diff.
+
+## Prove a property tests rarely reach
+
+```text
+/create-formal-verification-skill the retry queue. a message must never be delivered twice.
+```
+
+You get one property checked in every case within a stated scope, a counterexample in your code's terms if the code already breaks it, and a project skill the next agent runs on any change to that code.
 
 ## Vet a number before you post it
 
@@ -133,6 +149,14 @@ You rarely need more words. You need the right name, and [the principles page](.
 ```
 
 That's the whole prompt. [`/bro`](../../skills/bro/SKILL.md) restates the last message like one human talking to another, no jargon, shorter. Use it when a reply is technically thorough and you still don't know what it said.
+
+## Catch up on a chat you left running
+
+```text
+/ketchup
+```
+
+[`/ketchup`](../../skills/ketchup/SKILL.md) tells you in plain words what changed since your last message, then lists each call waiting on you with its pick, evidence, and risk. It changes nothing while it reports.
 
 ## The pitfalls
 
