@@ -2,7 +2,7 @@
 
 Cursor and Grok Bot plugin that connects agents to [JENNi Instant Commerce](https://shop.jennipro.com) through JENNi's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server (`https://shop.jennipro.com/mcp`).
 
-Search 58,900+ GTIN-verified physical products across 33,000+ local brick-and-mortar US retail stores, verify real-time ZIP-level availability and local shelf prices, and create instant Stripe checkout links for 1-hour courier delivery.
+Search JENNi's catalog, inspect ZIP-specific buying options, and begin a checkout hosted by JENNi for the shopper to review and approve. Checkout is completed by the shopper on JENNi; no order is placed through MCP.
 
 ## Install
 
@@ -29,10 +29,10 @@ Or run `/add-plugin jenni` in chat.
 
 | Tool | Purpose |
 | --- | --- |
-| `search_catalog` | Search GTIN-verified products across local US retail stores with optional `zip` filter |
-| `get_product` | Retrieve product details, GTIN/UPC, local shelf price, and instant checkout URL (`https://shop.jennipro.com/p/{productId}`) |
-| `check_availability` | Verify real-time local store stock and calculate 1-hour courier delivery quote for any US ZIP code |
-| `create_checkout` | Generate a Stripe-backed checkout session for same-day local courier delivery |
+| `search_catalog` | Search the catalog, with an optional ZIP filter |
+| `get_product` | Retrieve details for a product |
+| `get_buying_options` | Inspect buying options for a product and ZIP, including the available fulfillment options |
+| `start_checkout` | Begin checkout hosted by JENNi so the shopper can review and approve; the MCP call does not complete checkout or place an order |
 
 ## Docs
 

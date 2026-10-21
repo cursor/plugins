@@ -601,7 +601,7 @@
     {
       "name": "jenni",
       "source": "third_party/jenni",
-      "description": "Search 58,900+ GTIN-verified products on local US retail store shelves, verify real-time ZIP-level availability and local shelf pricing, and create instant Stripe checkout sessions for 1-hour courier delivery through JENNi's official MCP server.",
+      "description": "Search JENNi's catalog, inspect ZIP-specific buying options, and begin JENNi-hosted checkout for the shopper to review and approve.",
       "minClientVersions": {
         "cursor": "2.5.0",
         "grokbot": "0.49.0",
