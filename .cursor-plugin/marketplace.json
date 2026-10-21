@@ -602,6 +602,11 @@
       "name": "databricks-genie-one",
       "source": "third_party/databricks-genie-one",
       "description": "Ask Databricks Genie questions about your workspace's data in plain language."
+    },
+    {
+      "name": "voicehook",
+      "source": "third_party/voicehook",
+      "description": "Talk with your coding agents by voice from your phone while they keep working."
     }
   ]
 }

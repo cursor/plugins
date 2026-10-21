@@ -1,0 +1,33 @@
+{
+  "name": "voicehook",
+  "displayName": "voicehook",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Talk with your agents. Voice for your agent fleet: talk to your coding agents from your phone while they keep working.",
+  "author": {
+    "name": "voicehook.ai",
+    "email": "support@voicehook.ai"
+  },
+  "homepage": "https://voicehook.ai/?utm_source=cursor-plugins&utm_medium=plugin-directory",
+  "repository": "https://github.com/voicehook-ai/voicehook-agent",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "voicehook",
+    "voice",
+    "voice-call",
+    "agents",
+    "multi-agent",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "voicehook",
+    "voice",
+    "agents",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
