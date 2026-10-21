@@ -109,6 +109,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `gusto` | [Gusto](third_party/gusto/) | Cursor | Integrations | Work with payroll, employees, contractors, time off, and reports. |
 | `gopuff` | [Gopuff](third_party/gopuff/) | Cursor | Integrations | Shop Gopuff from Grok Bot through Gopuff's official MCP server. Sign in with your Gopuff account; Gopuff handles the sign-in, and your searches, carts, and orders go to Gopuff under that account, so any order you place is charged and delivered like a normal Gopuff order. |
 | `jobber` | [Jobber](third_party/jobber/) | Cursor | Integrations | Work with clients, requests, quotes, jobs, visits, and invoices. |
+| `jenni` | [JENNi Instant Commerce](third_party/jenni/) | JENNi | Integrations | Search 58,900+ GTIN-verified products on local US retail store shelves, verify real-time ZIP-level availability and local shelf pricing, and create instant Stripe checkout sessions for 1-hour courier delivery through JENNi's official MCP server. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
