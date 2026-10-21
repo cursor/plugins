@@ -597,6 +597,11 @@
       "name": "jobber",
       "source": "third_party/jobber",
       "description": "Work with clients, requests, quotes, jobs, visits, and invoices."
+    },
+    {
+      "name": "directmailamerica",
+      "source": "third_party/directmailamerica",
+      "description": "Print and mail USPS letters and postcards, run Email to Letter rules, and track orders."
     }
   ]
 }
