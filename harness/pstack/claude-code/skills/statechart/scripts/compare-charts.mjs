@@ -83,19 +83,14 @@ for (const [bad, why] of textRefusals) {
 }
 const expectedRegions = orExit(expectedFile, () => parseMermaid(expectedText).regions);
 const actualRegions = orExit(actualFile, () => parseMermaid(actualText).regions);
-const drawn = Object.values(actualRegions).flatMap((r) => r.transitions);
-
-const refusals = [
-  [
-    (l) => /^\d+(, \d+)*\. /.test(l),
-    "an edge label is a numbered path step; draw ACTUAL with --highlight 0",
-  ],
-];
-for (const [bad, why] of refusals) {
-  if (drawn.some((t) => bad(t.label))) {
-    console.error(`${actualFile}: ${why}`);
-    process.exit(2);
-  }
+const numbered = Object.values(actualRegions)
+  .flatMap((r) => r.transitions)
+  .some((t) => /^\d+(, \d+)*\. /.test(t.label));
+if (numbered) {
+  console.error(
+    `${actualFile}: an edge label is a numbered path step; draw ACTUAL with --highlight 0`,
+  );
+  process.exit(2);
 }
 
 const rows = compareCharts(expectedRegions, actualRegions);

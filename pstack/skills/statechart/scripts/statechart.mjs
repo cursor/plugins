@@ -63,11 +63,15 @@ const FROM_CHART = `from-chart CHART.mmd
 
 const COMMON = `Both commands
   --expect-broken RULE
-                     A rule that is known to break. Repeat it. The command then exits 0 when
-                     exactly these rules break, and the --fixed or --against model breaks no other
-                     rule.
+                     A rule that is known to break. Repeat it, or list rules with commas, as in
+                     A,B. The command then exits 0 when exactly these rules break, and the --fixed
+                     or --against model breaks no other rule.
   --title TEXT       The chart title. Each bug chart adds ", bug N".
-  --out DIR          The output folder. Default: NAME-statechart next to the input.
+  --out DIR          The output folder. Default: NAME-statechart next to the input. A run writes its
+                     files in a temporary folder, and then replaces the whole output folder with
+                     it. When runs overlap, the output folder has the files of the run that
+                     finished last. The command does not use an output folder that has files that
+                     it did not write.
   --png              Also render each chart to PNG with npx @mermaid-js/mermaid-cli.
   -h, --help         Print this help, and exit 0.
 
@@ -89,7 +93,7 @@ Output
                      tlc/regions-proof.mmd, every state and step of TLC's graph in one region.
                      compare-charts.mjs tlc/regions-all.mmd tlc/regions-proof.mmd repeats the
                      proof.
-  *.png              Each chart as a PNG, with --png.
+  *.png              Each chart as a PNG, with --png. A run without --png deletes them.
 
 Reading a chart
   from-spec draws the overview as two parallel regions when every state reads "context: progress":
@@ -140,9 +144,13 @@ Exit codes
   1  Another rule is broken, an expected rule holds, or the chart that the spec draws is not
      CHART.mmd. The output says which.
   2  The command cannot finish: a bad argument, a missing file, a chart or TLC output that it
-     cannot read, no TLC, a new mapping to fill in, or a chart that --png cannot render. When a
-     chart does not render, the command keeps the files it wrote and exits 2, whatever the rules
-     give.`;
+     cannot read, no TLC, a helper script that cannot start, an output folder with files that the
+     command did not write, an input file that changed during the run, a new mapping to fill in,
+     or a chart that --png cannot render. When a chart does not render, the command keeps the
+     files it wrote and exits 2, whatever the rules give. Otherwise, exit 2 does not change the
+     output folder, unless the command moved it aside and cannot put it back. Then the message
+     names the folder's new path. When TLC stops on an error, the message names TLC's output, in a
+     temporary folder that the command keeps.`;
 
 const HELP = {
   "": `${usage([...Object.values(USAGE), "node statechart.mjs [from-spec|from-chart] --help"])}
@@ -163,6 +171,7 @@ const more = (cmd) =>
   `Run node statechart.mjs ${cmd ? `${cmd} ` : ""}--help for the flags, the output, and the exit codes.`;
 
 class CannotFinish extends Error {}
+class TlcStopped extends CannotFinish {}
 
 const COMMANDS = {
   "from-spec": {
@@ -185,7 +194,7 @@ function parseArgs([command, ...rest]) {
     else if (COMMANDS[command].flags.includes(a)) {
       if (i + 1 === rest.length) throw new CannotFinish(`${a} needs a value. ${more(command)}`);
       const name = a.slice(2);
-      if (flags[name] instanceof Set) flags[name].add(rest[++i]);
+      if (flags[name] instanceof Set) for (const v of rest[++i].split(",")) flags[name].add(v);
       else flags[name] = rest[++i];
     } else if (!a.startsWith("-") && input === undefined) input = a;
     else throw new CannotFinish(`unknown argument ${a}. ${more(command)}`);
@@ -209,6 +218,7 @@ function script(name, scriptArgs, about, { okExits = [0] } = {}) {
   const r = spawnSync(process.execPath, [path.join(here, name), ...scriptArgs], {
     encoding: "utf8",
   });
+  if (r.error) throw new CannotFinish(`cannot run ${name}: ${r.error.message}`);
   if (okExits.includes(r.status)) return r;
   const thrown = r.stderr.match(/^Error: (.*)$/m)?.[1];
   throw new CannotFinish(thrown ? `${rel(about)}: ${thrown}` : r.stderr.trim());
@@ -237,10 +247,15 @@ function splitRules(cfg) {
 function tlc(tools, spec, cfg, base, dump) {
   fs.writeFileSync(`${base}.cfg`, cfg);
   const metadir = fs.mkdtempSync(path.join(os.tmpdir(), "tlc-"));
+  // TLC writes the standard modules, such as Naturals.tla, to java.io.tmpdir under fixed names,
+  // so runs that share that folder can read a module while another run rewrites it.
+  const javaTmp = path.join(metadir, "tmp");
+  fs.mkdirSync(javaTmp);
   // -deadlock: a UI at rest has nothing left to do, which TLC would report as a deadlock.
   const r = spawnSync(
     tools.java,
     [
+      `-Djava.io.tmpdir=${javaTmp}`,
       "-cp",
       tools.jar,
       "tlc2.TLC",
@@ -259,9 +274,9 @@ function tlc(tools, spec, cfg, base, dump) {
   if (r.error) throw new CannotFinish(`cannot run TLC: ${r.error.message}`);
   fs.writeFileSync(`${base}.out`, r.stdout);
   try {
-    checkTlcOutput(r.stdout, rel(`${base}.out`));
+    checkTlcOutput(r.stdout, `${base}.out`);
   } catch (e) {
-    throw new CannotFinish(e.message);
+    throw new TlcStopped(e.message);
   }
   return r.stdout;
 }
@@ -302,9 +317,9 @@ function readInput(spec, expected) {
   return model;
 }
 
-function check(tools, { spec, cfgFile, cfgWithoutRules, rules }, out, expected) {
+function check(tools, { spec, cfgFile, cfgWithoutRules, rules }, work, expected) {
   const name = path.basename(spec, ".tla");
-  const tlcDir = path.join(out, "tlc");
+  const tlcDir = path.join(work, "tlc");
   const dot = path.join(tlcDir, `${name}.dot`);
   tlc(tools, spec, cfgWithoutRules, path.join(tlcDir, name), dot);
   warnUnnamedSteps(spec, cfgWithoutRules, dot);
@@ -401,7 +416,8 @@ export function step(action, before, after) {
 `;
 };
 
-async function draw({ now, other, map, out, title, comparing }) {
+async function draw({ now, other, map, work, out, title, comparing }) {
+  const shown = published(work, out);
   const mapping = await import(pathToFileURL(path.resolve(map)).href);
   const from = ["--dot", now.dot, "--map", map, "--spec", now.spec];
   from.push(...now.traces.flatMap((t) => ["--traces", t.file]));
@@ -413,17 +429,14 @@ async function draw({ now, other, map, out, title, comparing }) {
   if (comparing) from.push("--full-labels", "--flat");
   else if (mapping.readerActions?.length) from.push("--cover");
   const titled = (suffix) => (title ? ["--title", `${title}${suffix}`] : []);
-  for (const f of fs.readdirSync(out))
-    if (/^bug-\d+(-developer|-layered)?\.(mmd|png)$/.test(f)) fs.rmSync(path.join(out, f));
 
   const files = {
-    overview: path.join(out, "chart.mmd"),
-    stories: path.join(out, "stories.md"),
-    summary: path.join(out, "summary.json"),
+    overview: path.join(work, "chart.mmd"),
+    stories: path.join(work, "stories.md"),
+    summary: path.join(work, "summary.json"),
   };
-  const proof = path.join(out, "tlc", "regions-proof.mmd");
-  const everyArrow = path.join(out, "tlc", "regions-all.mmd");
-  for (const f of [proof, everyArrow]) fs.rmSync(f, { force: true });
+  const proof = path.join(work, "tlc", "regions-proof.mmd");
+  const everyArrow = path.join(work, "tlc", "regions-all.mmd");
   script(
     "tlc-to-chart.mjs",
     [
@@ -446,7 +459,7 @@ async function draw({ now, other, map, out, title, comparing }) {
   for (const c of summary.classes) {
     const views = typeof mapping.detail === "function" ? ["", "-developer", "-layered"] : [""];
     for (const view of views) {
-      const file = path.join(out, `bug-${c.n}${view}.mmd`);
+      const file = path.join(work, `bug-${c.n}${view}.mmd`);
       const shape = [...(view ? ["--view", view.slice(1)] : []), "--path-only"];
       script(
         "tlc-to-chart.mjs",
@@ -465,7 +478,7 @@ async function draw({ now, other, map, out, title, comparing }) {
   const r = summary.regions;
   if (r?.drawn)
     console.log(
-      `It has 2 parallel regions, of ${r.states[0]} and ${r.states[1]} states. Proof: their ${r.all} arrows together make exactly the ${r.flat.states} states and ${r.flat.transitions} labeled steps of ${rel(proof)}, and the ${r.transitions} drawn arrows make only steps among them. ${rel(everyArrow)} has all ${r.all} arrows.`,
+      `It has 2 parallel regions, of ${r.states[0]} and ${r.states[1]} states. Proof: their ${r.all} arrows together make exactly the ${r.flat.states} states and ${r.flat.transitions} labeled steps of ${shown(proof)}, and the ${r.transitions} drawn arrows make only steps among them. ${shown(everyArrow)} has all ${r.all} arrows.`,
     );
   else if (r) console.log(`It has no parallel regions, because ${r.why}.`);
   const breaks = `${wrong} ${wrong === 1 ? "breaks" : "break"} a rule`;
@@ -488,7 +501,7 @@ async function draw({ now, other, map, out, title, comparing }) {
   return { files, charts };
 }
 
-function render(charts) {
+function render(charts, shown) {
   const pngs = [];
   for (const chart of charts) {
     const png = chart.replace(/\.mmd$/, ".png");
@@ -502,14 +515,15 @@ function render(charts) {
     if (r.status === 0) pngs.push(png);
     else
       console.error(
-        `could not render ${rel(chart)}: ${(r.stderr || r.error?.message || "").trim()}`,
+        `could not render ${shown(chart)}: ${(r.stderr || r.error?.message || "").trim()}`,
       );
   }
   return pngs;
 }
 
-function finish(out, { files, charts }, ok, png) {
-  const pngs = png ? render(charts) : [];
+function finish({ work, out, inputs }, { files, charts }, ok, png) {
+  const pngs = png ? render(charts, published(work, out)) : [];
+  publish(work, out, inputs);
   const written = [...charts, ...pngs, files.stories, files.summary]
     .map((f) => path.basename(f))
     .join(", ");
@@ -518,10 +532,119 @@ function finish(out, { files, charts }, ok, png) {
   return ok ? 0 : 1;
 }
 
+const published = (work, out) => (file) => rel(path.join(out, path.relative(work, file)));
+
+const OWN =
+  /^((chart|bug-\d+(-developer|-layered)?)\.(mmd|png)|stories\.md|summary\.json|tlc|\.DS_Store)$/;
+
+function foreign(dir) {
+  try {
+    return fs
+      .readdirSync(dir)
+      .filter((f) => !OWN.test(f))
+      .sort();
+  } catch (e) {
+    if (e.code === "ENOENT") return [];
+    throw new CannotFinish(`cannot use ${rel(dir)} as the output folder: ${e.message}`);
+  }
+}
+
+function refuseForeign(out, files = foreign(out)) {
+  const [first, ...others] = files;
+  if (first)
+    throw new CannotFinish(
+      `${rel(out)} has ${others.length ? `${others.length + 1} files that this command did not write, such as ${first}` : `a file that this command did not write: ${first}`}. A run puts its files in place of the whole output folder, so pass --out with a new folder.`,
+    );
+}
+
 function outDir(flagged, input, name) {
   const out = flagged ?? path.join(path.dirname(input), `${name}-statechart`);
-  fs.mkdirSync(path.join(out, "tlc"), { recursive: true });
+  refuseForeign(out);
   return out;
+}
+
+const fingerprint = (file) => {
+  try {
+    const { ino, ctimeNs } = fs.statSync(file, { bigint: true });
+    return `${ino} ${ctimeNs} ${fs.readFileSync(file, "base64")}`;
+  } catch {
+    return null;
+  }
+};
+
+function snapshot(files, inputs = new Map()) {
+  for (const f of files) if (f && !inputs.has(f)) inputs.set(f, fingerprint(f));
+  return inputs;
+}
+
+async function inWorkFolder(body) {
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), "statechart-"));
+  fs.mkdirSync(path.join(work, "tlc"));
+  let keep = false;
+  try {
+    return await body(work);
+  } catch (e) {
+    keep = e instanceof TlcStopped;
+    throw e;
+  } finally {
+    if (!keep) fs.rmSync(work, { recursive: true, force: true });
+  }
+}
+
+const moved = (from, to, ...missed) => {
+  try {
+    fs.renameSync(from, to);
+    return true;
+  } catch (e) {
+    if (missed.includes(e.code)) return false;
+    throw e;
+  }
+};
+
+function publish(work, out, inputs) {
+  const parent = path.dirname(path.resolve(out));
+  fs.mkdirSync(parent, { recursive: true });
+  const next = fs.mkdtempSync(path.join(parent, `.${path.basename(out)}-`));
+  const old = `${next}-old`;
+  let aside = false;
+  try {
+    fs.cpSync(work, next, { recursive: true });
+    const changed = [...inputs].find(([f, was]) => fingerprint(f) !== was)?.[0];
+    if (changed)
+      throw new CannotFinish(
+        `${rel(changed)} changed while this run read it, so the run left ${rel(out)} as it was. Run the command again.`,
+      );
+    refuseForeign(out);
+    while (!moved(next, out, "ENOTEMPTY", "EEXIST")) {
+      if (aside) {
+        refuseForeign(out);
+        fs.rmSync(old, { recursive: true, force: true });
+        aside = false;
+      }
+      aside = moved(out, old, "ENOENT");
+      if (aside) refuseForeign(out, foreign(old));
+    }
+  } catch (e) {
+    const back = !aside || putBack(old, out);
+    fs.rmSync(next, { recursive: true, force: true });
+    const why = e instanceof CannotFinish ? e.message : `cannot replace ${rel(out)}: ${e.message}.`;
+    if (!back)
+      throw new CannotFinish(
+        `${why} This run moved the previous ${rel(out)} to ${rel(old)} and could not put it back.`,
+      );
+    throw e instanceof CannotFinish
+      ? e
+      : new CannotFinish(`${why} The run left ${rel(out)} as it was.`);
+  }
+  if (aside) fs.rmSync(old, { recursive: true, force: true });
+}
+
+function putBack(old, out) {
+  try {
+    return moved(old, out, "ENOTEMPTY", "EEXIST");
+  } catch {
+    return false;
+  }
 }
 
 function secondModel(input, { fixed, against, label }) {
@@ -540,28 +663,35 @@ function secondModel(input, { fixed, against, label }) {
     throw new CannotFinish(
       `${rel(spec)} needs its own file and module name, such as ${name}${fixed ? "Fixed" : "Agreed"}.tla.`,
     );
-  return { role, spec, label };
+  const cfg = fs.existsSync(cfgOf(spec)) ? cfgOf(spec) : cfgOf(input);
+  return { role, label, model: readModel(spec, cfg) };
 }
 
 async function fromSpec(input, { "expect-broken": expected, ...flags }) {
+  const name = path.basename(input, ".tla");
+  const map = flags.map ?? path.join(path.dirname(input), `${name}.map.mjs`);
+  const secondSpec = flags.fixed ?? flags.against;
+  const inputs = snapshot([input, cfgOf(input), map, secondSpec, secondSpec && cfgOf(secondSpec)]);
   const second = secondModel(input, flags);
   const tools = findTools();
-  const name = path.basename(input, ".tla");
+  const model = readInput(input, expected);
   const out = outDir(flags.out, input, name);
-  const map = flags.map ?? path.join(path.dirname(input), `${name}.map.mjs`);
-  const now = check(tools, readInput(input, expected), out, expected);
-  if (!fs.existsSync(map)) {
-    fs.writeFileSync(map, SCAFFOLD(name, parseDot(fs.readFileSync(now.dot, "utf8"))));
-    throw new CannotFinish(`\nWrote ${rel(map)}. Fill in its labels, then run this command again.`);
-  }
-  let other = null;
-  if (second) {
-    const { role, spec, label } = second;
-    const cfg = fs.existsSync(cfgOf(spec)) ? cfgOf(spec) : cfgOf(input);
-    other = { role, label, ...check(tools, readModel(spec, cfg), out, expected) };
-  }
-  const drawn = await draw({ now, other, map, out, title: flags.title });
-  return finish(out, drawn, rulesAsExpected(now, other, expected), flags.png);
+  return inWorkFolder(async (work) => {
+    const now = check(tools, model, work, expected);
+    if (!fs.existsSync(map)) {
+      fs.writeFileSync(map, SCAFFOLD(name, parseDot(fs.readFileSync(now.dot, "utf8"))));
+      throw new CannotFinish(
+        `\nWrote ${rel(map)}. Fill in its labels, then run this command again.`,
+      );
+    }
+    const other = second && {
+      role: second.role,
+      label: second.label,
+      ...check(tools, second.model, work, expected),
+    };
+    const drawn = await draw({ now, other, map, work, out, title: flags.title });
+    return finish({ work, out, inputs }, drawn, rulesAsExpected(now, other, expected), flags.png);
+  });
 }
 
 async function fromChart(input, { "expect-broken": expected, ...flags }) {
@@ -573,36 +703,36 @@ async function fromChart(input, { "expect-broken": expected, ...flags }) {
   if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(name))
     throw new CannotFinish(`cannot make a TLA+ module name from ${input}; add --module NAME`);
   const spec = path.join(path.dirname(input), `${name}.tla`);
+  const map = spec.replace(/\.tla$/, ".map.mjs");
+  const inputs = snapshot([input]);
   if (fs.existsSync(spec)) {
     console.log(`Kept ${rel(spec)}. Delete it to write the spec again from ${rel(input)}.`);
   } else {
     script("chart-to-tla.mjs", [input, "--module", name], input);
     console.log(`Wrote ${name}.tla, ${name}.cfg, and ${name}.map.mjs from ${rel(input)}.`);
   }
+  snapshot([spec, cfgOf(spec), map], inputs);
   const tools = findTools();
+  const model = readInput(spec, expected);
   const out = outDir(flags.out, input, name);
-  const now = check(tools, readInput(spec, expected), out, expected);
-  const drawn = await draw({
-    now,
-    map: spec.replace(/\.tla$/, ".map.mjs"),
-    out,
-    title: flags.title,
-    comparing: true,
-  });
-  const compared = script("compare-charts.mjs", [input, drawn.files.overview], input, {
-    okExits: [0, 1],
-  });
-  if (compared.status === 0) console.log(`\nThe spec draws ${rel(input)} back unchanged.`);
-  else
-    console.log(
-      `\nThe spec does not draw ${rel(input)}:\n${compared.stdout.trimEnd().replace(/^/gm, "  ")}`,
+  return inWorkFolder(async (work) => {
+    const now = check(tools, model, work, expected);
+    const drawn = await draw({ now, map, work, out, title: flags.title, comparing: true });
+    const compared = script("compare-charts.mjs", [input, drawn.files.overview], input, {
+      okExits: [0, 1],
+    });
+    if (compared.status === 0) console.log(`\nThe spec draws ${rel(input)} back unchanged.`);
+    else
+      console.log(
+        `\nThe spec does not draw ${rel(input)}:\n${compared.stdout.trimEnd().replace(/^/gm, "  ")}`,
+      );
+    return finish(
+      { work, out, inputs },
+      drawn,
+      rulesAsExpected(now, null, expected) && compared.status === 0,
+      flags.png,
     );
-  return finish(
-    out,
-    drawn,
-    rulesAsExpected(now, null, expected) && compared.status === 0,
-    flags.png,
-  );
+  });
 }
 
 try {

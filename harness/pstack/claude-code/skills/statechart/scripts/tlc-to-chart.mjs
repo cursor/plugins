@@ -228,6 +228,7 @@ if (typeof mapping.state !== "function")
 if (args.view !== "customer" && typeof mapping.detail !== "function")
   throw new Error(`--view ${args.view} needs detail(vars) in the mapping module`);
 const SEP = "\u0000";
+const edgeId = (from, to) => `${from}${SEP}${SEP}${to}`;
 
 const rules = new Map();
 for (const f of args.specs)
@@ -263,7 +264,6 @@ function stepGuard(action, before, after) {
     .replace(/[[\]]/g, "")
     .trim();
 }
-// A label shows guard words only when every model step behind it has some.
 function guarded(guards, label) {
   const words = guards?.get(label);
   return words && !words.has("") ? `${label} [${[...words].sort().join(" or ")}]` : label;
@@ -273,9 +273,6 @@ const addGuard = (guards, label, words) => {
   guards.get(label).add(words);
 };
 
-// ---------- projection between two models ----------
-// Paths of record fields that a has and b does not. It looks inside records only: sets and
-// sequences can be empty in a start state, so they show no fields.
 function lacking(a, b, prefix = []) {
   return Object.keys(a).flatMap((k) =>
     !(k in b)
@@ -305,8 +302,6 @@ function fill(vars, paths, from) {
   return out;
 }
 
-// One model: its graph, the facts of each state, and its reader keys.
-// lookup turns a state as the chart sees it back into the model's own state.
 function modelOf(graph, lookup = (vars) => vars) {
   const byId = new Map([...graph.nodes.keys()].map((id) => [id, new Set()]));
   for (const e of [...graph.edges, ...graph.loops]) byId.get(e.from).add(e.action);
@@ -335,7 +330,7 @@ function quotient(m) {
     const from = keys.get(e.from);
     const to = keys.get(e.to);
     if (from === to) continue;
-    const id = `${from}${SEP}${SEP}${to}`;
+    const id = edgeId(from, to);
     if (!edges.has(id)) edges.set(id, { from, to, counts: new Map(), guards: new Map() });
     const [before, after] = [graph.nodes.get(e.from).vars, graph.nodes.get(e.to).vars];
     const label = stepLabel(e.action, before, after);
@@ -343,7 +338,6 @@ function quotient(m) {
     edges.get(id).counts.set(label, (edges.get(id).counts.get(label) ?? 0) + 1);
     addGuard(edges.get(id).guards, label, stepGuard(e.action, before, after));
   }
-  // Most common wording first.
   for (const e of edges.values())
     e.labels = new Set([...e.counts].sort((a, b) => b[1] - a[1]).map(([l]) => l));
   const settled = new Set(
@@ -359,24 +353,21 @@ const mainInit = [...graph.nodes.values()].find((n) => n.init).vars;
 
 const secondDot = args.fixedDot ?? args.againstDot;
 const secondGraph = secondDot ? parseDot(fs.readFileSync(secondDot, "utf8")) : null;
-let lacks = [];
-let extra = [];
-let second = null;
-let secondQ = null;
-if (secondGraph) {
-  const secondInit = [...secondGraph.nodes.values()].find((n) => n.init).vars;
-  lacks = lacking(mainInit, secondInit);
-  extra = lacking(secondInit, mainInit);
-  for (const n of secondGraph.nodes.values()) {
-    n.raw = n.vars;
-    n.vars = fill(n.raw, lacks, mainInit);
-  }
-  second = modelOf(secondGraph, (vars) => omit(vars, lacks));
-  secondQ = quotient(second);
-}
+const secondInit = secondGraph && [...secondGraph.nodes.values()].find((n) => n.init).vars;
+const lacks = secondGraph ? lacking(mainInit, secondInit) : [];
+const extra = secondGraph ? lacking(secondInit, mainInit) : [];
+const secondFilled = secondGraph && {
+  ...secondGraph,
+  nodes: new Map(
+    [...secondGraph.nodes].map(([id, n]) => [
+      id,
+      { ...n, raw: n.vars, vars: fill(n.vars, lacks, mainInit) },
+    ]),
+  ),
+};
+const second = secondFilled && modelOf(secondFilled, (vars) => omit(vars, lacks));
+const secondQ = second && quotient(second);
 
-// Reader path of one trace: drop system steps that keep the reader in the same state.
-// Reader actions stay even then, because the reader did them.
 function readerPath(trace, key, labelOf = stepLabel) {
   const out = [{ key: key(trace.steps[0].vars), label: null, modelStep: 0 }];
   for (let i = 1; i < trace.steps.length; i++) {
@@ -392,24 +383,19 @@ function readerPath(trace, key, labelOf = stepLabel) {
 }
 
 const readerLabel = (action, before, after) => stepLabel(action, before, after, "customer");
-// Replay a bug on the second model, step by step. The reader sees the screens and step words of its
-// reader path. The reader does not see a step that keeps the screen and that they do not take, so
-// the second model must keep the screen at that step too, or be unable to take it. Returns the
-// first step that the second model shows the reader differently, or, when it shows them all the
-// same way, whether a state on the way breaks the same rule there.
 function replaySecond(trace) {
   if (!second) return null;
   const shared = (vars) => stateKey(omit(vars, lacks));
   const sharedOf = (n) => stateKey(omit(n.raw, extra));
   const out = new Map();
-  for (const e of [...secondGraph.edges, ...secondGraph.loops]) {
+  for (const e of [...second.graph.edges, ...second.graph.loops]) {
     if (!out.has(e.from)) out.set(e.from, []);
     out.get(e.from).push(e);
   }
-  const actions = new Set([...secondGraph.edges, ...secondGraph.loops].map((e) => e.action));
-  const nodeOf = (id) => secondGraph.nodes.get(id);
+  const actions = new Set([...second.graph.edges, ...second.graph.loops].map((e) => e.action));
+  const nodeOf = (id) => second.graph.nodes.get(id);
   const screen = new Map(
-    [...secondGraph.nodes.values()].map((n) => [n.id, second.customer(n.vars)]),
+    [...second.graph.nodes.values()].map((n) => [n.id, second.customer(n.vars)]),
   );
   const words = (e) => readerLabel(e.action, nodeOf(e.from).vars, nodeOf(e.to).vars) || e.action;
   const settle = (ids) => {
@@ -422,7 +408,7 @@ function replaySecond(trace) {
   const seen = readerPath(trace, main.customer, readerLabel);
   const shownAt = new Map(seen.map((p, j) => [p.modelStep, j]));
   let here = settle(
-    [...secondGraph.nodes.values()]
+    [...second.graph.nodes.values()]
       .filter((n) => n.init && screen.get(n.id) === seen[0].key)
       .map((n) => n.id),
   );
@@ -491,7 +477,6 @@ function readTraces(files, paths = []) {
   });
 }
 // With -continue, TLC reports every bad state, including states after the first bad one.
-// Cut each trace at its first bad state so one bug counts once.
 function firstBad(raw) {
   const badStates = new Map();
   for (const t of raw) {
@@ -515,8 +500,6 @@ const secondTraceFiles = role === "fix" ? args.fixedTraces : args.againstTraces;
 const rawSecondTraces = readTraces(secondTraceFiles, lacks);
 const traces = firstBad(rawTraces);
 const secondTraces = firstBad(rawSecondTraces);
-// Classes and their shortest traces come from the customer states in every view,
-// so class N is the same bug and the same trace in the customer and developer charts.
 function group(cuts, m) {
   const byId = new Map();
   for (const trace of cuts) {
@@ -546,38 +529,44 @@ function group(cuts, m) {
   }
   return byId;
 }
-// Fewest reader steps first, then fewest model steps, then rule name, then cause (or end state).
 const byOrder = (a, b) =>
   a.steps - b.steps ||
   a.trace.steps.length - b.trace.steps.length ||
   (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+const inSecond = (l) => `${within} ${L}, ${l}`;
+const modelEdges = new Map(now.edges);
+if (secondQ)
+  for (const [id, e] of secondQ.edges)
+    if (!modelEdges.has(id))
+      modelEdges.set(id, {
+        ...e,
+        labels: new Set([...e.labels].map(inSecond)),
+        guards: new Map([...e.guards].map(([l, words]) => [inSecond(l), words])),
+        secondOnly: true,
+      });
+function divergence(s) {
+  if (s?.key === undefined) return s;
+  const plain = edgeId(s.from, s.key);
+  const text = inSecond(`${s.label}${s.disabled ? " cannot happen" : ""}`);
+  const drawn = !s.disabled && [s.label, text].some((l) => modelEdges.get(plain)?.labels.has(l));
+  return { ...s, text, edge: drawn ? plain : `${plain}${SEP}second` };
+}
+const withPath = (c, m) => {
+  const path = readerPath(c.trace, m.key);
+  return { ...c, path, end: path[path.length - 1].key };
+};
 const classesById = group(traces, main);
-const classes = [...classesById.values()].sort(byOrder);
-for (const c of classes) {
-  c.path = readerPath(c.trace, main.key);
-  c.end = c.path[c.path.length - 1].key;
-  c.second = replaySecond(c.trace);
-}
-// A bug of the second model that no current bug matches numbers after the current bugs.
+const mainClasses = [...classesById.values()]
+  .sort(byOrder)
+  .map((c) => ({ ...withPath(c, main), second: divergence(replaySecond(c.trace)) }));
 const introduced = second
-  ? [...group(secondTraces, second).values()].filter((c) => !classesById.has(c.id)).sort(byOrder)
+  ? [...group(secondTraces, second).values()]
+      .filter((c) => !classesById.has(c.id))
+      .sort(byOrder)
+      .map((c) => ({ ...withPath(c, second), second: null, introduced: true }))
   : [];
-for (const c of introduced) {
-  c.path = readerPath(c.trace, second.key);
-  c.end = c.path[c.path.length - 1].key;
-  c.second = null;
-  c.introduced = true;
-}
-classes.push(...introduced);
+const classes = [...mainClasses, ...introduced];
 
-// ---------- status ----------
-// A chart state is bad when it holds a state where a rule breaks, or when every path from the start
-// to it passes such a state: what the reader sees after a bug is part of that bug. TLC stops each
-// path at the first state that breaks the rule, so a later state that breaks it again does not
-// color its chart state when a path without a bug also reaches that chart state.
-// With a fix, a state is still wrong when it is bad in the fixed model, and fixed when it is bad only
-// in the current model; without --fixed-traces every bad state is wrong.
-// Against a spec, a state is wrong when it is bad in either model, and green when only the spec has it.
 const diverges = (c) => c.second?.key !== undefined;
 function badKeys(m, keys, raw) {
   const g = m.graph;
@@ -610,6 +599,7 @@ const badSecond =
       ? badNow
       : new Set();
 const allNodes = new Set([...now.nodes, ...(secondQ?.nodes ?? [])]);
+const initial = new Set([...now.initial, ...(secondQ?.initial ?? [])]);
 const onlySecond = (k) => second && !now.nodes.has(k);
 const status = (k) => {
   if (role === "against")
@@ -619,60 +609,39 @@ const status = (k) => {
   return badNow.has(k) ? "wrong" : "works";
 };
 
-const edges = new Map(now.edges);
-if (secondQ) {
-  const only = (l) => `${within} ${L}, ${l}`;
-  for (const [id, e] of secondQ.edges) {
-    if (!edges.has(id))
-      edges.set(id, {
-        ...e,
-        labels: new Set([...e.labels].map(only)),
-        guards: new Map([...e.guards].map(([l, words]) => [only(l), words])),
-        secondOnly: true,
-      });
-  }
-}
-// The second model shows the reader one step of the bug differently. Its edge leaves the chart state
-// before that step and ends where the second model goes instead, or stays put when the second model
-// cannot take the step. A step that the chart already draws there, in the same words, adds no edge.
-for (const c of classes) {
-  if (!diverges(c)) continue;
-  const s = c.second;
-  const plain = `${s.from}${SEP}${SEP}${s.key}`;
-  s.text = `${within} ${L}, ${s.label}${s.disabled ? " cannot happen" : ""}`;
-  if (!s.disabled && [s.label, s.text].some((l) => edges.get(plain)?.labels.has(l))) {
-    s.edge = plain;
-    continue;
-  }
-  s.edge = `${plain}${SEP}second`;
-  if (!edges.has(s.edge))
-    edges.set(s.edge, { from: s.from, to: s.key, labels: new Set(), secondOnly: true });
-  edges.get(s.edge).labels.add(s.text);
-}
-
-// ---------- highlighted path ----------
 const chosen = args.highlight > 0 ? classes[args.highlight - 1] : null;
 if (args.highlight > 0 && classes.length > 0 && !chosen)
   throw new Error(`--highlight ${args.highlight}: only ${classes.length} classes`);
 const onPath = new Set(chosen ? chosen.path.map((p) => p.key) : []);
-const pathNumbers = new Map();
-if (chosen) {
-  chosen.path.slice(1).forEach((p, i) => {
-    const id = `${chosen.path[i].key}${SEP}${SEP}${p.key}`;
-    if (!pathNumbers.has(id)) pathNumbers.set(id, []);
-    pathNumbers
-      .get(id)
-      .push({ n: i + 1, label: p.label, shown: p.guard ? `${p.label} [${p.guard}]` : p.label });
-    if (!edges.has(id))
-      edges.set(id, { from: chosen.path[i].key, to: p.key, labels: new Set([p.label]) });
-  });
-  if (diverges(chosen)) onPath.add(chosen.second.key);
-}
+if (chosen && diverges(chosen)) onPath.add(chosen.second.key);
 
-// ---------- cover: shortest path to each settled reader state ----------
-let coverEdges = null;
-if (args.cover) {
-  const keepEdges = new Set();
+const edgesAlong = (c) =>
+  c.path.slice(1).map((p, i) => ({
+    id: edgeId(c.path[i].key, p.key),
+    from: c.path[i].key,
+    to: p.key,
+    label: p.label,
+    guard: p.guard,
+  }));
+function chartEdges() {
+  const edges = new Map(modelEdges);
+  for (const { second: s } of classes.filter(diverges)) {
+    if (modelEdges.has(s.edge)) continue;
+    if (!edges.has(s.edge))
+      edges.set(s.edge, { from: s.from, to: s.key, labels: new Set(), secondOnly: true });
+    edges.get(s.edge).labels.add(s.text);
+  }
+  const pathNumbers = new Map();
+  (chosen ? edgesAlong(chosen) : []).forEach((step, i) => {
+    if (!pathNumbers.has(step.id)) pathNumbers.set(step.id, []);
+    const shown = step.guard ? `${step.label} [${step.guard}]` : step.label;
+    pathNumbers.get(step.id).push({ n: i + 1, label: step.label, shown });
+    if (!edges.has(step.id))
+      edges.set(step.id, { from: step.from, to: step.to, labels: new Set([step.label]) });
+  });
+  if (!args.cover) return { edges, pathNumbers, coverEdges: null };
+
+  const coverEdges = new Set();
   const bfs = (q, targets) => {
     const parent = new Map([...q.initial].map((k) => [k, null]));
     const queue = [...q.initial];
@@ -690,7 +659,7 @@ if (args.cover) {
       }
     }
     for (const t of targets) {
-      for (let id = parent.get(t); id; id = parent.get(q.edges.get(id).from)) keepEdges.add(id);
+      for (let id = parent.get(t); id; id = parent.get(q.edges.get(id).from)) coverEdges.add(id);
     }
   };
   bfs(now, now.settled);
@@ -701,23 +670,21 @@ if (args.cover) {
     );
   const pathLabels = new Map();
   for (const c of classes) {
-    c.path.slice(1).forEach((p, i) => {
-      const id = `${c.path[i].key}${SEP}${SEP}${p.key}`;
-      keepEdges.add(id);
-      pathLabels.set(id, (pathLabels.get(id) ?? new Set()).add(p.label));
-    });
-    if (diverges(c)) keepEdges.add(c.second.edge);
-  }
-  for (const id of keepEdges) {
-    if (!edges.has(id)) {
-      const [from, to] = id.split(`${SEP}${SEP}`);
-      edges.set(id, { from, to, labels: pathLabels.get(id) ?? new Set() });
+    for (const step of edgesAlong(c)) {
+      coverEdges.add(step.id);
+      pathLabels.set(step.id, (pathLabels.get(step.id) ?? new Set()).add(step.label));
     }
+    if (diverges(c)) coverEdges.add(c.second.edge);
   }
-  coverEdges = keepEdges;
+  for (const id of coverEdges) {
+    if (edges.has(id)) continue;
+    const [from, to] = id.split(`${SEP}${SEP}`);
+    edges.set(id, { from, to, labels: pathLabels.get(id) });
+  }
+  return { edges, pathNumbers, coverEdges };
 }
+const { edges, pathNumbers, coverEdges } = chartEdges();
 
-// ---------- Mermaid ----------
 const LEGEND = {
   works: ["legendWorks", mapping.legend?.works ?? (role === "fix" ? "Works today" : "Works")],
   wrong: [
@@ -730,14 +697,10 @@ const LEGEND = {
   ],
 };
 
-// ---------- groups ----------
-// The mapping's group() names the group of each model state, and a chart state takes the group
-// that all its model states share. The fill shows the group. The status from TLC stays a border on
-// top, so no group hides a broken rule or the second model's states.
 const grouping = typeof mapping.group === "function";
 const groupsOf = new Map();
 const groupOf = (k) => (groupsOf.get(k)?.size === 1 ? [...groupsOf.get(k)][0] : "");
-let groupNames = [];
+const groupNames = [];
 const fills = new Map();
 if (grouping) {
   const add = (k, vars, m) => {
@@ -749,7 +712,7 @@ if (grouping) {
   };
   for (const n of graph.nodes.values()) add(now.keys.get(n.id), n.vars, main);
   if (second)
-    for (const n of secondGraph.nodes.values()) add(secondQ.keys.get(n.id), n.vars, second);
+    for (const n of second.graph.nodes.values()) add(secondQ.keys.get(n.id), n.vars, second);
 
   const given = mapping.groupColors ?? {};
   if (!isRecord(given))
@@ -770,10 +733,10 @@ if (grouping) {
       throw new Error(
         `group "${g}" has the name of a status; TLC decides the status, so name the group for what the reader sees`,
       );
-  groupNames = [
+  groupNames.push(
     ...Object.keys(given).filter((g) => found.has(g)),
     ...[...found].filter((g) => !Object.hasOwn(given, g)).sort(),
-  ];
+  );
   for (const [g, color] of Object.entries(given)) {
     if (color === undefined || color === null || color === "") continue;
     const why = groupColorProblem(color);
@@ -818,7 +781,6 @@ const frontMatter = (title) => [
   "    useMaxWidth: false",
   "---",
 ];
-// drawn holds { group, status, cls } for each state the chart draws.
 function head(drawn) {
   const out = [...frontMatter(args.title), "stateDiagram-v2"];
   if (role) out.push(`  %% second model (${role}): ${L}`);
@@ -834,11 +796,11 @@ function head(drawn) {
       ]
     : used.map((s) => [...LEGEND[s], s]);
   if (grouping) {
-    const classes = new Set([...drawn.map((d) => d.cls), ...legend.map(([, , c]) => c)]);
+    const styleClasses = new Set([...drawn.map((d) => d.cls), ...legend.map(([, , c]) => c)]);
     const bases = [["plain", PLAIN_FILL], ...groupNames.map((g, i) => [`group${i}`, fills.get(g)])];
     for (const [base, fill] of bases)
       for (const border of ["", "Wrong", "Fixed", "Path"])
-        if (classes.has(base + border)) out.push(`  ${groupClassDef(base, fill, border)}`);
+        if (styleClasses.has(base + border)) out.push(`  ${groupClassDef(base, fill, border)}`);
   } else for (const c of STATUS_CLASSES) out.push(`  ${c}`);
   if (legend.length) {
     out.push(`  state "Legend" as ${LEGEND_ID} {`);
@@ -849,20 +811,14 @@ function head(drawn) {
   return out;
 }
 
-// ---------- parallel regions ----------
-// Splits each "context: progress" label into a context region and a progress region. A step of
-// one region that happens beside only some states of the other gets a guard. The chart is used
-// only when it has fewer states than the flat chart, and when, read back, its combined machine
-// has exactly the flat chart's states, start states, and labeled steps.
-function regionsChart() {
+function regionsChart({ states, starts, edges, classes, proofPath, allPath }) {
   const norm = (s) => s.replaceAll(";", ",").replace(/\s+/g, " ").trim();
   const split = (k) => {
     const at = k.indexOf(": ");
     return at > 0 && at + 2 < k.length ? [norm(k.slice(0, at)), norm(k.slice(at + 2))] : null;
   };
-  const nodes = [...allNodes].sort();
+  const nodes = [...states].sort();
   if (!nodes.every(split)) return null;
-  const starts = [...new Set([...now.initial, ...(secondQ?.initial ?? [])])];
   const steps = [];
   for (const e of edges.values()) {
     if (e.labels.size === 0) return { why: "a step has no label" };
@@ -890,9 +846,8 @@ function regionsChart() {
     ...[...flat.Main.initial].map((s) => `  [*] --> ${ids.get(s)}`),
     ...steps.map((s) => `  ${ids.get(bar(s.from))} --> ${ids.get(bar(s.to))} : ${s.label}`),
   ];
-  if (args.proof) fs.writeFileSync(args.proof, proof.join("\n") + "\n");
+  if (proofPath) fs.writeFileSync(proofPath, proof.join("\n") + "\n");
 
-  // Each region state, and the states of the other region that it is part of a state with.
   const beside = [new Map(), new Map()];
   for (const k of nodes) {
     const p = split(k);
@@ -905,8 +860,6 @@ function regionsChart() {
   if (size >= nodes.length)
     return { why: `${size} region states are not fewer than the ${nodes.length} flat states` };
 
-  // A region state's status is the lowest status of the states it is part of, and each state must
-  // then show the higher status of its two region states.
   const rank = ["works", "fixed", "wrong"];
   const regionStatus = [new Map(), new Map()];
   for (const k of nodes) {
@@ -926,8 +879,6 @@ function regionsChart() {
       };
   }
 
-  // A region takes every step it has, so a step that leaves a region state in some states and keeps
-  // it in others needs a loop there: the loop says the region may also stay.
   const moves = [new Map(), new Map()];
   for (const s of steps)
     for (const i of [0, 1]) {
@@ -951,7 +902,6 @@ function regionsChart() {
       )
         m.delete(id);
   const rid = beside.map((m, i) => new Map([...m.keys()].sort().map((s, j) => [s, `r${i}s${j}`])));
-  // A region state is in a group when every state it is part of is in that group.
   const regionGroup = [new Map(), new Map()];
   for (const k of nodes) {
     const p = split(k);
@@ -963,8 +913,7 @@ function regionsChart() {
   const drawn = rid.map((m, i) =>
     [...m.keys()].map((s) => drawnState(regionGroup[i].get(s), regionStatus[i].get(s))),
   );
-  // keep holds the ids of the arrows to draw in each region, or is null for every arrow.
-  const draw = (keep) => {
+  const draw = (only) => {
     const out = head(drawn.flat());
     out.push(`  state "At the same time" as regions {`);
     let count = 0;
@@ -976,13 +925,11 @@ function regionsChart() {
       for (const s of new Set(starts.map((k) => split(k)[i])))
         out.push(`${pad}[*] --> ${rid[i].get(s)}`);
       for (const [s, id] of rid[i]) out.push(`${pad}state "${quote(wrap(s))}" as ${id}`);
-      const sorted = [...moves[i]]
-        .filter(([id]) => !keep || keep[i].has(id))
+      const shownMoves = [...moves[i]]
+        .filter(([id]) => !only || only[i].has(id))
         .map(([, m]) => m)
         .sort((a, b) => a.from.localeCompare(b.from) || a.label.localeCompare(b.label));
-      for (const m of sorted) {
-        // The guard names the shorter of the states the step happens beside, or those it does not.
-        // The mapping's guard words, when it has them, replace those names in the label.
+      for (const m of shownMoves) {
         const all = beside[i].get(m.from);
         const not = [...all].filter((s) => !m.beside.has(s)).sort();
         const yes = [...m.beside].sort();
@@ -1016,13 +963,8 @@ function regionsChart() {
       why: `the regions do not combine into the flat chart, with ${n} difference(s), such as ${differences[0][0]}: ${differences[0][1][0]}`,
     };
   }
-  if (args.regionsAll) fs.writeFileSync(args.regionsAll, all.mermaid);
+  if (allPath) fs.writeFileSync(allPath, all.mermaid);
 
-  // The overview keeps each bug path, then a way from the start to each region state and one step
-  // with each label, as the arrows of the regions that each step moves. It adds the cheapest of
-  // those next: the fewest new arrows, then the fewest steps. A region with fewer arrows can stay
-  // where the full chart moves it, so each step that the kept arrows make and TLC's graph does
-  // not have gets back every arrow that the full chart takes there.
   const parts = new Map(nodes.map((k) => [bar(split(k)), split(k)]));
   const key = (from, label, to) => `${from} --> ${to} : ${label}`;
   const real = new Set(steps.map((s) => key(bar(s.from), s.label, bar(s.to))));
@@ -1051,10 +993,10 @@ function regionsChart() {
     }));
   };
   for (const c of classes) {
-    c.path.slice(1).forEach((p, j) => {
-      const e = edges.get(`${c.path[j].key}${SEP}${SEP}${p.key}`);
-      if (e) stepsOf(e, norm(p.label)).forEach(want);
-    });
+    for (const step of edgesAlong(c)) {
+      const e = edges.get(step.id);
+      if (e) stepsOf(e, norm(step.label)).forEach(want);
+    }
     if (diverges(c)) stepsOf(edges.get(c.second.edge), "").forEach(want);
   }
   const cheapest = () => {
@@ -1113,14 +1055,14 @@ function regionsChart() {
   for (;;) {
     scoped = draw(keep);
     made = productOf(parseMermaid(scoped.mermaid).regions);
-    const drawn = new Set(made.transitions.map((t) => key(t.from, t.label, t.to)));
+    const madeKeys = new Set(made.transitions.map((t) => key(t.from, t.label, t.to)));
     const redo = [
       ...made.transitions
         .filter((t) => parts.has(t.from) && !real.has(key(t.from, t.label, t.to)))
         .map((t) => [parts.get(t.from), t.label]),
       ...wanted
         .filter((s) => made.states.has(bar(s.from)))
-        .filter((s) => !drawn.has(key(bar(s.from), s.label, bar(s.to))))
+        .filter((s) => !madeKeys.has(key(bar(s.from), s.label, bar(s.to))))
         .map((s) => [s.from, s.label]),
     ];
     const before = keep[0].size + keep[1].size;
@@ -1147,26 +1089,30 @@ function regionsChart() {
     groups: groupCounts(drawn.flat()),
   };
 }
-const regions = args.regions ? regionsChart() : null;
+const regions = args.regions
+  ? regionsChart({
+      states: allNodes,
+      starts: [...initial],
+      edges,
+      classes,
+      proofPath: args.proof,
+      allPath: args.regionsAll,
+    })
+  : null;
 if (regions?.why) console.error(`regions: not drawn, because ${regions.why}`);
 
-let keep = allNodes;
-if (args.pathOnly && chosen) keep = onPath;
-else if (coverEdges) {
-  keep = new Set([...now.initial, ...(secondQ?.initial ?? [])]);
-  for (const id of coverEdges) keep.add(edges.get(id).from).add(edges.get(id).to);
-}
-const ids = new Map();
-let counter = 0;
-const idOf = (k) => {
-  if (!ids.has(k)) ids.set(k, `s${counter++}`);
-  return ids.get(k);
-};
-const sorted = [...keep].sort();
+const flatStates =
+  args.pathOnly && chosen
+    ? onPath
+    : coverEdges
+      ? new Set([
+          ...initial,
+          ...[...coverEdges].flatMap((id) => [edges.get(id).from, edges.get(id).to]),
+        ])
+      : allNodes;
+const sorted = [...flatStates].sort();
 const drawn = sorted.map((k) => drawnState(groupOf(k), status(k), onPath.has(k)));
 
-// Boxes: the states of one outer layer (layered view), or, in the customer view, the states whose
-// labels read "context: progress" with the same context. A context with one state stays a plain state.
 const boxes = new Map();
 const boxOf = new Map();
 const inBox = (k, box) => {
@@ -1183,10 +1129,12 @@ else if (args.view === "customer" && !args.flat) {
 }
 const boxIds = new Map([...boxes.keys()].map((box, i) => [box, `g${i}`]));
 for (const [box, members] of boxes) for (const k of members) boxOf.set(k, box);
+const declared = [...[...boxes.values()].flat(), ...sorted.filter((k) => !boxOf.has(k))];
+const stateIds = new Map(declared.map((k, i) => [k, `s${i}`]));
+const idOf = (k) => stateIds.get(k);
 const caption = (k) =>
   args.view === "layered" ? k.split(SEP)[1] : boxOf.has(k) ? k.slice(boxOf.get(k).length + 2) : k;
 
-// Consecutive steps of one arrow with the same words share a line, as in "2, 3. you look".
 function numbered(steps) {
   const runs = [];
   for (const { n, shown } of steps) {
@@ -1197,16 +1145,12 @@ function numbered(steps) {
   return runs.map(({ shown, n }) => `${n.join(", ")}. ${shown}`);
 }
 const drawnLabels = new Set();
-// Mermaid stacks the loops on a state in one place, so two states get one arrow. A blank line sets
-// its numbered steps, the current model's steps, and the second model's steps apart, since a
-// wrapped line looks like a new one. The blank line holds a no-break space, because Mermaid drops
-// an empty line.
 const arrows = new Map();
 for (const [id, e] of edges) {
-  if (!keep.has(e.from) || !keep.has(e.to)) continue;
+  if (!flatStates.has(e.from) || !flatStates.has(e.to)) continue;
   if (args.pathOnly && chosen && !pathNumbers.has(id) && id !== chosen.second?.edge) continue;
   if (coverEdges && !coverEdges.has(id)) continue;
-  const pair = `${e.from}${SEP}${SEP}${e.to}`;
+  const pair = edgeId(e.from, e.to);
   if (!arrows.has(pair))
     arrows.set(pair, { from: e.from, to: e.to, groups: [[], [], []], plain: true, labels: [] });
   const a = arrows.get(pair);
@@ -1224,7 +1168,7 @@ for (const [id, e] of edges) {
   a.labels.push(...all);
   for (const l of p ? p.map((s) => s.label) : all) drawnLabels.add(l);
 }
-const lines = [...arrows.values()].map(({ from, to, groups, plain, labels }) => ({
+const transitions = [...arrows.values()].map(({ from, to, groups, plain, labels }) => ({
   from,
   to,
   // ";" ends a Mermaid statement, even inside a transition label.
@@ -1240,15 +1184,12 @@ const lines = [...arrows.values()].map(({ from, to, groups, plain, labels }) => 
   plain,
   labels: labels.sort(),
 }));
-const edgeCount = lines.length;
-// One arrow from a box's border stands for the same step from every state in the box. It is drawn
-// only when every state in the box has that step, with the same labels, to the same state outside
-// the box, so the chart still says exactly what each state does.
 const fromBox = [];
+const folded = new Set();
 for (const [box, members] of boxes) {
   const mine = new Set(members);
   const byStep = new Map();
-  for (const l of lines) {
+  for (const l of transitions) {
     if (!l.plain || !mine.has(l.from) || mine.has(l.to)) continue;
     const step = `${l.to}${SEP}${l.text}${SEP}${l.labels.join(SEP)}`;
     if (!byStep.has(step)) byStep.set(step, []);
@@ -1256,7 +1197,7 @@ for (const [box, members] of boxes) {
   }
   for (const same of byStep.values()) {
     if (new Set(same.map((l) => l.from)).size !== members.length) continue;
-    for (const l of same) lines.splice(lines.indexOf(l), 1);
+    for (const l of same) folded.add(l);
     fromBox.push({ ...same[0], box });
   }
 }
@@ -1269,19 +1210,17 @@ for (const [box, members] of boxes) {
 }
 for (const k of sorted)
   if (!boxOf.has(k)) out.push(`  state "${quote(wrap(caption(k)))}" as ${idOf(k)}`);
-const initial = new Set([...now.initial, ...(secondQ?.initial ?? [])]);
 for (const k of sorted)
   if (initial.has(k) && (!args.pathOnly || k === chosen?.path[0].key))
     out.push(`  [*] --> ${idOf(k)}`);
 const arrow = (from, l) => `  ${from} --> ${idOf(l.to)}${l.text ? ` : ${l.text}` : ""}`;
 for (const l of fromBox) out.push(arrow(boxIds.get(l.box), l));
-for (const l of lines) out.push(arrow(idOf(l.from), l));
+for (const l of transitions) if (!folded.has(l)) out.push(arrow(idOf(l.from), l));
 sorted.forEach((k, i) => out.push(`  class ${idOf(k)} ${drawn[i].cls}`));
 const mermaid = regions?.mermaid ?? out.join("\n") + "\n";
 if (args.out) fs.writeFileSync(args.out, mermaid);
 else process.stdout.write(mermaid);
 
-// ---------- stories and summary ----------
 const show = (k) => (args.view === "layered" ? k.replace(SEP, ": ") : k);
 const ruleOf = (c) => rules.get(c.invariant) ?? `\`${c.invariant}\``;
 function secondLine(c) {
@@ -1329,7 +1268,6 @@ if (args.story) {
   });
   fs.writeFileSync(args.story, lines.join("\n"));
 }
-// Labels a product reader would not say: camelCase, snake_case, calls, and joined PascalCase words.
 const CODE_LIKE = /\b[a-z]{2,}[A-Z][a-z]|\b\w+_\w+\b|\b[A-Za-z_]\w*\(|\b[A-Z][a-z]+[A-Z][a-z]/;
 const codeLike = [
   ...new Set([
@@ -1354,14 +1292,14 @@ const summary = {
   ...(role ? { second: { role, label: L, lacks: lacks.map((p) => p.join(".")) } } : {}),
   modelStates: graph.nodes.size,
   modelTransitions: graph.edges.length,
-  chartStates: regions?.mermaid ? regions.states[0] + regions.states[1] : keep.size,
-  chartTransitions: regions?.mermaid ? regions.transitions : edgeCount,
+  chartStates: regions?.mermaid ? regions.states[0] + regions.states[1] : flatStates.size,
+  chartTransitions: regions?.mermaid ? regions.transitions : transitions.length,
   chartStatus: regions?.mermaid
     ? regions.status
     : Object.fromEntries(
         ["works", "wrong", "fixed"].map((s) => [
           s,
-          [...keep].filter((k) => status(k) === s).length,
+          [...flatStates].filter((k) => status(k) === s).length,
         ]),
       ),
   ...(grouping
@@ -1405,5 +1343,5 @@ const drawnAs = regions?.mermaid
   : "";
 console.error(
   `chart: ${summary.chartStates} states, ${summary.chartTransitions} transitions${drawnAs} from ${summary.modelStates} model states; ` +
-    `${classes.length - introduced.length} bug(s)${extraBugs}`,
+    `${mainClasses.length} bug(s)${extraBugs}`,
 );

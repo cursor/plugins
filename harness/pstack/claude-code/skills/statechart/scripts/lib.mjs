@@ -1,8 +1,5 @@
-// Shared code for the statechart scripts. Node built-ins only.
 import fs from "node:fs";
 import process from "node:process";
-
-// ---------- Where TLC is ----------
 
 // tla2tools.jar and the java binary, from TLA2TOOLS and JAVA. Throws where to get TLC when TLA2TOOLS is not set.
 export function findTlc() {
@@ -14,8 +11,6 @@ export function findTlc() {
   if (!fs.existsSync(TLA2TOOLS)) throw new Error(`TLA2TOOLS is ${TLA2TOOLS}, which does not exist.`);
   return { jar: TLA2TOOLS, java: JAVA || "java" };
 }
-
-// ---------- TLA+ values as TLC prints them ----------
 
 export function parseValue(text) {
   const src = text.trim();
@@ -112,7 +107,7 @@ export function parseValue(text) {
 }
 
 // One state as TLC prints it: "/\ x = 1" lines, or "x = 1" for one variable.
-export function parseState(text) {
+function parseState(text) {
   const lines = text.split("\n").filter((l) => l.trim() !== "");
   const conjuncts = [];
   for (const line of lines) {
@@ -140,10 +135,8 @@ const canon = (v) =>
             .map((k) => [k, canon(v[k])]),
         )
       : v;
-// Record fields sort at every depth, so a state keeps its key when a field is added back.
 export const stateKey = (vars) => JSON.stringify(canon(vars));
 
-// The rule sentence of each definition: the \* comment lines right above NAME ==.
 export function ruleSentences(tla) {
   const out = new Map();
   const lines = tla.split("\n");
@@ -159,8 +152,6 @@ export function ruleSentences(tla) {
   return out;
 }
 
-// ---------- TLC -dump dot,actionlabels ----------
-
 function unescapeDot(s) {
   let out = "";
   for (let i = 0; i < s.length; i++) {
@@ -172,8 +163,6 @@ function unescapeDot(s) {
   return out;
 }
 
-// Returns { nodes, edges, loops }. loops are steps that change no variable; they count as enabled
-// actions but are not transitions.
 export function parseDot(text) {
   const nodes = new Map();
   const edges = [];
@@ -214,9 +203,6 @@ export function parseDot(text) {
   return { nodes, edges, loops };
 }
 
-// ---------- TLC error traces (one per violation; many with -continue) ----------
-
-// A trace that follows an error other than a broken invariant has invariant null.
 export function parseTraces(text) {
   const traces = [];
   let invariant = null;
@@ -254,8 +240,8 @@ export function parseTraces(text) {
   return traces;
 }
 
-// Throws unless TLC finished and every error it printed is a broken invariant. With -continue, TLC
-// prints "Model checking completed" even after broken invariants, and not when it stopped early.
+// With -continue, TLC prints "Model checking completed" even after broken invariants, and not
+// when it stopped early.
 export function checkTlcOutput(text, file) {
   const other = text
     .split("\n")
@@ -274,8 +260,6 @@ export function checkTlcOutput(text, file) {
     );
 }
 
-// ---------- Mermaid stateDiagram-v2 (the subset these scripts write and read) ----------
-
 export function wrap(text, width = 26) {
   const words = String(text).split(/\s+/);
   const rows = [];
@@ -290,8 +274,6 @@ export function wrap(text, width = 26) {
   return rows.join("<br/>");
 }
 
-// The shared words stop before a word that opens a phrase, so each choice keeps its whole phrase,
-// as in "you tap the Pay button or the Back button".
 const OPENS_A_PHRASE = new Set(
   "a an the your my our their its this that to of in on at for with from by and or".split(" "),
 );
@@ -318,19 +300,9 @@ const unwrap = (s) =>
 // Mermaid ends a quoted state caption at the first ", so a caption writes " as #quot;.
 export const quote = (s) => String(s).replaceAll('"', "#quot;");
 
-// The scripts draw their legend as a composite with this id. It is not part of the machine.
 export const LEGEND_ID = "legend";
-// Marks a chart whose edge labels are written in full, which a chart comparison needs.
 export const FULL_LABELS = "%% labels in full";
 
-// Returns { regions: { name: { states:Set, initial:Set, transitions:[{from,to,label,guard?}] } }, nevers }.
-// Composite states flatten to "Parent.Child". A transition on a composite leaves from each state
-// inside it that has no transition with the same label, and enters at the composite's [*] start.
-// One top-level composite split by "--" makes one region per part. Regions nest only at the top.
-// Words in [ ] in a label say when the step can happen. They are not part of the label, and nothing
-// checks them. A "%% when ID, ID" or "%% when not ID, ID" line right after a transition guards it
-// on the states of other regions; its label must have the guard's words in [ ].
-// guard is { not, states: { region: [state] } }.
 export function parseMermaid(text) {
   const names = new Map();
   const nevers = [];
@@ -340,7 +312,6 @@ export function parseMermaid(text) {
   const stack = [root];
   const part = () => stack[stack.length - 1].parts.at(-1);
   const display = (id) => names.get(id) ?? id;
-  // As in Mermaid, a state that only transitions name belongs to the part where it first appears.
   const implicit = new Map();
   const declare = (id) => {
     const prev = implicit.get(id);
@@ -426,7 +397,6 @@ export function parseMermaid(text) {
     }
     m = /^([A-Za-z_]\w*)\s*:\s*(.*)$/.exec(line);
     if (m) {
-      // Mermaid shows every description line; the first one names the state.
       if (!names.has(m[1])) names.set(m[1], unwrap(m[2]));
       if (implicit.get(m[1]) === null) continue;
       declare(m[1]);
@@ -442,8 +412,6 @@ export function parseMermaid(text) {
     );
 
   // Ids are global, as in Mermaid: a transition may name a state declared inside another composite.
-  // A composite's full name prefixes its children ("Parent.Child"). An id used only in a
-  // transition is a plain state in the part where it first appears.
   function region(p) {
     const out = { states: new Set(), initial: new Set(), transitions: [] };
     const info = new Map();
@@ -506,8 +474,6 @@ export function parseMermaid(text) {
     states(p, "", 0);
     for (const t of p.transitions)
       if (t.from === "[*]") for (const s of lookup(t.to).initial) out.initial.add(s);
-    // The deepest source wins: a composite's transition leaves only from states inside it
-    // that have no deeper transition with the same label.
     transitions.sort((a, b) => lookup(b.from).depth - lookup(a.from).depth);
     const handled = new Set();
     let pending = [];
@@ -532,12 +498,10 @@ export function parseMermaid(text) {
         if (t.label) pending.push(key);
       }
     }
-    for (const [id, { all }] of info) owners.set(id, { name: regionName, all });
-    return out;
+    return [out, info];
   }
-  const owners = new Map();
-  let regionName = "";
 
+  const owners = new Map();
   const regions = {};
   const top = root.parts[0];
   const machine = top.children.filter((c) => c.name !== LEGEND_ID);
@@ -557,12 +521,15 @@ export function parseMermaid(text) {
           : null;
       if (holder && holder.parts.length > 1)
         throw new Error(`${display(holder.name)} splits into regions below the top level`);
-      regionName = holder ? display(holder.name) : `Region${Object.keys(regions).length + 1}`;
-      regions[regionName] = region(holder ? holder.parts[0] : p);
+      const name = holder ? display(holder.name) : `Region${Object.keys(regions).length + 1}`;
+      const [r, ids] = region(holder ? holder.parts[0] : p);
+      regions[name] = r;
+      for (const [id, { all }] of ids) owners.set(id, { name, all });
     }
   } else {
-    regionName = "Main";
-    regions.Main = region(top);
+    const [r, ids] = region(top);
+    regions.Main = r;
+    for (const [id, { all }] of ids) owners.set(id, { name: "Main", all });
   }
   for (const [name, r] of Object.entries(regions))
     for (const t of r.transitions) {
@@ -586,19 +553,12 @@ export function parseMermaid(text) {
   return { regions, nevers };
 }
 
-// Whether a guard lets a step happen while the regions are in the states that `at` maps them to.
-export function guardHolds(guard, at) {
+function guardHolds(guard, at) {
   if (!guard) return true;
   const hits = Object.entries(guard.states).map(([r, states]) => states.includes(at[r]));
   return guard.not ? !hits.some(Boolean) : hits.every(Boolean);
 }
 
-// The combined machine of a chart's regions, as chart-to-tla.mjs generates it. A labeled step can
-// happen when at least one region can take it; every region that can take it moves, the others stay.
-// A region can take a transition only while its guard holds in the state before the step.
-// An unlabeled transition moves its own region only. A combined state is the region states joined
-// by " | " in region order. Only states reachable from the start are kept, and steps that change
-// nothing are dropped, as TLC's state graph drops them.
 export function productOf(regions) {
   const names = Object.keys(regions);
   const rs = Object.values(regions);
@@ -661,9 +621,6 @@ export function productOf(regions) {
   return out;
 }
 
-// Compares two charts as the machines their steps reach. Returns [title, differences] rows, only
-// the rows that have differences. An edge label "a or b" counts as two labels. An unlabeled edge
-// counts only when no labeled edge joins the same two states.
 export function compareCharts(expectedRegions, actualRegions) {
   const expected = productOf(expectedRegions);
   const actual = productOf(actualRegions);
@@ -680,7 +637,6 @@ export function compareCharts(expectedRegions, actualRegions) {
     return out;
   };
   const minus = (a, b) => [...a].filter((x) => !b.has(x)).sort();
-  // A region state that no combination of the agreed chart's own steps reaches can never be drawn.
   const unreached = [];
   const regionEntries = Object.entries(expectedRegions);
   if (regionEntries.length === 1) {
@@ -717,8 +673,6 @@ export const STATUS_CLASSES = [
   "classDef fixedPath fill:#e9f7ef,stroke:#1f3a93,stroke-width:4px,color:#145a32",
 ];
 
-// Fills for the mapping's groups that it gives no color: light, and not red, green, or gray, so a
-// status border stays clear on each.
 export const GROUP_PALETTE = [
   "#d6eaf8",
   "#fdebd0",
@@ -735,14 +689,13 @@ const rgb = (hex) => {
   return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
 };
 // WCAG relative luminance: 0 for black, 1 for white.
-export function luminance(hex) {
+function luminance(hex) {
   const [r, g, b] = rgb(hex).map((c) => {
     const s = c / 255;
     return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
   });
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
-// Why a group color cannot fill a state, or null when it can.
 export function groupColorProblem(color) {
   if (typeof color !== "string" || !/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(color))
     return 'is not "#rgb" or "#rrggbb"';
@@ -750,7 +703,6 @@ export function groupColorProblem(color) {
   return null;
 }
 
-// A status border sits on top of the group fill. The path border shows only on states that work.
 const BORDERS = {
   Wrong: ["stroke:#c0392b,stroke-width:4px", "#7b241c"],
   Fixed: ["stroke:#1e8449,stroke-width:4px", "#145a32"],

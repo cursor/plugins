@@ -1,9 +1,18 @@
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { spawn, spawnSync } from "node:child_process";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join } from "node:path";
 import { test } from "node:test";
+import { setTimeout as sleep } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
 import {
   checkTlcOutput,
@@ -741,6 +750,71 @@ test("statechart.mjs writes the spec next to the chart, keeps it on the next run
   );
 });
 
+test("statechart.mjs writes no output folder when it refuses the input", () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  writeFileSync(join(dir, "tla2tools.jar"), "");
+  writeFileSync(join(dir, "Pay.tla"), "---- MODULE Pay ----\n====\n");
+  writeFileSync(join(dir, "Pay.cfg"), "SPECIFICATION Spec\nINVARIANT Paid\n");
+  writeFileSync(join(dir, "cart.mmd"), "stateDiagram-v2\n  [*] --> Cart\n  Cart --> Paid : pay\n");
+  for (const args of [
+    ["from-spec", "Pya.tla"],
+    ["from-spec", "Pay.tla", "--expect-broken", "Unpaid"],
+    ["from-spec", "Pay.tla", "--fixed", "PayFixd.tla"],
+    ["from-chart", "cart.mmd", "--expect-broken", "Unpaid"],
+  ]) {
+    const r = node("statechart.mjs", args, dir, { TLA2TOOLS: join(dir, "tla2tools.jar") });
+    assert.equal(r.status, 2, r.stderr);
+  }
+  assert.deepEqual(
+    readdirSync(dir).filter((f) => f.endsWith("-statechart")),
+    [],
+  );
+});
+
+test("statechart.mjs does not use an output folder that has files that it did not write", () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  writeFileSync(join(dir, "tla2tools.jar"), "");
+  writeFileSync(join(dir, "Pay.tla"), "---- MODULE Pay ----\n====\n");
+  writeFileSync(join(dir, "Pay.cfg"), "SPECIFICATION Spec\n");
+  const env = { TLA2TOOLS: join(dir, "tla2tools.jar") };
+  const cwd = node("statechart.mjs", ["from-spec", "Pay.tla", "--out", "."], dir, env);
+  assert.equal(cwd.status, 2);
+  assert.equal(
+    cwd.stderr,
+    ". has 3 files that this command did not write, such as Pay.cfg. A run puts its files in place of the whole output folder, so pass --out with a new folder.\n",
+  );
+  const out = join(dir, "Pay-statechart");
+  mkdirSync(join(out, "tlc"), { recursive: true });
+  writeFileSync(join(out, "chart.mmd"), "kept\n");
+  writeFileSync(join(out, ".DS_Store"), "");
+  writeFileSync(join(out, "notes.md"), "mine\n");
+  const notes = node("statechart.mjs", ["from-spec", "Pay.tla"], dir, env);
+  assert.equal(notes.status, 2);
+  assert.equal(
+    notes.stderr,
+    "Pay-statechart has a file that this command did not write: notes.md. A run puts its files in place of the whole output folder, so pass --out with a new folder.\n",
+  );
+  assert.deepEqual(readdirSync(dir).sort(), [
+    "Pay-statechart",
+    "Pay.cfg",
+    "Pay.tla",
+    "tla2tools.jar",
+  ]);
+  assert.deepEqual(readdirSync(out).sort(), [".DS_Store", "chart.mmd", "notes.md", "tlc"]);
+  assert.equal(readFileSync(join(out, "chart.mmd"), "utf8"), "kept\n");
+});
+
+test("statechart.mjs exits 2 and names a helper script that cannot start", () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  writeFileSync(join(dir, "notes-app.mmd"), fixture("sync.mmd"));
+  writeFileSync(join(dir, "no-node.cjs"), 'process.execPath = "/nonexistent/node";\n');
+  const r = node("statechart.mjs", ["from-chart", "notes-app.mmd"], dir, {
+    NODE_OPTIONS: `--require ${join(dir, "no-node.cjs")}`,
+  });
+  assert.equal(r.status, 2, r.stderr);
+  assert.match(r.stderr, /chart-to-tla\.mjs/);
+});
+
 test("statechart.mjs names the chart it refuses and the argument it does not know", () => {
   const dir = mkdtempSync(join(tmpdir(), "statechart-"));
   writeFileSync(
@@ -1255,14 +1329,7 @@ test(
       scaffold,
       /^const STEPS = \{\n\tCharge: "Charge",\n\tPay: "Pay",\n\tRefund: "Refund",\n\};$/m,
     );
-    assert.equal(
-      readFileSync(join(dir, "Pay-statechart", "tlc", "Pay.cfg"), "utf8"),
-      "SPECIFICATION Spec\n",
-    );
-    assert.equal(
-      readFileSync(join(dir, "Pay-statechart", "tlc", "Pay-NoDoubleCharge.cfg"), "utf8"),
-      "SPECIFICATION Spec\nINVARIANT NoDoubleCharge\nCONSTRAINT NoDoubleCharge\n",
-    );
+    assert.equal(existsSync(join(dir, "Pay-statechart")), false);
 
     writeFileSync(
       join(dir, "Pay.map.mjs"),
@@ -1305,6 +1372,14 @@ Wrote chart.mmd, bug-1.mmd, bug-1-developer.mmd, bug-1-layered.mmd, stories.md, 
       "summary.json",
       "tlc",
     ]);
+    assert.equal(
+      readFileSync(join(dir, "Pay-statechart", "tlc", "Pay.cfg"), "utf8"),
+      "SPECIFICATION Spec\n",
+    );
+    assert.equal(
+      readFileSync(join(dir, "Pay-statechart", "tlc", "Pay-NoDoubleCharge.cfg"), "utf8"),
+      "SPECIFICATION Spec\nINVARIANT NoDoubleCharge\nCONSTRAINT NoDoubleCharge\n",
+    );
   },
 );
 
@@ -1638,6 +1713,10 @@ Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in SaveCode-statechart.
       holds.stdout,
       /\nBroken but not expected: NoFalseSaved\.\n\nExpected to break but holds: TypeOK\.\n/,
     );
+    const listed = run("--expect-broken", "NoFalseSaved,TypeOK");
+    assert.equal(listed.status, 1, listed.stderr);
+    assert.match(listed.stdout, /\nExpected to break but holds: TypeOK\.\n/);
+    assert.doesNotMatch(listed.stdout, /Broken but not expected/);
 
     writeFileSync(
       join(dir, "code.map.mjs"),
@@ -2280,3 +2359,432 @@ Spec == \\* not [][Inc]_x
   assert.equal(named.status, 0, named.stderr);
   assert.equal(named.stderr, "");
 });
+
+const writeLamp = (dir) => {
+  writeFileSync(
+    join(dir, "Lamp.tla"),
+    "---- MODULE Lamp ----\nVARIABLE on\nInit == on = FALSE\nOn == on' = TRUE\nOff == on' = FALSE\nSpec == Init /\\ [][On \\/ Off]_on\n====\n",
+  );
+  writeFileSync(join(dir, "Lamp.cfg"), "SPECIFICATION Spec\n");
+  writeFileSync(
+    join(dir, "Lamp.map.mjs"),
+    'export const state = (v) => (v.on ? "On" : "Off");\nexport const step = () => "you flip the switch";\n',
+  );
+  return join(dir, "Lamp-statechart");
+};
+
+test("a rerun without --png removes the chart.png of an earlier run", needsTlc, () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  const out = writeLamp(dir);
+  mkdirSync(out);
+  writeFileSync(join(out, "chart.png"), "");
+  const r = node("statechart.mjs", ["from-spec", "Lamp.tla"], dir);
+  assert.equal(r.status, 0, r.stderr);
+  assert.deepEqual(
+    readdirSync(out).filter((f) => f.endsWith(".png")),
+    [],
+  );
+});
+
+const writeSlowPay = (dir, ticks, paid = "Paid") => {
+  writeFileSync(
+    join(dir, "Pay.tla"),
+    `---- MODULE Pay ----
+EXTENDS Naturals
+VARIABLES screen, charges, ticks
+vars == <<screen, charges, ticks>>
+Init == screen = "Cart" /\\ charges = 0 /\\ ticks = 0
+TapPay == screen = "Cart" /\\ screen' = "Paying" /\\ UNCHANGED <<charges, ticks>>
+Charge == screen = "Paying" /\\ charges < 2 /\\ charges' = charges + 1 /\\ UNCHANGED <<screen, ticks>>
+Done == screen = "Paying" /\\ charges > 0 /\\ screen' = "${paid}" /\\ UNCHANGED <<charges, ticks>>
+Tick == ticks < ${ticks} /\\ ticks' = ticks + 1 /\\ UNCHANGED <<screen, charges>>
+Spec == Init /\\ [][TapPay \\/ Charge \\/ Done \\/ Tick]_vars
+ChargedAtMostTwice == charges <= 2
+====
+`,
+  );
+  writeFileSync(join(dir, "Pay.cfg"), "SPECIFICATION Spec\nINVARIANT ChargedAtMostTwice\n");
+  writeFileSync(
+    join(dir, "Pay.map.mjs"),
+    'export const state = (v) => v.screen;\nexport const step = (a) => ({ TapPay: "you tap Pay", Charge: "the charge goes through", Done: "the receipt shows" })[a] ?? "";\n',
+  );
+  return join(dir, "Pay-statechart");
+};
+const startRun = (dir, { wrap = [], env = {}, args = ["from-spec", "Pay.tla"] } = {}) => {
+  const [command, ...rest] = [...wrap, process.execPath, join(scripts, "statechart.mjs"), ...args];
+  const child = spawn(command, rest, {
+    cwd: dir,
+    env: { ...process.env, ...env },
+    stdio: ["ignore", "ignore", "pipe"],
+    detached: true,
+  });
+  let stderr = "";
+  child.stderr.on("data", (d) => {
+    stderr += d;
+  });
+  return {
+    child,
+    done: new Promise((done) => child.on("close", (status) => done({ status, stderr }))),
+  };
+};
+const until = async (ready) => {
+  while (!ready()) await sleep(20);
+};
+const ownTmp = (dir, name) => {
+  const tmp = join(dir, name);
+  mkdirSync(tmp);
+  return tmp;
+};
+const tlcStarted = (tmp) => readdirSync(tmp).some((f) => f.startsWith("tlc-"));
+const staged = (dir) => readdirSync(dir).filter((f) => f.startsWith("."));
+
+test(
+  "a run whose Node is killed mid-TLC leaves the output folder as it was, and a rerun charts its own spec",
+  needsTlc,
+  async () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    const out = writeSlowPay(dir, 60000);
+    const tmp = ownTmp(dir, "tmp");
+    const first = startRun(dir, { env: { TMPDIR: tmp } });
+    await until(() => tlcStarted(tmp));
+    await sleep(300);
+    first.child.kill("SIGTERM");
+    await first.done;
+    assert.doesNotThrow(() => process.kill(-first.child.pid, 0), "TLC outlives its Node");
+    assert.equal(existsSync(out), false);
+
+    writeSlowPay(dir, 200, "Receipt");
+    const second = node("statechart.mjs", ["from-spec", "Pay.tla"], dir);
+    process.kill(-first.child.pid, "SIGKILL");
+    assert.equal(second.status, 0, second.stderr);
+    for (const file of ["chart.mmd", join("tlc", "Pay.dot")]) {
+      const text = readFileSync(join(out, file), "utf8");
+      assert.match(text, /Receipt/);
+      assert.doesNotMatch(text, /Paid/);
+    }
+    assert.deepEqual(staged(dir), []);
+  },
+);
+
+const changedMidRun = async ({ wrap = [], env = {} }) => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  const out = writeSlowPay(dir, 20000);
+  const tmp = ownTmp(dir, "tmp-a");
+  const first = startRun(dir, { wrap, env: { ...env, TMPDIR: tmp } });
+  await until(() => tlcStarted(tmp));
+  await sleep(500);
+  writeSlowPay(dir, 20000, "Receipt");
+  const second = startRun(dir, { wrap, env: { ...env, TMPDIR: ownTmp(dir, "tmp-b") } });
+  const [paid, receipt] = await Promise.all([first.done, second.done]);
+  assert.equal(receipt.status, 0, receipt.stderr);
+  assert.equal(paid.status, 2, paid.stderr);
+  assert.equal(
+    paid.stderr,
+    "Pay.tla changed while this run read it, so the run left Pay-statechart as it was. Run the command again.\n",
+  );
+  const chart = readFileSync(join(out, "chart.mmd"), "utf8");
+  assert.match(chart, /Receipt/);
+  assert.doesNotMatch(chart, /Paid/);
+  assert.deepEqual(staged(dir), []);
+};
+
+test(
+  "a run whose spec changes while it reads it leaves the output folder, and the run that read the new spec charts it",
+  needsTlc,
+  () => changedMidRun({}),
+);
+
+const unshare = ["unshare", "--user", "--map-root-user", "--pid", "--fork", "--mount-proc"];
+const hidePidNamespace = `#define _GNU_SOURCE
+#include <dlfcn.h>
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+ssize_t readlink(const char *path, char *buf, size_t size) {
+  static ssize_t (*real)(const char *, char *, size_t);
+  if (!real) real = dlsym(RTLD_NEXT, "readlink");
+  if (path && strcmp(path, "/proc/self/ns/pid") == 0) { errno = EIO; return -1; }
+  return real(path, buf, size);
+}
+`;
+const hidingPreload = (() => {
+  if (spawnSync(unshare[0], [...unshare.slice(1), "true"]).status !== 0) return null;
+  const dir = mkdtempSync(join(tmpdir(), "statechart-preload-"));
+  writeFileSync(join(dir, "hide.c"), hidePidNamespace);
+  const so = join(dir, "hide.so");
+  const cc = spawnSync("cc", ["-shared", "-fPIC", "-o", so, join(dir, "hide.c"), "-ldl"]);
+  return cc.status === 0 ? so : null;
+})();
+test(
+  "runs in PID namespaces that hide which namespace they are in chart only their own spec",
+  {
+    skip:
+      needsTlc.skip ||
+      (!hidingPreload && "cannot make a PID namespace, or cannot compile a readlink preload"),
+  },
+  () => changedMidRun({ wrap: unshare, env: { LD_PRELOAD: hidingPreload } }),
+);
+
+test(
+  "a file that is put in the output folder during a run stays, and the run exits 2",
+  needsTlc,
+  async () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    const out = writeSlowPay(dir, 20000);
+    const tmp = ownTmp(dir, "tmp");
+    const run = startRun(dir, { env: { TMPDIR: tmp } });
+    await until(() => tlcStarted(tmp));
+    mkdirSync(out);
+    writeFileSync(join(out, "notes.md"), "mine\n");
+    const r = await run.done;
+    assert.equal(r.status, 2);
+    assert.equal(
+      r.stderr,
+      "Pay-statechart has a file that this command did not write: notes.md. A run puts its files in place of the whole output folder, so pass --out with a new folder.\n",
+    );
+    assert.deepEqual(readdirSync(out), ["notes.md"]);
+    assert.deepEqual(staged(dir), []);
+  },
+);
+
+const failRenames = `#define _GNU_SOURCE
+#include <dlfcn.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+static size_t hits;
+int rename(const char *from, const char *to) {
+  static int (*real)(const char *, const char *);
+  if (!real) real = dlsym(RTLD_NEXT, "rename");
+  const char *base = strrchr(to, '/'), *fails = getenv("RENAME_FAILS");
+  base = base ? base + 1 : to;
+  if (fails && strcmp(base, "shared") == 0 && hits < strlen(fails)) {
+    errno = fails[hits++] == 'N' ? ENOTEMPTY : EIO;
+    return -1;
+  }
+  return real(from, to);
+}
+`;
+const failingRenames = (() => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-preload-"));
+  writeFileSync(join(dir, "rename.c"), failRenames);
+  const so = join(dir, "rename.so");
+  const cc = spawnSync("cc", ["-shared", "-fPIC", "-o", so, join(dir, "rename.c"), "-ldl"]);
+  return cc.status === 0 ? so : null;
+})();
+test(
+  "a run whose rename fails after it moves the output folder aside puts the folder back, or says where it is",
+  { skip: needsTlc.skip || (!failingRenames && "cannot compile a rename preload") },
+  () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    writeLamp(dir);
+    const args = ["from-spec", "Lamp.tla", "--out", "shared"];
+    const shared = join(dir, "shared");
+    const first = node("statechart.mjs", args, dir);
+    assert.equal(first.status, 0, first.stderr);
+    const chart = readFileSync(join(shared, "chart.mmd"), "utf8");
+    const run = (fails) =>
+      node("statechart.mjs", args, dir, { LD_PRELOAD: failingRenames, RENAME_FAILS: fails });
+
+    const back = run("NI");
+    assert.equal(back.status, 2, back.stderr);
+    assert.match(
+      back.stderr,
+      /^cannot replace shared: EIO: .*\. The run left shared as it was\.\n$/,
+    );
+    assert.equal(readFileSync(join(shared, "chart.mmd"), "utf8"), chart);
+    assert.deepEqual(staged(dir), []);
+
+    const stuck = run("NII");
+    assert.equal(stuck.status, 2, stuck.stderr);
+    const named = stuck.stderr.match(
+      /^cannot replace shared: EIO: .*\. This run moved the previous shared to (\.shared-\w+-old) and could not put it back\.\n$/,
+    );
+    assert.ok(named, stuck.stderr);
+    const aside = named[1];
+    assert.equal(existsSync(shared), false);
+    assert.equal(readFileSync(join(dir, aside, "chart.mmd"), "utf8"), chart);
+    assert.deepEqual(staged(dir), [aside]);
+  },
+);
+
+test(
+  "each TLC run writes the standard modules in its own temp folder, so overlapping runs cannot rewrite them under each other",
+  needsTlc,
+  () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    writeSlowPay(dir, 0);
+    const tmp = ownTmp(dir, "tmp");
+    const log = join(dir, "java.log");
+    const java = join(dir, "java");
+    writeFileSync(
+      java,
+      `#!/bin/sh
+for a; do case "$a" in -Djava.io.tmpdir=*) t="\${a#-Djava.io.tmpdir=}";; esac; done
+"$REAL_JAVA" "$@" > "$LOG.$$"; s=$?
+cat "$LOG.$$"
+echo "$t: $(grep 'Naturals.tla' "$LOG.$$")" >> "$LOG"
+rm "$LOG.$$"
+exit $s
+`,
+      { mode: 0o755 },
+    );
+    const r = node("statechart.mjs", ["from-spec", "Pay.tla"], dir, {
+      JAVA: java,
+      TLA2TOOLS: tools.jar,
+      REAL_JAVA: tools.java,
+      LOG: log,
+      TMPDIR: tmp,
+    });
+    assert.equal(r.status, 0, r.stderr);
+    const runs = readFileSync(log, "utf8").trim().split("\n");
+    assert.ok(runs.length > 0);
+    const folders = new Set();
+    for (const line of runs) {
+      const [folder, parsed] = line.split(": ");
+      assert.ok(folder.startsWith(join(tmp, "tlc-")), line);
+      assert.equal(parsed, `Parsing file ${join(folder, "Naturals.tla")}`);
+      folders.add(folder);
+    }
+    assert.equal(folders.size, runs.length);
+  },
+);
+
+test(
+  "a run that TLC stops on an error keeps TLC's output and writes no output folder",
+  needsTlc,
+  () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    writeFileSync(
+      join(dir, "Pay.tla"),
+      "---- MODULE Pay ----\nVARIABLE x\nASSUME FALSE\nInit == x = 0\nSpec == Init /\\ [][x' = x]_x\n====\n",
+    );
+    writeFileSync(join(dir, "Pay.cfg"), "SPECIFICATION Spec\n");
+    writeFileSync(join(dir, "Pay.map.mjs"), 'export const state = () => "Cart";\n');
+    const tmp = ownTmp(dir, "tmp");
+    const r = node("statechart.mjs", ["from-spec", "Pay.tla"], dir, { TMPDIR: tmp });
+    assert.equal(r.status, 2);
+    const [, file] = r.stderr.match(
+      /^(\S+\/tlc\/Pay\.out): TLC stopped on an error that is not a broken rule: Assumption .* is false\.\n$/,
+    );
+    assert.ok(file.startsWith(tmp), file);
+    assert.match(readFileSync(file, "utf8"), /Assumption .* is false/);
+    assert.equal(existsSync(join(dir, "Pay-statechart")), false);
+  },
+);
+
+test(
+  "runs of two specs that overlap on one output folder all finish, and the folder always holds one run's files",
+  needsTlc,
+  async () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    const out = writeSlowPay(dir, 400);
+    writeLamp(dir);
+    const pay = ["from-spec", "Pay.tla", "--out", "shared"];
+    const lamp = ["from-spec", "Lamp.tla", "--out", "shared"];
+    const alone = {};
+    for (const args of [pay, lamp]) {
+      const solo = join(dir, `${args[1]}-alone`);
+      const r = node("statechart.mjs", [...args.slice(0, 2), "--out", solo], dir);
+      assert.equal(r.status, 0, r.stderr);
+      alone[args[1]] = {
+        top: readdirSync(solo).sort().join(),
+        tlc: readdirSync(join(solo, "tlc")).sort().join(),
+        chart: readFileSync(join(solo, "chart.mmd"), "utf8"),
+        summary: readFileSync(join(solo, "summary.json"), "utf8"),
+      };
+    }
+    const shared = join(dir, "shared");
+    const seen = new Set();
+    let watching = true;
+    const watch = (async () => {
+      while (watching) {
+        try {
+          seen.add(readdirSync(join(shared, "tlc")).sort().join());
+        } catch (e) {
+          if (e.code !== "ENOENT") throw e;
+        }
+        await sleep(5);
+      }
+    })();
+    const runs = [];
+    for (let i = 0; i < 6; i++) {
+      runs.push(startRun(dir, { args: i % 2 ? lamp : pay }).done);
+      await sleep(150);
+    }
+    const finished = await Promise.all(runs);
+    watching = false;
+    await watch;
+    for (const r of finished) assert.equal(r.status, 0, r.stderr);
+    const runsOf = new Map(Object.entries(alone).map(([spec, a]) => [a.tlc, spec]));
+    for (const listing of seen) assert.ok(runsOf.has(listing), `tlc/ had ${listing}`);
+    const last = alone[runsOf.get(readdirSync(join(shared, "tlc")).sort().join())];
+    assert.equal(readdirSync(shared).sort().join(), last.top);
+    assert.equal(readFileSync(join(shared, "chart.mmd"), "utf8"), last.chart);
+    assert.equal(readFileSync(join(shared, "summary.json"), "utf8"), last.summary);
+    assert.equal(existsSync(out), false);
+    assert.deepEqual(staged(dir), []);
+  },
+);
+
+test(
+  "the output folder model keeps every rule, and breaks one with a shared TLC folder, without each guard, or when a failed rename deletes the folder moved aside",
+  needsTlc,
+  () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    const model = (ext) => readFileSync(join(scripts, "model", `OutputFolder${ext}`), "utf8");
+    const r = node(
+      "statechart.mjs",
+      ["from-spec", join(scripts, "model", "OutputFolder.tla"), "--out", join(dir, "out")],
+      dir,
+    );
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    assert.match(r.stdout, /\nNo rule is broken\.\n/);
+    for (const [i, [rule, guard, without, story]] of [
+      [
+        "ChartsOneSpec",
+        "/\\ read' = Set(read, r, read[r] \\cup {spec})",
+        "/\\ read' = [q \\in Runs |-> read[q] \\cup {spec}]",
+        /You start run 2 in a second shell\..*\n.*Run 2 moves its folder into place\. Now: Two runs going: chart of both specs/,
+      ],
+      [
+        "ChartsOneSpec",
+        '/\\ pc[r] = "publish" /\\ spec = snap[r] /\\ ~out.notes',
+        '/\\ pc[r] = "publish" /\\ ~out.notes',
+        /You edit the spec\..*\n.*Run 1 moves its folder into place\. Now: One run going: chart of both specs/,
+      ],
+      [
+        "KeepsYourFiles",
+        '/\\ pc[r] = "aside" /\\ ~aside[r].notes\n',
+        '/\\ pc[r] = "aside"\n',
+        /Run 1 deletes the old folder and finishes\. Now: Done: chart of the spec\n/,
+      ],
+      [
+        "NeverLosesChart",
+        "  /\\ \\/ /\\ aside[r].exists /\\ ~out.exists\n        /\\ out' = aside[r]\n        /\\ aside' = Set(aside, r, NoFolder)\n     \\/ UNCHANGED <<out, aside>>\n",
+        "  /\\ out' = out\n  /\\ aside' = Set(aside, r, IF aside[r].notes THEN aside[r] ELSE NoFolder)\n",
+        /Run 2 moves the old folder aside\. Now: .*, the old chart moved aside\n.*Run 2 cannot rename a folder and stops\. Now: One run going: no folder\n/,
+      ],
+      [
+        "NeverLosesChart",
+        '/\\ pc[r] = "swap" /\\ out.exists /\\ aside[r].exists /\\ ~out.notes',
+        '/\\ pc[r] = "swap" /\\ out.exists /\\ aside[r].exists',
+        /You save notes in the folder\..*\n.*Run 2 finds another run's folder in place and deletes the old folder\. Now: Two runs going: your notes\n/,
+      ],
+    ].entries()) {
+      const mutant = join(dir, `${i}-${rule}`);
+      mkdirSync(mutant);
+      assert.ok(model(".tla").includes(guard), guard);
+      writeFileSync(join(mutant, "OutputFolder.tla"), model(".tla").replace(guard, without));
+      for (const ext of [".cfg", ".map.mjs"])
+        writeFileSync(join(mutant, `OutputFolder${ext}`), model(ext));
+      const m = node(
+        "statechart.mjs",
+        ["from-spec", "OutputFolder.tla", "--expect-broken", rule],
+        mutant,
+      );
+      assert.equal(m.status, 0, m.stdout + m.stderr);
+      assert.match(m.stdout, story);
+    }
+  },
+);
