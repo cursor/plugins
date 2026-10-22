@@ -29,13 +29,16 @@ const here = dirname(fileURLToPath(import.meta.url));
 const scripts = dirname(here);
 const fixture = (name) => readFileSync(join(here, name), "utf8");
 const edges = (r) => r.transitions.map((t) => `${t.from} -> ${t.to} : ${t.label}`).sort();
-const node = (script, args, cwd, env = {}) =>
-  spawnSync(process.execPath, [join(scripts, script), ...args], {
+const node = (script, args, cwd, env = {}) => {
+  const r = spawnSync(process.execPath, [join(scripts, script), ...args], {
     cwd,
     encoding: "utf8",
     env: { ...process.env, ...env },
     timeout: 120_000,
   });
+  r.stdout = r.stdout?.replace(/^( {2}TLC ran \d+ times? in )\d+\.\d s\.$/gm, "$1N s.");
+  return r;
+};
 
 test("a transition on a composite leaves from every state inside it", () => {
   const { regions } = parseMermaid(fixture("upload.mmd"));
@@ -1043,11 +1046,12 @@ test("from-chart checks the agreed chart and draws it back unchanged", needsTlc,
     `Wrote Upload.tla, Upload.cfg, and Upload.map.mjs from upload.mmd.
 TLC on Upload.tla with Upload.cfg:
   TypeOK holds.
+  TLC ran 2 times in N s.
 
 Chart: 5 states and 8 transitions from 5 model states.
 5 work, 0 break a rule.
 
-No rule is broken.
+No state breaks a rule.
 
 The spec draws upload.mmd back unchanged.
 
@@ -1086,6 +1090,7 @@ test("from-chart finds the design bug, and from-spec with the fix marks it fixed
 TLC on Sync.tla with Sync.cfg:
   TypeOK holds.
   NeverSyncedWhileOffline is broken.
+  TLC ran 4 times in N s.
 
 Chart: 4 states and 8 transitions from 4 model states.
 3 work, 1 breaks a rule.
@@ -1114,9 +1119,11 @@ Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in Sync-statechart.
     `TLC on Sync.tla with Sync.cfg:
   TypeOK holds.
   NeverSyncedWhileOffline is broken.
+  TLC ran 4 times in N s.
 TLC on SyncFixed.tla with Sync.cfg:
   TypeOK holds.
   NeverSyncedWhileOffline holds.
+  TLC ran 3 times in N s.
 
 Chart: 4 states and 9 transitions from 4 model states.
 3 work today, 0 still wrong with the fix, 1 fixed or new with the fix.
@@ -1168,11 +1175,12 @@ Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in Sync-statechart.
 TLC on Sync.tla with Sync.cfg:
   TypeOK holds.
   NeverSyncedWhileOffline holds.
+  TLC ran 3 times in N s.
 
 Chart: 3 states and 5 transitions from 3 model states.
 3 work, 0 break a rule.
 
-No rule is broken.
+No state breaks a rule.
 
 The spec does not draw sync.mmd:
   states only in EXPECTED (no path from the start reaches them in the spec, or the spec renamed them):
@@ -1267,6 +1275,55 @@ export const state = (v) => v.screen + ["", ", charged", ", charged twice"][v.ch
 export const step = (action) => ({ Pay: "you pay", Charge: "the bank charges you", Refund: "the bank refunds you" })[action] ?? "";
 export const cause = () => "each charge request charges again";
 `;
+
+test(
+  "from-spec checks each PROPERTY in its own TLC run, and names the counterexample of a broken one",
+  needsTlc,
+  () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    writeFileSync(
+      join(dir, "Pay.tla"),
+      pay("Pay", `screen = "Paying" /\\ charges = 0 /\\ charges' = 1 /\\ UNCHANGED screen`).replace(
+        "====",
+        'ChargedAtMostOnce == [](charges <= 1)\nEventuallyPaying == <>(screen = "Paying")\n====',
+      ),
+    );
+    writeFileSync(
+      join(dir, "Pay.cfg"),
+      "SPECIFICATION Spec\nINVARIANT NoDoubleCharge\nPROPERTIES ChargedAtMostOnce EventuallyPaying\n",
+    );
+    writeFileSync(join(dir, "Pay.map.mjs"), payMap);
+    const r = node("statechart.mjs", ["from-spec", "Pay.tla"], dir);
+    assert.equal(r.status, 1, r.stderr);
+    assert.equal(
+      r.stdout.split("\n\n")[0],
+      `TLC on Pay.tla with Pay.cfg:
+  NoDoubleCharge holds.
+  ChargedAtMostOnce holds.
+  EventuallyPaying is broken. The chart draws only INVARIANT rules, so read TLC's counterexample in ${join("Pay-statechart", "tlc", "Pay-EventuallyPaying.out")}.
+  TLC ran 4 times in N s.`,
+    );
+    assert.match(r.stdout, /\nNo state breaks a rule\.\n/);
+    const tlcDir = join(dir, "Pay-statechart", "tlc");
+    assert.match(
+      readFileSync(join(tlcDir, "Pay-EventuallyPaying.out"), "utf8"),
+      /^Error: Temporal properties were violated\./m,
+    );
+    assert.deepEqual(
+      readdirSync(tlcDir)
+        .filter((f) => f.endsWith(".cfg") && /PROPERT/.test(readFileSync(join(tlcDir, f), "utf8")))
+        .sort(),
+      ["Pay-ChargedAtMostOnce.cfg", "Pay-EventuallyPaying.cfg"],
+    );
+    const expected = node(
+      "statechart.mjs",
+      ["from-spec", "Pay.tla", "--expect-broken", "EventuallyPaying"],
+      dir,
+    );
+    assert.equal(expected.status, 0, expected.stderr);
+    assert.match(expected.stdout, /\n {2}EventuallyPaying is broken \(expected\)\. /);
+  },
+);
 
 test(
   "a state reached only after a bug takes the bug's color, and the fix edge leaves the state before the changed step",
@@ -1457,6 +1514,7 @@ test(
       r.stdout,
       `TLC on Pay.tla with Pay.cfg:
   NoDoubleCharge is broken.
+  TLC ran 3 times in N s.
 
 Chart: 5 states and 4 transitions from 5 model states.
 3 work, 2 break a rule.
@@ -1778,9 +1836,11 @@ export const cause = () => "the app stops after one retry and shows Saved anyway
       `TLC on SaveCode.tla with SaveCode.cfg:
   TypeOK holds.
   NoFalseSaved is broken (expected).
+  TLC ran 4 times in N s.
 TLC on SaveAgreed.tla with SaveCode.cfg:
   TypeOK holds.
   NoFalseSaved holds.
+  TLC ran 3 times in N s.
 
 Chart: 4 states and 4 transitions from 10 model states.
 3 work, 1 breaks a rule, 0 only in the agreed chart.
@@ -3010,7 +3070,7 @@ test(
       dir,
     );
     assert.equal(r.status, 0, r.stdout + r.stderr);
-    assert.match(r.stdout, /\nNo rule is broken\.\n/);
+    assert.match(r.stdout, /\nNo state breaks a rule\.\n/);
     for (const [i, [rule, guard, without, story]] of [
       [
         "ChartsOneSpec",

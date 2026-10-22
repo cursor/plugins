@@ -21,12 +21,13 @@ const FROM_SPEC = `from-spec SPEC.tla
   Checks each INVARIANT in SPEC.cfg in a separate TLC run. TLC stops at the first rule that a state
   breaks, and the separate runs find the rest. Each run also has the rule as a CONSTRAINT, so TLC
   stops each path at its first state that breaks the rule, and a rule that stays broken reports
-  only the step that broke it. SPEC.cfg has SPECIFICATION and one INVARIANT line per rule. One more
-  run dumps the state graph, and then the command draws the charts. TLC names each step after the
-  innermost named action that takes it, so give each kind of step its own named action. The
+  only the step that broke it. SPEC.cfg has SPECIFICATION and one INVARIANT line per rule. Each
+  PROPERTY, a rule about whole behaviors, gets one TLC run too, and the charts do not draw it. One
+  more run dumps the state graph, and then the command draws the charts. TLC names each step after
+  the innermost named action that takes it, so give each kind of step its own named action. The
   command warns when steps carry the name of the whole next-state action. The command prints the
-  config that it checks each model with, and stops when a config does not exist, with the
-  configs beside the spec.
+  config that it checks each model with, and stops when a config does not exist, with the configs
+  beside the spec.
 
   --config FILE      The config for SPEC.tla. Default: SPEC.cfg next to the spec.
   --fixed FIXED.tla  The model of the open fix. It is a copy of the spec with its own file and
@@ -72,9 +73,9 @@ const FROM_CHART = `from-chart CHART.mmd
 
 const COMMON = `Both commands
   --expect-broken RULE
-                     A rule that is known to break. Repeat it, or list rules with commas, as in
-                     A,B. The command then exits 0 when exactly these rules break, and the --fixed
-                     or --against model breaks no other rule.
+                     An INVARIANT or PROPERTY that is known to break. Repeat it, or list rules
+                     with commas, as in A,B. The command then exits 0 when exactly these rules
+                     break, and the --fixed or --against model breaks no other rule.
   --title TEXT       The chart title. Each bug chart adds ", bug N".
   --out DIR          The output folder. Default: NAME-statechart next to the input. A run writes its
                      files in a temporary folder, and then replaces the whole output folder with
@@ -147,6 +148,9 @@ TLC
   TLA2TOOLS is the path to tla2tools.jar, and JAVA is the java binary (default: java, Java 11 or
   later). Download tla2tools.jar from https://github.com/tlaplus/tlaplus/releases. When TLA2TOOLS
   is not set, the command says where to get TLC and exits 2.
+  TLC checks each rule with one worker per CPU. When a rule is broken, TLC checks it again with one
+  worker, which finds the shortest bug paths, the same on every run. The command then prints how
+  many times TLC ran and how long that took.
   TLC can find that a rule is broken and then fail with a Java exception while it reports the rule.
   The command then keeps the paths that TLC printed, marks the rule broken, and warns that the
   charts can miss states that break it. The failure is in TLC, so do not weaken the rule because of
@@ -266,16 +270,22 @@ function splitRules(cfg) {
     .filter(Boolean);
   const kept = [];
   const rules = [];
+  const properties = [];
   let section = "";
   for (const w of words) {
     if (KEYWORD.test(w)) section = w;
-    if (!/^INVARIANTS?$/.test(section)) kept.push(KEYWORD.test(w) && kept.length ? `\n${w}` : w);
-    else if (w !== section && !rules.includes(w)) rules.push(w);
+    const list = /^INVARIANTS?$/.test(section)
+      ? rules
+      : /^PROPERT(Y|IES)$/.test(section)
+        ? properties
+        : null;
+    if (!list) kept.push(KEYWORD.test(w) && kept.length ? `\n${w}` : w);
+    else if (w !== section && !list.includes(w)) list.push(w);
   }
-  return { cfgWithoutRules: `${kept.join(" ")}\n`, rules };
+  return { cfgWithoutRules: `${kept.join(" ")}\n`, rules, properties };
 }
 
-function tlc(tools, spec, cfg, base, dump) {
+function tlc(tools, spec, cfg, base, { dump, workers = "1" } = {}) {
   fs.writeFileSync(`${base}.cfg`, cfg);
   const metadir = fs.mkdtempSync(path.join(os.tmpdir(), "tlc-"));
   // TLC writes the standard modules, such as Naturals.tla, to java.io.tmpdir under fixed names,
@@ -286,10 +296,13 @@ function tlc(tools, spec, cfg, base, dump) {
   const r = spawnSync(
     tools.java,
     [
+      "-XX:+UseParallelGC",
       `-Djava.io.tmpdir=${javaTmp}`,
       "-cp",
       tools.jar,
       "tlc2.TLC",
+      "-workers",
+      workers,
       "-metadir",
       metadir,
       "-deadlock",
@@ -351,41 +364,69 @@ function readModel(spec, cfgFile, flag) {
 
 function readInput(spec, cfgFile, expected) {
   const model = readModel(spec, cfgFile, "--config");
-  const unknown = [...expected].filter((r) => !model.rules.includes(r));
+  const names = [...model.rules, ...model.properties];
+  const unknown = [...expected].filter((r) => !names.includes(r));
   if (unknown.length)
     throw new CannotFinish(
-      `--expect-broken ${unknown.join(", ")}: not a rule in ${rel(model.cfgFile)}, whose rules are ${model.rules.join(", ") || "none"}.`,
+      `--expect-broken ${unknown.join(", ")}: not a rule in ${rel(model.cfgFile)}, whose rules are ${names.join(", ") || "none"}.`,
     );
   return model;
 }
 
-function check(tools, { spec, cfgFile, cfgWithoutRules, rules }, { work, out }, expected) {
+function check(tools, model, { work, out }, expected) {
+  const { spec, cfgFile, cfgWithoutRules, rules, properties } = model;
+  const started = Date.now();
+  let runs = 0;
+  const run = (cfg, file, options) => {
+    runs++;
+    return tlc(tools, spec, cfg, file, options);
+  };
   const name = path.basename(spec, ".tla");
   const tlcDir = path.join(work, "tlc");
   const dot = path.join(tlcDir, `${name}.dot`);
-  tlc(tools, spec, cfgWithoutRules, path.join(tlcDir, name), dot);
+  // One worker writes the graph in a fixed order, which breaks ties between equally short paths.
+  run(cfgWithoutRules, path.join(tlcDir, name), { dump: dot });
   warnUnnamedSteps(spec, cfgWithoutRules, dot);
   console.log(`TLC on ${path.basename(spec)} with ${rel(cfgFile)}:`);
   if (rules.length === 0)
-    console.log(`  ${path.basename(cfgFile)} has no INVARIANT, so no rule is checked.`);
+    console.log(
+      `  ${path.basename(cfgFile)} has no INVARIANT, so ${properties.length ? "the chart marks no state broken" : "no rule is checked"}.`,
+    );
+  const said = (rule, broken) =>
+    `  ${rule} ${broken ? (expected.has(rule) ? "is broken (expected)" : "is broken") : "holds"}.`;
+  const shown = (file) => rel(path.join(out, "tlc", path.basename(file)));
   // With -continue TLC reports every bad state. The CONSTRAINT stops each path at its first bad
   // state, so a rule that stays broken reports only the step that broke it, not every later state.
   const traces = rules.map((rule) => {
     const file = path.join(tlcDir, `${name}-${rule}`);
     const cfg = `${cfgWithoutRules}INVARIANT ${rule}\nCONSTRAINT ${rule}\n`;
-    const { stdout, warning } = tlc(tools, spec, cfg, file);
-    const broken = /^Error: Invariant /m.test(stdout);
-    console.log(
-      `  ${rule} ${broken ? (expected.has(rule) ? "is broken (expected)" : "is broken") : "holds"}.`,
-    );
-    if (warning) console.error(`${rel(path.join(out, "tlc", `${name}-${rule}.out`))}: ${warning}`);
+    let result = run(cfg, file, { workers: "auto" });
+    // Several workers can reach a bad state by a longer path first. One worker searches breadth
+    // first in a fixed order, so the chart's bug paths are the shortest, and the same every run.
+    if (/^Error: Invariant /m.test(result.stdout)) result = run(cfg, file);
+    const broken = /^Error: Invariant /m.test(result.stdout);
+    console.log(said(rule, broken));
+    if (result.warning) console.error(`${shown(`${file}.out`)}: ${result.warning}`);
     return { file: `${file}.out`, rule, broken };
   });
-  return { spec, dot, traces, broken: traces.some((t) => t.broken) };
+  const temporal = properties.map((property) => {
+    const file = path.join(tlcDir, `${name}-${property}`);
+    const { stdout } = run(`${cfgWithoutRules}PROPERTY ${property}\n`, file, { workers: "auto" });
+    const broken = /^Error: Temporal properties were violated/m.test(stdout);
+    console.log(
+      `${said(property, broken)}${broken ? ` The chart draws only INVARIANT rules, so read TLC's counterexample in ${shown(`${file}.out`)}.` : ""}`,
+    );
+    return { file: `${file}.out`, rule: property, broken };
+  });
+  const seconds = ((Date.now() - started) / 1000).toFixed(1);
+  console.log(`  TLC ran ${runs} ${runs === 1 ? "time" : "times"} in ${seconds} s.`);
+  const broken = [...traces, ...temporal].some((t) => t.broken);
+  return { spec, dot, traces, properties: temporal, broken };
 }
 
 function rulesAsExpected(now, other, expected) {
-  const brokenIn = (m) => (m?.traces ?? []).filter((t) => t.broken).map((t) => t.rule);
+  const brokenIn = (m) =>
+    [...(m?.traces ?? []), ...(m?.properties ?? [])].filter((t) => t.broken).map((t) => t.rule);
   if (expected.size === 0) return !now.broken && !other?.broken;
   const unexpected = [...new Set([...brokenIn(now), ...brokenIn(other)])].filter(
     (r) => !expected.has(r),
@@ -555,7 +596,7 @@ async function draw({ now, other, map, work, out, title, comparing }) {
   console.log(
     summary.classes.length
       ? fs.readFileSync(files.stories, "utf8").trimEnd()
-      : "No rule is broken.",
+      : "No state breaks a rule.",
   );
   return { files, charts };
 }

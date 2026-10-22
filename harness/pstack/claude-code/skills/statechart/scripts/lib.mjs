@@ -259,7 +259,7 @@ export function checkTlcOutput(text, file) {
     thrown.every((t) => t.startsWith("java."));
   const reported = crashed
     ? /^Error: (Invariant \S+ is violated|The behavior up to this point is|Evaluating invariant \S+ failed\.|TLC threw an unexpected exception\.|The error occurred when TLC was evaluating the nested)/
-    : /^Error: (Invariant \S+ is violated|The behavior up to this point is)/;
+    : /^Error: (Invariant \S+ is violated|The behavior up to this point is|Temporal properties were violated\.|The following behavior constitutes a counter-example:)/;
   const other = lines.find((l) => l.startsWith("Error: ") && !reported.test(l));
   if (other)
     throw new Error(
@@ -269,7 +269,8 @@ export function checkTlcOutput(text, file) {
     const rules = failed.join(", ");
     return `TLC found that ${rules} ${failed.length === 1 ? "is" : "are"} broken, and then failed with ${thrown[0]}. TLC stopped before it checked every state, so the charts can miss states that break ${rules}. The failure is in TLC, not in the rule. Do not weaken ${rules} because of it. A smaller constant can let TLC finish.`;
   }
-  if (!/^Model checking completed\./m.test(text))
+  // TLC stops at the first broken temporal property, and then does not print that it completed.
+  if (!/^(Model checking completed\.|Error: Temporal properties were violated\.)/m.test(text))
     throw new Error(
       `${file}: TLC did not finish, so its counterexamples are not all there; read the file`,
     );
