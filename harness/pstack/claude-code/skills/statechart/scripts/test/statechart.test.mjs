@@ -15,7 +15,6 @@ import { test } from "node:test";
 import { setTimeout as sleep } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
 import {
-  checkTlcOutput,
   findTlc,
   parseDot,
   parseMermaid,
@@ -23,6 +22,7 @@ import {
   parseValue,
   ruleSentences,
   stateKey,
+  tlcOutputWarning,
   uncitedConditions,
 } from "../lib.mjs";
 
@@ -280,7 +280,7 @@ test("a rule broken by a start state is a counterexample of one state", () => {
 /\\ conn = "Offline"
 
 ${done}`;
-  assert.doesNotThrow(() => checkTlcOutput(text, "tlc.out"));
+  assert.doesNotThrow(() => tlcOutputWarning(text, "tlc.out"));
   assert.deepEqual(parseTraces(text), [
     {
       invariant: "NeverSyncedWhileOffline",
@@ -291,30 +291,30 @@ ${done}`;
 
 test("TLC output from a run that failed or stopped early is refused", () => {
   assert.doesNotThrow(() =>
-    checkTlcOutput(
+    tlcOutputWarning(
       `Error: Invariant Small is violated.\nError: The behavior up to this point is:\nState 1: <Initial predicate>\nx = 0\n\n${done}`,
       "ok.out",
     ),
   );
   assert.throws(
     () =>
-      checkTlcOutput(
+      tlcOutputWarning(
         "Error: The invariant Nope specified in the configuration file\nis not defined in the specification.\n",
         "cfg.out",
       ),
     /cfg\.out: TLC stopped on an error that is not a broken rule/,
   );
   assert.throws(
-    () => checkTlcOutput("Error: Parsing or semantic analysis failed.\n", "parse.out"),
+    () => tlcOutputWarning("Error: Parsing or semantic analysis failed.\n", "parse.out"),
     /not a broken rule/,
   );
   assert.throws(
-    () => checkTlcOutput(evaluationError, "eval.out"),
+    () => tlcOutputWarning(evaluationError, "eval.out"),
     /TLC threw an unexpected exception/,
   );
   assert.throws(
     () =>
-      checkTlcOutput(
+      tlcOutputWarning(
         "Error: Invariant Small is violated.\nError: The behavior up to this point is:\nState 1: <Initial predicate>\nx = 0\n",
         "stopped.out",
       ),
@@ -348,12 +348,12 @@ test("a rule that TLC finds broken before TLC throws a Java exception keeps its 
     "Index 123 out of bounds for length 4",
   )}\n${stoppedEarly}`;
   assert.equal(
-    checkTlcOutput(oneWorker, "tlc.out"),
+    tlcOutputWarning(oneWorker, "tlc.out"),
     `TLC found that Small is broken, and then failed with ${aioobe}. TLC stopped before it checked every state, so the charts can miss states that break Small. The failure is in TLC, not in the rule. Do not weaken Small because of it. A smaller constant can let TLC finish.`,
   );
   const workersInterleaved = `${tlcThrew("java.lang.RuntimeException", aioobe)}${smallBroken}${stoppedEarly}`;
   assert.match(
-    checkTlcOutput(workersInterleaved, "tlc.out"),
+    tlcOutputWarning(workersInterleaved, "tlc.out"),
     /failed with java\.lang\.ArrayIndexOutOfBoundsException: Index 123/,
   );
   assert.deepEqual(
@@ -362,7 +362,7 @@ test("a rule that TLC finds broken before TLC throws a Java exception keeps its 
   );
   assert.throws(
     () =>
-      checkTlcOutput(
+      tlcOutputWarning(
         `${smallBroken}${tlcThrew("java.lang.RuntimeException", "util.Assert$TLCRuntimeException: Attempted to apply tuple")}${stoppedEarly}`,
         "formula.out",
       ),
@@ -370,7 +370,7 @@ test("a rule that TLC finds broken before TLC throws a Java exception keeps its 
   );
   assert.throws(
     () =>
-      checkTlcOutput(
+      tlcOutputWarning(
         `${tlcThrew("java.lang.ArrayIndexOutOfBoundsException", "Index 123 out of bounds for length 4")}${stoppedEarly}`,
         "never-broken.out",
       ),

@@ -154,9 +154,7 @@ export function ruleSentences(tla) {
 export const tlaVariables = (code) =>
   [...code.matchAll(/\bVARIABLES?\s+(\w+(?:\s*,\s*\w+)*)/g)].flatMap((m) => m[1].split(/\s*,\s*/));
 
-// Returns the code with comments blanked, and the comments with the code blanked, at the same
-// offsets, so a line number means the same line in both.
-function splitComments(text) {
+function splitCommentsKeepingOffsets(text) {
   let code = "";
   let notes = "";
   let block = 0;
@@ -206,11 +204,8 @@ const CITATION = /[\w./-]+\.[A-Za-z]\w*:\d+|#L\d+/;
 const DEPTH = { "(": 1, "[": 1, "{": 1, ")": -1, "]": -1, "}": -1 };
 const LOOSER_THAN_AND = /^(\\\/|=>|<=>|~>|-\+->|\\equiv\b)/;
 const RUNS_TO_END = /^(\\[EA]|IF|LET|CASE|CHOOSE)\b/;
+export const PRIMES_OR_UNCHANGED = /[\w)\]>}]'|\bUNCHANGED\b/;
 
-// The conjuncts of a definition body, as [from, to) offsets: a bulleted /\ list, or a body that
-// /\ joins outside brackets, after any leading \E x : . An IF, LET, CASE, CHOOSE, or quantifier
-// runs to the end of its conjunct. null when an operator that binds looser than /\, such as \/
-// or =>, joins the body.
 function conjuncts(bare, from, to, lineStart) {
   const first = from + bare.slice(from, to).search(/\S/);
   if (first < from) return null;
@@ -251,12 +246,8 @@ function conjuncts(bare, from, to, lineStart) {
   return [first, ...cuts.map((c) => c + 2)].map((a, i) => [a, cuts[i] ?? to]);
 }
 
-// The enabling conditions of each action that wait on a variable the action does not change,
-// and that no comment ties to a file and line. An action is a definition that primes a variable
-// or has UNCHANGED. The comment sits on the condition's lines, or right above them when the
-// condition does not start on the definition's line.
 export function uncitedConditions(text) {
-  const { code, notes } = splitComments(text);
+  const { code, notes } = splitCommentsKeepingOffsets(text);
   const bare = code.replace(/"(?:[^"\\\n]|\\.)*"/g, (s) => " ".repeat(s.length));
   const variables = new Set(tlaVariables(bare));
   const starts = [0, ...[...bare.matchAll(/\n/g)].map((m) => m.index + 1)];
@@ -289,7 +280,7 @@ export function uncitedConditions(text) {
       writes: [...body.matchAll(/(?<![\\.\w])([A-Za-z_]\w*)'/g)]
         .map((m) => m[1])
         .filter((id) => variables.has(id)),
-      acts: /[\w)\]>}]'|\bUNCHANGED\b/.test(body),
+      acts: PRIMES_OR_UNCHANGED.test(body),
       calls: [...new Set(ids.filter((id) => defs.has(id)))],
     };
   };
@@ -310,7 +301,7 @@ export function uncitedConditions(text) {
     }
     return out;
   };
-  const cited = (from, to, above) => {
+  const cited = (from, to, { above }) => {
     for (let l = from; l <= to; l++) if (CITATION.test(lines.notes[l])) return true;
     for (let l = from - 1; above && !lines.bare[l].trim() && lines.notes[l].trim(); l--)
       if (CITATION.test(lines.notes[l])) return true;
@@ -326,7 +317,7 @@ export function uncitedConditions(text) {
       if (part.acts || [...part.reads].every((v) => changes.has(v))) continue;
       const first = lineOf(a + bare.slice(a, b).search(/\S/));
       const last = lineOf(a + bare.slice(a, b).trimEnd().length - 1);
-      if (cited(first, last, first > d.line)) continue;
+      if (cited(first, last, { above: first > d.line })) continue;
       found.push({
         line: first + 1,
         action,
@@ -434,9 +425,8 @@ export const BROKEN_PROPERTY =
 // With -continue, TLC prints "Model checking completed" even after broken invariants, and not
 // when it stopped early. TLC can also throw a Java exception of its own while it reports a state
 // that breaks a rule, and stop early. An error in the rule's formula throws one of TLC's own
-// exceptions in place of java.*. Returns a warning for that crash, without the file name because
-// the caller can move the file, and throws for other errors.
-export function checkTlcOutput(text, file) {
+// exceptions in place of java.*.
+export function tlcOutputWarning(text, file) {
   const lines = text.split("\n");
   const named = (re) => new Set(lines.map((l) => re.exec(l)?.[1]).filter(Boolean));
   const broken = named(/^Error: Invariant (\S+) is violated/);
@@ -514,8 +504,7 @@ const unwrap = (s) =>
     .replace(/\s+/g, " ")
     .trim();
 
-// Mermaid ends a quoted state caption at the first ", so a caption writes " as #quot;.
-export const quote = (s) => String(s).replaceAll('"', "#quot;");
+export const escapeMermaidQuotes = (s) => String(s).replaceAll('"', "#quot;");
 
 export const LEGEND_ID = "legend";
 export const FULL_LABELS = "%% labels in full";
@@ -628,15 +617,14 @@ export function parseMermaid(text) {
       "the chart has -- outside a composite; to make parallel regions, split one top-level composite with --",
     );
 
-  // Ids are global, as in Mermaid: a transition may name a state declared inside another composite.
   function region(p) {
     const out = { states: new Set(), initial: new Set(), transitions: [] };
     const info = new Map();
-    const declared = new Set();
+    const declaredInRegion = new Set();
     (function collect(q) {
       for (const c of q.children) {
         if (c.name === LEGEND_ID) continue;
-        declared.add(c.name);
+        declaredInRegion.add(c.name);
         if (!c.leaf) for (const sub of c.parts) collect(sub);
       }
     })(p);
@@ -650,8 +638,8 @@ export function parseMermaid(text) {
       const local = q.children.filter((c) => c.name !== LEGEND_ID);
       for (const t of q.transitions) {
         for (const end of [t.from, t.to]) {
-          if (end === "[*]" || declared.has(end)) continue;
-          declared.add(end);
+          if (end === "[*]" || declaredInRegion.has(end)) continue;
+          declaredInRegion.add(end);
           local.push({ name: end, leaf: true });
         }
       }
@@ -905,8 +893,7 @@ const rgb = (hex) => {
   const h = hex.length === 4 ? [...hex.slice(1)].map((c) => c + c).join("") : hex.slice(1);
   return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
 };
-// WCAG relative luminance: 0 for black, 1 for white.
-function luminance(hex) {
+function wcagRelativeLuminance(hex) {
   const [r, g, b] = rgb(hex).map((c) => {
     const s = c / 255;
     return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
@@ -916,7 +903,7 @@ function luminance(hex) {
 export function groupColorProblem(color) {
   if (typeof color !== "string" || !/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(color))
     return 'is not "#rgb" or "#rrggbb"';
-  if (luminance(color) < 0.5) return "is too dark for the status borders to show on it";
+  if (wcagRelativeLuminance(color) < 0.5) return "is too dark for the status borders to show on it";
   return null;
 }
 

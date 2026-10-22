@@ -8,8 +8,8 @@ import {
   GROUP_PALETTE,
   LEGEND_ID,
   PLAIN_FILL,
-  checkTlcOutput,
   compareCharts,
+  escapeMermaidQuotes,
   groupClassDef,
   groupColorProblem,
   isRecord,
@@ -19,9 +19,9 @@ import {
   parseMermaid,
   parseTraces,
   productOf,
-  quote,
   ruleSentences,
   stateKey,
+  tlcOutputWarning,
   wrap,
   STATUS_CLASSES,
 } from "./lib.mjs";
@@ -523,7 +523,7 @@ function replaySecond(trace) {
 function readTraces(files, paths = []) {
   return files.flatMap((f) => {
     const text = fs.readFileSync(f, "utf8");
-    const warning = checkTlcOutput(text, f);
+    const warning = tlcOutputWarning(text, f);
     if (warning) console.error(`${f}: ${warning}`);
     return parseTraces(text).map((t) => ({
       ...t,
@@ -531,7 +531,6 @@ function readTraces(files, paths = []) {
     }));
   });
 }
-// With -continue, TLC reports every bad state, including states after the first bad one.
 function firstBad(raw) {
   const badStates = new Map();
   for (const t of raw) {
@@ -827,8 +826,6 @@ const groupCounts = (drawn) =>
     }))
     .filter((g) => g.states > 0);
 
-// Mermaid shrinks a chart to the page width unless useMaxWidth is false, and rewraps labels that
-// wrap() already wrapped unless markdownAutoWrap is false.
 const frontMatter = (title) => [
   "---",
   ...(title ? [`title: ${JSON.stringify(title)}`] : []),
@@ -861,7 +858,7 @@ function head(drawn) {
   } else for (const c of STATUS_CLASSES) out.push(`  ${c}`);
   if (legend.length) {
     out.push(`  state "Legend" as ${LEGEND_ID} {`);
-    for (const [id, text] of legend) out.push(`    state "${quote(text)}" as ${id}`);
+    for (const [id, text] of legend) out.push(`    state "${escapeMermaidQuotes(text)}" as ${id}`);
     out.push("  }");
     for (const [id, , c] of legend) out.push(`  class ${id} ${c}`);
   }
@@ -899,7 +896,7 @@ function regionsChart({ states, starts, edges, classes, proofPath, allPath }) {
   const proof = [
     ...frontMatter(),
     "stateDiagram-v2",
-    ...[...ids].map(([s, id]) => `  state "${quote(s)}" as ${id}`),
+    ...[...ids].map(([s, id]) => `  state "${escapeMermaidQuotes(s)}" as ${id}`),
     ...[...flat.Main.initial].map((s) => `  [*] --> ${ids.get(s)}`),
     ...steps.map((s) => `  ${ids.get(bar(s.from))} --> ${ids.get(bar(s.to))} : ${s.label}`),
   ];
@@ -978,10 +975,11 @@ function regionsChart({ states, starts, edges, classes, proofPath, allPath }) {
       if (i) out.push("    --");
       const name = mapping.regionNames?.[i];
       const pad = name ? "      " : "    ";
-      if (name) out.push(`    state "${quote(wrap(name))}" as region${i} {`);
+      if (name) out.push(`    state "${escapeMermaidQuotes(wrap(name))}" as region${i} {`);
       for (const s of new Set(starts.map((k) => split(k)[i])))
         out.push(`${pad}[*] --> ${rid[i].get(s)}`);
-      for (const [s, id] of rid[i]) out.push(`${pad}state "${quote(wrap(s))}" as ${id}`);
+      for (const [s, id] of rid[i])
+        out.push(`${pad}state "${escapeMermaidQuotes(wrap(s))}" as ${id}`);
       const shownMoves = [...moves[i]]
         .filter(([id]) => !only || only[i].has(id))
         .map(([, m]) => m)
@@ -1261,12 +1259,13 @@ for (const [box, members] of boxes) {
 
 const out = head(drawn);
 for (const [box, members] of boxes) {
-  out.push(`  state "${quote(wrap(box))}" as ${boxIds.get(box)} {`);
-  for (const k of members) out.push(`    state "${quote(wrap(caption(k)))}" as ${idOf(k)}`);
+  out.push(`  state "${escapeMermaidQuotes(wrap(box))}" as ${boxIds.get(box)} {`);
+  for (const k of members)
+    out.push(`    state "${escapeMermaidQuotes(wrap(caption(k)))}" as ${idOf(k)}`);
   out.push("  }");
 }
 for (const k of sorted)
-  if (!boxOf.has(k)) out.push(`  state "${quote(wrap(caption(k)))}" as ${idOf(k)}`);
+  if (!boxOf.has(k)) out.push(`  state "${escapeMermaidQuotes(wrap(caption(k)))}" as ${idOf(k)}`);
 for (const k of sorted)
   if (initial.has(k) && (!args.pathOnly || k === chosen?.path[0].key))
     out.push(`  [*] --> ${idOf(k)}`);

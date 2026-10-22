@@ -7,11 +7,12 @@ import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   BROKEN_PROPERTY,
-  checkTlcOutput,
   findTlc,
   joinAnd,
   parseDot,
+  PRIMES_OR_UNCHANGED,
   tlaVariables,
+  tlcOutputWarning,
   uncitedConditions,
 } from "./lib.mjs";
 
@@ -346,7 +347,7 @@ function tlc(tools, spec, cfg, base, { dump, workers = "1" } = {}) {
   if (r.error) throw new CannotFinish(`cannot run TLC: ${r.error.message}`);
   fs.writeFileSync(`${base}.out`, r.stdout);
   try {
-    return { stdout: r.stdout, warning: checkTlcOutput(r.stdout, `${base}.out`) };
+    return { stdout: r.stdout, warning: tlcOutputWarning(r.stdout, `${base}.out`) };
   } catch (e) {
     throw new TlcStopped(e.message);
   }
@@ -423,8 +424,6 @@ function check(tools, model, { work, out }, expected) {
   const said = (rule, broken) =>
     `  ${rule} ${broken ? (expected.has(rule) ? "is broken (expected)" : "is broken") : "holds"}.`;
   const shown = (file) => rel(path.join(out, "tlc", path.basename(file)));
-  // With -continue TLC reports every bad state. The CONSTRAINT stops each path at its first bad
-  // state, so a rule that stays broken reports only the step that broke it, not every later state.
   const traces = rules.map((rule) => {
     const file = path.join(tlcDir, `${name}-${rule}`);
     const cfg = `${cfgWithoutRules}INVARIANT ${rule}\nCONSTRAINT ${rule}\n`;
@@ -470,14 +469,13 @@ function rulesAsExpected(now, other, expected) {
 const SCAFFOLD = (name, spec) => {
   const text = withoutComments(spec);
   const vars = tlaVariables(text);
-  // TLC names each step after a definition that primes a variable or leaves one UNCHANGED. A
-  // definition that only another action calls is listed too, though TLC names no step after it.
+  // A definition that only another action calls is listed too, though TLC names no step after it.
   const actions = [
     ...new Set(
       text
         .split(/\n(?=\S)/)
         .map((d) => /^(\w+)\s*(?:\([^)]*\))?\s*==([^]*)/.exec(d))
-        .filter((d) => d && /[\w)\]>}]'|\bUNCHANGED\b/.test(d[2]))
+        .filter((d) => d && PRIMES_OR_UNCHANGED.test(d[2]))
         .map((d) => d[1]),
     ),
   ].sort();
@@ -732,7 +730,7 @@ const moved = (from, to, ...missed) => {
     if (!["ENOSYS", "EXDEV", "EISDIR"].includes(e.code)) throw e;
   }
   // Some filesystems, such as FUSE mounts, cannot rename a folder that has files. They fail with
-  // ENOSYS, or with EISDIR when the target exists. Copy, and keep rename's outcomes.
+  // ENOSYS, or with EISDIR when the target exists.
   if (!fs.existsSync(from) && missed.includes("ENOENT")) return false;
   if (fs.existsSync(to)) {
     if (fs.readdirSync(to).length && missed.includes("ENOTEMPTY")) return false;
@@ -819,7 +817,6 @@ function secondModel(input, cfg, { fixed, against, label }) {
   }
   const [role, spec] = fixed ? ["fixed", fixed] : ["against", against];
   const name = path.basename(input, ".tla");
-  // TLC's output files are named after the spec, so a second model with the same name overwrites them.
   if (path.basename(spec, ".tla") === name)
     throw new CannotFinish(
       `${rel(spec)} needs its own file and module name, such as ${name}${fixed ? "Fixed" : "Agreed"}.tla.`,
@@ -835,9 +832,6 @@ function warnUnchecked(now, other) {
     );
 }
 
-// The rule that each config beside the spec expects TLC to break, from the "\* expect:" and
-// "\* module:" lines of each config. null when no config of the spec's
-// module has an "\* expect:" line.
 function listedBreaks(spec) {
   const dir = path.dirname(spec);
   const files = fs.readdirSync(dir).sort();
