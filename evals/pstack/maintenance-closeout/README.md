@@ -4,9 +4,11 @@ These six public cases exercise the closeout decision after a supplied maintenan
 pass. They cover explicit delegation, standalone publication, installation without
 ownership, clean and blocked runs, and a separate product regression. The runner
 sends the skill, request, and run note to a model; `criteria` stay with the grader.
+Model calls run in a temporary Git workspace with no contribution history, so
+checkout context cannot reveal the intended change or imply delivery ownership.
 The cases are development material, not a hidden benchmark.
 
-Run from the repository root with Ruby and an authenticated Claude Code CLI:
+Run from the repository root with Ruby, Git, and an authenticated Claude Code CLI:
 
 ```sh
 ruby evals/pstack/maintenance-closeout/run.rb \
