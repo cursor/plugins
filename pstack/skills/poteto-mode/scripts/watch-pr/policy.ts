@@ -1,4 +1,5 @@
 import {
+  ChecksUnavailable,
   WatcherQueryError,
   resolveChecks,
   resolveReviewThreads,
@@ -61,6 +62,8 @@ export async function readSnapshot(args: {
   readonly context: T.PrContext;
   readonly pendingHistory: "include" | "omit";
   readonly allowDraft: boolean;
+  /** `report`: a head with no checks becomes `ci-none`. `retry` (default): it stays a retryable query error, because a just-pushed head looks the same. */
+  readonly noChecks?: "report" | "retry";
 }): Promise<T.PrSnapshot> {
   const facts = await args.reader.pullRequest(args.context);
   if (facts.state === "MERGED" || facts.mergedAt !== null)
@@ -68,7 +71,30 @@ export async function readSnapshot(args: {
   if (facts.state === "CLOSED")
     return { kind: "closed", context: args.context, facts };
   const threads = await resolveReviewThreads(args.reader, args.context);
-  const checks = await resolveChecks(args.reader, args.context);
+  let checks: T.CheckRead;
+  try {
+    checks = await resolveChecks(args.reader, args.context);
+  } catch (error) {
+    if (!(error instanceof ChecksUnavailable) || args.noChecks !== "report")
+      throw error;
+    const merge = await mergeAssessment(args.reader, facts);
+    return {
+      kind: "open",
+      context: args.context,
+      facts,
+      threads,
+      ci: {
+        kind: "ci-none",
+        source: "none",
+        all: [],
+        failed: [],
+        pending: [],
+        hadPreviousPassingCi: merge.hadPreviousPassingCi,
+        github: merge.github,
+      },
+      reviewAutomationRunning: false,
+    };
+  }
   const failed = nonEmpty(
     checks.checks.filter(
       (check): check is T.FailedCheck => check.kind === "failed"
@@ -428,6 +454,12 @@ export async function runSimple(args: {
   readonly options: T.PollingOptions;
 }): Promise<T.TerminalVerdict> {
   const stamp = verdictFactory(args.dependencies.clock, args.mode);
+  // `--status-only` reads GitHub once: a head without checks is reported as
+  // such instead of being retried, and a query error ends the run on the
+  // first failure instead of sleeping through the backoff schedule.
+  const options: T.PollingOptions = args.statusOnly
+    ? { ...args.options, maxQueryErrors: 1 }
+    : args.options;
   const step = async (): Promise<StepResult<T.TerminalVerdict>> => {
     const rows: T.PrSnapshot[] = [];
     for (const context of args.contexts)
@@ -437,6 +469,7 @@ export async function runSimple(args: {
           context,
           pendingHistory: "include",
           allowDraft: args.options.allowDraft,
+          noChecks: args.statusOnly ? "report" : "retry",
         })
       );
     const complete = nonEmpty(rows);
@@ -518,7 +551,7 @@ export async function runSimple(args: {
   };
   return pollUntilTerminal({
     dependencies: args.dependencies,
-    options: args.options,
+    options,
     stamp,
     step,
   });
