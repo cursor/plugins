@@ -52,7 +52,9 @@ statechart.mjs runs it once for the overview and once for each bug chart.
                          the reader acts.
   --traces FILE          TLC output that holds counterexamples. Repeat it. TLC -continue gives one
                          per bad state. It refuses a file from a TLC run that stopped early or hit
-                         an error other than a broken rule.
+                         an error other than a broken rule. When TLC found a rule broken and then
+                         failed with a Java exception, it keeps the paths that TLC printed and
+                         warns that the chart can miss states that break the rule.
   --fixed-dot FILE       The state graph of the model with the open fix. Each bug's steps replay
                          on it.
   --fixed-traces FILE    TLC output for the same invariants on the fixed model. Repeat it. It marks
@@ -496,7 +498,8 @@ function replaySecond(trace) {
 function readTraces(files, paths = []) {
   return files.flatMap((f) => {
     const text = fs.readFileSync(f, "utf8");
-    checkTlcOutput(text, f);
+    const warning = checkTlcOutput(text, f);
+    if (warning) console.error(`${f}: ${warning}`);
     return parseTraces(text).map((t) => ({
       ...t,
       steps: t.steps.map((s) => ({ ...s, vars: guard(s.vars, paths) })),

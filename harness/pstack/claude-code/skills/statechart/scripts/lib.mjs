@@ -240,23 +240,40 @@ export function parseTraces(text) {
 }
 
 // With -continue, TLC prints "Model checking completed" even after broken invariants, and not
-// when it stopped early.
+// when it stopped early. TLC can also throw a Java exception of its own while it reports a state
+// that breaks a rule, and stop early. An error in the rule's formula throws one of TLC's own
+// exceptions in place of java.*. Returns a warning for that crash, without the file name because
+// the caller can move the file, and throws for other errors.
 export function checkTlcOutput(text, file) {
-  const other = text
-    .split("\n")
-    .find(
-      (l) =>
-        l.startsWith("Error: ") &&
-        !/^Error: (Invariant \S+ is violated|The behavior up to this point is)/.test(l),
-    );
+  const lines = text.split("\n");
+  const named = (re) => new Set(lines.map((l) => re.exec(l)?.[1]).filter(Boolean));
+  const broken = named(/^Error: Invariant (\S+) is violated/);
+  const failed = [...named(/^Error: Evaluating invariant (\S+) failed\./)];
+  const thrown = [...text.matchAll(/^The exception was a (\S+)\n: (?:([\w.$]+):)?(.*)$/gm)].map(
+    ([, cls, cause, message]) => `${cause ?? cls}: ${message.trim()}`,
+  );
+  const crashed =
+    failed.length > 0 &&
+    failed.every((r) => broken.has(r)) &&
+    thrown.length > 0 &&
+    thrown.every((t) => t.startsWith("java."));
+  const reported = crashed
+    ? /^Error: (Invariant \S+ is violated|The behavior up to this point is|Evaluating invariant \S+ failed\.|TLC threw an unexpected exception\.|The error occurred when TLC was evaluating the nested)/
+    : /^Error: (Invariant \S+ is violated|The behavior up to this point is)/;
+  const other = lines.find((l) => l.startsWith("Error: ") && !reported.test(l));
   if (other)
     throw new Error(
       `${file}: TLC stopped on an error that is not a broken rule: ${other.slice(7)}`,
     );
+  if (crashed) {
+    const rules = failed.join(", ");
+    return `TLC found that ${rules} ${failed.length === 1 ? "is" : "are"} broken, and then failed with ${thrown[0]}. TLC stopped before it checked every state, so the charts can miss states that break ${rules}. The failure is in TLC, not in the rule. Do not weaken ${rules} because of it. A smaller constant can let TLC finish.`;
+  }
   if (!/^Model checking completed\./m.test(text))
     throw new Error(
       `${file}: TLC did not finish, so its counterexamples are not all there; read the file`,
     );
+  return null;
 }
 
 export function wrap(text, width = 26) {

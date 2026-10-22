@@ -48,8 +48,9 @@ const FROM_SPEC = `from-spec SPEC.tla
   --label TEXT       The name of the --fixed or --against model in the charts and the stories.
                      Default: "the fix", or "the spec".
   --map FILE         The labels for each model state and step. Default: SPEC.map.mjs next to the
-                     spec. When the file does not exist, the command writes one to fill in and
-                     exits 2. Its comments say what each function gets.`;
+                     spec. When the file does not exist, the command writes one from the spec's
+                     VARIABLES and actions to fill in, and exits 2 before it runs TLC. Its
+                     comments say what each function gets.`;
 
 const FROM_CHART = `from-chart CHART.mmd
   Writes NAME.tla, NAME.cfg, and NAME.map.mjs next to the chart. When NAME.tla already exists, it
@@ -79,7 +80,8 @@ const COMMON = `Both commands
                      files in a temporary folder, and then replaces the whole output folder with
                      it. When runs overlap, the output folder has the files of the run that
                      finished last. The command does not use an output folder that has files that
-                     it did not write.
+                     it did not write. On a filesystem that cannot rename, the command copies the
+                     files into place, and overlapping runs can mix their files.
   --png              Also render each chart to PNG with npx @mermaid-js/mermaid-cli.
   -h, --help         Print this help, and exit 0.
 
@@ -145,6 +147,10 @@ TLC
   TLA2TOOLS is the path to tla2tools.jar, and JAVA is the java binary (default: java, Java 11 or
   later). Download tla2tools.jar from https://github.com/tlaplus/tlaplus/releases. When TLA2TOOLS
   is not set, the command says where to get TLC and exits 2.
+  TLC can find that a rule is broken and then fail with a Java exception while it reports the rule.
+  The command then keeps the paths that TLC printed, marks the rule broken, and warns that the
+  charts can miss states that break it. The failure is in TLC, so do not weaken the rule because of
+  it. A smaller constant can let TLC finish.
 
 Exit codes
   0  Every rule holds, or exactly the --expect-broken rules break. from-chart also draws CHART.mmd
@@ -158,7 +164,9 @@ Exit codes
      files it wrote and exits 2, whatever the rules give. Otherwise, exit 2 does not change the
      output folder, unless the command moved it aside and cannot put it back. Then the message
      names the folder's new path. When TLC stops on an error, the message names TLC's output, in a
-     temporary folder that the command keeps.`;
+     temporary folder that the command keeps. When the command cannot put its files in the output
+     folder, it keeps them in a temporary folder, and the message names it. The command checks
+     its input files again before --png renders, so a changed input stops the run before that.`;
 
 const HELP = {
   "": `${usage([...Object.values(USAGE), "node statechart.mjs [from-spec|from-chart] --help"])}
@@ -180,6 +188,7 @@ const more = (cmd) =>
 
 class CannotFinish extends Error {}
 class TlcStopped extends CannotFinish {}
+class NotPublished extends CannotFinish {}
 
 const COMMANDS = {
   "from-spec": {
@@ -222,7 +231,10 @@ function parseArgs([command, ...rest]) {
   return { command, input, flags };
 }
 
-const rel = (file) => path.relative(process.cwd(), file) || ".";
+const rel = (file) => {
+  const r = path.relative(process.cwd(), file) || ".";
+  return r === ".." || r.startsWith(`..${path.sep}`) ? path.resolve(file) : r;
+};
 const cfgOf = (spec) => spec.replace(/\.tla$/, ".cfg");
 
 function findTools() {
@@ -293,18 +305,20 @@ function tlc(tools, spec, cfg, base, dump) {
   if (r.error) throw new CannotFinish(`cannot run TLC: ${r.error.message}`);
   fs.writeFileSync(`${base}.out`, r.stdout);
   try {
-    checkTlcOutput(r.stdout, `${base}.out`);
+    return { stdout: r.stdout, warning: checkTlcOutput(r.stdout, `${base}.out`) };
   } catch (e) {
     throw new TlcStopped(e.message);
   }
-  return r.stdout;
 }
 
-function warnUnnamedSteps(spec, cfg, dot) {
-  const text = fs
+const withoutComments = (spec) =>
+  fs
     .readFileSync(spec, "utf8")
     .replace(/\(\*[^]*?\*\)/g, " ")
     .replace(/\\\*.*/g, " ");
+
+function warnUnnamedSteps(spec, cfg, dot) {
+  const text = withoutComments(spec);
   const specName = /^SPECIFICATION\s+(\w+)/m.exec(cfg)?.[1];
   const specBody = specName && new RegExp(`^${specName}\\s*==(.*(\\n[ \\t]+.*)*)`, "m").exec(text);
   const next =
@@ -345,7 +359,7 @@ function readInput(spec, cfgFile, expected) {
   return model;
 }
 
-function check(tools, { spec, cfgFile, cfgWithoutRules, rules }, work, expected) {
+function check(tools, { spec, cfgFile, cfgWithoutRules, rules }, { work, out }, expected) {
   const name = path.basename(spec, ".tla");
   const tlcDir = path.join(work, "tlc");
   const dot = path.join(tlcDir, `${name}.dot`);
@@ -359,10 +373,12 @@ function check(tools, { spec, cfgFile, cfgWithoutRules, rules }, work, expected)
   const traces = rules.map((rule) => {
     const file = path.join(tlcDir, `${name}-${rule}`);
     const cfg = `${cfgWithoutRules}INVARIANT ${rule}\nCONSTRAINT ${rule}\n`;
-    const broken = /^Error: Invariant /m.test(tlc(tools, spec, cfg, file));
+    const { stdout, warning } = tlc(tools, spec, cfg, file);
+    const broken = /^Error: Invariant /m.test(stdout);
     console.log(
       `  ${rule} ${broken ? (expected.has(rule) ? "is broken (expected)" : "is broken") : "holds"}.`,
     );
+    if (warning) console.error(`${rel(path.join(out, "tlc", `${name}-${rule}.out`))}: ${warning}`);
     return { file: `${file}.out`, rule, broken };
   });
   return { spec, dot, traces, broken: traces.some((t) => t.broken) };
@@ -382,9 +398,22 @@ function rulesAsExpected(now, other, expected) {
   return !unexpected.length && !holds.length;
 }
 
-const SCAFFOLD = (name, graph) => {
-  const vars = Object.keys([...graph.nodes.values()][0]?.vars ?? {});
-  const actions = [...new Set([...graph.edges, ...graph.loops].map((e) => e.action))].sort();
+const SCAFFOLD = (name, spec) => {
+  const text = withoutComments(spec);
+  const vars = [...text.matchAll(/\bVARIABLES?\s+(\w+(?:\s*,\s*\w+)*)/g)].flatMap((m) =>
+    m[1].split(/\s*,\s*/),
+  );
+  // TLC names each step after a definition that primes a variable or leaves one UNCHANGED. A
+  // definition that only another action calls is listed too, though TLC names no step after it.
+  const actions = [
+    ...new Set(
+      text
+        .split(/\n(?=\S)/)
+        .map((d) => /^(\w+)\s*(?:\([^)]*\))?\s*==([^]*)/.exec(d))
+        .filter((d) => d && /[\w)\]>}]'|\bUNCHANGED\b/.test(d[2]))
+        .map((d) => d[1]),
+    ),
+  ].sort();
   return `// Chart labels for ${name}, for statechart.mjs. Write labels in plain words, not variable or action names.
 // v, before, and after map each variable to its value. Strings, numbers, and booleans keep their kind.
 // Sequences, tuples, and sets become arrays, indexed from 0. Records and functions become objects.
@@ -552,6 +581,7 @@ function render(charts, shown) {
 }
 
 function finish({ work, out, inputs }, { files, charts }, ok, png) {
+  unchanged(inputs, out);
   const pngs = png ? render(charts, published(work, out)) : [];
   publish(work, out, inputs);
   const written = [...charts, ...pngs, files.stories, files.summary]
@@ -614,7 +644,9 @@ async function inWorkFolder(body) {
   try {
     return await body(work);
   } catch (e) {
-    keep = e instanceof TlcStopped;
+    keep = e instanceof TlcStopped || e instanceof NotPublished;
+    if (e instanceof NotPublished)
+      e.message += ` The files that this run wrote are in ${rel(work)}.`;
     throw e;
   } finally {
     if (!keep) fs.rmSync(work, { recursive: true, force: true });
@@ -627,9 +659,32 @@ const moved = (from, to, ...missed) => {
     return true;
   } catch (e) {
     if (missed.includes(e.code)) return false;
+    if (!["ENOSYS", "EXDEV", "EISDIR"].includes(e.code)) throw e;
+  }
+  // Some filesystems, such as FUSE mounts, cannot rename a folder that has files. They fail with
+  // ENOSYS, or with EISDIR when the target exists. Copy, and keep rename's outcomes.
+  if (!fs.existsSync(from) && missed.includes("ENOENT")) return false;
+  if (fs.existsSync(to)) {
+    if (fs.readdirSync(to).length && missed.includes("ENOTEMPTY")) return false;
+    fs.rmdirSync(to);
+  }
+  try {
+    fs.cpSync(from, to, { recursive: true, errorOnExist: true, force: false });
+  } catch (e) {
+    fs.rmSync(to, { recursive: true, force: true });
     throw e;
   }
+  fs.rmSync(from, { recursive: true, force: true });
+  return true;
 };
+
+function unchanged(inputs, out) {
+  const changed = [...inputs].find(([f, was]) => fingerprint(f) !== was)?.[0];
+  if (changed)
+    throw new NotPublished(
+      `${rel(changed)} changed while this run read it, so the run left ${rel(out)} as it was. Run the command again.`,
+    );
+}
 
 function publish(work, out, inputs) {
   const parent = path.dirname(path.resolve(out));
@@ -639,11 +694,7 @@ function publish(work, out, inputs) {
   let aside = false;
   try {
     fs.cpSync(work, next, { recursive: true });
-    const changed = [...inputs].find(([f, was]) => fingerprint(f) !== was)?.[0];
-    if (changed)
-      throw new CannotFinish(
-        `${rel(changed)} changed while this run read it, so the run left ${rel(out)} as it was. Run the command again.`,
-      );
+    unchanged(inputs, out);
     refuseForeign(out);
     while (!moved(next, out, "ENOTEMPTY", "EEXIST")) {
       if (aside) {
@@ -659,12 +710,12 @@ function publish(work, out, inputs) {
     fs.rmSync(next, { recursive: true, force: true });
     const why = e instanceof CannotFinish ? e.message : `cannot replace ${rel(out)}: ${e.message}.`;
     if (!back)
-      throw new CannotFinish(
+      throw new NotPublished(
         `${why} This run moved the previous ${rel(out)} to ${rel(old)} and could not put it back.`,
       );
-    throw e instanceof CannotFinish
-      ? e
-      : new CannotFinish(`${why} The run left ${rel(out)} as it was.`);
+    throw new NotPublished(
+      e instanceof CannotFinish ? why : `${why} The run left ${rel(out)} as it was.`,
+    );
   }
   if (aside) fs.rmSync(old, { recursive: true, force: true });
 }
@@ -721,21 +772,19 @@ async function fromSpec(input, { "expect-broken": expected, ...flags }) {
   const otherCfg = secondCfg(cfg, flags);
   const inputs = snapshot([input, cfg, map, flags.fixed ?? flags.against, otherCfg]);
   const second = secondModel(input, otherCfg, flags);
-  const tools = findTools();
   const model = readInput(input, cfg, expected);
   const out = outDir(flags.out, input, name);
+  if (!fs.existsSync(map)) {
+    fs.writeFileSync(map, SCAFFOLD(name, input));
+    throw new CannotFinish(`Wrote ${rel(map)}. Fill in its labels, then run this command again.`);
+  }
+  const tools = findTools();
   return inWorkFolder(async (work) => {
-    const now = check(tools, model, work, expected);
-    if (!fs.existsSync(map)) {
-      fs.writeFileSync(map, SCAFFOLD(name, parseDot(fs.readFileSync(now.dot, "utf8"))));
-      throw new CannotFinish(
-        `\nWrote ${rel(map)}. Fill in its labels, then run this command again.`,
-      );
-    }
+    const now = check(tools, model, { work, out }, expected);
     const other = second && {
       role: second.role,
       label: second.label,
-      ...check(tools, second.model, work, expected),
+      ...check(tools, second.model, { work, out }, expected),
     };
     if (second) warnUnchecked(model, second.model);
     const drawn = await draw({ now, other, map, work, out, title: flags.title });
@@ -765,7 +814,7 @@ async function fromChart(input, { "expect-broken": expected, ...flags }) {
   const model = readInput(spec, cfgOf(spec), expected);
   const out = outDir(flags.out, input, name);
   return inWorkFolder(async (work) => {
-    const now = check(tools, model, work, expected);
+    const now = check(tools, model, { work, out }, expected);
     const drawn = await draw({ now, map, work, out, title: flags.title, comparing: true });
     const compared = script("compare-charts.mjs", [input, drawn.files.overview], input, {
       okExits: [0, 1],
