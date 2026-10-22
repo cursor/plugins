@@ -29,15 +29,9 @@ Meta workflows for creating Cursor plugins that are marketplace-ready.
 |:------|:------------|
 | `plugin-architect` | Design plugin structure and component mix based on a concrete use case |
 
-### Commands
-
-| Command | Description |
-|:--------|:------------|
-| `create-plugin` | Build a new plugin scaffold with the right files and metadata |
-
 ## Typical flow
 
-1. Use `/create-plugin` with a plugin name, purpose, and target component types.
+1. Ask the agent to scaffold a plugin, giving a name, purpose, and target component types; the `create-plugin-scaffold` skill drives the work, and the `plugin-architect` agent can help choose the component mix first.
 2. Generate or update `plugin.json`, then add rules/skills/agents/commands as needed.
 3. Run `review-plugin-submission` before publishing or marketplace submission.
 
