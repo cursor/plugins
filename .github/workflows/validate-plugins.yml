@@ -28,5 +28,8 @@ jobs:
       - name: Validate plugin definitions
         run: node scripts/validate-plugins.mjs
 
+      - name: Test marketplace name validation
+        run: node --test scripts/validate-marketplace-names.test.mjs
+
       - name: Check generated pstack harness trees
         run: node scripts/generate-pstack-harness-trees.mjs --check
