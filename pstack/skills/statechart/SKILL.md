@@ -14,7 +14,7 @@ Run `node <skill dir>/scripts/statechart.mjs --help` for the commands and for ho
 
 Use `from-spec` when a TLA+ model exists or the code is concrete enough to model. Use `from-chart` when there is no model and the PM should agree on the behavior before anyone writes or changes the code.
 
-If the code already has a TLA+ spec, start from a copy of that spec. Add the variables the user sees, and keep the spec's existing invariants. To audit the code against that spec, make the copy model what the code does, and pass the spec unchanged as `--against`. In a new spec, tie every variable and action to code that a reviewer can open, and take its name from that code. Make each action one indivisible step in the code.
+If the code already has a TLA+ spec, start from a copy of that spec. Add the variables the user sees, and keep the spec's existing invariants. To audit the code against that spec, make the copy model what the code does, and pass the spec unchanged as `--against`. Check it with the config that its authors say it passes, and pass that config as `--against-config` unless it has the spec's file name. One mapping labels both models, so label states and steps only from variables that both have. In a new spec, tie every variable and action to code that a reviewer can open, and take its name from that code. Make each action one indivisible step in the code.
 
 ## Spec to chart
 

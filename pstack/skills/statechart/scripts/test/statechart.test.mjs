@@ -713,7 +713,7 @@ const NO_TLC = `Cannot find TLC. Download tla2tools.jar from a TLA+ release:
 Then set TLA2TOOLS to the path of tla2tools.jar, and JAVA to a java binary (Java 11 or later).
 `;
 const FROM_SPEC_USAGE =
-  "node statechart.mjs from-spec SPEC.tla [--fixed FIXED.tla | --against AGREED.tla] [--label TEXT] [--map FILE] [--expect-broken RULE]... [--title TEXT] [--out DIR] [--png]";
+  "node statechart.mjs from-spec SPEC.tla [--config FILE] [--fixed FIXED.tla [--fixed-config FILE] | --against AGREED.tla [--against-config FILE]] [--label TEXT] [--map FILE] [--expect-broken RULE]... [--title TEXT] [--out DIR] [--png]";
 const FROM_CHART_USAGE =
   "node statechart.mjs from-chart CHART.mmd [--module NAME] [--expect-broken RULE]... [--title TEXT] [--out DIR] [--png]";
 const noTlc = { TLA2TOOLS: "", JAVA: "" };
@@ -989,7 +989,7 @@ test("from-chart checks the agreed chart and draws it back unchanged", needsTlc,
   assert.equal(
     r.stdout,
     `Wrote Upload.tla, Upload.cfg, and Upload.map.mjs from upload.mmd.
-TLC on Upload.tla:
+TLC on Upload.tla with Upload.cfg:
   TypeOK holds.
 
 Chart: 5 states and 8 transitions from 5 model states.
@@ -1031,7 +1031,7 @@ test("from-chart finds the design bug, and from-spec with the fix marks it fixed
   assert.equal(
     today.stdout,
     `Wrote Sync.tla, Sync.cfg, and Sync.map.mjs from sync.mmd.
-TLC on Sync.tla:
+TLC on Sync.tla with Sync.cfg:
   TypeOK holds.
   NeverSyncedWhileOffline is broken.
 
@@ -1059,10 +1059,10 @@ Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in Sync-statechart.
   assert.equal(fixed.status, 1, fixed.stderr);
   assert.equal(
     fixed.stdout,
-    `TLC on Sync.tla:
+    `TLC on Sync.tla with Sync.cfg:
   TypeOK holds.
   NeverSyncedWhileOffline is broken.
-TLC on SyncFixed.tla:
+TLC on SyncFixed.tla with Sync.cfg:
   TypeOK holds.
   NeverSyncedWhileOffline holds.
 
@@ -1113,7 +1113,7 @@ Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in Sync-statechart.
   assert.equal(
     coded.stdout,
     `Kept Sync.tla. Delete it to write the spec again from sync.mmd.
-TLC on Sync.tla:
+TLC on Sync.tla with Sync.cfg:
   TypeOK holds.
   NeverSyncedWhileOffline holds.
 
@@ -1274,7 +1274,15 @@ test(
       "Refunded, charged": "wrong",
     });
 
-    const withFix = [...args, "--fixed-dot", "PayFixed.dot", "--fixed-traces", "PayFixed.out"];
+    const withFix = [
+      ...args,
+      "--fixed-dot",
+      "PayFixed.dot",
+      "--fixed-traces",
+      "PayFixed.out",
+      "--fixed-rules",
+      "NoDoubleCharge",
+    ];
     assert.equal(node("tlc-to-chart.mjs", withFix, dir).status, 0);
     const chart = readFileSync(join(dir, "chart.mmd"), "utf8");
     assert.deepEqual(statusOf(chart), {
@@ -1301,6 +1309,60 @@ test(
 );
 
 test(
+  "a rule that the second model does not check reads not checked, and a rule it checks reads unchanged",
+  needsTlc,
+  () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    writeFileSync(
+      join(dir, "Pay.tla"),
+      pay(
+        "Pay",
+        `screen = "Paying" /\\ charges < 2 /\\ charges' = charges + 1 /\\ UNCHANGED screen`,
+      ),
+    );
+    writeFileSync(join(dir, "Pay.cfg"), "SPECIFICATION Spec\nINVARIANT NoDoubleCharge\n");
+    writeFileSync(join(dir, "pay.map.mjs"), payMap);
+    assert.match(tlc(dir, "Pay").stdout, /Invariant NoDoubleCharge is violated/);
+    const story = (...extra) => {
+      const r = node(
+        "tlc-to-chart.mjs",
+        [
+          ...["--dot", "Pay.dot", "--map", "pay.map.mjs", "--traces", "Pay.out"],
+          ...["--against-dot", "Pay.dot", ...extra, "--story", "story.md", "--out", "chart.mmd"],
+        ],
+        dir,
+      );
+      assert.equal(r.status, 0, r.stderr);
+      return readFileSync(join(dir, "story.md"), "utf8");
+    };
+    assert.match(
+      story(),
+      /^In the spec you see the same screens and steps, but the spec does not check this rule\.$/m,
+    );
+    assert.match(
+      story("--against-traces", "Pay.out", "--against-rules", "NoDoubleCharge"),
+      /^In the spec you see the same screens and steps, so the spec does not change this path\.$/m,
+    );
+    const alone = node(
+      "tlc-to-chart.mjs",
+      [
+        "--dot",
+        "Pay.dot",
+        "--map",
+        "pay.map.mjs",
+        "--against-dot",
+        "Pay.dot",
+        "--against-traces",
+        "Pay.out",
+      ],
+      dir,
+    );
+    assert.equal(alone.status, 2);
+    assert.match(alone.stderr, /^--against-traces and --against-rules go together\./);
+  },
+);
+
+test(
   "from-spec writes a mapping to fill in, then draws each bug in every view the mapping has",
   needsTlc,
   () => {
@@ -1318,7 +1380,7 @@ test(
     );
     const first = node("statechart.mjs", ["from-spec", "Pay.tla"], dir);
     assert.equal(first.status, 2);
-    assert.equal(first.stdout, "TLC on Pay.tla:\n  NoDoubleCharge is broken.\n");
+    assert.equal(first.stdout, "TLC on Pay.tla with Pay.cfg:\n  NoDoubleCharge is broken.\n");
     assert.equal(
       first.stderr,
       "\nWrote Pay.map.mjs. Fill in its labels, then run this command again.\n",
@@ -1339,7 +1401,7 @@ test(
     assert.equal(r.status, 1, r.stderr);
     assert.equal(
       r.stdout,
-      `TLC on Pay.tla:
+      `TLC on Pay.tla with Pay.cfg:
   NoDoubleCharge is broken.
 
 Chart: 5 states and 4 transitions from 5 model states.
@@ -1469,6 +1531,8 @@ test(
       "EditFixed.dot",
       "--fixed-traces",
       "EditFixed.out",
+      "--fixed-rules",
+      "NoLostEdit",
     ];
     const r = node(
       "tlc-to-chart.mjs",
@@ -1629,20 +1693,22 @@ export const step = (a) => ({ Save: "you press Save", Retry: "the app tries agai
 export const cause = () => "the app stops after one retry and shows Saved anyway";
 `,
     );
+    const base = [
+      "from-spec",
+      "SaveCode.tla",
+      "--against",
+      "SaveAgreed.tla",
+      "--label",
+      "the agreed chart",
+    ];
+    const noCfg = node("statechart.mjs", base, dir);
+    assert.equal(noCfg.status, 2);
+    assert.equal(
+      noCfg.stderr,
+      "SaveAgreed.cfg does not exist. Pass --against-config with the config to check SaveAgreed.tla with. The configs beside it: SaveCode.cfg.\n",
+    );
     const run = (...extra) =>
-      node(
-        "statechart.mjs",
-        [
-          "from-spec",
-          "SaveCode.tla",
-          "--against",
-          "SaveAgreed.tla",
-          "--label",
-          "the agreed chart",
-          ...extra,
-        ],
-        dir,
-      );
+      node("statechart.mjs", [...base, "--against-config", "SaveCode.cfg", ...extra], dir);
 
     const unknown = run("--expect-broken", "NoLostNote");
     assert.equal(unknown.status, 2);
@@ -1655,10 +1721,10 @@ export const cause = () => "the app stops after one retry and shows Saved anyway
     assert.equal(expected.status, 0, expected.stderr);
     assert.equal(
       expected.stdout,
-      `TLC on SaveCode.tla:
+      `TLC on SaveCode.tla with SaveCode.cfg:
   TypeOK holds.
   NoFalseSaved is broken (expected).
-TLC on SaveAgreed.tla:
+TLC on SaveAgreed.tla with SaveCode.cfg:
   TypeOK holds.
   NoFalseSaved holds.
 
@@ -1730,6 +1796,45 @@ Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in SaveCode-statechart.
     assert.match(
       coded.stdout,
       /These labels or causes read like code\. Write them in the reader's words in code\.map\.mjs:\n {2}retryCount hit maxRetries\n/,
+    );
+
+    writeFileSync(
+      join(dir, "rev.map.mjs"),
+      readFileSync(join(dir, "SaveCode.map.mjs"), "utf8").replace(
+        "${v.note.text}`",
+        "${v.note.text} r${v.note.rev}`",
+      ),
+    );
+    const lacks = run("--map", "rev.map.mjs", "--expect-broken", "NoFalseSaved");
+    assert.equal(lacks.status, 2);
+    assert.equal(
+      lacks.stderr,
+      'rev.map.mjs: the agreed chart has no note.rev, and the mapping reads v.note.rev on its states. Label states and steps only from what both models have, or test "rev" in v.note first.\n',
+    );
+    writeFileSync(
+      join(dir, "rev.map.mjs"),
+      readFileSync(join(dir, "SaveCode.map.mjs"), "utf8").replace(
+        "${v.note.text}`",
+        '${v.note.text}${"rev" in v.note ? ` r${v.note.rev}` : ""}`',
+      ),
+    );
+    const tested = run("--map", "rev.map.mjs", "--expect-broken", "NoFalseSaved");
+    assert.equal(tested.status, 0, tested.stderr);
+
+    writeFileSync(join(dir, "SaveAgreedType.cfg"), "SPECIFICATION Spec\nINVARIANT TypeOK\n");
+    const unchecked = node(
+      "statechart.mjs",
+      [...base, "--against-config", "SaveAgreedType.cfg", "--expect-broken", "NoFalseSaved"],
+      dir,
+    );
+    assert.equal(unchecked.status, 0, unchecked.stderr);
+    assert.match(
+      unchecked.stdout,
+      /^TLC on SaveAgreed\.tla with SaveAgreedType\.cfg:\n {2}TypeOK holds\.\n/m,
+    );
+    assert.equal(
+      unchecked.stderr,
+      "SaveAgreedType.cfg does not check NoFalseSaved, so the stories cannot say whether SaveAgreed.tla keeps it.\n",
     );
   },
 );
