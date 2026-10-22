@@ -151,6 +151,192 @@ export function ruleSentences(tla) {
   return out;
 }
 
+export const tlaVariables = (code) =>
+  [...code.matchAll(/\bVARIABLES?\s+(\w+(?:\s*,\s*\w+)*)/g)].flatMap((m) => m[1].split(/\s*,\s*/));
+
+// Returns the code with comments blanked, and the comments with the code blanked, at the same
+// offsets, so a line number means the same line in both.
+function splitComments(text) {
+  let code = "";
+  let notes = "";
+  let block = 0;
+  let line = false;
+  let string = false;
+  const put = (c, n) => {
+    code += c;
+    notes += n;
+  };
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    const two = text.slice(i, i + 2);
+    if (c === "\n") {
+      line = string = false;
+      put(c, c);
+    } else if (block) {
+      if (two === "(*" || two === "*)") {
+        block += two === "(*" ? 1 : -1;
+        put("  ", two);
+        i++;
+      } else put(" ", c);
+    } else if (line) put(" ", c);
+    else if (string) {
+      if (c === "\\" && text[i + 1] && text[i + 1] !== "\n") {
+        put(two, "  ");
+        i++;
+      } else {
+        string = c !== '"';
+        put(c, " ");
+      }
+    } else if (two === "\\*" || two === "(*") {
+      if (two === "\\*") line = true;
+      else block = 1;
+      put("  ", two);
+      i++;
+    } else {
+      string = c === '"';
+      put(c, " ");
+    }
+  }
+  return { code, notes };
+}
+
+const IDENTIFIER = /(?<![\\.\w])[A-Za-z_]\w*(?!\w)(?!\s*\|->)/g;
+const CITATION = /[\w./-]+\.[A-Za-z]\w*:\d+|#L\d+/;
+
+const DEPTH = { "(": 1, "[": 1, "{": 1, ")": -1, "]": -1, "}": -1 };
+const LOOSER_THAN_AND = /^(\\\/|=>|<=>|~>|-\+->|\\equiv\b)/;
+const RUNS_TO_END = /^(\\[EA]|IF|LET|CASE|CHOOSE)\b/;
+
+// The conjuncts of a definition body, as [from, to) offsets: a bulleted /\ list, or a body that
+// /\ joins outside brackets, after any leading \E x : . An IF, LET, CASE, CHOOSE, or quantifier
+// runs to the end of its conjunct. null when an operator that binds looser than /\, such as \/
+// or =>, joins the body.
+function conjuncts(bare, from, to, lineStart) {
+  const first = from + bare.slice(from, to).search(/\S/);
+  if (first < from) return null;
+  if (/^\\E\b/.test(bare.slice(first, to))) {
+    for (let i = first, depth = 0; i < to; i++) {
+      depth += DEPTH[bare[i]] ?? 0;
+      if (depth === 0 && bare[i] === ":") return conjuncts(bare, i + 1, to, lineStart);
+    }
+    return null;
+  }
+  if (bare.startsWith("/\\", first)) {
+    const column = first - lineStart(first);
+    const bullets = [first];
+    for (const m of bare.slice(first, to).matchAll(/\n([ \t]*)(?=\S)/g)) {
+      if (m[1].length < column) return null;
+      const at = first + m.index + m[0].length;
+      if (m[1].length === column && bare.startsWith("/\\", at)) bullets.push(at);
+    }
+    return bullets.flatMap((b, i) => {
+      const end = bullets[i + 1] ?? to;
+      return conjuncts(bare, b + 2, end, lineStart) ?? [[b + 2, end]];
+    });
+  }
+  const cuts = [];
+  let depth = 0;
+  for (let i = first; i < to; i++) {
+    const two = bare.slice(i, i + 2);
+    const ahead = bare.slice(i, i + 7);
+    if (two === "<<" || two === ">>") {
+      depth += two === "<<" ? 1 : -1;
+      i++;
+    } else if (DEPTH[bare[i]]) depth += DEPTH[bare[i]];
+    else if (depth > 0) continue;
+    else if (LOOSER_THAN_AND.test(ahead)) return null;
+    else if (!/\w/.test(bare[i - 1] ?? "") && RUNS_TO_END.test(ahead)) break;
+    else if (two === "/\\") cuts.push(i++);
+  }
+  return [first, ...cuts.map((c) => c + 2)].map((a, i) => [a, cuts[i] ?? to]);
+}
+
+// The enabling conditions of each action that wait on a variable the action does not change,
+// and that no comment ties to a file and line. An action is a definition that primes a variable
+// or has UNCHANGED. The comment sits on the condition's lines, or right above them when the
+// condition does not start on the definition's line.
+export function uncitedConditions(text) {
+  const { code, notes } = splitComments(text);
+  const bare = code.replace(/"(?:[^"\\\n]|\\.)*"/g, (s) => " ".repeat(s.length));
+  const variables = new Set(tlaVariables(bare));
+  const starts = [0, ...[...bare.matchAll(/\n/g)].map((m) => m.index + 1)];
+  const lineOf = (at) => {
+    let lo = 0;
+    let hi = starts.length - 1;
+    while (lo < hi) {
+      const mid = (lo + hi + 1) >> 1;
+      if (starts[mid] <= at) lo = mid;
+      else hi = mid - 1;
+    }
+    return lo;
+  };
+  const lineStart = (at) => starts[lineOf(at)];
+  const lines = { bare: bare.split("\n"), notes: notes.split("\n") };
+
+  const defs = new Map();
+  const nextItem = /^(?![ \t\n]|\/\\|\\\/)/gm;
+  for (const m of bare.matchAll(
+    /^(?:LOCAL[ \t]+)?([A-Za-z_]\w*)[ \t]*(?:\([^)]*\)|\[[^\]]*\])?[ \t]*==/gm,
+  )) {
+    const from = m.index + m[0].length;
+    nextItem.lastIndex = from;
+    defs.set(m[1], { from, to: nextItem.exec(bare)?.index ?? bare.length, line: lineOf(m.index) });
+  }
+  const direct = (body) => {
+    const ids = body.match(IDENTIFIER) ?? [];
+    return {
+      reads: ids.filter((id) => variables.has(id)),
+      writes: [...body.matchAll(/(?<![\\.\w])([A-Za-z_]\w*)'/g)]
+        .map((m) => m[1])
+        .filter((id) => variables.has(id)),
+      acts: /[\w)\]>}]'|\bUNCHANGED\b/.test(body),
+      calls: [...new Set(ids.filter((id) => defs.has(id)))],
+    };
+  };
+  const own = new Map([...defs].map(([name, d]) => [name, direct(bare.slice(d.from, d.to))]));
+  const through = (start) => {
+    const out = { reads: new Set(start.reads), writes: new Set(start.writes), acts: start.acts };
+    const seen = new Set(start.calls);
+    const todo = [...seen];
+    while (todo.length) {
+      const d = own.get(todo.pop());
+      d.reads.forEach((v) => out.reads.add(v));
+      d.writes.forEach((v) => out.writes.add(v));
+      out.acts ||= d.acts;
+      for (const c of d.calls.filter((c) => !seen.has(c))) {
+        seen.add(c);
+        todo.push(c);
+      }
+    }
+    return out;
+  };
+  const cited = (from, to, above) => {
+    for (let l = from; l <= to; l++) if (CITATION.test(lines.notes[l])) return true;
+    for (let l = from - 1; above && !lines.bare[l].trim() && lines.notes[l].trim(); l--)
+      if (CITATION.test(lines.notes[l])) return true;
+    return false;
+  };
+
+  const found = [];
+  for (const [action, d] of defs) {
+    if (!own.get(action).acts) continue;
+    const changes = through(own.get(action)).writes;
+    for (const [a, b] of conjuncts(bare, d.from, d.to, lineStart) ?? []) {
+      const part = through(direct(bare.slice(a, b)));
+      if (part.acts || [...part.reads].every((v) => changes.has(v))) continue;
+      const first = lineOf(a + bare.slice(a, b).search(/\S/));
+      const last = lineOf(a + bare.slice(a, b).trimEnd().length - 1);
+      if (cited(first, last, first > d.line)) continue;
+      found.push({
+        line: first + 1,
+        action,
+        condition: code.slice(a, b).replace(/\s+/g, " ").trim(),
+      });
+    }
+  }
+  return found;
+}
+
 function unescapeDot(s) {
   let out = "";
   for (let i = 0; i < s.length; i++) {
@@ -290,6 +476,9 @@ export function wrap(text, width = 26) {
   if (row) rows.push(row);
   return rows.join("<br/>");
 }
+
+export const joinAnd = (items) =>
+  items.length < 3 ? items.join(" and ") : `${items.slice(0, -1).join(", ")}, and ${items.at(-1)}`;
 
 const OPENS_A_PHRASE = new Set(
   "a an the your my our their its this that to of in on at for with from by and or".split(" "),

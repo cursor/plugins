@@ -13,6 +13,7 @@ import {
   groupClassDef,
   groupColorProblem,
   isRecord,
+  joinAnd,
   joinLabels,
   parseDot,
   parseMermaid,
@@ -70,6 +71,12 @@ statechart.mjs runs it once for the overview and once for each bug chart.
   --against-rules LIST   The invariants that the spec's TLC runs check. It goes with
                          --against-traces. Stories of a rule that the spec does not check say
                          "not checked".
+  --listed JSON          What the spec's configs expect, as in
+                         {"spec":"Spec.tla","breaks":{"A.cfg":"Rule"}}: each config whose
+                         "\\* expect:" line names a rule, and that rule. It goes with
+                         --against-dot. Each story then says whether a config of the spec already
+                         expects TLC to break its rule, and summary.json has second.listed and
+                         each bug's listed configs.
   --label TEXT           The name of the second model in the chart and the stories. Default:
                          "the fix" with --fixed-dot, "the spec" with --against-dot.
   --spec FILE            A TLA+ file whose \\* comment lines above a rule are the rule's sentence in
@@ -188,6 +195,7 @@ for (let i = 2; i < process.argv.length; i++) {
   else if (a === "--against-dot") args.againstDot = next();
   else if (a === "--against-traces") args.againstTraces.push(next());
   else if (a === "--against-rules") args.againstRules.push(...next().split(","));
+  else if (a === "--listed") args.listed = next();
   else if (a === "--label") args.label = next();
   else if (a === "--spec") args.specs.push(next());
   else if (a === "--view") args.view = next();
@@ -224,6 +232,23 @@ if (!args.againstTraces.length !== !args.againstRules.length)
   fail(
     "--against-traces and --against-rules go together. The rules are what those TLC runs check.",
   );
+if (args.listed !== undefined) {
+  if (!args.againstDot)
+    fail("--listed says what the spec's configs expect; it needs --against-dot.");
+  const shape = `--listed must be JSON such as {"spec":"Spec.tla","breaks":{"A.cfg":"Rule"}}`;
+  try {
+    args.listed = JSON.parse(args.listed);
+  } catch (e) {
+    fail(`${shape}: ${e.message}.`);
+  }
+  const { spec, breaks } = isRecord(args.listed) ? args.listed : {};
+  if (
+    typeof spec !== "string" ||
+    !isRecord(breaks) ||
+    Object.values(breaks).some((r) => typeof r !== "string")
+  )
+    fail(`${shape}.`);
+}
 if (args.label !== undefined && !args.fixedDot && !args.againstDot)
   fail("--label names the second model; it needs --fixed-dot or --against-dot.");
 if (args.proof && !args.regions) fail("--proof writes the regions proof; it needs --regions.");
@@ -1278,6 +1303,16 @@ function secondLine(c) {
   }
   return `${W} ${L}, step ${s.step} (${s.said}) ${outcome}: ${show(s.key)}.`;
 }
+const listedIn = (c) =>
+  Object.keys(args.listed.breaks).filter((cfg) => args.listed.breaks[cfg] === c.invariant);
+function listedLine(c) {
+  const { spec, breaks } = args.listed;
+  const cfgs = listedIn(c);
+  if (cfgs.length)
+    return `Listed: ${joinAnd(cfgs)}, ${cfgs.length === 1 ? "a config" : "configs"} of ${spec}, expect${cfgs.length === 1 ? "s" : ""} TLC to break this rule.`;
+  const others = [...new Set(Object.values(breaks))].sort().map((r) => `\`${r}\``);
+  return `Not listed: no config of ${spec} expects TLC to break this rule. ${others.length ? `Its configs expect TLC to break ${joinAnd(others)}.` : "None of its configs expects TLC to break a rule."}`;
+}
 if (args.story) {
   const lines = [];
   const header = role === "fix" ? `New with ${L}: ` : `Only in ${L}: `;
@@ -1285,6 +1320,7 @@ if (args.story) {
     lines.push(`## ${i + 1}. ${c.introduced ? header : ""}${show(c.end)}`, "");
     lines.push(`Rule broken: ${ruleOf(c)}`);
     if (c.cause) lines.push(`Why: ${c.cause.replace(/\.$/, "")}.`);
+    if (args.listed) lines.push(listedLine(c));
     lines.push(
       c.count === 1
         ? "This is the only way to get here in the model."
@@ -1325,7 +1361,16 @@ const secondOf = (c) =>
       : null;
 const summary = {
   view: args.view,
-  ...(role ? { second: { role, label: L, lacks: lacks.map((p) => p.join(".")) } } : {}),
+  ...(role
+    ? {
+        second: {
+          role,
+          label: L,
+          lacks: lacks.map((p) => p.join(".")),
+          ...(args.listed ? { listed: args.listed } : {}),
+        },
+      }
+    : {}),
   modelStates: graph.nodes.size,
   modelTransitions: graph.edges.length,
   chartStates: regions?.mermaid ? regions.states[0] + regions.states[1] : flatStates.size,
@@ -1367,6 +1412,7 @@ const summary = {
     modelSteps: c.trace.steps.length,
     counterexamples: c.count,
     [role ?? "fix"]: secondOf(c),
+    ...(args.listed ? { listed: listedIn(c) } : {}),
   })),
   codeLike,
 };

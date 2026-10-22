@@ -23,6 +23,7 @@ import {
   parseValue,
   ruleSentences,
   stateKey,
+  uncitedConditions,
 } from "../lib.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -110,6 +111,38 @@ Bare == TRUE
     [["NoFalseSaved", 'You never see "Saved" while the note is a draft.']],
   );
   assert.equal(stateKey({ b: 1, a: { d: 2, c: [3] } }), stateKey({ a: { c: [3], d: 2 }, b: 1 }));
+});
+
+test("an action's condition on a variable that the action does not change needs a file and line", () => {
+  const found = uncitedConditions(`---- MODULE Pay ----
+CONSTANT MaxAge
+VARIABLES screen, sent,
+          paid, clock
+Ready == sent > 0
+Tick == clock' = clock + 1 /\\ UNCHANGED <<screen, sent, paid>>
+Pay ==
+  /\\ screen = "Cart \\* not a comment"
+  /\\ MaxAge > 0
+  /\\ clock < MaxAge (* pay.ts:120 *)
+  /\\ Ready
+  \\* checkout.ts:88
+  /\\ sent < 3
+  /\\ screen' = IF clock > 0 /\\ sent > 0 THEN "Paid" ELSE screen /\\ paid' = TRUE
+  /\\ UNCHANGED <<sent, clock>>
+\\* fill.ts:10
+Fill == \\E o \\in 1..3 : /\\ paid = TRUE
+                        /\\ clock > 0 /\\ sent' = o + 1
+                        /\\ sent = o
+                        /\\ paid => clock > 0 /\\ screen = "Cart"
+                        /\\ UNCHANGED <<screen, paid, clock>>
+Next == Tick \\/ Pay \\/ Fill
+====`);
+  assert.deepEqual(found, [
+    { line: 11, action: "Pay", condition: "Ready" },
+    { line: 17, action: "Fill", condition: "paid = TRUE" },
+    { line: 18, action: "Fill", condition: "clock > 0" },
+    { line: 20, action: "Fill", condition: 'paid => clock > 0 /\\ screen = "Cart"' },
+  ]);
 });
 
 test("the legend is not part of the machine", () => {
@@ -1862,6 +1895,14 @@ Broken as expected: NoFalseSaved.
 Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in SaveCode-statechart.
 `,
     );
+    const uncitedWarning = `SaveCode.tla: TypeOK holds, but a rule can also hold because the model waits for a condition that the code does not check. No comment gives the file and line of the code that checks these conditions:
+  SaveCode.tla:8 Retry: screen = "Saving"
+  SaveCode.tla:9 TimeOut: retries = 1
+Put that file and line in a comment on each condition, as in \\* pay.ts:120, or remove the condition when no code checks it.
+`;
+    const warnings = `No config beside SaveAgreed.tla has an "\\* expect:" line for SaveAgreed, so the stories cannot say whether SaveAgreed already lists each bug. When SaveAgreed.tla is a copy, pass the spec in its own folder.
+${uncitedWarning}`;
+    assert.equal(expected.stderr, warnings);
     const out = join(dir, "SaveCode-statechart");
     const chart = readFileSync(join(out, "chart.mmd"), "utf8");
     assert.match(chart, /^stateDiagram-v2\n {2}%% second model \(against\): the agreed chart\n/m);
@@ -1884,6 +1925,13 @@ Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in SaveCode-statechart.
     assert.deepEqual(summary.second.lacks.sort(), ["note.rev", "retries"]);
     assert.equal(summary.classes[0].against, "Saving, draft");
     assert.deepEqual(summary.codeLike, []);
+    assert.deepEqual(summary.uncited, {
+      "SaveCode.tla": [
+        { line: 8, action: "Retry", condition: 'screen = "Saving"' },
+        { line: 9, action: "TimeOut", condition: "retries = 1" },
+      ],
+    });
+    assert.equal(summary.second.listed, undefined);
 
     const unexpected = run();
     assert.equal(unexpected.status, 1, unexpected.stderr);
@@ -1923,7 +1971,7 @@ Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in SaveCode-statechart.
     assert.equal(lacks.status, 2);
     assert.equal(
       lacks.stderr,
-      'rev.map.mjs: the agreed chart has no note.rev, and the mapping reads v.note.rev on its states. Label states and steps only from what both models have, or test "rev" in v.note first.\n',
+      `${warnings}rev.map.mjs: the agreed chart has no note.rev, and the mapping reads v.note.rev on its states. Label states and steps only from what both models have, or test "rev" in v.note first.\n`,
     );
     writeFileSync(
       join(dir, "rev.map.mjs"),
@@ -1948,7 +1996,34 @@ Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in SaveCode-statechart.
     );
     assert.equal(
       unchecked.stderr,
-      "SaveAgreedType.cfg does not check NoFalseSaved, so the stories cannot say whether SaveAgreed.tla keeps it.\n",
+      `SaveAgreedType.cfg does not check NoFalseSaved, so the stories cannot say whether SaveAgreed.tla keeps it.\n${warnings}`,
+    );
+
+    const listedCfg = (rule) =>
+      writeFileSync(
+        join(dir, "SaveAgreedBug.cfg"),
+        `\\* module: SaveAgreed\n\\* expect: ${rule}\nSPECIFICATION Spec\nINVARIANT ${rule}\n`,
+      );
+    listedCfg("NoFalseSaved");
+    const known = run("--expect-broken", "NoFalseSaved");
+    assert.equal(known.status, 0, known.stderr);
+    assert.equal(known.stderr, uncitedWarning);
+    assert.match(
+      known.stdout,
+      /\nWhy: .*\nListed: SaveAgreedBug\.cfg, a config of SaveAgreed\.tla, expects TLC to break this rule\.\n/,
+    );
+    const listedSummary = JSON.parse(readFileSync(join(out, "summary.json"), "utf8"));
+    assert.deepEqual(listedSummary.second.listed, {
+      spec: "SaveAgreed.tla",
+      breaks: { "SaveAgreedBug.cfg": "NoFalseSaved" },
+    });
+    assert.deepEqual(listedSummary.classes[0].listed, ["SaveAgreedBug.cfg"]);
+    listedCfg("TypeOK");
+    const fresh = run("--expect-broken", "NoFalseSaved");
+    assert.equal(fresh.status, 0, fresh.stderr);
+    assert.match(
+      fresh.stdout,
+      /\nNot listed: no config of SaveAgreed\.tla expects TLC to break this rule\. Its configs expect TLC to break `TypeOK`\.\n/,
     );
   },
 );

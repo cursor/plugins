@@ -5,7 +5,14 @@ import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { checkTlcOutput, findTlc, parseDot } from "./lib.mjs";
+import {
+  checkTlcOutput,
+  findTlc,
+  joinAnd,
+  parseDot,
+  tlaVariables,
+  uncitedConditions,
+} from "./lib.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
@@ -51,7 +58,17 @@ const FROM_SPEC = `from-spec SPEC.tla
   --map FILE         The labels for each model state and step. Default: SPEC.map.mjs next to the
                      spec. When the file does not exist, the command writes one from the spec's
                      VARIABLES and actions to fill in, and exits 2 before it runs TLC. Its
-                     comments say what each function gets.`;
+                     comments say what each function gets.
+
+  With --fixed or --against, SPEC.tla (and FIXED.tla) models the code, and the command finds each
+  condition of an action that no comment ties to code with a file and line, as in \\* pay.ts:120.
+  A condition is a conjunct of the action that changes nothing and reads a variable that the
+  action does not change. A rule can hold only because the model waits for a condition that the
+  code does not check, so the command prints these conditions when a rule holds.
+  With --against, each story says whether a config beside AGREED.tla expects TLC to break the
+  bug's rule. A config's "\\* expect: RULE" line says what TLC finds, and "\\* module: NAME" names
+  the module it checks when the folder has more than one .tla file. The command warns when no
+  config beside AGREED.tla has an expect line for that module.`;
 
 const FROM_CHART = `from-chart CHART.mmd
   Writes NAME.tla, NAME.cfg, and NAME.map.mjs next to the chart. When NAME.tla already exists, it
@@ -98,7 +115,10 @@ Output
                      detail().
   stories.md         One entry per bug: the rule, why it breaks, the shortest path in reader
                      steps, and what the --fixed or --against model does instead.
-  summary.json       The counts behind the chart.
+  summary.json       The counts behind the chart. With --fixed or --against, uncited has the
+                     conditions with no file and line for each code model. With --against,
+                     second.listed has what each config beside AGREED.tla expects, and each bug
+                     has the configs that list it.
   tlc/               The config and the TLC output of each run. When the overview has regions,
                      from-spec also writes tlc/regions-all.mmd, the regions with every arrow, and
                      tlc/regions-proof.mmd, every state and step of TLC's graph in one region.
@@ -441,9 +461,7 @@ function rulesAsExpected(now, other, expected) {
 
 const SCAFFOLD = (name, spec) => {
   const text = withoutComments(spec);
-  const vars = [...text.matchAll(/\bVARIABLES?\s+(\w+(?:\s*,\s*\w+)*)/g)].flatMap((m) =>
-    m[1].split(/\s*,\s*/),
-  );
+  const vars = tlaVariables(text);
   // TLC names each step after a definition that primes a variable or leaves one UNCHANGED. A
   // definition that only another action calls is listed too, though TLC names no step after it.
   const actions = [
@@ -514,7 +532,7 @@ export function step(action, before, after) {
 `;
 };
 
-async function draw({ now, other, map, work, out, title, comparing }) {
+async function draw({ now, other, uncited, map, work, out, title, comparing }) {
   const shown = published(work, out);
   const mapping = await import(pathToFileURL(path.resolve(map)).href);
   const from = ["--dot", now.dot, "--map", map, "--spec", now.spec];
@@ -525,6 +543,7 @@ async function draw({ now, other, map, work, out, title, comparing }) {
     if (other.traces.length)
       from.push(`--${other.role}-rules`, other.traces.map((t) => t.rule).join(","));
     if (other.label !== undefined) from.push("--label", other.label);
+    if (other.listed) from.push("--listed", JSON.stringify(other.listed));
   }
   if (comparing) from.push("--full-labels", "--flat");
   else if (mapping.readerActions?.length) from.push("--cover");
@@ -555,6 +574,8 @@ async function draw({ now, other, map, work, out, title, comparing }) {
     map,
   );
   const summary = JSON.parse(fs.readFileSync(files.summary, "utf8"));
+  if (uncited)
+    fs.writeFileSync(files.summary, `${JSON.stringify({ ...summary, uncited }, null, 2)}\n`);
   const charts = [files.overview];
   for (const c of summary.classes) {
     const views = typeof mapping.detail === "function" ? ["", "-developer", "-layered"] : [""];
@@ -806,6 +827,50 @@ function warnUnchecked(now, other) {
     );
 }
 
+// The rule that each config beside the spec expects TLC to break, from the "\* expect:" and
+// "\* module:" lines of each config. null when no config of the spec's
+// module has an "\* expect:" line.
+function listedBreaks(spec) {
+  const dir = path.dirname(spec);
+  const files = fs.readdirSync(dir).sort();
+  const modules = files.filter((f) => f.endsWith(".tla") && !f.includes("_TTrace_"));
+  const only = modules.length === 1 ? path.basename(modules[0], ".tla") : undefined;
+  const breaks = {};
+  let headed = false;
+  for (const f of files.filter((f) => f.endsWith(".cfg"))) {
+    const cfg = fs.readFileSync(path.join(dir, f), "utf8");
+    const module = /^\\\* module:[ \t]*(\w+)[ \t]*$/m.exec(cfg)?.[1] ?? only;
+    const expect = /^\\\* expect:[ \t]*(\w+)[ \t]*$/m.exec(cfg)?.[1];
+    if (module !== path.basename(spec, ".tla") || !expect) continue;
+    headed = true;
+    if (!/^(pass|deadlock)$|^error/.test(expect)) breaks[f] = expect;
+  }
+  return headed ? { spec: path.basename(spec), breaks } : null;
+}
+
+function warnUnlisted(now, other) {
+  if (other.listed || !now.traces.some((t) => t.broken)) return;
+  const module = path.basename(other.spec, ".tla");
+  console.error(
+    `No config beside ${rel(other.spec)} has an "\\* expect:" line for ${module}, so the stories cannot say whether ${module} already lists each bug. When ${path.basename(other.spec)} is a copy, pass the spec in its own folder.`,
+  );
+}
+
+function warnUncited(models) {
+  return Object.fromEntries(
+    models.map(({ spec, traces, properties }) => {
+      const found = uncitedConditions(fs.readFileSync(spec, "utf8"));
+      const held = [...traces, ...properties].filter((t) => !t.broken).map((t) => t.rule);
+      const short = (s) => (s.length > 90 ? `${s.slice(0, 87)}...` : s);
+      if (found.length && held.length)
+        console.error(
+          `${rel(spec)}: ${joinAnd(held)} ${held.length === 1 ? "holds" : "hold"}, but a rule can also hold because the model waits for a condition that the code does not check. No comment gives the file and line of the code that checks ${found.length === 1 ? "this condition" : "these conditions"}:\n${found.map((c) => `  ${rel(spec)}:${c.line} ${c.action}: ${short(c.condition)}`).join("\n")}\nPut that file and line in a comment on each condition, as in \\* pay.ts:120, or remove the condition when no code checks it.`,
+        );
+      return [path.basename(spec), found];
+    }),
+  );
+}
+
 async function fromSpec(input, { "expect-broken": expected, ...flags }) {
   const name = path.basename(input, ".tla");
   const map = flags.map ?? path.join(path.dirname(input), `${name}.map.mjs`);
@@ -825,10 +890,16 @@ async function fromSpec(input, { "expect-broken": expected, ...flags }) {
     const other = second && {
       role: second.role,
       label: second.label,
+      listed: second.role === "against" ? listedBreaks(second.model.spec) : undefined,
       ...check(tools, second.model, { work, out }, expected),
     };
-    if (second) warnUnchecked(model, second.model);
-    const drawn = await draw({ now, other, map, work, out, title: flags.title });
+    let uncited;
+    if (second) {
+      warnUnchecked(model, second.model);
+      if (second.role === "against") warnUnlisted(now, other);
+      uncited = warnUncited(second.role === "fixed" ? [now, other] : [now]);
+    }
+    const drawn = await draw({ now, other, uncited, map, work, out, title: flags.title });
     return finish({ work, out, inputs }, drawn, rulesAsExpected(now, other, expected), flags.png);
   });
 }
