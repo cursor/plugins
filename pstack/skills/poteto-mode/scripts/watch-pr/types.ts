@@ -141,7 +141,17 @@ export type CiClean = CiBase & {
   readonly pending: readonly [];
   readonly github: GitHubMergeAllowed;
 };
-export type CiState = CiFailing | CiGithubRejected | CiPending | CiClean;
+/** GitHub reported no checks at all for the head. Only `--status-only` produces this; polling keeps retrying, since a freshly pushed head has no checks yet either. */
+export interface CiNone {
+  readonly kind: "ci-none";
+  readonly source: "none";
+  readonly all: readonly [];
+  readonly failed: readonly [];
+  readonly pending: readonly [];
+  readonly hadPreviousPassingCi: boolean;
+  readonly github: GitHubMergeAssessment;
+}
+export type CiState = CiFailing | CiGithubRejected | CiPending | CiClean | CiNone;
 export type PrSnapshot =
   | {
       readonly kind: "merged" | "closed";

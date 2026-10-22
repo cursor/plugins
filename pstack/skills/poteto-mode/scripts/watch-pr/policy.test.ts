@@ -91,6 +91,54 @@ describe("readiness truth table", () => {
 });
 
 describe("snapshot query planning", () => {
+  it("reports a head without checks as ci-none when asked to", async () => {
+    const reader = fakeReader({
+      fastPath: {
+        kind: "unusable",
+        exitCode: 1,
+        stderr: "no checks reported on the 'feature' branch",
+      },
+      rollupPages: [{ checks: [], endCursor: null }],
+    });
+    const snapshot = await readSnapshot({
+      reader,
+      context: context(7),
+      pendingHistory: "include",
+      allowDraft: false,
+      noChecks: "report",
+    });
+    expect(snapshot.kind).toBe("open");
+    if (snapshot.kind !== "open") throw new Error("expected open snapshot");
+    expect(snapshot.ci.kind).toBe("ci-none");
+    expect(snapshot.ci.all).toEqual([]);
+    expect(snapshot.reviewAutomationRunning).toBe(false);
+    if (snapshot.ci.kind !== "ci-none") throw new Error("expected ci-none");
+    expect(snapshot.ci.github.kind).toBe("allowed");
+    expect(reader.calls).toContain("commitRollups");
+  });
+
+  it("keeps a head without checks as a retryable query error by default", async () => {
+    const reader = fakeReader({
+      fastPath: { kind: "checks", checks: [] },
+      rollupPages: [{ checks: [], endCursor: null }],
+    });
+    let caught: unknown = null;
+    try {
+      await readSnapshot({
+        reader,
+        context: context(8),
+        pendingHistory: "include",
+        allowDraft: false,
+      });
+    } catch (error) {
+      caught = error;
+    }
+    expect(caught).toBeInstanceOf(WatcherQueryError);
+    if (!(caught instanceof WatcherQueryError)) throw new Error("expected query error");
+    expect(caught.failure.kind).toBe("checks-unavailable");
+    expect(caught.failure.retryable).toBe(true);
+  });
+
   it("does not query commit rollups while queued checks are pending", async () => {
     const reader = fakeReader({
       fastPath: { kind: "checks", checks: [pendingCheck()] },
