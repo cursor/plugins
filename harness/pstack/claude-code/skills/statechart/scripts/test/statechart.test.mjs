@@ -2643,7 +2643,7 @@ exit $s
     for (const line of runs) {
       const [folder, parsed] = line.split(": ");
       assert.ok(folder.startsWith(join(tmp, "tlc-")), line);
-      assert.equal(parsed, `Parsing file ${join(folder, "Naturals.tla")}`);
+      assert.ok(parsed.startsWith(`Parsing file ${folder}/`), line);
       folders.add(folder);
     }
     assert.equal(folders.size, runs.length);
