@@ -599,6 +599,31 @@
       "description": "Work with clients, requests, quotes, jobs, visits, and invoices."
     },
     {
+      "name": "databricks-genie-one",
+      "source": "third_party/databricks-genie-one",
+      "description": "Ask Databricks Genie questions about your workspace's data in plain language."
+    },
+    {
+      "name": "lark",
+      "source": "third_party/lark",
+      "description": "Search, create, and update Lark Suite docs, and read Lark messages and groups."
+    },
+    {
+      "name": "feishu",
+      "source": "third_party/feishu",
+      "description": "Search, create, and update Feishu docs, and read Feishu messages and groups."
+    },
+    {
+      "name": "framer",
+      "source": "third_party/framer",
+      "description": "Design, build, and edit your Framer sites, pages, and CMS content."
+    },
+    {
+      "name": "vanta",
+      "source": "third_party/vanta",
+      "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
       "name": "notfair",
       "source": "third_party/notfair",
       "description": "Operate Google, Meta, X, LinkedIn, Reddit, and TikTok Ads plus GA4, Search Console, GoHighLevel, and WordPress through one OAuth MCP."

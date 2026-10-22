@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "lark": {
+      "type": "http",
+      "url": "https://mcp.larksuite.com/mcp"
+    }
+  }
+}
