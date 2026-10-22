@@ -6,6 +6,7 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
+  BROKEN_PROPERTY,
   checkTlcOutput,
   findTlc,
   joinAnd,
@@ -29,7 +30,8 @@ const FROM_SPEC = `from-spec SPEC.tla
   breaks, and the separate runs find the rest. Each run also has the rule as a CONSTRAINT, so TLC
   stops each path at its first state that breaks the rule, and a rule that stays broken reports
   only the step that broke it. SPEC.cfg has SPECIFICATION and one INVARIANT line per rule. Each
-  PROPERTY, a rule about whole behaviors, gets one TLC run too, and the charts do not draw it. One
+  PROPERTY, a rule about whole behaviors, gets one TLC run too, and the charts do not draw it. A
+  rule listed as both INVARIANT and PROPERTY is checked once, as an INVARIANT. One
   more run dumps the state graph, and then the command draws the charts. TLC names each step after
   the innermost named action that takes it, so give each kind of step its own named action. The
   command warns when steps carry the name of the whole next-state action. The command prints the
@@ -302,7 +304,13 @@ function splitRules(cfg) {
     if (!list) kept.push(KEYWORD.test(w) && kept.length ? `\n${w}` : w);
     else if (w !== section && !list.includes(w)) list.push(w);
   }
-  return { cfgWithoutRules: `${kept.join(" ")}\n`, rules, properties };
+  // TLC takes only a state predicate as an INVARIANT, and checks a state predicate given as a
+  // PROPERTY only in the initial states, which the INVARIANT run checks too.
+  return {
+    cfgWithoutRules: `${kept.join(" ")}\n`,
+    rules,
+    properties: properties.filter((p) => !rules.includes(p)),
+  };
 }
 
 function tlc(tools, spec, cfg, base, { dump, workers = "1" } = {}) {
@@ -432,7 +440,7 @@ function check(tools, model, { work, out }, expected) {
   const temporal = properties.map((property) => {
     const file = path.join(tlcDir, `${name}-${property}`);
     const { stdout } = run(`${cfgWithoutRules}PROPERTY ${property}\n`, file, { workers: "auto" });
-    const broken = /^Error: Temporal properties were violated/m.test(stdout);
+    const broken = BROKEN_PROPERTY.test(stdout);
     console.log(
       `${said(property, broken)}${broken ? ` The chart draws only INVARIANT rules, so read TLC's counterexample in ${shown(`${file}.out`)}.` : ""}`,
     );

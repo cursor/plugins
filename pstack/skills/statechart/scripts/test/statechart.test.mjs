@@ -1359,6 +1359,77 @@ test(
 );
 
 test(
+  "from-spec checks a rule that the config lists as both PROPERTY and INVARIANT once, as the INVARIANT, and charts its bug",
+  needsTlc,
+  () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    writeFileSync(
+      join(dir, "Pay.tla"),
+      pay(
+        "Pay",
+        `screen = "Paying" /\\ charges < 2 /\\ charges' = charges + 1 /\\ UNCHANGED screen`,
+      ),
+    );
+    writeFileSync(
+      join(dir, "Pay.cfg"),
+      "SPECIFICATION Spec\nPROPERTY NoDoubleCharge\nINVARIANT NoDoubleCharge\n",
+    );
+    writeFileSync(join(dir, "Pay.map.mjs"), payMap);
+    const r = node("statechart.mjs", ["from-spec", "Pay.tla"], dir);
+    assert.equal(r.status, 1, r.stderr);
+    assert.equal(
+      r.stdout.split("\n\n")[0],
+      `TLC on Pay.tla with Pay.cfg:
+  NoDoubleCharge is broken.
+  TLC ran 3 times in N s.`,
+    );
+    assert.match(r.stdout, /\nRule broken: `NoDoubleCharge`\n/);
+    assert.equal(
+      r.stdout.split("\n").at(-2),
+      "Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in Pay-statechart.",
+    );
+    const unknown = node(
+      "statechart.mjs",
+      ["from-spec", "Pay.tla", "--expect-broken", "Nope"],
+      dir,
+    );
+    assert.match(unknown.stderr, /, whose rules are NoDoubleCharge\.\n/);
+  },
+);
+
+test("from-spec reports a broken PROPERTY in each form that TLC reports it in", needsTlc, () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  writeFileSync(
+    join(dir, "Pay.tla"),
+    pay(
+      "Pay",
+      `screen = "Paying" /\\ charges < 2 /\\ charges' = charges + 1 /\\ UNCHANGED screen`,
+    ).replace(
+      "====",
+      `ChargedAtMostOnce == [](charges <= 1)\nNeverChargedAgain == [][charges' <= 1]_charges\nStartsPaying == screen = "Paying"\n====`,
+    ),
+  );
+  writeFileSync(
+    join(dir, "Pay.cfg"),
+    "SPECIFICATION Spec\nPROPERTIES ChargedAtMostOnce NeverChargedAgain StartsPaying\n",
+  );
+  writeFileSync(join(dir, "Pay.map.mjs"), payMap);
+  const r = node("statechart.mjs", ["from-spec", "Pay.tla"], dir);
+  assert.equal(r.status, 1, r.stderr);
+  const broken = (p) =>
+    `  ${p} is broken. The chart draws only INVARIANT rules, so read TLC's counterexample in ${join("Pay-statechart", "tlc", `Pay-${p}.out`)}.`;
+  assert.equal(
+    r.stdout.split("\n\n")[0],
+    `TLC on Pay.tla with Pay.cfg:
+  Pay.cfg has no INVARIANT, so the chart marks no state broken.
+${broken("ChargedAtMostOnce")}
+${broken("NeverChargedAgain")}
+${broken("StartsPaying")}
+  TLC ran 4 times in N s.`,
+  );
+});
+
+test(
   "a state reached only after a bug takes the bug's color, and the fix edge leaves the state before the changed step",
   needsTlc,
   () => {
@@ -1982,6 +2053,26 @@ ${uncitedWarning}`;
     );
     const tested = run("--map", "rev.map.mjs", "--expect-broken", "NoFalseSaved");
     assert.equal(tested.status, 0, tested.stderr);
+
+    writeFileSync(
+      join(dir, "SaveBoth.cfg"),
+      "SPECIFICATION Spec\nINVARIANT TypeOK\nINVARIANT NoFalseSaved\nPROPERTY NoFalseSaved\n",
+    );
+    const both = node(
+      "statechart.mjs",
+      [
+        ...base,
+        "--config",
+        "SaveBoth.cfg",
+        "--against-config",
+        "SaveBoth.cfg",
+        "--expect-broken",
+        "NoFalseSaved",
+      ],
+      dir,
+    );
+    assert.equal(both.status, 0, both.stderr);
+    assert.equal(both.stderr, warnings);
 
     writeFileSync(join(dir, "SaveAgreedType.cfg"), "SPECIFICATION Spec\nINVARIANT TypeOK\n");
     const unchecked = node(
@@ -2749,7 +2840,11 @@ test(
 
     writeSlowPay(dir, 200, "Receipt");
     const second = node("statechart.mjs", ["from-spec", "Pay.tla"], dir);
-    process.kill(-first.child.pid, "SIGKILL");
+    try {
+      process.kill(-first.child.pid, "SIGKILL");
+    } catch (error) {
+      if (error.code !== "ESRCH") throw error;
+    }
     assert.equal(second.status, 0, second.stderr);
     for (const file of ["chart.mmd", join("tlc", "Pay.dot")]) {
       const text = readFileSync(join(out, file), "utf8");
