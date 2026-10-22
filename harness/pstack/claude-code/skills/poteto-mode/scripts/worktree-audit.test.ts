@@ -1,4 +1,4 @@
-import { rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterAll, expect, test } from "bun:test";
 import { createAuditFixture } from "./worktree-audit.fixture";
@@ -60,6 +60,19 @@ const reused = pushed("reused-name");
 git(repo, "push", "origin", "--delete", "reused-name");
 git(repo, "fetch", "--prune", "origin");
 
+// Local-only files that git status hides by default: an untracked file, and
+// ignored build output. Both are work the audit must hold, never scratch.
+const untrackedOnly = pushed("untracked-only");
+writeFileSync(join(untrackedOnly.directory, "notes.md"), "untracked\n");
+const ignoredOnly = pushed("ignored-only");
+writeFileSync(join(ignoredOnly.directory, ".gitignore"), "build/\nrun.log\n");
+git(ignoredOnly.directory, "add", ".gitignore");
+git(ignoredOnly.directory, "commit", "-m", "ignore build output");
+git(ignoredOnly.directory, "push", "origin", "ignored-only");
+mkdirSync(join(ignoredOnly.directory, "build"));
+writeFileSync(join(ignoredOnly.directory, "build", "artifact.bin"), "bin\n");
+writeFileSync(join(ignoredOnly.directory, "run.log"), "log\n");
+
 fixture.setPrs([
 	{ number: 8, state: "CLOSED", headRefName: "reused-name", headRefOid: "0".repeat(40) },
 	{ number: 7, state: "MERGED", headRefName: "reused-name", headRefOid: reused.head },
@@ -81,6 +94,8 @@ const expectations = [
 	["detached-off-base", "detached", "-", "hold-unpushed"],
 	["detached-gone", "detached", "-", "hold-unpushed"],
 	["reused-name", "no-remote", "#7/merged", "safe"],
+	["untracked-only", "pushed", "-", "hold-wip"],
+	["ignored-only", "pushed", "-", "hold-wip"],
 ];
 for (const [worktree, remote, pr, bucket] of expectations) {
 	test(`worktree audit: ${worktree}`, () => {
@@ -89,3 +104,9 @@ for (const [worktree, remote, pr, bucket] of expectations) {
 		if (worktree === "squash-pruned") expect(result.rows[worktree].merged).toBe("no");
 	});
 }
+
+test("worktree audit: untracked and ignored paths count as wip, never scratch", () => {
+	expect(result.rows["untracked-only"].dirty).toBe("wip:1");
+	expect(result.rows["ignored-only"].dirty).toBe("wip:2");
+	for (const row of Object.values(result.rows)) expect(row.dirty).not.toMatch(/^scratch:/);
+});
