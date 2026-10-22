@@ -1,5 +1,3 @@
-// node --test scripts/test/statechart.test.mjs
-// The TLC tests run when statechart.mjs can find TLC. Its --help says where it looks.
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -27,6 +25,7 @@ const node = (script, args, cwd, env = {}) =>
     cwd,
     encoding: "utf8",
     env: { ...process.env, ...env },
+    timeout: 120_000,
   });
 
 test("a transition on a composite leaves from every state inside it", () => {
@@ -592,7 +591,6 @@ test("compare refuses a chart it cannot read, or an ACTUAL chart that is not dra
     assert.match(r.stderr, /^missing\.mmd: ENOENT/);
   }
   for (const [extra, why] of [
-    ["  U_O --> L_O : tap lock or …", /--all-labels/],
     ["  U_O --> L_O : 1. tap lock", /--highlight 0/],
     [
       "  %% second model (against): the spec",
@@ -609,6 +607,96 @@ test("compare refuses a chart it cannot read, or an ACTUAL chart that is not dra
     if (typeof why === "string") assert.equal(r.stderr, why);
     else assert.match(r.stderr, why);
   }
+});
+
+test("an edge lists every step, writes shared leading words once, and the chart renders at its natural width", () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  const nodes = [
+    ["Home", 1],
+    ["Home", 2],
+    ["Home", 3],
+    ["Away", 1],
+    ["Away", 2],
+    ["Done", 1],
+  ].map(
+    ([s, n], i) =>
+      `${i + 1} [label="/\\\\ s = \\"${s}\\"\\n/\\\\ n = ${n}"${i ? "" : ",style = filled"}]`,
+  );
+  const steps = [
+    "1 -> 4 TapPay",
+    "2 -> 5 TapBack",
+    "3 -> 4 TapHome",
+    "4 -> 1 OpenThread",
+    "5 -> 2 OpenApp",
+    "4 -> 6 Finish",
+  ];
+  writeFileSync(
+    join(dir, "nav.dot"),
+    `strict digraph DiskGraph {\n${nodes.join("\n")}\n${steps.map((e) => e.replace(/ (\w+)$/, ' [label="$1"];')).join("\n")}\n}\n`,
+  );
+  writeFileSync(
+    join(dir, "nav.map.mjs"),
+    `export const state = (v) => v.s;
+export const step = (a) => ({ TapPay: "you tap Pay", TapBack: "you tap Back", TapHome: "you tap Home", OpenThread: "you open the thread", OpenApp: "you open the phone app", Finish: "" })[a];
+`,
+  );
+  writeFileSync(
+    join(dir, "agreed.mmd"),
+    `stateDiagram-v2
+  [*] --> Home
+  Home --> Away : you tap Pay
+  Home --> Away : you tap Back
+  Home --> Away : you tap Home
+  Away --> Home : you open the thread
+  Away --> Home : you open the phone app
+  Away --> Done
+`,
+  );
+  const draw = (...extra) => {
+    const r = node(
+      "tlc-to-chart.mjs",
+      [
+        "--dot",
+        "nav.dot",
+        "--map",
+        "nav.map.mjs",
+        "--highlight",
+        "0",
+        "--out",
+        "chart.mmd",
+        ...extra,
+      ],
+      dir,
+    );
+    assert.equal(r.status, 0, r.stderr);
+    return readFileSync(join(dir, "chart.mmd"), "utf8");
+  };
+  const chart = draw();
+  assert.ok(
+    chart.startsWith(
+      "---\nconfig:\n  markdownAutoWrap: false\n  state:\n    useMaxWidth: false\n---\nstateDiagram-v2\n",
+    ),
+    chart,
+  );
+  const shortened = [
+    "Away -> Done : ",
+    "Away -> Home : you open the thread or the phone app",
+    "Home -> Away : you tap Pay, Back, or Home",
+  ];
+  assert.deepEqual(edges(parseMermaid(chart).regions.Main), shortened);
+  const crlf = chart.replace("---\n", "---  \n").replaceAll("\n", "\r\n");
+  assert.deepEqual(edges(parseMermaid(crlf).regions.Main), shortened);
+  const refused = node("compare-charts.mjs", ["agreed.mmd", "chart.mmd"], dir);
+  assert.equal(refused.status, 2);
+  assert.match(refused.stderr, /draw ACTUAL with --full-labels/);
+  const full = draw("--full-labels");
+  assert.match(full, /^stateDiagram-v2\n {2}%% labels in full\n/m);
+  assert.deepEqual(edges(parseMermaid(full).regions.Main), [
+    "Away -> Done : ",
+    "Away -> Home : you open the thread or you open the phone app",
+    "Home -> Away : you tap Pay or you tap Back or you tap Home",
+  ]);
+  assert.equal(node("compare-charts.mjs", ["agreed.mmd", "chart.mmd"], dir).stdout, "same\n");
 });
 
 const NO_TLC = `Cannot find TLC. Download tla2tools.jar from a TLA+ release:
@@ -795,7 +883,6 @@ const tools = (() => {
 })();
 const needsTlc = { skip: tools ? false : "cannot find TLC" };
 
-// Check every INVARIANT in NAME.cfg in one run and dump NAME.dot.
 function tlc(dir, name) {
   const r = spawnSync(
     tools.java,
@@ -909,7 +996,7 @@ Chart: 4 states and 9 transitions from 4 model states.
 3 work today, 0 still wrong with the fix, 1 fixed or new with the fix.
 
 ${syncStory}
-With the fix, step 2 cannot happen, so you stay at: Offline | Waiting to sync.
+With the fix, step 2 (the server confirms) cannot happen, so you stay at: Offline | Waiting to sync.
 
 Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in Sync-statechart.
 `,
@@ -983,36 +1070,56 @@ Wrote chart.mmd, stories.md, summary.json in Sync-statechart.
 });
 
 test(
-  "--png exits 2 when a chart does not render, even with --expect-broken, and keeps the other files",
+  "--png exits 2 unless every chart renders, even with --expect-broken, and keeps the files it wrote",
   needsTlc,
   () => {
-    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
-    writeFileSync(join(dir, "sync.mmd"), fixture("sync.mmd"));
-    const args = ["from-chart", "sync.mmd", "--expect-broken", "NeverSyncedWhileOffline"];
-    assert.equal(node("statechart.mjs", args, dir).status, 0);
-    // An npx whose mermaid-cli cannot launch a headless browser.
-    const bin = mkdtempSync(join(tmpdir(), "no-browser-"));
+    const args = ["from-chart", "sync.mmd", "--expect-broken", "NeverSyncedWhileOffline", "--png"];
+    const bin = mkdtempSync(join(tmpdir(), "fake-npx-"));
     const launch = "Error: Failed to launch the browser process!";
-    writeFileSync(join(bin, "npx"), `#!/bin/sh\necho "${launch}" >&2\nexit 1\n`, { mode: 0o755 });
-    const r = node("statechart.mjs", [...args, "--png"], dir, {
-      PATH: `${bin}${delimiter}${process.env.PATH}`,
-    });
-    assert.equal(r.status, 2, r.stdout + r.stderr);
-    assert.equal(
-      r.stderr,
-      `could not render Sync-statechart/chart.mmd: ${launch}\ncould not render Sync-statechart/bug-1.mmd: ${launch}\n`,
+    writeFileSync(
+      join(bin, "npx"),
+      `#!/bin/sh
+while [ $# -gt 0 ]; do
+  case "$1" in -i) chart=$2 ;; -o) png=$2 ;; esac
+  shift
+done
+for c in $UNRENDERED; do
+  case "$chart" in */$c.mmd) echo "${launch}" >&2; exit 1 ;; esac
+done
+echo png > "$png"
+`,
+      { mode: 0o755 },
     );
-    assert.match(
-      r.stdout,
-      /\nBroken as expected: NeverSyncedWhileOffline\.\n(.*\n)*Wrote chart\.mmd, bug-1\.mmd, stories\.md, summary\.json in Sync-statechart\.\n$/,
-    );
-    assert.deepEqual(readdirSync(join(dir, "Sync-statechart")).sort(), [
-      "bug-1.mmd",
-      "chart.mmd",
-      "stories.md",
-      "summary.json",
-      "tlc",
-    ]);
+    for (const [unrendered, status, written] of [
+      ["chart bug-1", 2, ["chart.mmd", "bug-1.mmd"]],
+      ["bug-1", 2, ["chart.mmd", "bug-1.mmd", "chart.png"]],
+      ["", 0, ["chart.mmd", "bug-1.mmd", "chart.png", "bug-1.png"]],
+    ]) {
+      const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+      writeFileSync(join(dir, "sync.mmd"), fixture("sync.mmd"));
+      const r = node("statechart.mjs", args, dir, {
+        PATH: `${bin}${delimiter}${process.env.PATH}`,
+        UNRENDERED: unrendered,
+      });
+      assert.equal(r.status, status, `${unrendered}: ${r.stdout}${r.stderr}`);
+      assert.equal(
+        r.stderr,
+        unrendered
+          .split(" ")
+          .filter(Boolean)
+          .map((c) => `could not render Sync-statechart/${c}.mmd: ${launch}\n`)
+          .join(""),
+      );
+      assert.match(r.stdout, /\nBroken as expected: NeverSyncedWhileOffline\.\n/);
+      assert.equal(
+        r.stdout.split("\n").at(-2),
+        `Wrote ${[...written, "stories.md", "summary.json"].join(", ")} in Sync-statechart.`,
+      );
+      assert.deepEqual(
+        readdirSync(join(dir, "Sync-statechart")).sort(),
+        [...written, "stories.md", "summary.json", "tlc"].sort(),
+      );
+    }
   },
 );
 
@@ -1108,13 +1215,13 @@ test(
       [...chart.matchAll(/^ {4}state "([^"]+)" as legend\w+$/gm)].map((m) => m[1]),
       ["Works today", "Fixed or new with the fix"],
     );
-    assert.match(chart, /^stateDiagram-v2\n {2}%% second model \(fix\): the fix\n/);
+    assert.match(chart, /^stateDiagram-v2\n {2}%% second model \(fix\): the fix\n/m);
     const fixEdges = parseMermaid(chart).regions.Main.transitions.filter((t) =>
-      t.label.endsWith("with the fix"),
+      t.label.startsWith("with the fix, "),
     );
     assert.deepEqual(
       fixEdges.map((t) => `${t.from} --> ${t.to} : ${t.label}`),
-      ["Paying, charged --> Paid, charged : the bank charges you, with the fix"],
+      ["Paying, charged --> Paid, charged : with the fix, the bank charges you"],
     );
   },
 );
@@ -1154,7 +1261,7 @@ test(
     );
     assert.equal(
       readFileSync(join(dir, "Pay-statechart", "tlc", "Pay-NoDoubleCharge.cfg"), "utf8"),
-      "SPECIFICATION Spec\nINVARIANT NoDoubleCharge\n",
+      "SPECIFICATION Spec\nINVARIANT NoDoubleCharge\nCONSTRAINT NoDoubleCharge\n",
     );
 
     writeFileSync(
@@ -1326,9 +1433,7 @@ test(
   },
 );
 
-// Each edge as "from --> to : label" with full state labels, and an arrow from a box's border
-// expanded to one edge from each state in the box.
-function chartEdges(mmd) {
+function flatEdges(mmd) {
   const names = new Map();
   const members = new Map();
   let box = null;
@@ -1402,7 +1507,7 @@ export const step = (a) => ({ Boot: "the app starts", Ask: "you ask", Answer: "t
     );
     assert.equal(flat.split("\n").filter((l) => /you open the window/.test(l)).length, 3);
     assert.doesNotMatch(flat, /as g\d+ \{/);
-    assert.deepEqual(chartEdges(boxed), chartEdges(flat));
+    assert.deepEqual(flatEdges(boxed), flatEdges(flat));
     assert.match(boxed, /^ {2}class s5 wrongPath$/m);
     assert.match(boxed, /^ {2}s\d --> s5 : 4\. /m);
     assert.match(boxed, /state "Breaks a rule" as legendWrong/);
@@ -1495,7 +1600,7 @@ There are 2 ways to get here in the model. This is the shortest.
 1. You press Save. Now: Saving, draft
 2. The save times out. Now: Saved, draft
 
-In the agreed chart, step 2 cannot happen, so you stay at: Saving, draft.
+In the agreed chart, step 2 (the save times out) cannot happen, so you stay at: Saving, draft.
 
 Broken as expected: NoFalseSaved.
 
@@ -1504,12 +1609,15 @@ Wrote chart.mmd, bug-1.mmd, stories.md, summary.json in SaveCode-statechart.
     );
     const out = join(dir, "SaveCode-statechart");
     const chart = readFileSync(join(out, "chart.mmd"), "utf8");
-    assert.match(chart, /^stateDiagram-v2\n {2}%% second model \(against\): the agreed chart\n/);
+    assert.match(chart, /^stateDiagram-v2\n {2}%% second model \(against\): the agreed chart\n/m);
     assert.deepEqual(
       [...chart.matchAll(/^ {4}state "([^"]+)" as legend\w+$/gm)].map((m) => m[1]),
       ["Works", "Breaks a rule"],
     );
-    assert.match(chart, /^ {2}s3 --> s3 : the save times out, not in the<br\/>agreed chart$/m);
+    assert.match(
+      chart,
+      /^ {2}s3 --> s3 : in the agreed chart, the save<br\/>times out cannot happen$/m,
+    );
     const bug = readFileSync(join(out, "bug-1.mmd"), "utf8");
     assert.deepEqual([...bug.matchAll(/^ {2}state "([^"]+)" as s\d+$/gm)].map((m) => m[1]).sort(), [
       "Editing, draft",
@@ -1586,7 +1694,6 @@ export const state = (v) => \`\${W[v.where]}: \${R[v.reply]}\`;
 export const step = (a) => ({ Ask: "you ask", Answer: "the reply arrives", Drop: "the app drops the reply", Close: "you close the window", Reopen: "you open the window" })[a];
 `;
 
-// Checks Door.tla with one rule, which breaks, and returns what from-spec printed and drew.
 function runDoor(map) {
   const dir = mkdtempSync(join(tmpdir(), "statechart-"));
   writeFileSync(join(dir, "Door.tla"), doorSpec);
@@ -1721,6 +1828,12 @@ test(
     const run = runDoor(groupMap)("NoLostReply");
     const lines = run.chart.split("\n");
     assert.deepEqual(lines.slice(0, lines.indexOf('  state "At the same time" as regions {')), [
+      "---",
+      "config:",
+      "  markdownAutoWrap: false",
+      "  state:",
+      "    useMaxWidth: false",
+      "---",
       "stateDiagram-v2",
       "  classDef plain fill:#f4f6f7,stroke:#566573,color:#1b2631",
       "  classDef plainWrong fill:#f4f6f7,stroke:#c0392b,stroke-width:4px,color:#7b241c",
@@ -1845,10 +1958,11 @@ export const group = (v) => (v.reply === "shown" ? "Reply shown" : "Waiting");
     assert.deepEqual(
       coarse.stdout.split("\n").filter((l) => /^ {2}(class|classDef) /.test(l)),
       [
+        "  classDef plain fill:#f4f6f7,stroke:#566573,color:#1b2631",
         "  classDef plainWrong fill:#f4f6f7,stroke:#c0392b,stroke-width:4px,color:#7b241c",
         "  class legendWrong plainWrong",
         "  class s0 plainWrong",
-        "  class s1 plainWrong",
+        "  class s1 plain",
       ],
     );
     const summary = JSON.parse(readFileSync(join(tlcDir, "coarse.json"), "utf8"));
@@ -1882,3 +1996,287 @@ export const group = (v) => (v.reply === "shown" ? "Reply shown" : "Waiting");
     }
   },
 );
+
+const order = (name, note, charge) => `---- MODULE ${name} ----
+EXTENDS Naturals
+VARIABLES screen, charges, note
+vars == <<screen, charges, note>>
+Init == screen = "Cart" /\\ charges = 0 /\\ note = 0
+Pay == screen = "Cart" /\\ screen' = "Paying" /\\ note' = ${note} /\\ UNCHANGED charges
+Charge == screen = "Paying" /\\ charges < 2 /\\ ${charge}
+Next == Pay \\/ Charge
+Spec == Init /\\ [][Next]_vars
+NoDoubleCharge == charges <= 1
+====
+`;
+const chargeAgain = "charges' = charges + 1 /\\ UNCHANGED <<screen, note>>";
+const chargeOnce = `IF charges = 0 THEN charges' = 1 /\\ UNCHANGED <<screen, note>> ELSE screen' = "Paid" /\\ UNCHANGED <<charges, note>>`;
+const chargeFirstOnly = "charges = 0 /\\ charges' = 1 /\\ UNCHANGED <<screen, note>>";
+
+test(
+  "the fix changes a bug only at the first step that the reader sees differently",
+  needsTlc,
+  () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    writeFileSync(join(dir, "Order.tla"), order("Order", 0, chargeAgain));
+    writeFileSync(join(dir, "Order.cfg"), "SPECIFICATION Spec\nINVARIANT NoDoubleCharge\n");
+    const withFix = (charge, map = payMap) => {
+      writeFileSync(join(dir, "Order.map.mjs"), map);
+      writeFileSync(join(dir, "OrderFixed.tla"), order("OrderFixed", 1, charge));
+      const r = node(
+        "statechart.mjs",
+        ["from-spec", "Order.tla", "--fixed", "OrderFixed.tla"],
+        dir,
+      );
+      assert.equal(r.status, 1, r.stderr);
+      const chart = readFileSync(join(dir, "Order-statechart", "chart.mmd"), "utf8");
+      return {
+        story: readFileSync(join(dir, "Order-statechart", "stories.md"), "utf8"),
+        fixEdges: parseMermaid(chart)
+          .regions.Main.transitions.filter((t) => t.label.includes("with the fix"))
+          .map((t) => `${t.from} --> ${t.to} : ${t.label}`),
+      };
+    };
+    const hidden = withFix(chargeAgain);
+    assert.deepEqual(hidden.fixEdges, []);
+    assert.match(
+      hidden.story,
+      /^With the fix you see the same screens and steps, so the fix does not change this path\.$/m,
+    );
+    const once = withFix(chargeOnce);
+    assert.deepEqual(once.fixEdges, [
+      "Paying, charged --> Paid, charged : with the fix, the bank charges you",
+    ]);
+    assert.match(
+      once.story,
+      /^With the fix, step 3 \(the bank charges you\) takes you to: Paid, charged\.$/m,
+    );
+    const unlabeledMap = payMap.replace(
+      /^export const state = .*$/m,
+      "export const state = (v) => v.screen;",
+    );
+    const unseen = withFix(chargeOnce, unlabeledMap);
+    assert.deepEqual(unseen.fixEdges, ["Paying --> Paid : with the fix, the bank charges you"]);
+    assert.match(
+      unseen.story,
+      /^With the fix, after step 1, "the bank charges you" happens and takes you to: Paid\.$/m,
+    );
+    const blocked = withFix(chargeFirstOnly, unlabeledMap);
+    assert.deepEqual(blocked.fixEdges, []);
+    assert.match(
+      blocked.story,
+      /yet the rule holds, so the state labels do not show what the fix changes/,
+    );
+  },
+);
+
+const notify = (name, mutedArrive) => `---- MODULE ${name} ----
+EXTENDS Naturals
+VARIABLES screen, muted, banner, badge, missed, msgs, syncs
+vars == <<screen, muted, banner, badge, missed, msgs, syncs>>
+Init == screen = "Inbox" /\\ muted = FALSE /\\ banner = FALSE /\\ badge = FALSE
+        /\\ missed = FALSE /\\ msgs = 0 /\\ syncs = 0
+OpenThread == screen = "Inbox" /\\ screen' = "Thread" /\\ UNCHANGED <<muted, banner, badge, missed, msgs, syncs>>
+OpenSettings == screen \\in {"Inbox", "Thread"} /\\ screen' = "Settings" /\\ UNCHANGED <<muted, banner, badge, missed, msgs, syncs>>
+TapBack == screen \\in {"Thread", "Settings"} /\\ screen' = "Inbox" /\\ UNCHANGED <<muted, banner, badge, missed, msgs, syncs>>
+Mute == screen = "Settings" /\\ ~muted /\\ muted' = TRUE /\\ UNCHANGED <<screen, banner, badge, missed, msgs, syncs>>
+Refresh == syncs < 2 /\\ syncs' = syncs + 1 /\\ UNCHANGED <<screen, muted, banner, badge, missed, msgs>>
+Arrive == msgs < syncs /\\ msgs' = msgs + 1
+          /\\ (IF muted THEN ${mutedArrive} ELSE banner' = TRUE /\\ UNCHANGED <<badge, missed>>)
+          /\\ UNCHANGED <<screen, muted, syncs>>
+Next == OpenThread \\/ OpenSettings \\/ TapBack \\/ Mute \\/ Refresh \\/ Arrive
+Spec == Init /\\ [][Next]_vars
+NeverMissed == ~missed
+NoBannerOnThread == ~(banner /\\ screen = "Thread")
+====
+`;
+
+test(
+  "a step the reader does not see breaks the rule, and the fix shows it on another screen",
+  needsTlc,
+  () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    writeFileSync(
+      join(dir, "Notify.tla"),
+      notify("Notify", "missed' = TRUE /\\ UNCHANGED <<banner, badge>>"),
+    );
+    writeFileSync(
+      join(dir, "NotifyBadge.tla"),
+      notify("NotifyBadge", "badge' = TRUE /\\ UNCHANGED <<banner, missed>>"),
+    );
+    writeFileSync(
+      join(dir, "Notify.cfg"),
+      "SPECIFICATION Spec\nINVARIANT NeverMissed\nINVARIANT NoBannerOnThread\n",
+    );
+    writeFileSync(
+      join(dir, "Notify.map.mjs"),
+      `export const readerActions = ["OpenThread", "OpenSettings", "TapBack", "Mute", "Refresh"];
+export const state = (v) => [v.screen, v.muted && "muted", v.banner && "banner", v.badge && "badge"].filter(Boolean).join(", ");
+export const step = (a) => ({ OpenThread: "you open the thread", OpenSettings: "you open settings", TapBack: "you tap Back", Mute: "you mute alerts", Refresh: "you pull to refresh", Arrive: "a message arrives" })[a];
+export const cause = () => null;
+`,
+    );
+    const r = node(
+      "statechart.mjs",
+      ["from-spec", "Notify.tla", "--fixed", "NotifyBadge.tla", "--label", "the badge fix"],
+      dir,
+    );
+    assert.equal(r.status, 1, r.stderr);
+    const out = (f) => readFileSync(join(dir, "Notify-statechart", f), "utf8");
+    const fixEdges = (f) =>
+      parseMermaid(out(f))
+        .regions.Main.transitions.filter((t) => t.label.includes("with the badge fix"))
+        .map((t) => `${t.from} --> ${t.to} : ${t.label}`);
+    const { classes } = JSON.parse(out("summary.json"));
+    assert.deepEqual(
+      classes.map((c) => [c.invariant, c.end, c.fix]),
+      [
+        ["NoBannerOnThread", "Thread, banner", "unchanged"],
+        ["NeverMissed", "Settings, muted", "Settings, muted, badge"],
+        ["NeverMissed", "Inbox, muted", "Inbox, muted, badge"],
+        ["NeverMissed", "Settings, muted, banner", "Settings, muted, banner, badge"],
+        ["NeverMissed", "Thread, muted", "Thread, muted, badge"],
+        ["NoBannerOnThread", "Thread, muted, banner", "unchanged"],
+        ["NeverMissed", "Inbox, muted, banner", "Inbox, muted, banner, badge"],
+        ["NeverMissed", "Thread, muted, banner", "Thread, muted, banner, badge"],
+        ["NoBannerOnThread", "Thread, muted, banner, badge", "new with the badge fix"],
+      ],
+    );
+    const missed = classes.filter((c) => c.invariant === "NeverMissed");
+
+    const story = out("stories.md");
+    assert.doesNotMatch(story, /do not show what/);
+    assert.match(
+      story,
+      /^With the badge fix, after step 3, "a message arrives" happens and takes you to: Settings, muted, badge\.$/m,
+    );
+    const settings = classes.find((c) => c.end === "Settings, muted");
+    assert.deepEqual(fixEdges(`bug-${settings.n}.mmd`), [
+      "Settings, muted --> Settings, muted, badge : with the badge fix, a message arrives",
+    ]);
+    const drawn = fixEdges("chart.mmd");
+    assert.equal(new Set(drawn).size, drawn.length);
+    for (const c of missed)
+      assert.ok(
+        drawn.includes(`${c.end} --> ${c.end}, badge : with the badge fix, a message arrives`),
+        `bug ${c.n}`,
+      );
+  },
+);
+
+test(
+  "each looping step on a bug path keeps its own label, a null cause groups bugs by end state, and the mapping names the key's colors",
+  needsTlc,
+  () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    writeFileSync(
+      join(dir, "Browse.tla"),
+      `---- MODULE Browse ----
+EXTENDS Naturals
+VARIABLES screen, looks, scrolled
+vars == <<screen, looks, scrolled>>
+Init == screen = "Cart" /\\ looks = 0 /\\ scrolled = FALSE
+Look == screen = "Cart" /\\ looks < 3 /\\ looks' = looks + 1 /\\ UNCHANGED <<screen, scrolled>>
+Scroll == screen = "Cart" /\\ looks = 1 /\\ ~scrolled /\\ scrolled' = TRUE /\\ UNCHANGED <<screen, looks>>
+Pay == screen = "Cart" /\\ looks = 3 /\\ scrolled /\\ screen' = "Paying" /\\ UNCHANGED <<looks, scrolled>>
+Fail == screen = "Paying" /\\ screen' = "Failed" /\\ UNCHANGED <<looks, scrolled>>
+Hang == screen = "Paying" /\\ screen' = "Stuck" /\\ UNCHANGED <<looks, scrolled>>
+Next == Look \\/ Scroll \\/ Pay \\/ Fail \\/ Hang
+Spec == Init /\\ [][Next]_vars
+NeverLost == screen \\notin {"Failed", "Stuck"}
+====
+`,
+    );
+    writeFileSync(join(dir, "Browse.cfg"), "SPECIFICATION Spec\nINVARIANT NeverLost\n");
+    writeFileSync(
+      join(dir, "Browse.map.mjs"),
+      `export const readerActions = ["Look", "Scroll", "Pay"];
+export const state = (v) => v.screen;
+export const step = (a) => ({ Look: "you look", Scroll: "you scroll", Pay: "you pay", Fail: "the payment fails", Hang: "the payment hangs" })[a];
+export const cause = () => null;
+export const legend = { works: "Works on main", wrong: "Wrong on main" };
+`,
+    );
+    const r = node("statechart.mjs", ["from-spec", "Browse.tla"], dir);
+    assert.equal(r.status, 1, r.stderr);
+    const out = (f) => readFileSync(join(dir, "Browse-statechart", f), "utf8");
+    assert.deepEqual(
+      JSON.parse(out("summary.json")).classes.map((c) => [c.end, c.cause]),
+      [
+        ["Failed", null],
+        ["Stuck", null],
+      ],
+    );
+    assert.doesNotMatch(out("stories.md"), /^Why:|null/m);
+    const loops = (chart) => [...chart.matchAll(/^ {2}(s\d+) --> \1 : (.*)$/gm)].map((m) => m[2]);
+    assert.deepEqual(loops(out("bug-1.mmd")), ["1. you look<br/>2. you scroll<br/>3, 4. you look"]);
+    assert.deepEqual(loops(out("chart.mmd")), ["you look or you scroll"]);
+    const chart = out("chart.mmd");
+    assert.ok(chart.includes('state "Works on main" as legendWorks'));
+    assert.ok(chart.includes('state "Wrong on main" as legendWrong'));
+    assert.doesNotMatch(chart, /legendFixed/);
+  },
+);
+
+test("a rule that stays broken reports only the step that broke it", needsTlc, () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  writeFileSync(
+    join(dir, "Buzz.tla"),
+    `---- MODULE Buzz ----
+EXTENDS Naturals
+VARIABLES x, y, buzzed
+vars == <<x, y, buzzed>>
+Init == x = 0 /\\ y = 0 /\\ buzzed = FALSE
+IncX == x < 6 /\\ x' = x + 1 /\\ UNCHANGED <<y, buzzed>>
+IncY == y < 6 /\\ y' = y + 1 /\\ UNCHANGED <<x, buzzed>>
+Ring == x = 2 /\\ ~buzzed /\\ buzzed' = TRUE /\\ UNCHANGED <<x, y>>
+Next == IncX \\/ IncY \\/ Ring
+Spec == Init /\\ [][Next]_vars
+NeverBuzzed == ~buzzed
+====
+`,
+  );
+  writeFileSync(join(dir, "Buzz.cfg"), "SPECIFICATION Spec\nINVARIANT NeverBuzzed\n");
+  writeFileSync(
+    join(dir, "Buzz.map.mjs"),
+    'export const state = (v) => (v.buzzed ? "Buzzed" : "Quiet");\nexport const step = () => "time passes";\n',
+  );
+  const r = node("statechart.mjs", ["from-spec", "Buzz.tla"], dir);
+  assert.equal(r.status, 1, r.stderr);
+  const traces = parseTraces(
+    readFileSync(join(dir, "Buzz-statechart", "tlc", "Buzz-NeverBuzzed.out"), "utf8"),
+  );
+  assert.equal(traces.length, 7);
+  for (const t of traces)
+    assert.equal(
+      t.steps.findIndex((s) => s.vars.buzzed),
+      t.steps.length - 1,
+    );
+});
+
+test("from-spec warns when steps carry the name of the whole next-state action", needsTlc, () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  const count = (next) => `---- MODULE Count ----
+EXTENDS Naturals
+VARIABLES x
+Init == x = 0
+Inc == x < 3 /\\ x' = x + 1
+${next}
+Spec == \\* not [][Inc]_x
+        Init /\\ [][Next]_x
+====
+`;
+  writeFileSync(join(dir, "Count.cfg"), "SPECIFICATION Spec\n");
+  writeFileSync(join(dir, "Count.map.mjs"), "export const state = (v) => String(v.x);\n");
+  writeFileSync(join(dir, "Count.tla"), count("Next == Inc \\/ (x = 3 /\\ x' = 0)"));
+  const unnamed = node("statechart.mjs", ["from-spec", "Count.tla"], dir);
+  assert.equal(unnamed.status, 0, unnamed.stderr);
+  assert.match(
+    unnamed.stderr,
+    /^Count\.tla: 1 step has the name Next, the whole next-state action/,
+  );
+  writeFileSync(join(dir, "Count.tla"), count("Next == Inc"));
+  const named = node("statechart.mjs", ["from-spec", "Count.tla"], dir);
+  assert.equal(named.status, 0, named.stderr);
+  assert.equal(named.stderr, "");
+});

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import process from "node:process";
-import { LEGEND_ID, compareCharts, parseMermaid } from "./lib.mjs";
+import { FULL_LABELS, LEGEND_ID, compareCharts, parseMermaid } from "./lib.mjs";
 
 const USAGE = "Usage: node compare-charts.mjs EXPECTED.mmd ACTUAL.mmd";
 const HELP = `${USAGE}
@@ -11,7 +11,7 @@ transitions. statechart.mjs from-chart runs it to check that the spec still draw
 the reader agreed to.
 
 EXPECTED is the agreed chart. ACTUAL is what tlc-to-chart.mjs drew from the spec in the customer
-view with --highlight 0 --all-labels --flat, without --cover, --fixed-dot, or --against-dot. Each
+view with --highlight 0 --full-labels --flat, without --cover, --fixed-dot, or --against-dot. Each
 chart compares as the
 machine that its steps reach from its start states. A chart with parallel regions compares as its
 combined machine, so a guard that blocks a step in only some combinations of regions shows as a
@@ -59,18 +59,24 @@ const orExit = (file, f) => {
   }
 };
 const [expectedText, actualText] = files.map((f) => orExit(f, () => fs.readFileSync(f, "utf8")));
+const has = (re) => re.test(actualText);
 const textRefusals = [
   [
-    /^\s*%% second model/m,
+    has(/^\s*%% second model/m),
     "it has a second model; draw ACTUAL without --fixed-dot or --against-dot",
   ],
   [
-    new RegExp(`^\\s*state\\s+"[^"]*"\\s+as\\s+(?!${LEGEND_ID}\\b)\\w+\\s*\\{`, "m"),
+    has(new RegExp(`^\\s*state\\s+"[^"]*"\\s+as\\s+(?!${LEGEND_ID}\\b)\\w+\\s*\\{`, "m")),
     "it has boxes; draw ACTUAL with --flat",
+  ],
+  [
+    has(new RegExp(`^\\s*state\\s+"[^"]*"\\s+as\\s+${LEGEND_ID}\\s*\\{`, "m")) &&
+      !actualText.includes(FULL_LABELS),
+    "edge labels write shared words once; draw ACTUAL with --full-labels",
   ],
 ];
 for (const [bad, why] of textRefusals) {
-  if (bad.test(actualText)) {
+  if (bad) {
     console.error(`${actualFile}: ${why}`);
     process.exit(2);
   }
@@ -80,7 +86,6 @@ const actualRegions = orExit(actualFile, () => parseMermaid(actualText).regions)
 const drawn = Object.values(actualRegions).flatMap((r) => r.transitions);
 
 const refusals = [
-  [(l) => / or …$/.test(l), 'an edge label ends in " or …"; draw ACTUAL with --all-labels'],
   [
     (l) => /^\d+(, \d+)*\. /.test(l),
     "an edge label is a numbered path step; draw ACTUAL with --highlight 0",

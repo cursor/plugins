@@ -4,6 +4,7 @@ import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 import {
+  FULL_LABELS,
   GROUP_PALETTE,
   LEGEND_ID,
   PLAIN_FILL,
@@ -12,6 +13,7 @@ import {
   groupClassDef,
   groupColorProblem,
   isRecord,
+  joinLabels,
   parseDot,
   parseMermaid,
   parseTraces,
@@ -35,26 +37,29 @@ statechart.mjs runs it once for the overview and once for each bug chart.
                          optionally detail(vars, facts), step(action, before, after),
                          guard(action, before, after), timer(action, before, after),
                          cause(vars, facts, invariant), group(vars, facts), groupColors,
-                         regionNames, and readerActions. guard is when the step
+                         regionNames, readerActions, and legend. guard is when the step
                          can happen, in plain words. An edge reads "step [words]" when every
                          model step behind it has words. timer is how many seconds the code waits
                          before a timer step, and the step reads "after N s, step".
                          cause is the hidden reason a bad state is bad: counterexamples with the
-                         same invariant and cause are one bug. readerActions are the actions the
-                         reader takes. group is the group of a state, below.
+                         same invariant and cause are one bug. When cause returns nothing, the
+                         end state stands in for it. readerActions are the actions the
+                         reader takes. group is the group of a state, below. legend, such as
+                         { works: "Works on main" }, gives the legend's words for the works,
+                         wrong, and fixed statuses.
                          facts.enabled is the set of actions the state enables. facts.settled is
                          true when only reader actions are enabled, so nothing else happens until
                          the reader acts.
   --traces FILE          TLC output that holds counterexamples. Repeat it. TLC -continue gives one
                          per bad state. It refuses a file from a TLC run that stopped early or hit
                          an error other than a broken rule.
-  --fixed-dot FILE       The state graph of the model with the open fix. Counterexamples replay on
-                         it.
+  --fixed-dot FILE       The state graph of the model with the open fix. Each bug's steps replay
+                         on it.
   --fixed-traces FILE    TLC output for the same invariants on the fixed model. Repeat it. It marks
                          states fixed or still wrong, and adds the bugs that only the fixed model
                          has after the current model's bugs.
   --against-dot FILE     The state graph of the spec that the current code must follow.
-                         Counterexamples replay on it. Do not use it with --fixed-dot.
+                         Each bug's steps replay on it. Do not use it with --fixed-dot.
   --against-traces FILE  TLC output for the spec. Repeat it. Its bugs are drawn wrong, and the
                          bugs that only the spec has number after the code's bugs.
   --label TEXT           The name of the second model in the chart and the stories. Default:
@@ -67,7 +72,9 @@ statechart.mjs runs it once for the overview and once for each bug chart.
                          counterexample paths.
   --highlight N          Draw bug N as a numbered path. Default 1. 0 draws none.
   --path-only            Draw only the highlighted path.
-  --all-labels           Write every label on an edge. Default: the two most common, then " or …".
+  --full-labels          Write each label on an edge in full, joined by " or ", and mark the chart
+                         "${FULL_LABELS}". Default: write the leading words that the labels
+                         share once, as in "you tap Pay or Back".
   --flat                 Draw every state on its own, with no boxes.
   --regions              When every state reads "context: progress", draw two parallel regions,
                          context and progress, when they are smaller and proved. They draw the
@@ -82,6 +89,14 @@ statechart.mjs runs it once for the overview and once for each bug chart.
   --story FILE           The reader stories, one per bug.
   --summary FILE         The counts for the chart and the bugs, as JSON.
   -h, --help             Print this help, and exit 0.
+
+Each bug replays on the second model by its screens and step words, which are what the reader
+sees. The replay takes the second model's steps that keep the screen and that the reader does not
+take. A bug step that the reader does not see must keep the screen on the second model too, unless
+the second model cannot take it. The replay stops at the first step that the second model shows
+the reader differently. There the chart draws "with LABEL, STEP" (or "in LABEL, STEP" for
+--against-dot) to where the second model goes, or a loop "... STEP cannot happen" when it cannot
+take a step that the reader sees.
 
 The second model may have other variables and actions than the current model. Variables and
 record fields that one start state has and the other does not are left out when the two models
@@ -107,8 +122,12 @@ a step that they make wrongly gets back every arrow that the full regions take t
 compare-charts.mjs on the --regions-all and --proof files repeats the first proof.
 mapping.regionNames = [context, progress] names the two regions.
 
+Outside regions, two states have at most one arrow. Its lines are the numbered steps, then the
+current model's steps, then the second model's steps, with a blank line between each group.
+
 Without group(), the legend shows only the statuses the chart uses. A chart with a second model
-has the line "%% second model (fix|against): LABEL" right after stateDiagram-v2.
+has the line "%% second model (fix|against): LABEL" right after stateDiagram-v2. Each chart
+starts with front matter that keeps Mermaid from shrinking it to the page or rewrapping its labels.
 
 Groups: group(vars, facts) returns the name of the group that a model state is in, such as
 "Toast shown", or nothing. A chart state is in a group when all its model states are in it. A
@@ -160,7 +179,7 @@ for (let i = 2; i < process.argv.length; i++) {
   else if (a === "--view") args.view = next();
   else if (a === "--highlight") args.highlight = Number(next());
   else if (a === "--path-only") args.pathOnly = true;
-  else if (a === "--all-labels") args.allLabels = true;
+  else if (a === "--full-labels") args.fullLabels = true;
   else if (a === "--flat") args.flat = true;
   else if (a === "--regions") args.regions = true;
   else if (a === "--proof") args.proof = next();
@@ -227,9 +246,9 @@ function keyOf(vars, facts) {
     throw new Error(`state() must return a string; got ${JSON.stringify(outer)}`);
   return args.view === "layered" ? `${outer}${SEP}${mapping.detail(vars, facts)}` : outer;
 }
-function stepLabel(action, before, after) {
+function stepLabel(action, before, after, view = args.view) {
   const said = typeof mapping.step === "function" ? mapping.step(action, before, after) : action;
-  const named = args.view === "customer" || said === action ? said : `${said} [${action}]`;
+  const named = view === "customer" || said === action ? said : `${said} [${action}]`;
   const seconds = typeof mapping.timer === "function" ? mapping.timer(action, before, after) : null;
   if (seconds === undefined || seconds === null || seconds === "" || !named) return named;
   if (typeof seconds !== "number" || !Number.isFinite(seconds) || seconds <= 0)
@@ -324,7 +343,7 @@ function quotient(m) {
     edges.get(id).counts.set(label, (edges.get(id).counts.get(label) ?? 0) + 1);
     addGuard(edges.get(id).guards, label, stepGuard(e.action, before, after));
   }
-  // Most common wording first. A chart edge shows two unless --all-labels.
+  // Most common wording first.
   for (const e of edges.values())
     e.labels = new Set([...e.counts].sort((a, b) => b[1] - a[1]).map(([l]) => l));
   const settled = new Set(
@@ -358,21 +377,26 @@ if (secondGraph) {
 
 // Reader path of one trace: drop system steps that keep the reader in the same state.
 // Reader actions stay even then, because the reader did them.
-function readerPath(trace, key) {
+function readerPath(trace, key, labelOf = stepLabel) {
   const out = [{ key: key(trace.steps[0].vars), label: null, modelStep: 0 }];
   for (let i = 1; i < trace.steps.length; i++) {
+    const { action } = trace.steps[i];
     const k = key(trace.steps[i].vars);
-    if (k === out[out.length - 1].key && !readerActions.has(trace.steps[i].action)) continue;
+    if (k === out[out.length - 1].key && !readerActions.has(action)) continue;
     const [before, after] = [trace.steps[i - 1].vars, trace.steps[i].vars];
-    const label = stepLabel(trace.steps[i].action, before, after) || trace.steps[i].action;
-    const guard = stepGuard(trace.steps[i].action, before, after);
-    out.push({ key: k, label, guard, modelStep: i });
+    const label = labelOf(action, before, after) || action;
+    const guard = stepGuard(action, before, after);
+    out.push({ key: k, label, guard, action, modelStep: i });
   }
   return out;
 }
 
-// Replay a counterexample on the second model, comparing only the variables both models have.
-// Returns where the second model leaves the counterexample.
+const readerLabel = (action, before, after) => stepLabel(action, before, after, "customer");
+// Replay a bug on the second model, step by step. The reader sees the screens and step words of its
+// reader path. The reader does not see a step that keeps the screen and that they do not take, so
+// the second model must keep the screen at that step too, or be unable to take it. Returns the
+// first step that the second model shows the reader differently, or, when it shows them all the
+// same way, whether a state on the way breaks the same rule there.
 function replaySecond(trace) {
   if (!second) return null;
   const shared = (vars) => stateKey(omit(vars, lacks));
@@ -384,41 +408,76 @@ function replaySecond(trace) {
   }
   const actions = new Set([...secondGraph.edges, ...secondGraph.loops].map((e) => e.action));
   const nodeOf = (id) => secondGraph.nodes.get(id);
-  let cur = [...secondGraph.nodes.values()].find(
-    (n) => n.init && sharedOf(n) === shared(trace.steps[0].vars),
+  const screen = new Map(
+    [...secondGraph.nodes.values()].map((n) => [n.id, second.customer(n.vars)]),
   );
-  if (!cur) return { step: 0, reason: "starts somewhere else" };
+  const words = (e) => readerLabel(e.action, nodeOf(e.from).vars, nodeOf(e.to).vars) || e.action;
+  const settle = (ids) => {
+    const all = new Set(ids);
+    for (const id of all)
+      for (const e of out.get(id) ?? [])
+        if (!readerActions.has(e.action) && screen.get(e.to) === screen.get(id)) all.add(e.to);
+    return all;
+  };
+  const seen = readerPath(trace, main.customer, readerLabel);
+  const shownAt = new Map(seen.map((p, j) => [p.modelStep, j]));
+  let here = settle(
+    [...secondGraph.nodes.values()]
+      .filter((n) => n.init && screen.get(n.id) === seen[0].key)
+      .map((n) => n.id),
+  );
+  if (here.size === 0) return { reason: "starts on another screen" };
+  const passed = new Set(here);
+  let j = 0;
   for (let i = 1; i < trace.steps.length; i++) {
-    const want = trace.steps[i];
-    const target = shared(want.vars);
-    const from = out.get(cur.id) ?? [];
-    const exact = from.find((e) => e.action === want.action && sharedOf(nodeOf(e.to)) === target);
-    if (exact) {
-      cur = nodeOf(exact.to);
+    const { action } = trace.steps[i];
+    const hidden = !shownAt.has(i);
+    if (!hidden) j = shownAt.get(i);
+    const want = seen[j];
+    const [before, after] = [trace.steps[i - 1].vars, trace.steps[i].vars];
+    const known = actions.has(action);
+    if (!known && (hidden || shared(before) === shared(after))) continue;
+    const tries = [...here].flatMap((id) =>
+      (out.get(id) ?? []).filter((e) =>
+        known ? e.action === action : sharedOf(nodeOf(e.to)) === shared(after),
+      ),
+    );
+    if (hidden && tries.length === 0) continue;
+    const same = known
+      ? tries.filter((e) => screen.get(e.to) === want.key && (hidden || words(e) === want.label))
+      : tries;
+    if (same.length) {
+      here = settle(same.map((e) => e.to));
+      for (const id of here) passed.add(id);
       continue;
     }
-    if (!actions.has(want.action)) {
-      if (target === sharedOf(cur)) continue;
-      const any = from.find((e) => sharedOf(nodeOf(e.to)) === target);
-      if (any) {
-        cur = nodeOf(any.to);
-        continue;
-      }
+    const outcomes = new Map();
+    for (const e of tries) {
+      const id = `${screen.get(e.to)}${SEP}${words(e)}`;
+      outcomes.set(id, [...(outcomes.get(id) ?? []), e]);
     }
-    const wanted = omit(want.vars, lacks);
-    const score = (n) => {
-      const have = omit(n.raw, extra);
-      return Object.keys(wanted).filter((k) => stateKey(have[k]) === stateKey(wanted[k])).length;
-    };
-    const best = from
-      .filter((e) => e.action === want.action)
-      .map((e) => nodeOf(e.to))
-      .sort((a, b) => score(b) - score(a))[0];
-    const before = trace.steps[i - 1].vars;
-    const vars = fill((best ?? cur).raw, lacks, before);
-    return { step: i, action: want.action, disabled: !best, key: second.key(vars), vars, before };
+    const taken = [...outcomes.values()].sort((a, b) => b.length - a.length)[0]?.[0];
+    const from = main.key(before);
+    const said = hidden ? readerLabel(action, before, after) || action : want.label;
+    const at = { step: j, said, from, hidden };
+    if (!taken)
+      return {
+        ...at,
+        key: from,
+        label: stepLabel(action, before, after) || action,
+        disabled: true,
+      };
+    const [b, a] = [nodeOf(taken.from).vars, nodeOf(taken.to).vars];
+    return { ...at, key: second.key(a), label: stepLabel(taken.action, b, a) || taken.action };
   }
-  return { step: trace.steps.length, sameEnd: true };
+  const bad = new Set(
+    rawSecondTraces
+      .filter((t) => t.invariant === trace.invariant)
+      .map((t) => stateKey(t.steps[t.steps.length - 1].vars)),
+  );
+  const ruleHolds =
+    secondTraceFiles.length > 0 && ![...passed].some((id) => bad.has(stateKey(nodeOf(id).vars)));
+  return { sameEnd: true, ruleHolds };
 }
 
 function readTraces(files, paths = []) {
@@ -463,10 +522,11 @@ function group(cuts, m) {
   for (const trace of cuts) {
     const rp = readerPath(trace, m.customer);
     const last = trace.steps[trace.steps.length - 1].vars;
-    const cause =
+    const said =
       typeof mapping.cause === "function"
-        ? String(mapping.cause(last, m.facts(last), trace.invariant))
+        ? mapping.cause(last, m.facts(last), trace.invariant)
         : null;
+    const cause = said === undefined || said === null ? null : String(said);
     const id = `${trace.invariant}${SEP}${cause ?? rp[rp.length - 1].key}`;
     const prev = byId.get(id);
     if (
@@ -511,12 +571,14 @@ for (const c of introduced) {
 classes.push(...introduced);
 
 // ---------- status ----------
-// A chart state is bad when it holds a state that breaks a rule, or when every path from the start to
-// it passes such a state: what the reader sees after a bug is part of that bug.
+// A chart state is bad when it holds a state where a rule breaks, or when every path from the start
+// to it passes such a state: what the reader sees after a bug is part of that bug. TLC stops each
+// path at the first state that breaks the rule, so a later state that breaks it again does not
+// color its chart state when a path without a bug also reaches that chart state.
 // With a fix, a state is still wrong when it is bad in the fixed model, and fixed when it is bad only
 // in the current model; without --fixed-traces every bad state is wrong.
 // Against a spec, a state is wrong when it is bad in either model, and green when only the spec has it.
-const diverges = (c) => c.second?.key !== undefined && c.second.key !== c.end;
+const diverges = (c) => c.second?.key !== undefined;
 function badKeys(m, keys, raw) {
   const g = m.graph;
   const bad = new Set(raw.map((t) => stateKey(t.steps[t.steps.length - 1].vars)));
@@ -548,7 +610,6 @@ const badSecond =
       ? badNow
       : new Set();
 const allNodes = new Set([...now.nodes, ...(secondQ?.nodes ?? [])]);
-for (const c of classes) if (diverges(c)) allNodes.add(c.second.key);
 const onlySecond = (k) => second && !now.nodes.has(k);
 const status = (k) => {
   if (role === "against")
@@ -560,7 +621,7 @@ const status = (k) => {
 
 const edges = new Map(now.edges);
 if (secondQ) {
-  const only = (l) => `${l} (${within} ${L})`;
+  const only = (l) => `${within} ${L}, ${l}`;
   for (const [id, e] of secondQ.edges) {
     if (!edges.has(id))
       edges.set(id, {
@@ -571,33 +632,22 @@ if (secondQ) {
       });
   }
 }
-// The second model changes one model step of the counterexample. Its edge leaves the chart state
+// The second model shows the reader one step of the bug differently. Its edge leaves the chart state
 // before that step and ends where the second model goes instead, or stays put when the second model
-// cannot take the step.
-const secondEdgeId = (c) => `${c.second.from}${SEP}${SEP}${c.second.key}${SEP}second`;
+// cannot take the step. A step that the chart already draws there, in the same words, adds no edge.
 for (const c of classes) {
   if (!diverges(c)) continue;
-  const { action, before } = c.second;
-  const after = c.trace.steps[c.second.step].vars;
-  c.second.from = main.key(before);
-  c.second.said = stepLabel(action, before, after) || action;
-  c.second.said2 = stepLabel(action, before, c.second.vars) || c.second.said;
-  const id = secondEdgeId(c);
-  if (!edges.has(id))
-    edges.set(id, {
-      from: c.second.from,
-      to: c.second.key,
-      labels: new Set(),
-      secondOnly: true,
-      secondOf: new Set(),
-    });
-  const blocked = role === "fix" ? `blocked by ${L}` : `not in ${L}`;
-  edges
-    .get(id)
-    .labels.add(
-      c.second.disabled ? `${c.second.said}, ${blocked}` : `${c.second.said2}, ${within} ${L}`,
-    );
-  edges.get(id).secondOf.add(c);
+  const s = c.second;
+  const plain = `${s.from}${SEP}${SEP}${s.key}`;
+  s.text = `${within} ${L}, ${s.label}${s.disabled ? " cannot happen" : ""}`;
+  if (!s.disabled && [s.label, s.text].some((l) => edges.get(plain)?.labels.has(l))) {
+    s.edge = plain;
+    continue;
+  }
+  s.edge = `${plain}${SEP}second`;
+  if (!edges.has(s.edge))
+    edges.set(s.edge, { from: s.from, to: s.key, labels: new Set(), secondOnly: true });
+  edges.get(s.edge).labels.add(s.text);
 }
 
 // ---------- highlighted path ----------
@@ -609,13 +659,10 @@ const pathNumbers = new Map();
 if (chosen) {
   chosen.path.slice(1).forEach((p, i) => {
     const id = `${chosen.path[i].key}${SEP}${SEP}${p.key}`;
-    if (!pathNumbers.has(id))
-      pathNumbers.set(id, {
-        n: [],
-        label: p.label,
-        shown: p.guard ? `${p.label} [${p.guard}]` : p.label,
-      });
-    pathNumbers.get(id).n.push(i + 1);
+    if (!pathNumbers.has(id)) pathNumbers.set(id, []);
+    pathNumbers
+      .get(id)
+      .push({ n: i + 1, label: p.label, shown: p.guard ? `${p.label} [${p.guard}]` : p.label });
     if (!edges.has(id))
       edges.set(id, { from: chosen.path[i].key, to: p.key, labels: new Set([p.label]) });
   });
@@ -652,18 +699,19 @@ if (args.cover) {
       secondQ,
       [...secondQ.settled].filter((k) => !now.nodes.has(k)),
     );
+  const pathLabels = new Map();
   for (const c of classes) {
-    c.path.slice(1).forEach((p, i) => keepEdges.add(`${c.path[i].key}${SEP}${SEP}${p.key}`));
-    if (diverges(c)) keepEdges.add(secondEdgeId(c));
+    c.path.slice(1).forEach((p, i) => {
+      const id = `${c.path[i].key}${SEP}${SEP}${p.key}`;
+      keepEdges.add(id);
+      pathLabels.set(id, (pathLabels.get(id) ?? new Set()).add(p.label));
+    });
+    if (diverges(c)) keepEdges.add(c.second.edge);
   }
   for (const id of keepEdges) {
     if (!edges.has(id)) {
       const [from, to] = id.split(`${SEP}${SEP}`);
-      const c = classes.find((x) =>
-        x.path.some((p, i) => i > 0 && x.path[i - 1].key === from && p.key === to),
-      );
-      const step = c?.path.find((p, i) => i > 0 && c.path[i - 1].key === from && p.key === to);
-      edges.set(id, { from, to, labels: new Set([step?.label ?? ""]) });
+      edges.set(id, { from, to, labels: pathLabels.get(id) ?? new Set() });
     }
   }
   coverEdges = keepEdges;
@@ -671,9 +719,15 @@ if (args.cover) {
 
 // ---------- Mermaid ----------
 const LEGEND = {
-  works: ["legendWorks", role === "fix" ? "Works today" : "Works"],
-  wrong: ["legendWrong", role === "fix" ? `Still wrong with ${L}` : "Breaks a rule"],
-  fixed: ["legendFixed", role === "fix" ? `Fixed or new with ${L}` : `Only in ${L}`],
+  works: ["legendWorks", mapping.legend?.works ?? (role === "fix" ? "Works today" : "Works")],
+  wrong: [
+    "legendWrong",
+    mapping.legend?.wrong ?? (role === "fix" ? `Still wrong with ${L}` : "Breaks a rule"),
+  ],
+  fixed: [
+    "legendFixed",
+    mapping.legend?.fixed ?? (role === "fix" ? `Fixed or new with ${L}` : `Only in ${L}`),
+  ],
 };
 
 // ---------- groups ----------
@@ -696,7 +750,6 @@ if (grouping) {
   for (const n of graph.nodes.values()) add(now.keys.get(n.id), n.vars, main);
   if (second)
     for (const n of secondGraph.nodes.values()) add(secondQ.keys.get(n.id), n.vars, second);
-  for (const c of classes) if (diverges(c)) add(c.second.key, c.second.vars, second);
 
   const given = mapping.groupColors ?? {};
   if (!isRecord(given))
@@ -754,12 +807,22 @@ const groupCounts = (drawn) =>
     }))
     .filter((g) => g.states > 0);
 
+// Mermaid shrinks a chart to the page width unless useMaxWidth is false, and rewraps labels that
+// wrap() already wrapped unless markdownAutoWrap is false.
+const frontMatter = (title) => [
+  "---",
+  ...(title ? [`title: ${JSON.stringify(title)}`] : []),
+  "config:",
+  "  markdownAutoWrap: false",
+  "  state:",
+  "    useMaxWidth: false",
+  "---",
+];
 // drawn holds { group, status, cls } for each state the chart draws.
 function head(drawn) {
-  const out = [];
-  if (args.title) out.push("---", `title: ${JSON.stringify(args.title)}`, "---");
-  out.push("stateDiagram-v2");
+  const out = [...frontMatter(args.title), "stateDiagram-v2"];
   if (role) out.push(`  %% second model (${role}): ${L}`);
+  if (args.fullLabels) out.push(`  ${FULL_LABELS}`);
   const used = Object.keys(LEGEND).filter((s) => drawn.some((d) => d.status === s));
   const legend = grouping
     ? [
@@ -821,6 +884,7 @@ function regionsChart() {
   };
   const ids = new Map([...flat.Main.states].map((s, i) => [s, `p${i}`]));
   const proof = [
+    ...frontMatter(),
     "stateDiagram-v2",
     ...[...ids].map(([s, id]) => `  state "${quote(s)}" as ${id}`),
     ...[...flat.Main.initial].map((s) => `  [*] --> ${ids.get(s)}`),
@@ -991,7 +1055,7 @@ function regionsChart() {
       const e = edges.get(`${c.path[j].key}${SEP}${SEP}${p.key}`);
       if (e) stepsOf(e, norm(p.label)).forEach(want);
     });
-    if (diverges(c)) stepsOf(edges.get(secondEdgeId(c)), "").forEach(want);
+    if (diverges(c)) stepsOf(edges.get(c.second.edge), "").forEach(want);
   }
   const cheapest = () => {
     const cost = new Map(starts.map((k) => [bar(split(k)), 0]));
@@ -1122,26 +1186,61 @@ for (const [box, members] of boxes) for (const k of members) boxOf.set(k, box);
 const caption = (k) =>
   args.view === "layered" ? k.split(SEP)[1] : boxOf.has(k) ? k.slice(boxOf.get(k).length + 2) : k;
 
-let edgeCount = 0;
+// Consecutive steps of one arrow with the same words share a line, as in "2, 3. you look".
+function numbered(steps) {
+  const runs = [];
+  for (const { n, shown } of steps) {
+    const last = runs.at(-1);
+    if (last?.shown === shown && last.n.at(-1) === n - 1) last.n.push(n);
+    else runs.push({ shown, n: [n] });
+  }
+  return runs.map(({ shown, n }) => `${n.join(", ")}. ${shown}`);
+}
 const drawnLabels = new Set();
-const lines = [];
+// Mermaid stacks the loops on a state in one place, so two states get one arrow. A blank line sets
+// its numbered steps, the current model's steps, and the second model's steps apart, since a
+// wrapped line looks like a new one. The blank line holds a no-break space, because Mermaid drops
+// an empty line.
+const arrows = new Map();
 for (const [id, e] of edges) {
   if (!keep.has(e.from) || !keep.has(e.to)) continue;
-  if (args.pathOnly && chosen && !pathNumbers.has(id) && !e.secondOf?.has(chosen)) continue;
+  if (args.pathOnly && chosen && !pathNumbers.has(id) && id !== chosen.second?.edge) continue;
   if (coverEdges && !coverEdges.has(id)) continue;
+  const pair = `${e.from}${SEP}${SEP}${e.to}`;
+  if (!arrows.has(pair))
+    arrows.set(pair, { from: e.from, to: e.to, groups: [[], [], []], plain: true, labels: [] });
+  const a = arrows.get(pair);
+  const [numbers, current, other] = a.groups;
   const all = [...e.labels];
   const shown = all.map((l) => guarded(e.guards, l));
-  let text = args.allLabels
-    ? shown.join(" or ")
-    : shown.slice(0, 2).join(" or ") + (all.length > 2 ? " or …" : "");
+  const said = args.fullLabels ? shown.join(" or ") : joinLabels(shown);
   const p = pathNumbers.get(id);
-  if (p) text = `${p.n.join(", ")}. ${p.shown}`;
-  for (const l of p ? [p.label] : all) drawnLabels.add(l);
-  // ";" ends a Mermaid statement, even inside a transition label.
-  text = text.replaceAll(";", ",");
-  lines.push({ from: e.from, to: e.to, text, plain: !p && !e.secondOf, labels: [...all].sort() });
-  edgeCount++;
+  const chosenStep = chosen?.second && id === chosen.second.edge;
+  if (p) numbers.push(...numbered(p));
+  else if (!e.secondOnly) current.push(said);
+  else other.push(args.pathOnly && chosenStep ? chosen.second.text : said);
+  if (chosenStep && !e.secondOnly) other.push(chosen.second.text);
+  if (p || chosenStep || id.endsWith(`${SEP}second`)) a.plain = false;
+  a.labels.push(...all);
+  for (const l of p ? p.map((s) => s.label) : all) drawnLabels.add(l);
 }
+const lines = [...arrows.values()].map(({ from, to, groups, plain, labels }) => ({
+  from,
+  to,
+  // ";" ends a Mermaid statement, even inside a transition label.
+  text: groups
+    .map((g) =>
+      g
+        .filter(Boolean)
+        .map((l) => wrap(l.replaceAll(";", ","), 30))
+        .join("<br/>"),
+    )
+    .filter(Boolean)
+    .join("<br/>#160;<br/>"),
+  plain,
+  labels: labels.sort(),
+}));
+const edgeCount = lines.length;
 // One arrow from a box's border stands for the same step from every state in the box. It is drawn
 // only when every state in the box has that step, with the same labels, to the same state outside
 // the box, so the chart still says exactly what each state does.
@@ -1174,7 +1273,7 @@ const initial = new Set([...now.initial, ...(secondQ?.initial ?? [])]);
 for (const k of sorted)
   if (initial.has(k) && (!args.pathOnly || k === chosen?.path[0].key))
     out.push(`  [*] --> ${idOf(k)}`);
-const arrow = (from, l) => `  ${from} --> ${idOf(l.to)}${l.text ? ` : ${wrap(l.text, 30)}` : ""}`;
+const arrow = (from, l) => `  ${from} --> ${idOf(l.to)}${l.text ? ` : ${l.text}` : ""}`;
 for (const l of fromBox) out.push(arrow(boxIds.get(l.box), l));
 for (const l of lines) out.push(arrow(idOf(l.from), l));
 sorted.forEach((k, i) => out.push(`  class ${idOf(k)} ${drawn[i].cls}`));
@@ -1185,27 +1284,26 @@ else process.stdout.write(mermaid);
 // ---------- stories and summary ----------
 const show = (k) => (args.view === "layered" ? k.replace(SEP, ": ") : k);
 const ruleOf = (c) => rules.get(c.invariant) ?? `\`${c.invariant}\``;
-// The reader step of a model step, or the last reader step before it when the reader saw no change.
-function readerStep(c, step) {
-  const at = c.path.findIndex((p) => p.modelStep === step);
-  if (at >= 0) return { at };
-  return { after: c.path.findLastIndex((p) => p.modelStep < step) };
-}
 function secondLine(c) {
   const W = cap(within);
   if (c.introduced) return `Only ${L} has this bug. The steps above happen ${within} ${L}.`;
   const s = c.second;
   if (!s) return null;
-  if (s.sameEnd) return `${W} ${L}, the same steps end in the same place.`;
+  if (s.sameEnd)
+    return s.ruleHolds
+      ? `${W} ${L} you see the same screens and steps, yet the rule holds, so the state labels do not show what ${L} changes.`
+      : `${W} ${L} you see the same screens and steps, so ${L} does not change this path.`;
   if (s.reason) return `${cap(L)} cannot take these steps: it ${s.reason}.`;
-  const { at, after } = readerStep(c, s.step);
-  if (s.disabled)
-    return at !== undefined
-      ? `${W} ${L}, step ${at} cannot happen, so you stay at: ${show(s.key)}.`
-      : `${W} ${L}, this path ends after step ${after}, and you stay at: ${show(s.key)}.`;
-  return at !== undefined
-    ? `${W} ${L}, step ${at} is "${s.said2}", and you see: ${show(s.key)}.`
-    : `${W} ${L}, after step ${after}, "${s.said2}" happens, and you see: ${show(s.key)}.`;
+  const outcome = s.disabled
+    ? "cannot happen, so you stay at"
+    : s.key === s.from
+      ? "keeps you at"
+      : "takes you to";
+  if (s.hidden) {
+    const when = s.step ? `after step ${s.step}` : "before your first step";
+    return `${W} ${L}, ${when}, "${s.said}" happens and ${outcome}: ${show(s.key)}.`;
+  }
+  return `${W} ${L}, step ${s.step} (${s.said}) ${outcome}: ${show(s.key)}.`;
 }
 if (args.story) {
   const lines = [];
@@ -1246,7 +1344,9 @@ const secondOf = (c) =>
       : `only in ${L}`
     : c.second
       ? c.second.sameEnd
-        ? "unchanged"
+        ? c.second.ruleHolds
+          ? "same screens, but the rule holds"
+          : "unchanged"
         : (c.second.reason ?? show(c.second.key))
       : null;
 const summary = {

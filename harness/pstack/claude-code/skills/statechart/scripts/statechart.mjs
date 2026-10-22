@@ -19,9 +19,13 @@ const usage = (lines) => `Usage: ${lines.join("\n       ")}`;
 
 const FROM_SPEC = `from-spec SPEC.tla
   Checks each INVARIANT in SPEC.cfg in a separate TLC run. TLC stops at the first rule that a state
-  breaks, and the separate runs find the rest. SPEC.cfg sits next to the spec and has SPECIFICATION
-  and one INVARIANT line per rule. One more run dumps the state graph, and then the command draws
-  the charts.
+  breaks, and the separate runs find the rest. Each run also has the rule as a CONSTRAINT, so TLC
+  stops each path at its first state that breaks the rule, and a rule that stays broken reports
+  only the step that broke it. SPEC.cfg sits next to the spec and has SPECIFICATION and one
+  INVARIANT line per rule. One more run dumps the state graph, and then the command draws the
+  charts. TLC names each step after the innermost named action that takes it, so give each kind of
+  step its own named action. The command warns when steps carry the name of the whole next-state
+  action.
 
   --fixed FIXED.tla  The model of the open fix. It is a copy of the spec with its own file and
                      module name, such as SpecFixed.tla with MODULE SpecFixed. The command checks
@@ -106,14 +110,19 @@ Reading a chart
   When the mapping exports group(), the fill is the state's group, which the legend names, and the
   status is a thick red or green border on top. tlc-to-chart.mjs --help tells more.
   A state is bad when it breaks a rule, or when every path from the start to it passes a state
-  that breaks one.
+  that breaks one. TLC stops each path at the first state that breaks the rule, so a rule that
+  stays broken colors only the states where it first breaks and the states after them that no
+  path without a bug reaches.
   A thick blue border and numbered labels mark the bug. Mermaid state diagrams cannot color an
   edge.
-  An edge labeled "with the fix" or "in the spec" leaves the state before the step that the other
-  model changes, and ends where that model goes instead. "blocked by the fix" or "not in the spec"
-  loops on the state where that model stops the step. "(with the fix)" or "(in the spec)" marks an
-  edge that only the other model has.
-  An edge shows its two most common labels. "or …" means that there are more.
+  A label "with the fix, STEP" or "in the spec, STEP" is a step that only the other model takes. On
+  a bug's path it leaves the state before the first step that the other model shows the reader
+  differently, and ends where that model goes instead. "with the fix, STEP cannot happen" or "in
+  the spec, STEP cannot happen" loops on the state where that model stops the step. Outside
+  regions, two states have at most one arrow between them. Its lines are the numbered steps, then
+  SPEC.tla's steps, then the other model's steps, with a blank line between each group.
+  An edge lists every step that takes it, most common first. Words that the steps share at the
+  start are written once, as in "you tap Pay or Back".
 
 Regenerate
   With --expect-broken, one script rebuilds every chart and stops on any change:
@@ -150,69 +159,64 @@ ${COMMON}`,
   "from-chart": `${usage([USAGE["from-chart"]])}\n\n${FROM_CHART}\n\n${COMMON}`,
 };
 
-function fail(message) {
-  console.error(message);
-  process.exit(2);
-}
-
-const [command, ...rest] = process.argv.slice(2);
 const more = (cmd) =>
   `Run node statechart.mjs ${cmd ? `${cmd} ` : ""}--help for the flags, the output, and the exit codes.`;
-if (command === "-h" || command === "--help") {
-  console.log(HELP[""]);
-  process.exit(0);
-}
-const FLAGS = {
-  "from-spec": ["--map", "--fixed", "--against", "--label", "--expect-broken", "--title", "--out"],
-  "from-chart": ["--module", "--expect-broken", "--title", "--out"],
+
+class CannotFinish extends Error {}
+
+const COMMANDS = {
+  "from-spec": {
+    flags: ["--map", "--fixed", "--against", "--label", "--expect-broken", "--title", "--out"],
+    run: fromSpec,
+  },
+  "from-chart": { flags: ["--module", "--expect-broken", "--title", "--out"], run: fromChart },
 };
-if (!FLAGS[command]) fail(`${usage(Object.values(USAGE))}\n${more()}`);
-const args = { "expect-broken": [] };
-let input;
-for (let i = 0; i < rest.length; i++) {
-  const a = rest[i];
-  if (a === "-h" || a === "--help") {
-    console.log(HELP[command]);
-    process.exit(0);
-  } else if (a === "--png") args.png = true;
-  else if (FLAGS[command].includes(a)) {
-    if (i + 1 === rest.length) fail(`${a} needs a value. ${more(command)}`);
-    const name = a.slice(2);
-    if (Array.isArray(args[name])) args[name].push(rest[++i]);
-    else args[name] = rest[++i];
-  } else if (!a.startsWith("-") && input === undefined) input = a;
-  else fail(`unknown argument ${a}. ${more(command)}`);
+
+function parseArgs([command, ...rest]) {
+  if (command === "-h" || command === "--help") return { help: HELP[""] };
+  if (!Object.hasOwn(COMMANDS, command))
+    throw new CannotFinish(`${usage(Object.values(USAGE))}\n${more()}`);
+  const flags = { "expect-broken": new Set() };
+  let input;
+  for (let i = 0; i < rest.length; i++) {
+    const a = rest[i];
+    if (a === "-h" || a === "--help") return { help: HELP[command] };
+    if (a === "--png") flags.png = true;
+    else if (COMMANDS[command].flags.includes(a)) {
+      if (i + 1 === rest.length) throw new CannotFinish(`${a} needs a value. ${more(command)}`);
+      const name = a.slice(2);
+      if (flags[name] instanceof Set) flags[name].add(rest[++i]);
+      else flags[name] = rest[++i];
+    } else if (!a.startsWith("-") && input === undefined) input = a;
+    else throw new CannotFinish(`unknown argument ${a}. ${more(command)}`);
+  }
+  if (input === undefined) throw new CannotFinish(`${usage([USAGE[command]])}\n${more(command)}`);
+  return { command, input, flags };
 }
-if (input === undefined) fail(`${usage([USAGE[command]])}\n${more(command)}`);
-if (args.fixed && args.against) fail(`use --fixed or --against, not both. ${more(command)}`);
-if (args.label !== undefined && !args.fixed && !args.against)
-  fail(`--label names the --fixed or --against model; it needs one of them. ${more(command)}`);
-const expected = new Set(args["expect-broken"]);
 
 const rel = (file) => path.relative(process.cwd(), file) || ".";
-let tools;
-function needTlc() {
+const cfgOf = (spec) => spec.replace(/\.tla$/, ".cfg");
+
+function findTools() {
   try {
-    tools = findTlc();
+    return findTlc();
   } catch (e) {
-    fail(e.message);
+    throw new CannotFinish(e.message);
   }
 }
 
-// The child scripts throw on input they cannot use. Print the message and the file it is about, not the stack.
-function script(name, scriptArgs, about) {
+function script(name, scriptArgs, about, { okExits = [0] } = {}) {
   const r = spawnSync(process.execPath, [path.join(here, name), ...scriptArgs], {
     encoding: "utf8",
   });
-  if (r.status === 0 || (name === "compare-charts.mjs" && r.status === 1)) return r;
+  if (okExits.includes(r.status)) return r;
   const thrown = r.stderr.match(/^Error: (.*)$/m)?.[1];
-  fail(thrown ? `${rel(about)}: ${thrown}` : r.stderr.trim());
+  throw new CannotFinish(thrown ? `${rel(about)}: ${thrown}` : r.stderr.trim());
 }
 
 const KEYWORD =
   /^(SPECIFICATION|INIT|NEXT|CONSTANTS?|INVARIANTS?|PROPERTY|PROPERTIES|SYMMETRY|VIEW|CONSTRAINTS?|ACTION_CONSTRAINTS?|CHECK_DEADLOCK|POSTCONDITION|ALIAS)$/;
 
-// The config without its INVARIANT sections, and the rules they name.
 function splitRules(cfg) {
   const words = cfg
     .replace(/\(\*[^]*?\*\)/g, " ")
@@ -227,10 +231,10 @@ function splitRules(cfg) {
     if (!/^INVARIANTS?$/.test(section)) kept.push(KEYWORD.test(w) && kept.length ? `\n${w}` : w);
     else if (w !== section && !rules.includes(w)) rules.push(w);
   }
-  return { base: `${kept.join(" ")}\n`, rules };
+  return { cfgWithoutRules: `${kept.join(" ")}\n`, rules };
 }
 
-function tlc(spec, cfg, base, dump) {
+function tlc(tools, spec, cfg, base, dump) {
   fs.writeFileSync(`${base}.cfg`, cfg);
   const metadir = fs.mkdtempSync(path.join(os.tmpdir(), "tlc-"));
   // -deadlock: a UI at rest has nothing left to do, which TLC would report as a deadlock.
@@ -252,36 +256,67 @@ function tlc(spec, cfg, base, dump) {
     { cwd: path.dirname(path.resolve(spec)), encoding: "utf8", maxBuffer: 1 << 30 },
   );
   fs.rmSync(metadir, { recursive: true, force: true });
-  if (r.error) fail(`cannot run TLC: ${r.error.message}`);
+  if (r.error) throw new CannotFinish(`cannot run TLC: ${r.error.message}`);
   fs.writeFileSync(`${base}.out`, r.stdout);
   try {
     checkTlcOutput(r.stdout, rel(`${base}.out`));
   } catch (e) {
-    fail(e.message);
+    throw new CannotFinish(e.message);
   }
   return r.stdout;
 }
 
-// main is true for the input spec: --expect-broken names its rules.
-function check(spec, cfgFile, tlcDir, main) {
-  const name = path.basename(spec, ".tla");
-  if (!fs.existsSync(spec)) fail(`${rel(spec)} does not exist`);
-  if (!fs.existsSync(cfgFile))
-    fail(`${rel(cfgFile)} does not exist. It needs SPECIFICATION and one INVARIANT line per rule.`);
-  const { base, rules } = splitRules(fs.readFileSync(cfgFile, "utf8"));
-  const unknown = main ? [...expected].filter((r) => !rules.includes(r)) : [];
-  if (unknown.length)
-    fail(
-      `--expect-broken ${unknown.join(", ")}: not a rule in ${rel(cfgFile)}, whose rules are ${rules.join(", ") || "none"}.`,
+function warnUnnamedSteps(spec, cfg, dot) {
+  const text = fs
+    .readFileSync(spec, "utf8")
+    .replace(/\(\*[^]*?\*\)/g, " ")
+    .replace(/\\\*.*/g, " ");
+  const specName = /^SPECIFICATION\s+(\w+)/m.exec(cfg)?.[1];
+  const specBody = specName && new RegExp(`^${specName}\\s*==(.*(\\n[ \\t]+.*)*)`, "m").exec(text);
+  const next =
+    /^NEXT\s+(\w+)/m.exec(cfg)?.[1] ?? /\[\]\s*\[\s*(\w+)\s*\]_/.exec(specBody?.[1] ?? text)?.[1];
+  const graph = parseDot(fs.readFileSync(dot, "utf8"));
+  const unnamed = [...graph.edges, ...graph.loops].filter((e) => e.action === next).length;
+  if (unnamed > 0)
+    console.error(
+      `${rel(spec)}: ${unnamed} ${unnamed === 1 ? "step has" : "steps have"} the name ${next}, the whole next-state action, because TLC names a step after the innermost named action that takes it. If the reader must tell these steps apart, give each part of ${next} its own name, as in Pay == ... and ${next} == Pay \\/ Charge.`,
     );
+}
+
+function readModel(spec, cfgFile) {
+  if (!fs.existsSync(spec)) throw new CannotFinish(`${rel(spec)} does not exist`);
+  if (!fs.existsSync(cfgFile))
+    throw new CannotFinish(
+      `${rel(cfgFile)} does not exist. It needs SPECIFICATION and one INVARIANT line per rule.`,
+    );
+  return { spec, cfgFile, ...splitRules(fs.readFileSync(cfgFile, "utf8")) };
+}
+
+function readInput(spec, expected) {
+  const model = readModel(spec, cfgOf(spec));
+  const unknown = [...expected].filter((r) => !model.rules.includes(r));
+  if (unknown.length)
+    throw new CannotFinish(
+      `--expect-broken ${unknown.join(", ")}: not a rule in ${rel(model.cfgFile)}, whose rules are ${model.rules.join(", ") || "none"}.`,
+    );
+  return model;
+}
+
+function check(tools, { spec, cfgFile, cfgWithoutRules, rules }, out, expected) {
+  const name = path.basename(spec, ".tla");
+  const tlcDir = path.join(out, "tlc");
   const dot = path.join(tlcDir, `${name}.dot`);
-  tlc(spec, base, path.join(tlcDir, name), dot);
+  tlc(tools, spec, cfgWithoutRules, path.join(tlcDir, name), dot);
+  warnUnnamedSteps(spec, cfgWithoutRules, dot);
   console.log(`TLC on ${path.basename(spec)}:`);
   if (rules.length === 0)
     console.log(`  ${path.basename(cfgFile)} has no INVARIANT, so no rule is checked.`);
+  // With -continue TLC reports every bad state. The CONSTRAINT stops each path at its first bad
+  // state, so a rule that stays broken reports only the step that broke it, not every later state.
   const traces = rules.map((rule) => {
     const file = path.join(tlcDir, `${name}-${rule}`);
-    const broken = /^Error: Invariant /m.test(tlc(spec, `${base}INVARIANT ${rule}\n`, file));
+    const cfg = `${cfgWithoutRules}INVARIANT ${rule}\nCONSTRAINT ${rule}\n`;
+    const broken = /^Error: Invariant /m.test(tlc(tools, spec, cfg, file));
     console.log(
       `  ${rule} ${broken ? (expected.has(rule) ? "is broken (expected)" : "is broken") : "holds"}.`,
     );
@@ -290,9 +325,7 @@ function check(spec, cfgFile, tlcDir, main) {
   return { spec, dot, traces, broken: traces.some((t) => t.broken) };
 }
 
-// Without --expect-broken, every rule must hold. With it, exactly those rules break in the input
-// spec, and the other model breaks no other rule.
-function rulesAsExpected(now, other) {
+function rulesAsExpected(now, other, expected) {
   const brokenIn = (m) => (m?.traces ?? []).filter((t) => t.broken).map((t) => t.rule);
   if (expected.size === 0) return !now.broken && !other?.broken;
   const unexpected = [...new Set([...brokenIn(now), ...brokenIn(other)])].filter(
@@ -357,31 +390,37 @@ export function step(action, before, after) {
 // Why a bad state is bad, in words a product manager reads, such as "the laptop went offline, and
 // the app drops an upload it cannot send". No variable, function, or event names.
 // Counterexamples that break one rule with one cause are one bug, so two bugs that end on the
-// same screen stay apart only if their causes differ.
+// same screen stay apart only if their causes differ. Return null to group by the end state.
 // export function cause(v, facts, invariant) {}
 
 // The developer's words for one model state. With it, each bug is also drawn through these states.
 // export function detail(v, facts) {}
+
+// The legend's words for each status, in place of the defaults. Group entries keep their names.
+// export const legend = { works: "Works on main", wrong: "Wrong on main", fixed: "Fixed in the open PR" };
 `;
 };
 
-async function draw({ now, second, role, map, out, comparing }) {
+async function draw({ now, other, map, out, title, comparing }) {
   const mapping = await import(pathToFileURL(path.resolve(map)).href);
   const from = ["--dot", now.dot, "--map", map, "--spec", now.spec];
   from.push(...now.traces.flatMap((t) => ["--traces", t.file]));
-  if (second) {
-    from.push(`--${role}-dot`, second.dot, "--spec", second.spec);
-    from.push(...second.traces.flatMap((t) => [`--${role}-traces`, t.file]));
-    if (args.label !== undefined) from.push("--label", args.label);
+  if (other) {
+    from.push(`--${other.role}-dot`, other.dot, "--spec", other.spec);
+    from.push(...other.traces.flatMap((t) => [`--${other.role}-traces`, t.file]));
+    if (other.label !== undefined) from.push("--label", other.label);
   }
-  // compare-charts.mjs needs every edge, every label, and no boxes, and --cover drops edges.
-  if (comparing) from.push("--all-labels", "--flat");
+  if (comparing) from.push("--full-labels", "--flat");
   else if (mapping.readerActions?.length) from.push("--cover");
-  const titled = (suffix) => (args.title ? ["--title", `${args.title}${suffix}`] : []);
+  const titled = (suffix) => (title ? ["--title", `${title}${suffix}`] : []);
   for (const f of fs.readdirSync(out))
     if (/^bug-\d+(-developer|-layered)?\.(mmd|png)$/.test(f)) fs.rmSync(path.join(out, f));
 
-  const files = ["chart.mmd", "stories.md", "summary.json"].map((f) => path.join(out, f));
+  const files = {
+    overview: path.join(out, "chart.mmd"),
+    stories: path.join(out, "stories.md"),
+    summary: path.join(out, "summary.json"),
+  };
   const proof = path.join(out, "tlc", "regions-proof.mmd");
   const everyArrow = path.join(out, "tlc", "regions-all.mmd");
   for (const f of [proof, everyArrow]) fs.rmSync(f, { force: true });
@@ -394,16 +433,16 @@ async function draw({ now, second, role, map, out, comparing }) {
       "--highlight",
       "0",
       "--out",
-      files[0],
+      files.overview,
       "--story",
-      files[1],
+      files.stories,
       "--summary",
-      files[2],
+      files.summary,
     ],
     map,
   );
-  const summary = JSON.parse(fs.readFileSync(files[2], "utf8"));
-  const charts = [files[0]];
+  const summary = JSON.parse(fs.readFileSync(files.summary, "utf8"));
+  const charts = [files.overview];
   for (const c of summary.classes) {
     const views = typeof mapping.detail === "function" ? ["", "-developer", "-layered"] : [""];
     for (const view of views) {
@@ -431,9 +470,9 @@ async function draw({ now, second, role, map, out, comparing }) {
   else if (r) console.log(`It has no parallel regions, because ${r.why}.`);
   const breaks = `${wrong} ${wrong === 1 ? "breaks" : "break"} a rule`;
   console.log(
-    role === "fixed"
+    other?.role === "fixed"
       ? `${works} work today, ${wrong} still wrong with ${L}, ${fixedCount} fixed or new with ${L}.\n`
-      : role === "against"
+      : other?.role === "against"
         ? `${works} work, ${breaks}, ${fixedCount} only in ${L}.\n`
         : `${works} work, ${breaks}.\n`,
   );
@@ -442,22 +481,23 @@ async function draw({ now, second, role, map, out, comparing }) {
       `These labels or causes read like code. Write them in the reader's words in ${rel(map)}:\n${summary.codeLike.map((t) => `  ${t}`).join("\n")}\n`,
     );
   console.log(
-    summary.classes.length ? fs.readFileSync(files[1], "utf8").trimEnd() : "No rule is broken.",
+    summary.classes.length
+      ? fs.readFileSync(files.stories, "utf8").trimEnd()
+      : "No rule is broken.",
   );
   return { files, charts };
 }
 
 function render(charts) {
-  // Mermaid shrinks a wide chart to the 800px page; keep its natural size so labels stay readable.
-  const config = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "statechart-")), "mermaid.json");
-  fs.writeFileSync(config, JSON.stringify({ state: { useMaxWidth: false } }));
   const pngs = [];
   for (const chart of charts) {
     const png = chart.replace(/\.mmd$/, ".png");
     const r = spawnSync(
       "npx",
-      ["-y", "@mermaid-js/mermaid-cli", "-i", chart, "-o", png, "-s", "2", "-c", config],
-      { encoding: "utf8" },
+      ["-y", "@mermaid-js/mermaid-cli", "-i", chart, "-o", png, "-s", "2"],
+      {
+        encoding: "utf8",
+      },
     );
     if (r.status === 0) pngs.push(png);
     else
@@ -468,55 +508,70 @@ function render(charts) {
   return pngs;
 }
 
-function finish(out, charts, files, ok) {
-  const pngs = args.png ? render(charts) : [];
-  const written = [...charts, ...pngs, ...files.slice(1)].map((f) => path.basename(f)).join(", ");
+function finish(out, { files, charts }, ok, png) {
+  const pngs = png ? render(charts) : [];
+  const written = [...charts, ...pngs, files.stories, files.summary]
+    .map((f) => path.basename(f))
+    .join(", ");
   console.log(`\nWrote ${written} in ${rel(out)}.`);
-  process.exit(args.png && pngs.length < charts.length ? 2 : ok ? 0 : 1);
+  if (png && pngs.length < charts.length) return 2;
+  return ok ? 0 : 1;
 }
 
-const outDir = (name) => {
-  const out = args.out ?? path.join(path.dirname(input), `${name}-statechart`);
+function outDir(flagged, input, name) {
+  const out = flagged ?? path.join(path.dirname(input), `${name}-statechart`);
   fs.mkdirSync(path.join(out, "tlc"), { recursive: true });
   return out;
-};
+}
 
-if (command === "from-spec") {
-  const name = path.basename(input, ".tla");
-  const role = args.fixed ? "fixed" : args.against ? "against" : null;
-  const other = args.fixed ?? args.against;
-  // TLC's output files are named after the spec, so a second model with the same name overwrites them.
-  if (other && path.basename(other, ".tla") === name)
-    fail(
-      `${rel(other)} needs its own file and module name, such as ${name}${role === "fixed" ? "Fixed" : "Agreed"}.tla.`,
+function secondModel(input, { fixed, against, label }) {
+  if (fixed && against)
+    throw new CannotFinish(`use --fixed or --against, not both. ${more("from-spec")}`);
+  if (!fixed && !against) {
+    if (label === undefined) return null;
+    throw new CannotFinish(
+      `--label names the --fixed or --against model; it needs one of them. ${more("from-spec")}`,
     );
-  needTlc();
-  const out = outDir(name);
-  const map = args.map ?? path.join(path.dirname(input), `${name}.map.mjs`);
-  const now = check(input, input.replace(/\.tla$/, ".cfg"), path.join(out, "tlc"), true);
+  }
+  const [role, spec] = fixed ? ["fixed", fixed] : ["against", against];
+  const name = path.basename(input, ".tla");
+  // TLC's output files are named after the spec, so a second model with the same name overwrites them.
+  if (path.basename(spec, ".tla") === name)
+    throw new CannotFinish(
+      `${rel(spec)} needs its own file and module name, such as ${name}${fixed ? "Fixed" : "Agreed"}.tla.`,
+    );
+  return { role, spec, label };
+}
+
+async function fromSpec(input, { "expect-broken": expected, ...flags }) {
+  const second = secondModel(input, flags);
+  const tools = findTools();
+  const name = path.basename(input, ".tla");
+  const out = outDir(flags.out, input, name);
+  const map = flags.map ?? path.join(path.dirname(input), `${name}.map.mjs`);
+  const now = check(tools, readInput(input, expected), out, expected);
   if (!fs.existsSync(map)) {
     fs.writeFileSync(map, SCAFFOLD(name, parseDot(fs.readFileSync(now.dot, "utf8"))));
-    fail(`\nWrote ${rel(map)}. Fill in its labels, then run this command again.`);
+    throw new CannotFinish(`\nWrote ${rel(map)}. Fill in its labels, then run this command again.`);
   }
-  let second = null;
-  if (other) {
-    const cfg = other.replace(/\.tla$/, ".cfg");
-    second = check(
-      other,
-      fs.existsSync(cfg) ? cfg : input.replace(/\.tla$/, ".cfg"),
-      path.join(out, "tlc"),
-    );
+  let other = null;
+  if (second) {
+    const { role, spec, label } = second;
+    const cfg = fs.existsSync(cfgOf(spec)) ? cfgOf(spec) : cfgOf(input);
+    other = { role, label, ...check(tools, readModel(spec, cfg), out, expected) };
   }
-  const { files, charts } = await draw({ now, second, role, map, out });
-  finish(out, charts, files, rulesAsExpected(now, second));
-} else {
+  const drawn = await draw({ now, other, map, out, title: flags.title });
+  return finish(out, drawn, rulesAsExpected(now, other, expected), flags.png);
+}
+
+async function fromChart(input, { "expect-broken": expected, ...flags }) {
   const name =
-    args.module ??
+    flags.module ??
     path
       .basename(input, path.extname(input))
       .replace(/(^|[^A-Za-z0-9]+)([A-Za-z0-9])/g, (_, __, c) => c.toUpperCase());
   if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(name))
-    fail(`cannot make a TLA+ module name from ${input}; add --module NAME`);
+    throw new CannotFinish(`cannot make a TLA+ module name from ${input}; add --module NAME`);
   const spec = path.join(path.dirname(input), `${name}.tla`);
   if (fs.existsSync(spec)) {
     console.log(`Kept ${rel(spec)}. Delete it to write the spec again from ${rel(input)}.`);
@@ -524,20 +579,41 @@ if (command === "from-spec") {
     script("chart-to-tla.mjs", [input, "--module", name], input);
     console.log(`Wrote ${name}.tla, ${name}.cfg, and ${name}.map.mjs from ${rel(input)}.`);
   }
-  needTlc();
-  const out = outDir(name);
-  const now = check(spec, spec.replace(/\.tla$/, ".cfg"), path.join(out, "tlc"), true);
-  const { files, charts } = await draw({
+  const tools = findTools();
+  const out = outDir(flags.out, input, name);
+  const now = check(tools, readInput(spec, expected), out, expected);
+  const drawn = await draw({
     now,
     map: spec.replace(/\.tla$/, ".map.mjs"),
     out,
+    title: flags.title,
     comparing: true,
   });
-  const compared = script("compare-charts.mjs", [input, files[0]]);
+  const compared = script("compare-charts.mjs", [input, drawn.files.overview], input, {
+    okExits: [0, 1],
+  });
   if (compared.status === 0) console.log(`\nThe spec draws ${rel(input)} back unchanged.`);
   else
     console.log(
       `\nThe spec does not draw ${rel(input)}:\n${compared.stdout.trimEnd().replace(/^/gm, "  ")}`,
     );
-  finish(out, charts, files, rulesAsExpected(now) && compared.status === 0);
+  return finish(
+    out,
+    drawn,
+    rulesAsExpected(now, null, expected) && compared.status === 0,
+    flags.png,
+  );
+}
+
+try {
+  const { help, command, input, flags } = parseArgs(process.argv.slice(2));
+  if (help) {
+    console.log(help);
+    process.exit(0);
+  }
+  process.exit(await COMMANDS[command].run(input, flags));
+} catch (e) {
+  if (!(e instanceof CannotFinish)) throw e;
+  console.error(e.message);
+  process.exit(2);
 }

@@ -290,9 +290,27 @@ export function wrap(text, width = 26) {
   return rows.join("<br/>");
 }
 
+// The shared words stop before a word that opens a phrase, so each choice keeps its whole phrase,
+// as in "you tap the Pay button or the Back button".
+const OPENS_A_PHRASE = new Set(
+  "a an the your my our their its this that to of in on at for with from by and or".split(" "),
+);
+export function joinLabels(labels) {
+  if (labels.length < 2) return labels.join(" or ");
+  const words = labels.map((l) => String(l).split(" "));
+  let n = 0;
+  while (words.every((w) => n < w.length - 1 && w[n] === words[0][n])) n++;
+  while (n > 0 && OPENS_A_PHRASE.has(words[0][n - 1])) n--;
+  if (n < 2) return labels.join(" or ");
+  const rest = words.map((w) => w.slice(n).join(" "));
+  const list =
+    rest.length === 2 ? rest.join(" or ") : `${rest.slice(0, -1).join(", ")}, or ${rest.at(-1)}`;
+  return `${words[0].slice(0, n).join(" ")} ${list}`;
+}
+
 const unwrap = (s) =>
   s
-    .replace(/<br\s*\/?>/g, " ")
+    .replace(/<br\s*\/?>|#160;/g, " ")
     .replace(/#(quot|34);/g, '"')
     .replace(/\s+/g, " ")
     .trim();
@@ -302,6 +320,8 @@ export const quote = (s) => String(s).replaceAll('"', "#quot;");
 
 // The scripts draw their legend as a composite with this id. It is not part of the machine.
 export const LEGEND_ID = "legend";
+// Marks a chart whose edge labels are written in full, which a chart comparison needs.
+export const FULL_LABELS = "%% labels in full";
 
 // Returns { regions: { name: { states:Set, initial:Set, transitions:[{from,to,label,guard?}] } }, nevers }.
 // Composite states flatten to "Parent.Child". A transition on a composite leaves from each state
@@ -336,7 +356,8 @@ export function parseMermaid(text) {
     part().children.push({ name: id, leaf: true });
     implicit.set(id, part());
   };
-  for (const raw of text.split("\n")) {
+  const body = text.replace(/^\s*---[ \t]*\r?\n[^]*?\r?\n---[ \t]*(\r?\n|$)/, "");
+  for (const raw of body.split("\n")) {
     const line = raw.trim().replace(/(\[\*\]|[A-Za-z_]\w*):::[\w-]+/g, "$1");
     const when = /^%%\s*when\s+(not\s+)?(.+)$/.exec(line);
     if (when) {
@@ -362,7 +383,7 @@ export function parseMermaid(text) {
     if (
       !line ||
       line.startsWith("%%") ||
-      /^(stateDiagram|direction|classDef|class |note|title|---)/.test(line)
+      /^(stateDiagram|direction|classDef|class |note)/.test(line)
     )
       continue;
     let m = /^state\s+"([^"]*)"\s+as\s+([A-Za-z_]\w*)\s*(\{)?\s*$/.exec(line);
