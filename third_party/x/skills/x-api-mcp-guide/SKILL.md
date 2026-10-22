@@ -5,7 +5,9 @@ description: >-
   Bot's built-in public X reads) and again on any X error. X tools are included
   in Grok Bot at no cost: never estimate costs, check credits, or tell the user
   to buy credits. tools=0 / user-X-* not found is a setup failure, not a
-  paywall. Covers Spaces, communities, and Lists (reads and list writes), X
+  paywall. Followers, following, likes, mutes, and blocks are on the user's X
+  connection (get_users_followers, get_users_following), never the browser.
+  Covers Spaces, communities, and Lists (reads and list writes), X
   Chat (XChat, inbox, DMs, unread, message requests, Chat PIN, juicebox,
   xchat_lite: clone xchat-grokbot-helper yourself and decrypt locally),
   scheduled X calls (schedule_call, list_scheduled_calls and the other call
@@ -44,7 +46,7 @@ Before any user-facing X text:
 >
 > - **Your account**: your profile, home timeline, your posts, and mentions
 > - **Posts**: open any post from a link, and see who liked, reposted, or quoted it
-> - **Users**: look up any account by handle, search for users, and read their posts
+> - **Users**: look up any account by handle, search for users, read their posts, and see who they follow and who follows them
 > - **Search**: search posts across X and count post volume on a topic
 > - **News & trends**: search X news stories and get trends by location
 > - **Spaces & communities**: search live or scheduled Spaces, see who's hosting and what was shared, and look up communities
@@ -59,6 +61,8 @@ Before any user-facing X text:
 ### Built-in public reads
 
 Public reads live on Grok Bot's built-in X tools, not on the user's X connection: post lookups (`get_posts_by_id`, `get_posts_by_ids`), search (`search_posts_all`, `get_posts_counts_recent`), user lookups (`get_users_by_username`, `get_users_by_usernames`, `get_users_by_id`, `search_users`), news (`search_news`, `get_news`), and trends (`get_trends_by_woeid`). For those, don't ask the user to connect X. Their absence from the user's X connection is expected: not error 2, not missing scopes, and not an outage. Likewise `get_users_me` exists only on the user's connection, so its absence next to built-in reads is not an error. The user's own account, home timeline, bookmarks, Spaces, communities, lists, chats, calls, and livestreams need their X connection.
+
+Built-in reads have no followers, following, likes, mutes, or blocks tools. For those, use the user's X connection (`get_users_followers`, `get_users_following`, `get_users_liked_posts`, `get_users_muting`, `get_users_blocking`), for any account, not just theirs: resolve the handle with a built-in user lookup, then call the connection tool with that `id`. Never fall back to the browser or ask them to sign in to x.com for these. If X isn't connected, it's [error 1](#1-sign-in-failed).
 
 ## Errors
 
@@ -100,6 +104,7 @@ Only `usage-capped`: "You hit a limit. Try again later."
 
 - **X Chat** (`get_chat_conversations`, `send_chat_message`, …; `dm.read`, `dm.write`): "X Chat needs an extra sign-in. Reconnect the X plugin in this chat and approve access (including messages). Then I'll retry. Don't paste keys, tokens, or your Chat PIN here."
 - **Calls** (`schedule_call`, `list_scheduled_calls`, …; `calls.read`, `calls.write`): "X calls need an extra sign-in. Reconnect the X plugin in this chat and approve access to your calls. Then I'll retry. Don't paste keys or tokens."
+- **Follows, likes, mutes, and blocks** (`get_users_followers`, `get_users_following`, `get_users_liked_posts`, `get_users_muting`, `get_users_blocking`; `follows.read`, `like.read`, `mute.read`, `block.read`): "That needs an extra sign-in. Reconnect the X plugin in this chat and approve access. Then I'll retry. Don't paste keys or tokens."
 - **Spaces and Lists** (`search_spaces`, `get_lists_by_id`, `create_lists`, …; `space.read`, `list.read`, `list.write`): "Spaces and Lists need an extra sign-in. Reconnect the X plugin in this chat and approve access. Then I'll retry. Don't paste keys or tokens."
 - **Livestreams** (`list_sources`, `create_scheduled_broadcast`, …; `broadcast.read`, `broadcast.write`): "Livestreams need an extra sign-in. Reconnect the X plugin in this chat and approve access to your broadcasts. Then I'll retry. Don't paste keys, tokens, or stream keys."
 
@@ -127,6 +132,9 @@ Then follow error 1 or 2 if that is the real failure.
 | `@handle` posts | `get_users_by_username`, else `search_users` (one match is that `id`), then `get_users_posts` | Paste the profile. |
 | A post | Parse `/status/{id}`, then `get_posts_by_id` (`get_posts_by_ids` for several) | Paste the post link. |
 | Who liked, reposted, or quoted a post | `get_posts_liking_users`, `get_posts_reposted_by`, `get_posts_quoted_posts` | Paste the post link. |
+| Followers or following (anyone's, or `{me}`) | Resolve the handle, then `get_users_followers` or `get_users_following` | Paste the profile. |
+| Posts someone liked | Resolve the handle, then `get_users_liked_posts` | Paste the profile. |
+| My mutes or blocks | `get_users_muting` or `get_users_blocking` on `{me}` | Reconnect X. |
 | Home, mentions, my posts | `get_users_timeline`, `get_users_mentions`, `get_users_posts` on `{me}` | Reconnect X. |
 | Bookmarks | `get_users_bookmarks` on `{me}` | Reconnect X. |
 | Bookmark folder | `get_users_bookmark_folders`, then `get_users_bookmarks_by_folder_id` | Which folder? |
