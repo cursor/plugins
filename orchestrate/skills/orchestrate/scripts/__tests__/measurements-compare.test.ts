@@ -168,6 +168,23 @@ describe("compareMeasurement / applyMeasurementParser / buildMeasurementEnv", ()
     if (result.ok) expect(result.value).toBe("bytes");
   });
 
+  test("regex parser with the g flag still returns capture group 1 of the first match", () => {
+    const stdout = "passing: 12 failing: 3\npassing: 40 failing: 0\n";
+    const grouped = applyMeasurementParser(
+      { kind: "regex", pattern: "passing: (\\d+)", flags: "g" },
+      stdout
+    );
+    expect(grouped.ok).toBe(true);
+    if (grouped.ok) expect(grouped.value).toBe("12");
+
+    const whole = applyMeasurementParser(
+      { kind: "regex", pattern: "passing: \\d+", flags: "gm" },
+      stdout
+    );
+    expect(whole.ok).toBe(true);
+    if (whole.ok) expect(whole.value).toBe("passing: 12");
+  });
+
   test("regex parser without match returns ok false", () => {
     const result = applyMeasurementParser(
       { kind: "regex", pattern: "totally-not-here" },
