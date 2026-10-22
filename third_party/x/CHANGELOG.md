@@ -2,10 +2,6 @@
 
 All notable changes to this plugin will be documented here.
 
-## 2.10.1 — Followers on the X connection
-
-- Followers, following, liked posts, mutes, and blocks (`get_users_followers`, `get_users_following`, `get_users_liked_posts`, `get_users_muting`, `get_users_blocking`) live on the user's X connection, not Grok Bot's built-in reads. The guide now routes these questions there for any account, adds them to the reading table and connect message, and says never to fall back to the browser or ask the user to sign in to x.com.
-
 ## 2.10.0 — Spaces, Communities, and Lists
 
 - Added Spaces (`search_spaces`, `get_spaces_by_id`, `get_spaces_by_ids`, `get_spaces_by_creator_ids`, `get_spaces_posts`), Communities (`search_communities`, `get_communities_by_id`), and Lists: eight reads plus `create_lists`, `update_lists`, member, follow, and pin writes. There's no tool to delete a list or read a community's posts. All are free.
