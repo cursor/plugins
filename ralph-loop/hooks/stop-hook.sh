@@ -28,11 +28,13 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 0
 fi
 
-# Parse state file frontmatter
+# Parse state file frontmatter. `grep` exits 1 when a key is absent, which
+# under `set -e` would end this hook silently before the checks below can
+# report the corrupted file; `|| true` keeps a missing key as an empty value.
 FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
-ITERATION=$(echo "$FRONTMATTER" | grep '^iteration:' | sed 's/iteration: *//')
-MAX_ITERATIONS=$(echo "$FRONTMATTER" | grep '^max_iterations:' | sed 's/max_iterations: *//')
-COMPLETION_PROMISE=$(echo "$FRONTMATTER" | grep '^completion_promise:' | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
+ITERATION=$(echo "$FRONTMATTER" | { grep '^iteration:' || true; } | sed 's/iteration: *//')
+MAX_ITERATIONS=$(echo "$FRONTMATTER" | { grep '^max_iterations:' || true; } | sed 's/max_iterations: *//')
+COMPLETION_PROMISE=$(echo "$FRONTMATTER" | { grep '^completion_promise:' || true; } | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
 
 # Validate iteration is numeric
 if [[ ! "$ITERATION" =~ ^[0-9]+$ ]]; then
