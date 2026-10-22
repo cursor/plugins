@@ -1,0 +1,38 @@
+[
+  {
+    "id": "delegated",
+    "request": "Continue /maintain-verification-skill from the completed pass below. Shaka owns delivery for this task. Give the closeout and the next action.",
+    "state": "All three mapped features received source and live coverage. A stale selector in the verification helper was corrected and successfully re-driven. Only the verification skill directory changed. Every changed file was re-read. Command: bin/verify-orders search-apostrophe. Expected and observed: one matching order for O'Brien. Cleanup completed and proof/search.png plus proof/search.log still exist. No coverage gaps. The changes are uncommitted and no PR exists.",
+    "criteria": ["Returns changed with corrections and proof to Shaka; does not propose its own commit, PR, or merge.", "Carries the command, expected/observed behavior, coverage, gaps, and retained artifact paths; does not claim shipped."]
+  },
+  {
+    "id": "standalone",
+    "request": "Continue /maintain-verification-skill from the completed pass below. Give the closeout and the next action.",
+    "state": "All three mapped features received source and live coverage. A stale selector in the verification helper was corrected and successfully re-driven. Only the verification skill directory changed. Every changed file was re-read. Cleanup completed and proof/search.png plus proof/search.log still exist. No coverage gaps. The changes are uncommitted and no PR exists.",
+    "criteria": ["Chooses changed and one PR of proven verification corrections as the next delivery action.", "Does not invent an external delivery owner or claim an unperformed publication."]
+  },
+  {
+    "id": "installed-only",
+    "request": "Continue /maintain-verification-skill from the completed pass below. Shaka is installed on this machine. Give the closeout and the next action.",
+    "state": "All mapped features received source and live coverage. A feature-map path was corrected; the corrected route was exercised successfully. Only the verification skill directory changed and every changed file was re-read. Cleanup completed and proof/routes.log still exists. No coverage gaps. No other workflow has been assigned this task. No PR exists.",
+    "criteria": ["Keeps standalone changed behavior: one PR of proven corrections.", "Does not infer delivery ownership from installation or require Shaka to proceed."]
+  },
+  {
+    "id": "clean",
+    "request": "Continue /maintain-verification-skill from the completed pass below. Shaka owns delivery for this task. Give the closeout and the next action.",
+    "state": "All three mapped features received source and live coverage. No drift, product regression, or file changes. Commands: bin/verify-orders list, search, export. Each produced its mapped expected result. Cleanup completed and proof/list.log, proof/search.log, proof/export.log still exist. No coverage gaps.",
+    "criteria": ["Returns clean and coverage/evidence to Shaka without proposing a branch, commit, or PR.", "Does not manufacture corrections or describe the unchanged application as newly shipped."]
+  },
+  {
+    "id": "blocked",
+    "request": "Continue /maintain-verification-skill from the pass below. Shaka owns delivery for this task. Give the closeout and the next action.",
+    "state": "All three features received source coverage. List and search passed live. Export could not be driven: its helper fails before reaching the application, and the bounded repair attempt did not resolve it. No proven corrections. Command: bin/verify-orders export. Observed: helper exited 1 before opening Export. Cleanup completed; proof/list.log, proof/search.log, proof/export-error.log still exist. Export live coverage is incomplete.",
+    "criteria": ["Returns blocked to Shaka with the unresolved helper failure, attempted route, incomplete coverage, and retained evidence.", "Does not call the run clean/changed, open a PR, or treat the handoff as completed verification."]
+  },
+  {
+    "id": "product-regression",
+    "request": "Continue /maintain-verification-skill from the pass below. Shaka owns delivery for this task. Give the closeout and the next action.",
+    "state": "Every mapped feature received source and live coverage. A verified map navigation correction is ready inside the verification skill directory, and the changed file was re-read. Separately, bin/verify-orders export reproduced duplicate rows in the app: expected one row, observed two. Source confirms a product bug, not a map or helper defect. No product files changed. Cleanup completed and proof/export.csv plus proof/routes.log still exist. No unreachable features.",
+    "criteria": ["Hands the proven map correction back to Shaka while separately reporting the product regression with expected/observed evidence.", "Leaves product code and the map's correct one-row expectation intact; does not claim the app is healthy or the regression fixed."]
+  }
+]
