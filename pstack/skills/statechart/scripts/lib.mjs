@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import process from "node:process";
 
-// tla2tools.jar and the java binary, from TLA2TOOLS and JAVA. Throws where to get TLC when TLA2TOOLS is not set.
 export function findTlc() {
   const { TLA2TOOLS, JAVA } = process.env;
   if (!TLA2TOOLS)
