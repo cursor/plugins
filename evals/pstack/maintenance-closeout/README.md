@@ -14,7 +14,7 @@ Run from the repository root with Ruby, Git, and an authenticated Claude Code CL
 ruby evals/pstack/maintenance-closeout/run.rb \
   pstack/skills/maintain-verification-skill/SKILL.md \
   /tmp/maintenance-responses \
-  claude -p --permission-mode plan --permission-prompts none --restricted \
+  claude -p --permission-mode default --permission-prompts none --restricted \
   --safe-mode --strict-mcp-config --tools '' --output-format json -
 ```
 
