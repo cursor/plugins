@@ -64,7 +64,7 @@ fetch(url):
       <div class="bp-hdr" onclick="toggleBP(this)">
         <span>Show full implementation (+173 lines)</span><span class="chev">&#9654;</span>
       </div>
-      <div class="bp-body"><div data-diff="retryClient"></div></div>
+      <div class="bp-body"><div data-diff="retryClient.ts"></div></div>
     </div>
   </div>
 </div>
@@ -104,10 +104,10 @@ Put `<div data-diff="KEY"></div>` placeholders in your body HTML wherever you wa
 
 **CRITICAL: Patch strings can contain `</script>` in addition to newlines, backslashes, and quotes.** Even `json.dumps(...)` is not enough if you paste raw output into executable `<script>` because HTML parsing can terminate the tag early. Never manually embed patch strings in JS/JSON. Instead, use this safe approach:
 
-1. During the fetch step, save patches to a JSON file using `jq` (which handles escaping correctly):
+1. During the fetch step, collect all pages and save patches to a JSON file using `gh` and `jq`:
 ```bash
-gh api repos/{owner}/{repo}/pulls/{number}/files --paginate \
-  --jq '[.[] | {key: (.filename | gsub("[^a-zA-Z0-9]"; "_")), value: (.patch // "")}] | from_entries' \
+gh api repos/{owner}/{repo}/pulls/{number}/files --paginate --slurp \
+  | jq '[.[][] | {key: .filename, value: (.patch // "")}] | from_entries' \
   > /tmp/pr-patches-{number}.json
 ```
 
@@ -139,9 +139,9 @@ PY
 
 This guarantees valid JSON and script-safe HTML embedding. The agent writes body HTML to a temp file, then Python assembles everything safely.
 
-The diff data keys should match the `data-diff` attribute values in the HTML:
+Use the exact filename as the JSON key and `data-diff` value. Preserve punctuation and HTML-escape the attribute value when writing HTML:
 ```html
-<div data-diff="path_to_file_ts"></div>
+<div data-diff="src/path-to-file.ts"></div>
 ```
 
 Since renderer.js loads in `<head>`, you can also call `renderDiff(target, lines)` directly from inline `<script>` tags if needed for custom use cases. The function accepts a DOM element, ID string, or CSS selector as `target`, and a string or array as `lines`.
