@@ -1587,6 +1587,49 @@ test("statechart.mjs refuses an output folder with foreign files under tlc/ or b
   assert.match(own.stderr, /Wrote Pay\.map\.mjs/);
 });
 
+test("statechart.mjs refuses unrecorded TLC files and invalid ownership records", () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  writeFileSync(join(dir, "tla2tools.jar"), "");
+  writeFileSync(join(dir, "Pay.tla"), "---- MODULE Pay ----\n====\n");
+  writeFileSync(join(dir, "Pay.cfg"), "SPECIFICATION Spec\n");
+  const env = { TLA2TOOLS: join(dir, "tla2tools.jar") };
+  const out = join(dir, "out");
+  const tlc = join(out, "tlc");
+  for (const name of ["owner-notes.cfg", "owner-notes.out", "owner-notes.dot", "Checkout-backup.cfg"]) {
+    mkdirSync(tlc, { recursive: true });
+    writeFileSync(join(tlc, "Checkout.cfg"), "generated\n");
+    writeFileSync(join(tlc, ".written.json"), '["Checkout.cfg"]\n');
+    writeFileSync(join(tlc, name), "mine\n");
+    const r = node("statechart.mjs", ["from-spec", "Pay.tla", "--out", out], dir, env);
+    assert.equal(r.status, 2, r.stderr);
+    assert.match(r.stderr, /did not write/);
+    assert.ok(r.stderr.includes(`tlc/${name}`), r.stderr);
+    assert.equal(readFileSync(join(tlc, name), "utf8"), "mine\n");
+    rmSync(out, { recursive: true });
+  }
+  for (const record of [null, "{", "{}", '["Pay.cfg", 1]']) {
+    mkdirSync(tlc, { recursive: true });
+    writeFileSync(join(tlc, "Pay.cfg"), "kept\n");
+    if (record !== null) writeFileSync(join(tlc, ".written.json"), record);
+    const r = node("statechart.mjs", ["from-spec", "Pay.tla", "--out", out], dir, env);
+    assert.equal(r.status, 2, r.stderr);
+    assert.match(r.stderr, /did not write/);
+    assert.match(r.stderr, /--out with a new folder/);
+    assert.equal(readFileSync(join(tlc, "Pay.cfg"), "utf8"), "kept\n");
+    rmSync(out, { recursive: true });
+  }
+  for (const kind of ["directory", "symlink"]) {
+    mkdirSync(tlc, { recursive: true });
+    writeFileSync(join(tlc, ".written.json"), '["Pay.cfg"]\n');
+    if (kind === "directory") mkdirSync(join(tlc, "Pay.cfg"));
+    else symlinkSync(join(dir, "Pay.cfg"), join(tlc, "Pay.cfg"));
+    const r = node("statechart.mjs", ["from-spec", "Pay.tla", "--out", out], dir, env);
+    assert.equal(r.status, 2, r.stderr);
+    assert.match(r.stderr, /did not write: tlc\/Pay.cfg/);
+    rmSync(out, { recursive: true });
+  }
+});
+
 test("statechart.mjs exits 2 and names a helper script that cannot start", () => {
   const dir = mkdtempSync(join(tmpdir(), "statechart-"));
   writeFileSync(join(dir, "notes-app.mmd"), fixture("sync.mmd"));
@@ -5894,6 +5937,36 @@ const writeLamp = (dir) => {
   );
   return join(dir, "Lamp-statechart");
 };
+
+test("TLC reruns replace recorded files, remove old rule files, and preserve unrecorded files", needsTlc, () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  const out = writeLamp(dir);
+  const spec = readFileSync(join(dir, "Lamp.tla"), "utf8").replace(
+    "====",
+    "Safe == on \\in BOOLEAN\n====",
+  );
+  writeFileSync(join(dir, "Lamp.tla"), spec);
+  writeFileSync(join(dir, "Lamp.cfg"), "SPECIFICATION Spec\nINVARIANT Safe\n");
+  const run = () => node("statechart.mjs", ["from-spec", "Lamp.tla"], dir);
+  for (let i = 0; i < 2; i++) {
+    const r = run();
+    assert.equal(r.status, 0, r.stderr);
+    assert.ok(existsSync(join(out, "tlc", "Lamp-Safe.cfg")));
+  }
+  writeFileSync(join(dir, "Lamp.cfg"), "SPECIFICATION Spec\n");
+  const changed = run();
+  assert.equal(changed.status, 0, changed.stderr);
+  assert.equal(existsSync(join(out, "tlc", "Lamp-Safe.cfg")), false);
+  for (const name of ["owner-notes.cfg", "owner-notes.out", "owner-notes.dot", "Lamp-backup.cfg"]) {
+    const file = join(out, "tlc", name);
+    writeFileSync(file, "mine\n");
+    const r = run();
+    assert.equal(r.status, 2, r.stderr);
+    assert.match(r.stderr, /did not write/);
+    assert.equal(readFileSync(file, "utf8"), "mine\n");
+    rmSync(file);
+  }
+});
 
 test("a rerun without --png removes the chart.png of an earlier run", needsTlc, () => {
   const dir = mkdtempSync(join(tmpdir(), "statechart-"));
