@@ -143,7 +143,8 @@ const COMMON = `Both commands
                      files in a temporary folder, and then replaces the whole output folder with
                      it. When runs overlap, the output folder has the files of the run that
                      finished last. The command does not use an output folder that has files that
-                     it did not write. On a filesystem that cannot rename, the command copies the
+                     it did not write. Older output folders without tlc/.written.json need a new
+                     --out folder. On a filesystem that cannot rename, the command copies the
                      files into place, and overlapping runs can mix their files.
   --png              Also draw each chart as a PNG. The PNG section tells how.
   --theme NAME       The colors of each PNG: light, dark, or classic. Default: light. It needs

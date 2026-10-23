@@ -548,6 +548,8 @@ function render(charts, { lib, theme }, shown) {
 function finish({ work, out, inputs }, { files, charts }, ok, renderer) {
   unchanged(inputs, out);
   const pngs = renderer ? render(charts, renderer, published(work, out)) : [];
+  const tlc = path.join(work, "tlc");
+  fs.writeFileSync(path.join(tlc, WRITTEN), `${JSON.stringify(fs.readdirSync(tlc))}\n`);
   publish(work, out, inputs);
   const written = [...charts, ...pngs, files.stories, files.summary]
     .map((f) => path.basename(f))
@@ -578,21 +580,30 @@ function renderFile(input, flags, { lib, theme }) {
 
 const published = (work, out) => (file) => rel(path.join(out, path.relative(work, file)));
 
-// Files a run writes at the top of its output folder, and inside tlc/. Only a regular file with one
-// of these names is the run's own; a folder (or a link) under an owned name is not, and neither is
-// anything nested under tlc/ that TLC or this script did not write. publish() removes the previous
-// folder whole, so everything it holds must be ours.
 const OWN =
   /^((chart|bug-\d+(-developer|-layered)?)\.(mmd|png)|stories\.md|summary\.json|\.DS_Store)$/;
-const OWN_TLC = /^([^/]+\.(cfg|out|dot)|regions-(proof|all)\.mmd)$/;
+const WRITTEN = ".written.json";
+
+function foreignTlc(dir) {
+  let written;
+  try {
+    written = JSON.parse(fs.readFileSync(path.join(dir, WRITTEN), "utf8"));
+  } catch {}
+  const own = new Set([".DS_Store"]);
+  if (Array.isArray(written) && written.every((f) => typeof f === "string"))
+    for (const f of [WRITTEN, ...written]) own.add(f);
+  return fs
+    .readdirSync(dir, { withFileTypes: true })
+    .filter((g) => !g.isFile() || !own.has(g.name))
+    .map((g) => `tlc/${g.name}`);
+}
 
 function foreign(dir) {
   try {
     const found = [];
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       if (entry.name === "tlc" && entry.isDirectory()) {
-        for (const inner of fs.readdirSync(path.join(dir, "tlc"), { withFileTypes: true }))
-          if (!(inner.isFile() && OWN_TLC.test(inner.name))) found.push(`tlc/${inner.name}`);
+        found.push(...foreignTlc(path.join(dir, "tlc")));
       } else if (!(entry.isFile() && OWN.test(entry.name))) found.push(entry.name);
     }
     return found.sort();

@@ -1554,6 +1554,7 @@ test("statechart.mjs refuses an output folder with foreign files under tlc/ or b
   // A user's file inside the owned tlc/ folder.
   mkdirSync(join(dir, "nested", "tlc"), { recursive: true });
   writeFileSync(join(dir, "nested", "tlc", "Pay.out"), "");
+  writeFileSync(join(dir, "nested", "tlc", ".written.json"), '["Pay.out"]\n');
   writeFileSync(join(dir, "nested", "tlc", "notes.md"), "mine\n");
   refused("nested", "tlc/notes.md");
   assert.equal(readFileSync(join(dir, "nested", "tlc", "notes.md"), "utf8"), "mine\n");
@@ -1579,8 +1580,10 @@ test("statechart.mjs refuses an output folder with foreign files under tlc/ or b
   mkdirSync(join(dir, "own", "tlc"), { recursive: true });
   for (const f of ["chart.mmd", "stories.md", "summary.json", ".DS_Store", "bug-1.png"])
     writeFileSync(join(dir, "own", f), "");
-  for (const f of ["Pay.cfg", "Pay.out", "Pay.dot", "Pay-Safe.cfg", "regions-proof.mmd"])
+  const ownTlc = ["Pay.cfg", "Pay.out", "Pay.dot", "Pay-Safe.cfg", "regions-proof.mmd"];
+  for (const f of ownTlc)
     writeFileSync(join(dir, "own", "tlc", f), "");
+  writeFileSync(join(dir, "own", "tlc", ".written.json"), JSON.stringify(ownTlc));
   // The run gets past the ownership check and stops at the next step, the missing mapping.
   const own = node("statechart.mjs", ["from-spec", "Pay.tla", "--out", "own"], dir, env);
   assert.doesNotMatch(own.stderr, /did not write/);
