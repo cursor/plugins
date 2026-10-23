@@ -1536,6 +1536,57 @@ test("statechart.mjs does not use an output folder that has files that it did no
   assert.equal(readFileSync(join(out, "chart.mmd"), "utf8"), "kept\n");
 });
 
+test("statechart.mjs refuses an output folder with foreign files under tlc/ or behind an owned name", () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  writeFileSync(join(dir, "tla2tools.jar"), "");
+  writeFileSync(join(dir, "Pay.tla"), "---- MODULE Pay ----\n====\n");
+  writeFileSync(join(dir, "Pay.cfg"), "SPECIFICATION Spec\n");
+  const env = { TLA2TOOLS: join(dir, "tla2tools.jar") };
+  const refused = (out, expected) => {
+    const r = node("statechart.mjs", ["from-spec", "Pay.tla", "--out", out], dir, env);
+    assert.equal(r.status, 2, r.stderr);
+    assert.equal(
+      r.stderr,
+      `${out} has a file that this command did not write: ${expected}. A run puts its files in place of the whole output folder, so pass --out with a new folder.\n`,
+    );
+  };
+
+  // A user's file inside the owned tlc/ folder.
+  mkdirSync(join(dir, "nested", "tlc"), { recursive: true });
+  writeFileSync(join(dir, "nested", "tlc", "Pay.out"), "");
+  writeFileSync(join(dir, "nested", "tlc", "notes.md"), "mine\n");
+  refused("nested", "tlc/notes.md");
+  assert.equal(readFileSync(join(dir, "nested", "tlc", "notes.md"), "utf8"), "mine\n");
+
+  // A folder that carries the name of a generated file.
+  mkdirSync(join(dir, "typed", "chart.mmd"), { recursive: true });
+  writeFileSync(join(dir, "typed", "chart.mmd", "notes.md"), "mine\n");
+  refused("typed", "chart.mmd");
+
+  // The same with the ignored Finder file.
+  mkdirSync(join(dir, "finder", ".DS_Store"), { recursive: true });
+  writeFileSync(join(dir, "finder", ".DS_Store", "notes.md"), "mine\n");
+  refused("finder", ".DS_Store");
+
+  // A link under an owned name is not the run's file either.
+  mkdirSync(join(dir, "linked"));
+  writeFileSync(join(dir, "elsewhere.mmd"), "theirs\n");
+  symlinkSync(join(dir, "elsewhere.mmd"), join(dir, "linked", "chart.mmd"));
+  refused("linked", "chart.mmd");
+  assert.equal(readFileSync(join(dir, "elsewhere.mmd"), "utf8"), "theirs\n");
+
+  // The run's own files, including the whole of tlc/, still pass.
+  mkdirSync(join(dir, "own", "tlc"), { recursive: true });
+  for (const f of ["chart.mmd", "stories.md", "summary.json", ".DS_Store", "bug-1.png"])
+    writeFileSync(join(dir, "own", f), "");
+  for (const f of ["Pay.cfg", "Pay.out", "Pay.dot", "Pay-Safe.cfg", "regions-proof.mmd"])
+    writeFileSync(join(dir, "own", "tlc", f), "");
+  // The run gets past the ownership check and stops at the next step, the missing mapping.
+  const own = node("statechart.mjs", ["from-spec", "Pay.tla", "--out", "own"], dir, env);
+  assert.doesNotMatch(own.stderr, /did not write/);
+  assert.match(own.stderr, /Wrote Pay\.map\.mjs/);
+});
+
 test("statechart.mjs exits 2 and names a helper script that cannot start", () => {
   const dir = mkdtempSync(join(tmpdir(), "statechart-"));
   writeFileSync(join(dir, "notes-app.mmd"), fixture("sync.mmd"));

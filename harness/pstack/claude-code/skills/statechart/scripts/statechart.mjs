@@ -578,15 +578,24 @@ function renderFile(input, flags, { lib, theme }) {
 
 const published = (work, out) => (file) => rel(path.join(out, path.relative(work, file)));
 
+// Files a run writes at the top of its output folder, and inside tlc/. Only a regular file with one
+// of these names is the run's own; a folder (or a link) under an owned name is not, and neither is
+// anything nested under tlc/ that TLC or this script did not write. publish() removes the previous
+// folder whole, so everything it holds must be ours.
 const OWN =
-  /^((chart|bug-\d+(-developer|-layered)?)\.(mmd|png)|stories\.md|summary\.json|tlc|\.DS_Store)$/;
+  /^((chart|bug-\d+(-developer|-layered)?)\.(mmd|png)|stories\.md|summary\.json|\.DS_Store)$/;
+const OWN_TLC = /^([^/]+\.(cfg|out|dot)|regions-(proof|all)\.mmd)$/;
 
 function foreign(dir) {
   try {
-    return fs
-      .readdirSync(dir)
-      .filter((f) => !OWN.test(f))
-      .sort();
+    const found = [];
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === "tlc" && entry.isDirectory()) {
+        for (const inner of fs.readdirSync(path.join(dir, "tlc"), { withFileTypes: true }))
+          if (!(inner.isFile() && OWN_TLC.test(inner.name))) found.push(`tlc/${inner.name}`);
+      } else if (!(entry.isFile() && OWN.test(entry.name))) found.push(entry.name);
+    }
+    return found.sort();
   } catch (e) {
     if (e.code === "ENOENT") return [];
     throw new CannotFinish(`cannot use ${rel(dir)} as the output folder: ${e.message}`);
