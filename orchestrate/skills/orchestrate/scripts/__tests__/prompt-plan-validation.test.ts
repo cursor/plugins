@@ -3,12 +3,13 @@ import { spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 function runPromptWithPlan(plan: unknown): ReturnType<typeof spawnSync> {
   const workspace = mkdtempSync(join(tmpdir(), "orchestrate-plan-migration-"));
   writeFileSync(join(workspace, "plan.json"), JSON.stringify(plan, null, 2));
 
-  const cliPath = new URL("../cli.ts", import.meta.url).pathname;
+  const cliPath = fileURLToPath(new URL("../cli.ts", import.meta.url));
   try {
     return spawnSync(
       process.execPath,
