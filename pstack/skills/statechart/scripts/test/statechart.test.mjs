@@ -407,6 +407,57 @@ export const step = (action) => ({ Tap: "you tap Save" })[action] ?? "";
   ]);
 });
 
+test("stories describe a retained counterexample without claiming to count every route", () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  const trace = (steps) => `Error: Invariant NeverFails is violated.
+Error: The behavior up to this point is:
+${steps.map(([action, x], i) => `State ${i + 1}: <${action ?? "Initial predicate"}>\nx = ${x}\n`).join("\n")}
+Model checking completed.
+`;
+  const left = trace([[null, 0], ["Left line 1", 1], ["FailLeft line 2", 3]]);
+  const right = trace([[null, 0], ["Right line 1", 2], ["FailRight line 2", 3]]);
+  const direct = trace([[null, 0], ["FailDirectly line 1", 4]]);
+  writeFileSync(
+    join(dir, "map.mjs"),
+    `export const state = v => ["Start", "Left route", "Right route", "Failed", "Failed"][v.x];
+export const step = a => ({Left: "take left", Right: "take right", FailLeft: "left fails", FailRight: "right fails", FailDirectly: "finish directly"})[a];
+`,
+  );
+  for (const multiple of [false, true]) {
+    writeFileSync(join(dir, "graph.dot"), `strict digraph DiskGraph {
+1 [label="x = 0",style = filled]
+2 [label="x = 1"]
+3 [label="x = 2"]
+4 [label="x = 3"]
+1 -> 2 [label="Left"];
+1 -> 3 [label="Right"];
+2 -> 4 [label="FailLeft"];
+3 -> 4 [label="FailRight"];
+${multiple ? '5 [label="x = 4"]\n1 -> 5 [label="FailDirectly"];' : ""}
+}`);
+    writeFileSync(join(dir, "trace.out"), left + right + (multiple ? direct : ""));
+    const r = node(
+      "tlc-to-chart.mjs",
+      [
+        "--dot", "graph.dot", "--map", "map.mjs", "--traces", "trace.out",
+        "--out", "chart.mmd", "--story", "stories.md", "--summary", "summary.json",
+      ],
+      dir,
+    );
+    assert.equal(r.status, 0, r.stderr);
+    const story = readFileSync(join(dir, "stories.md"), "utf8");
+    assert.doesNotMatch(story, /only way|\d+ ways|shortest/);
+    assert.match(story, /0\. Start: Start/);
+    assert.ok(
+      story.includes(multiple ? "1. Finish directly. Now: Failed" : "2. Left fails. Now: Failed"),
+    );
+    const { classes } = JSON.parse(readFileSync(join(dir, "summary.json"), "utf8"));
+    assert.equal(classes.length, 1);
+    assert.equal(classes[0].counterexamples, multiple ? 2 : 1);
+    assert.equal(classes[0].readerSteps, multiple ? 1 : 2);
+  }
+});
+
 test("chart-to-tla writes one action per label and one invariant per never line", () => {
   const dir = mkdtempSync(join(tmpdir(), "statechart-"));
   writeFileSync(join(dir, "sync.mmd"), fixture("sync.mmd"));
