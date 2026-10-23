@@ -101,8 +101,11 @@ statechart.mjs runs it once for the overview and once for each bug chart.
   --regions-all FILE     With --regions, also write the regions with every step.
   --title TEXT           The chart title.
   --out FILE             The Mermaid chart. Default: stdout.
-  --story FILE           The reader stories, one per bug.
-  --summary FILE         The counts for the chart and the bugs, as JSON.
+  --story FILE           The reader stories, one per bug. Each shows the fewest reader steps among
+                         retained counterexamples, with model steps breaking ties. This need not
+                         be the shortest reader path in the graph.
+  --summary FILE         The counts for the chart and the bugs, as JSON. The counterexamples field
+                         counts retained traces in each bug group, not graph routes.
   -h, --help             Print this help, and exit 0.
 
 Each bug replays on the second model by its screens and step words, which are what the reader
@@ -1320,12 +1323,7 @@ if (args.story) {
     lines.push(`Rule broken: ${ruleOf(c)}`);
     if (c.cause) lines.push(`Why: ${c.cause.replace(/\.$/, "")}.`);
     if (args.listed) lines.push(listedLine(c));
-    lines.push(
-      c.count === 1
-        ? "This is the only way to get here in the model."
-        : `There are ${c.count} ways to get here in the model. This is the shortest.`,
-      "",
-    );
+    lines.push("This path breaks the rule.", "");
     c.path.forEach((p, j) =>
       lines.push(
         j === 0 ? `0. Start: ${show(p.key)}` : `${j}. ${cap(p.label)}. Now: ${show(p.key)}`,

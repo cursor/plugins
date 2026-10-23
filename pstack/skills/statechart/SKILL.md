@@ -33,4 +33,6 @@ If the code already has a TLA+ spec, start from a copy of that spec. Add the var
 
 ## Hand off
 
+Each bug story shows one counterexample with the fewest reader steps among the retained traces. It need not be the shortest reader path in the graph. The `counterexamples` count in `summary.json` counts retained traces in a bug group, not every route to the bad state.
+
 Give the PM the PNG and the Mermaid source of each chart. Add one line per bug with the rule it breaks, its steps as the chart numbers them, whether it reproduced, and whether the open fix fixes it. With `--against`, also say whether the spec already lists it: in the configs that `stories.md` names, in the spec's notes on what the model leaves out, or not at all. Do not report that a rule holds while the command lists conditions with no file and line. Take every count you quote from `summary.json`. Attach `stories.md` and the command that regenerates everything. Say what the model leaves out.
