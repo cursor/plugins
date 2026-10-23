@@ -48,13 +48,11 @@ Present the synthesizer's full Accepted / Rejected / Backlog output and wait for
 
 File each Backlog item to your team's devex or backlog tracker without waiting. Only the Accepted list waits for approval.
 
-Never edit a file under a `plugins/cache/` path. That tree is the installed plugin. A plugin update moves to a new hash and drops the edit.
+Never edit a skill under `plugins/cache/`. Before approval, show its destination, `.cursor/skills/<skill>/` or `~/.cursor/skills/<skill>/`. After approval, copy the skill folder there and edit the copy. Never open a PR or push.
 
-The Routing cell names the skill and the section. Resolve one destination, then edit only there. A skill under `plugins/cache/`, or inside a plugin whose `plugin.json` has a `repository` field, is third-party. For a third-party skill, open a PR that edits the source file in the repo named by that `repository`. For any other skill, the destination is `.cursor/skills/` or `~/.cursor/skills/`. Tell the user the PR URL or the destination path.
+Follow each approved row's Routing exactly:
 
-Follow each approved row's Routing at that destination:
-
-- Trivial existing-skill edit (a one-line bullet, a tightened sentence, a stale fact corrected): the parent edits that destination.
+- Trivial existing-skill edit (a one-line bullet, a tightened sentence, a stale fact corrected): the parent does it directly.
 - Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): hand to Cursor's built-in `create-skill` skill and run its draft / test / iterate loop.
 - `tune description: <skill path>` (the skill exists but didn't trigger when it should have): hand to `create-skill` and run its description-optimization loop.
 - `new skill via create-skill: <kebab-name>`: hand creation to `create-skill`. Do not invent the shape ad hoc.
@@ -65,7 +63,7 @@ If your environment ships a SKILL.md validator, run it on every touched skill be
 
 Short list, no preamble:
 
-- Edits applied: `<PR URL or destination path>`. What changed, one line each.
-- New skills created: `<PR URL or destination path>`. One line each (rare).
+- Edits applied: `<skill path>`. What changed, one line each.
+- New skills created: `<skill path>`. One line each (rare).
 - Backlog filed to the devex tracker: `<issue title>` (`<tags>`). One line each.
 - Dropped: one line per rejected finding + reason from the synthesizer.
