@@ -1156,7 +1156,7 @@ test("TLC reads a label with a guarded and an unguarded move in one region", nee
 const syncStory = `## 1. Offline | Synced
 
 Rule broken: You never see "Synced" while you are offline.
-This is the only way to get here in the model.
+This path breaks the rule.
 
 0. Start: Online | Synced
 1. The network drops. Now: Offline | Waiting to sync
@@ -1678,7 +1678,7 @@ Chart: 5 states and 4 transitions from 5 model states.
 
 Rule broken: \`NoDoubleCharge\`
 Why: each charge request charges again.
-This is the only way to get here in the model.
+This path breaks the rule.
 
 0. Start: Cart
 1. You pay. Now: Paying
@@ -2004,7 +2004,7 @@ Chart: 4 states and 4 transitions from 10 model states.
 
 Rule broken: You never see "Saved" while the note is still a draft.
 Why: the app stops after one retry and shows Saved anyway.
-There are 2 ways to get here in the model. This is the shortest.
+This path breaks the rule.
 
 0. Start: Editing, draft
 1. You press Save. Now: Saving, draft

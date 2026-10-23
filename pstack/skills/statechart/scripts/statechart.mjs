@@ -116,8 +116,10 @@ Output
   bug-N-developer.mmd, bug-N-layered.mmd
                      The path of bug N through the developer's states, when the mapping exports
                      detail().
-  stories.md         One entry per bug: the rule, why it breaks, the shortest path in reader
-                     steps, and what the --fixed or --against model does instead.
+  stories.md         One entry per bug: the rule, why it breaks, one path that breaks it, and what
+                     the --fixed or --against model does instead. The path has the fewest reader
+                     steps among retained counterexamples, with model steps breaking ties.
+                     Other paths in the graph can have fewer reader steps.
   summary.json       The counts behind the chart. With --fixed or --against, uncited has the
                      conditions with no file and line for each code model. With --against,
                      second.listed has what each config beside AGREED.tla expects, and each bug
@@ -172,8 +174,9 @@ TLC
   later). Download tla2tools.jar from https://github.com/tlaplus/tlaplus/releases. When TLA2TOOLS
   is not set, the command says where to get TLC and exits 2.
   TLC checks each rule with one worker per CPU. When a rule is broken, TLC checks it again with one
-  worker, which finds the shortest bug paths, the same on every run. The command then prints how
-  many times TLC ran and how long that took.
+  worker, which searches breadth first in model steps. Hidden model steps can disappear from the
+  reader's path, so this does not guarantee the shortest reader path. The command then prints
+  how many times TLC ran and how long that took.
   TLC can find that a rule is broken and then fail with a Java exception while it reports the rule.
   The command then keeps the paths that TLC printed, marks the rule broken, and warns that the
   charts can miss states that break it. The failure is in TLC, so do not weaken the rule because of
@@ -429,7 +432,7 @@ function check(tools, model, { work, out }, expected) {
     const cfg = `${cfgWithoutRules}INVARIANT ${rule}\nCONSTRAINT ${rule}\n`;
     let result = run(cfg, file, { workers: "auto" });
     // Several workers can reach a bad state by a longer path first. One worker searches breadth
-    // first in a fixed order, so the chart's bug paths are the shortest, and the same every run.
+    // first in model steps, before the chart hides steps that the reader does not see.
     if (/^Error: Invariant /m.test(result.stdout)) result = run(cfg, file);
     const broken = /^Error: Invariant /m.test(result.stdout);
     console.log(said(rule, broken));
