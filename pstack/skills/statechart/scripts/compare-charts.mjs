@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import process from "node:process";
-import { FULL_LABELS, LEGEND_ID, compareCharts, parseMermaid } from "./lib.mjs";
+import { FULL_LABELS, LEGEND_ID, NO_LOOPS, compareCharts, parseMermaid } from "./lib.mjs";
 
 const USAGE = "Usage: node compare-charts.mjs EXPECTED.mmd ACTUAL.mmd";
 
@@ -61,7 +61,9 @@ if (numbered) {
   process.exit(2);
 }
 
-const rows = compareCharts(expectedRegions, actualRegions);
+const rows = compareCharts(expectedRegions, actualRegions, {
+  loops: !actualText.includes(NO_LOOPS),
+});
 let differences = 0;
 for (const [title, xs] of rows) {
   console.log(`${title}:`);

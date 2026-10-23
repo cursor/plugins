@@ -539,6 +539,7 @@ export const escapeMermaidQuotes = (s) => String(s).replaceAll('"', "#quot;");
 
 export const LEGEND_ID = "legend";
 export const FULL_LABELS = "%% labels in full";
+export const NO_LOOPS = "%% self-loops left out";
 export const BROKEN_MARK = "statechart broken";
 
 export function parseMermaid(text) {
@@ -796,7 +797,7 @@ function guardHolds(guard, at) {
   return guard.not ? !hits.some(Boolean) : hits.every(Boolean);
 }
 
-export function productOf(regions) {
+export function productOf(regions, { loops = true } = {}) {
   const names = Object.keys(regions);
   const rs = Object.values(regions);
   const join = (parts) => parts.join(" | ");
@@ -825,6 +826,7 @@ export function productOf(regions) {
   const queue = [...starts];
   const step = (from, to, label) => {
     const [a, b] = [join(from), join(to)];
+    if (a === b && !loops) return;
     out.transitions.push({ from: a, to: b, label });
     if (!seen.has(b)) {
       seen.add(b);
@@ -857,9 +859,9 @@ export function productOf(regions) {
   return out;
 }
 
-export function compareCharts(expectedRegions, actualRegions) {
-  const expected = productOf(expectedRegions);
-  const actual = productOf(actualRegions);
+export function compareCharts(expectedRegions, actualRegions, { loops = true } = {}) {
+  const expected = productOf(expectedRegions, { loops });
+  const actual = productOf(actualRegions, { loops });
   const edgeSet = (m) => {
     const labeled = new Set();
     const out = new Set();

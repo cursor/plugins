@@ -472,6 +472,7 @@ const regions = args.regions
       states: allNodes,
       starts: [...initial],
       edges,
+      loops: Boolean(args.loops),
       classes,
       proofPath: args.proof,
       allPath: args.regionsAll,

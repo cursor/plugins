@@ -1,5 +1,12 @@
 import fs from "node:fs";
-import { compareCharts, escapeMermaidQuotes, parseMermaid, productOf, wrap } from "./lib.mjs";
+import {
+  NO_LOOPS,
+  compareCharts,
+  escapeMermaidQuotes,
+  parseMermaid,
+  productOf,
+  wrap,
+} from "./lib.mjs";
 import { SEP, addGuard, frontMatter, guarded } from "./chart-parts.mjs";
 import { RANK, diverges, worst } from "./bug-states.mjs";
 import { edgesAlong } from "./chart-edges.mjs";
@@ -8,6 +15,7 @@ export function regionsChart({
   states,
   starts,
   edges,
+  loops,
   classes,
   proofPath,
   allPath,
@@ -49,6 +57,7 @@ export function regionsChart({
   const proof = [
     ...frontMatter(),
     "stateDiagram-v2",
+    ...(loops ? [] : [`  ${NO_LOOPS}`]),
     ...[...ids].map(([s, id]) => `  state "${escapeMermaidQuotes(s)}" as ${id}`),
     ...[...flat.Main.initial].map((s) => `  [*] --> ${ids.get(s)}`),
     ...steps.map((s) => `  ${ids.get(bar(s.from))} --> ${ids.get(bar(s.to))} : ${s.label}`),
@@ -163,7 +172,7 @@ export function regionsChart({
   };
 
   const all = draw(null);
-  const differences = compareCharts(parseMermaid(all.mermaid).regions, flat);
+  const differences = compareCharts(parseMermaid(all.mermaid).regions, flat, { loops });
   if (differences.length) {
     const n = differences.reduce((sum, [, xs]) => sum + xs.length, 0);
     return {
@@ -261,7 +270,7 @@ export function regionsChart({
   let made;
   for (;;) {
     scoped = draw(keep);
-    made = productOf(parseMermaid(scoped.mermaid).regions);
+    made = productOf(parseMermaid(scoped.mermaid).regions, { loops });
     const madeKeys = new Set(made.transitions.map((t) => key(t.from, t.label, t.to)));
     const redo = [
       ...made.transitions

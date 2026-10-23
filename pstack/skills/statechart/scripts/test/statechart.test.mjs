@@ -5023,6 +5023,44 @@ test(
 );
 
 test(
+  "from-spec draws parallel regions whose arrows together make a step back to the same state, which the overview leaves out",
+  needsTlc,
+  () => {
+    const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+    writeFileSync(
+      join(dir, "Knobs.tla"),
+      `---- MODULE Knobs ----
+VARIABLES dial, light
+vars == <<dial, light>>
+Init == dial = "low" /\\ light = "off"
+Turn == dial = "low" /\\ light = "off" /\\ dial' \\in {"low", "mid"} /\\ light' \\in {"off", "on"}
+Push == dial = "mid" /\\ dial' = "high" /\\ UNCHANGED light
+Next == Turn \\/ Push
+Spec == Init /\\ [][Next]_vars
+====
+`,
+    );
+    writeFileSync(join(dir, "Knobs.cfg"), "SPECIFICATION Spec\nCHECK_DEADLOCK FALSE\n");
+    writeFileSync(
+      join(dir, "Knobs.map.mjs"),
+      `export const regionNames = ["Dial", "Light"];
+export const state = (v) => \`\${v.dial}: \${v.light}\`;
+export const step = (a) => ({ Turn: "you turn", Push: "you push" })[a];
+`,
+    );
+    const r = node("statechart.mjs", ["from-spec", "Knobs.tla"], dir);
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    assert.match(r.stdout, /\nIt has 2 parallel regions, of 3 and 2 states\. /);
+    const again = node(
+      "compare-charts.mjs",
+      ["tlc/regions-all.mmd", "tlc/regions-proof.mmd"],
+      join(dir, "Knobs-statechart"),
+    );
+    assert.equal(again.stdout, "same\n", again.stderr);
+  },
+);
+
+test(
   "the mapping's guard words show on an arrow only when every model step behind it has them",
   needsTlc,
   () => {
