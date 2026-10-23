@@ -5,49 +5,20 @@ import process from "node:process";
 import { parseMermaid } from "./lib.mjs";
 
 const USAGE = "Usage: node chart-to-tla.mjs CHART.mmd --module NAME [--dir OUT]";
-const HELP = `${USAGE}
-
-Writes a TLA+ spec, a TLC config, and a reader mapping from a Mermaid stateDiagram-v2.
-statechart.mjs from-chart runs it, then checks each INVARIANT in NAME.cfg alone.
-
-Each region becomes one variable whose values are the region's states. Each transition label
-becomes one action. Regions that share a label move together: every region that can take it does,
-and the others stay. A "%% when" line after a transition is its guard: the region can take that
-transition only while the other regions are in, or with "not" are not in, the states it names. An
-unlabeled transition is its own action. Each
-"%% never NAME: A & B -- sentence" line becomes the invariant NAME == ~(A /\\ B). A name in a
-never line is a state, or a composite that stands for every state inside it.
-
-  --module NAME  The TLA+ module name. Required.
-  --dir OUT      The folder for the files. Default: the chart's folder.
-  -h, --help     Print this help, and exit 0.
-
-Writes NAME.tla, NAME.cfg, and NAME.map.mjs into OUT, and replaces files with those names.
-NAME.cfg has SPECIFICATION Spec, INVARIANT TypeOK, and one INVARIANT per never line.
-NAME.map.mjs gives tlc-to-chart.mjs the reader's words: the region states joined by " | ".
-
-Exit codes
-  0  It wrote the files.
-  1  It cannot read the chart. The error says why.
-  2  A bad argument.`;
-const more = "Run node chart-to-tla.mjs --help for the flags.";
 
 const args = {};
 for (let i = 2; i < process.argv.length; i++) {
   const a = process.argv[i];
-  if (a === "-h" || a === "--help") {
-    console.log(HELP);
-    process.exit(0);
-  } else if (a === "--module") args.module = process.argv[++i];
+  if (a === "--module") args.module = process.argv[++i];
   else if (a === "--dir") args.dir = process.argv[++i];
   else if (!a.startsWith("-") && !args.chart) args.chart = a;
   else {
-    console.error(`unknown argument ${a}. ${more}`);
+    console.error(`unknown argument ${a}.`);
     process.exit(2);
   }
 }
 if (!args.chart || !/^[A-Za-z][A-Za-z0-9_]*$/.test(args.module ?? "")) {
-  console.error(`${USAGE}\n${more}`);
+  console.error(USAGE);
   process.exit(2);
 }
 const dir = args.dir ?? path.dirname(args.chart);
@@ -167,9 +138,7 @@ for (const a of actions) {
   if (still.length) out.push(`    /\\ UNCHANGED <<${still.join(", ")}>>`);
 }
 out.push("");
-out.push(
-  actions.length ? `Next == ${actions.map((a) => a.name).join(" \\/ ")}` : "Next == UNCHANGED vars",
-);
+out.push(actions.length ? `Next == ${actions.map((a) => a.name).join(" \\/ ")}` : "Next == FALSE");
 out.push("");
 out.push("Spec == Init /\\ [][Next]_vars");
 
