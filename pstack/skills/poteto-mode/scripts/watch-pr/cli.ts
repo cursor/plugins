@@ -19,6 +19,12 @@ import {
   type WatchClock,
 } from "./policy.ts";
 import { renderJson, renderPretty } from "./render.ts";
+import {
+  DEFAULT_REVIEW_BOTS,
+  ReviewBotConfigError,
+  loadReviewBots,
+  type ReviewBots,
+} from "./review-bots.ts";
 import type * as T from "./types.ts";
 import { nonEmpty, parsePrNumber } from "./types.ts";
 export interface CliOptions {
@@ -30,6 +36,7 @@ export interface CliOptions {
   readonly statusOnly: boolean;
   readonly pretty: boolean;
   readonly polling: T.PollingOptions;
+  readonly reviewBots: ReviewBots;
 }
 function positiveNumber(value: string): number {
   const parsed = Number(value);
@@ -56,6 +63,14 @@ function prNumber(value: string): T.PrNumber {
     throw new InvalidArgumentError("must be a positive integer");
   }
 }
+function reviewBotFile(value: string): ReviewBots {
+  try {
+    return loadReviewBots(value);
+  } catch (error) {
+    if (!(error instanceof ReviewBotConfigError)) throw error;
+    throw new InvalidArgumentError(error.message);
+  }
+}
 function stackPrList(value: string): T.NonEmpty<T.PrNumber> {
   const numbers = value.split(",").map((part) => prNumber(part.trim()));
   if (new Set(numbers).size !== numbers.length)
@@ -78,6 +93,7 @@ interface RawOptions {
   readonly statusOnly: boolean;
   readonly allowDraft: boolean;
   readonly pretty: boolean;
+  readonly reviewBots?: ReviewBots;
 }
 export function parseArgs(
   argv: readonly string[],
@@ -128,7 +144,12 @@ export function parseArgs(
     )
     .option("--status-only", "print one status table and exit 0", false)
     .option("--allow-draft", "do not treat a draft as a merge gate", false)
-    .option("--pretty", "render human text instead of JSON", false);
+    .option("--pretty", "render human text instead of JSON", false)
+    .option(
+      "--review-bots <path>",
+      "review-bot config JSON (default: review-bots.json beside this script)",
+      reviewBotFile
+    );
   program.parse(argv, { from: "user" });
   const raw = program.opts<RawOptions>();
   if (raw.stackPrs !== undefined && !raw.queuedStack)
@@ -148,6 +169,7 @@ export function parseArgs(
       maxQueryErrors: raw.maxQueryErrors,
       allowDraft: raw.allowDraft,
     },
+    reviewBots: raw.reviewBots ?? DEFAULT_REVIEW_BOTS,
   };
 }
 export interface CliRuntime {
@@ -207,7 +229,12 @@ export async function main(
     runtime.stdout(render(verdict));
     return verdict.exitCode;
   }
-  const dependencies = { reader: runtime.reader, clock: runtime.clock, emit };
+  const dependencies = {
+    reader: runtime.reader,
+    clock: runtime.clock,
+    emit,
+    reviewBots: options.reviewBots,
+  };
   const verdict =
     options.mode === "queued-stack" && !options.statusOnly
       ? await runQueued({ dependencies, contexts, options: options.polling })

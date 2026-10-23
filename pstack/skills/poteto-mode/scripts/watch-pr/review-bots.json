@@ -1,0 +1,49 @@
+{
+  "bots": [
+    {
+      "id": "bugbot",
+      "authors": [
+        { "login": "bugbot", "match": "contains" },
+        {
+          "login": "cursor",
+          "bodyTokens": [
+            "bugbot",
+            "cursor_automation_id",
+            "agentic security review",
+            "description start",
+            "severity"
+          ]
+        }
+      ],
+      "passMarkers": [
+        { "pattern": "RUN_ID:\\s*([a-zA-Z0-9_.:-]+)" },
+        { "pattern": "CURSOR_AUTOMATION_ID:\\s*([a-zA-Z0-9_.:-]+)" }
+      ],
+      "runningChecks": [
+        "bugbot",
+        "security review",
+        "pr review automation",
+        "review automation"
+      ]
+    },
+    {
+      "id": "coderabbit",
+      "authors": [{ "login": "coderabbitai" }],
+      "passMarkers": [
+        { "key": "reviewed-commit", "pattern": "<!-- cr-comment:v\\d+:" }
+      ],
+      "runningChecks": ["CodeRabbit"]
+    },
+    {
+      "id": "cubic",
+      "authors": [{ "login": "cubic-dev-ai" }],
+      "passMarkers": [{ "pattern": "<!-- cubic:review-run=([0-9a-f-]+) -->" }],
+      "runningChecks": ["cubic · AI code reviewer"]
+    },
+    {
+      "id": "codex-connector",
+      "authors": [{ "login": "chatgpt-codex-connector" }],
+      "passMarkers": [{ "key": "reviewed-commit" }]
+    }
+  ]
+}
