@@ -627,6 +627,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "commsync",
+      "source": "third_party/commsync",
+      "description": "Read, search, and send SMS and email from one shared inbox."
     }
   ]
 }
