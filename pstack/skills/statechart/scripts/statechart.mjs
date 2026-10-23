@@ -103,7 +103,7 @@ const COMMON = `Both commands
                      finished last. The command does not use an output folder that has files that
                      it did not write. On a filesystem that cannot rename, the command copies the
                      files into place, and overlapping runs can mix their files.
-  --png              Also render each chart to PNG with npx @mermaid-js/mermaid-cli.
+  --png              Also render each chart to PNG with npx @mermaid-js/mermaid-cli@12.0.0.
   -h, --help         Print this help, and exit 0.
 
 Output
@@ -634,7 +634,7 @@ function render(charts, shown) {
     const png = chart.replace(/\.mmd$/, ".png");
     const r = spawnSync(
       "npx",
-      ["-y", "@mermaid-js/mermaid-cli", "-i", chart, "-o", png, "-s", "2"],
+      ["-y", "@mermaid-js/mermaid-cli@12.0.0", "-i", chart, "-o", png, "-s", "2"],
       {
         encoding: "utf8",
       },
