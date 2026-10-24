@@ -33,8 +33,8 @@ fi
 # The agent stopped to ask the user something. Stay quiet and leave the marker
 # armed so the reminder fires after the user answers and the work resumes.
 if [[ -f "$LAST_RESPONSE_FILE" ]]; then
-  LAST_CHAR=$(tr -d '[:space:]' < "$LAST_RESPONSE_FILE" | tail -c 1)
-  if [[ "$LAST_CHAR" == "?" ]]; then
+  LAST_TEXT=$(tr -d '[:space:]' < "$LAST_RESPONSE_FILE")
+  if [[ "$LAST_TEXT" == *"?" || "$LAST_TEXT" == *"？" ]]; then
     exit 0
   fi
 fi
