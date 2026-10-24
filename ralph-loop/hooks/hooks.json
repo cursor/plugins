@@ -3,12 +3,12 @@
   "hooks": {
     "afterAgentResponse": [
       {
-        "command": "./hooks/capture-response.sh"
+        "command": "bash \"${CURSOR_PLUGIN_ROOT}/hooks/capture-response.sh\""
       }
     ],
     "stop": [
       {
-        "command": "./hooks/stop-hook.sh",
+        "command": "bash \"${CURSOR_PLUGIN_ROOT}/hooks/stop-hook.sh\"",
         "loop_limit": null
       }
     ]
