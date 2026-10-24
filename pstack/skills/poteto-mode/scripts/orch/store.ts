@@ -1114,9 +1114,12 @@ function branchPullRequest({
 }): ForgePullRequest {
   const rows = listPullRequests({ filter: "--head", branch, forge, repo });
   // A branch may have closed or merged historical PRs after stack surgery.
-  // Prefer its sole active PR, but retain historical anchors when none is open.
+  // Prefer its sole active PR, then its sole merged PR, and retain closed
+  // anchors only when neither exists.
   const active = rows.filter((row) => row.state === "OPEN");
-  const candidates = active.length > 0 ? active : rows;
+  const merged = rows.filter((row) => row.state === "MERGED");
+  const candidates =
+    active.length > 0 ? active : merged.length > 0 ? merged : rows;
   const row = candidates[0];
   if (row === undefined) {
     throw new UserError(
