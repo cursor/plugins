@@ -27,6 +27,8 @@ Decompose the question into 2 to 4 angles, each a distinct slice of the subsyste
 
 Once all explorers have returned, spawn one explainer with `references/explainer-prompt.md` and every explorer's findings filled in.
 
+If an explorer's report is redacted or missing, mark that lane INCONCLUSIVE in the explainer prompt and pass only facts the parent verified. Do not fill the gap with the longest remaining message.
+
 ## 4. Present
 
 Present the explainer's output. Light edits for clarity or context from the conversation are fine. Do not substantially rewrite it.
