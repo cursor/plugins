@@ -24,7 +24,7 @@ if (!args.chart || !/^[A-Za-z][A-Za-z0-9_]*$/.test(args.module ?? "")) {
 const dir = args.dir ?? path.dirname(args.chart);
 const { regions, nevers } = parseMermaid(fs.readFileSync(args.chart, "utf8"));
 
-const RESERVED = new Set(["vars", "Init", "Next", "Spec", "TypeOK", "Settled"]);
+const RESERVED = new Set(["vars", "Init", "Next", "Spec", "TypeOK", "Settled", "UNCHANGED"]);
 const taken = new Set(RESERVED);
 function ident(words, lower) {
   const parts = words
