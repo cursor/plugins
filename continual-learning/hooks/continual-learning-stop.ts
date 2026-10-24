@@ -38,8 +38,12 @@ function parsePositiveInt(value: string | undefined, fallback: number): number {
   if (!value) {
     return fallback;
   }
-  const parsed = Number.parseInt(value, 10);
-  if (!Number.isFinite(parsed) || parsed <= 0) {
+  const normalized = value.trim();
+  if (!/^[1-9]\d*$/.test(normalized)) {
+    return fallback;
+  }
+  const parsed = Number(normalized);
+  if (!Number.isSafeInteger(parsed)) {
     return fallback;
   }
   return parsed;
