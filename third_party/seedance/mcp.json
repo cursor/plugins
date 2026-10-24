@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "seedance": {
+      "type": "http",
+      "url": "https://seedance.mcp.acedata.cloud/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ACEDATACLOUD_API_TOKEN}"
+      }
+    }
+  }
+}
