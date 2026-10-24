@@ -49,6 +49,39 @@ describe("classifyFailureMode", () => {
     ).toBe("oom");
   });
 
+  // lastOutput is the whole transcript; a worker fixing an OOM bug talks
+  // about "out of memory" long before an unrelated network drop ends it.
+  test("OOM wording early in a long transcript does not mask the real failure", () => {
+    const transcript = [
+      "Reproduced the importer crash: out of memory (exit code 137) on large files.",
+      "Streaming the parser instead of buffering it. ".repeat(200),
+      "Pushed the fix; running the suite again.",
+    ].join("\n");
+
+    expect(
+      classifyFailureMode({
+        sdkError: "fetch failed: ECONNRESET",
+        lastOutput: transcript,
+        durationMs: 5_000,
+      })
+    ).toBe("network-drop");
+  });
+
+  test("OOM markers at the end of a long transcript still classify as oom", () => {
+    const transcript = [
+      "Streaming the parser instead of buffering it. ".repeat(200),
+      "process was OOMKilled",
+    ].join("\n");
+
+    expect(
+      classifyFailureMode({
+        sdkError: "fetch failed: ECONNRESET",
+        lastOutput: transcript,
+        durationMs: 5_000,
+      })
+    ).toBe("oom");
+  });
+
   test("OOM markers in SDK error classify as oom", () => {
     expect(
       classifyFailureMode({

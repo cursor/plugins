@@ -12,6 +12,8 @@ const CAP_HIT_MAX_MS = 80 * 60 * 1000;
 
 const SDK_ERROR_MAX_CHARS = 500;
 const RAW_SNIPPET_MAX_CHARS = 2_000;
+// Callers pass the whole run transcript; only its end reflects how it died.
+const OUTPUT_TAIL_MAX_CHARS = 2_000;
 
 export interface ClassifyFailureArgs {
   sdkError?: string | null;
@@ -24,7 +26,8 @@ export interface ClassifyFailureArgs {
 // 70-80 min cap-hit window.
 export function classifyFailureMode(args: ClassifyFailureArgs): FailureMode {
   const err = args.sdkError?.toLowerCase() ?? "";
-  const tail = args.lastOutput?.toLowerCase() ?? "";
+  const tail =
+    args.lastOutput?.slice(-OUTPUT_TAIL_MAX_CHARS).toLowerCase() ?? "";
   const duration = args.durationMs ?? null;
 
   if (/out of memory|oomkilled|exit code 137/.test(tail)) return "oom";
