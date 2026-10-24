@@ -70,7 +70,8 @@ fi
 [ -s "$prs" ] || echo "[]" > "$prs"
 
 # Transcripts dir: ~/.cursor/projects/<slugified-repo-path>/agent-transcripts.
-slug=$(printf '%s' "$main_wt" | sed 's#^/##; s#/#-#g')
+# Cursor turns each run of non-alphanumerics into one "-" and trims the ends.
+slug=$(printf '%s' "$main_wt" | LC_ALL=C sed -E 's/[^A-Za-z0-9]+/-/g; s/^-+//; s/-+$//')
 transcripts="$HOME/.cursor/projects/$slug/agent-transcripts"
 now=$(date +%s)
 
