@@ -8,6 +8,21 @@ Thermo-nuclear branch review for Cursor agents: deep correctness and security au
 /add-plugin thermos
 ```
 
+### Cursor CLI
+
+Some Cursor CLI versions do not discover agents packaged in plugins. If `Task`
+rejects `thermo-nuclear-review-subagent` or
+`thermo-nuclear-code-quality-review-subagent` as an unknown subagent type:
+
+1. Keep the Thermos plugin installed so its skills remain available.
+2. Copy [thermo-nuclear-review-subagent.md](agents/thermo-nuclear-review-subagent.md)
+   and [thermo-nuclear-code-quality-review-subagent.md](agents/thermo-nuclear-code-quality-review-subagent.md)
+   from the plugin's `agents/` directory into your project's `.cursor/agents/`,
+   preserving their filenames. Review any existing copies before replacing them.
+3. Start a new Cursor CLI session from that project and invoke `thermos` again.
+
+This workaround was confirmed on Linux and macOS in [issue #447](https://github.com/cursor/plugins/issues/447).
+
 ## Architecture
 
 ```mermaid
