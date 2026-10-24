@@ -107,6 +107,7 @@ new WebSocketServer({ port: 8789 }).on("connection", (client) => {
   client.on("message", (d) => up.readyState === WebSocket.OPEN && up.send(d.toString())); // text.delta, text.done, text.clear, session.update
   const end = () => { client.close(); up.close(); };
   up.on("close", end); up.on("error", end); client.on("close", end);
+  client.on("error", end); // contain browser transport failures
 });
 ```
 
