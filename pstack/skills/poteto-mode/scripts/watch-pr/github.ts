@@ -30,10 +30,20 @@ export class ChecksUnavailable extends WatcherQueryError {
 const firstLine = (value: string): string =>
   value.trim().split(/\r?\n/, 1)[0]?.slice(0, 240) ?? "";
 function run(argv: readonly [string, ...string[]]): Promise<CommandResult> {
-  return new Promise((resolve, reject) => {
-    const child = spawn(argv[0], argv.slice(1), {
-      stdio: ["ignore", "pipe", "pipe"],
-    });
+  return new Promise((resolve) => {
+    // A command that cannot start fails like one that exits nonzero; Bun
+    // throws here while Node emits "error".
+    const failed = (error: unknown) =>
+      resolve({ code: -1, stdout: "", stderr: String(error) });
+    let child;
+    try {
+      child = spawn(argv[0], argv.slice(1), {
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+    } catch (error) {
+      failed(error);
+      return;
+    }
     let stdout = "";
     let stderr = "";
     child.stdout.setEncoding("utf8");
@@ -44,7 +54,7 @@ function run(argv: readonly [string, ...string[]]): Promise<CommandResult> {
     child.stderr.on("data", (chunk: string) => {
       stderr += chunk;
     });
-    child.on("error", reject);
+    child.on("error", failed);
     child.on("close", (code) => resolve({ code: code ?? -1, stdout, stderr }));
   });
 }

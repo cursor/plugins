@@ -495,4 +495,25 @@ printf '%s\\n' '[{"number":42,"headRefName":"feature","baseRefName":"main","isCr
     }
   });
 
+  it("reports a gh that cannot start as a query failure", () => {
+    const directory = mkdtempSync(join(tmpdir(), "watch-pr-no-gh-"));
+    try {
+      const program = `import { GhGitHubReader, WatcherQueryError } from ${JSON.stringify(import.meta.dir + "/github.ts")};
+        try {
+          await new GhGitHubReader().pullRequest({ owner: "owner", repo: "repo", number: 42 });
+        } catch (error) {
+          console.log(JSON.stringify(error instanceof WatcherQueryError ? error.failure.kind : String(error)));
+        }`;
+      const child = spawnSync(process.execPath, ["-e", program], {
+        encoding: "utf8", timeout: 2000,
+        env: { ...process.env, PATH: directory },
+      });
+      expect(child.error).toBeUndefined();
+      expect(child.status).toBe(0);
+      expect(JSON.parse(child.stdout)).toBe("command-exit");
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
 });
