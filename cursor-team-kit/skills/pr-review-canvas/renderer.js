@@ -60,6 +60,9 @@ function detectMoves(dels, adds) {
         if (adds[a2].consecutive && !ma[a2]) ab.push(a2); else break;
       }
       if (ab.length < TH) continue;
+      // The matching additions are an in-place replacement when they start on
+      // the next parsed line. That is an edit, not a move to somewhere else.
+      if (adds[ab[0]].idx === dels[db[db.length - 1]].idx + 1) continue;
       var an = ab.map(function(i){ return normWs(adds[i].code); });
       var ml = Math.min(dn.length, an.length), mc = 0;
       for (var m = 0; m < ml; m++) { if (dn[m] === an[m]) mc++; }
