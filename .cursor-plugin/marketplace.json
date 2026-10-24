@@ -564,6 +564,11 @@
       "description": "Work with payments, orders, catalog, customers, and invoices."
     },
     {
+      "name": "midjourney",
+      "source": "third_party/midjourney",
+      "description": "Generate Midjourney images and retrieve the finished image."
+    },
+    {
       "name": "tailscale",
       "source": "third_party/tailscale",
       "description": "Let Grok Bot reach MCP servers on your private Tailscale network. On your own tailnet it joins as one tag:grokbot device; on your team's company tailnet, turned on by a team admin, it uses each member's own device.",
