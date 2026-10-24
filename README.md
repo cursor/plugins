@@ -104,7 +104,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `zoho-desk` | [Zoho Desk](third_party/zoho-desk/) | Cursor | Integrations | Work with tickets, contacts, tasks, and knowledge base articles in Zoho Desk. |
 | `zoho-books` | [Zoho Books](third_party/zoho-books/) | Cursor | Integrations | Work with contacts, invoices, estimates, and items in Zoho Books. |
 | `square` | [Square](third_party/square/) | Cursor | Integrations | Work with payments, orders, catalog, customers, and invoices. |
-| `tailscale` | [Tailscale](third_party/tailscale/) | Cursor | Integrations | Let Grok Bot reach MCP servers on your private Tailscale network. On your own tailnet it joins as one tag:grokbot device; on your team's company tailnet, turned on by a team admin, it uses each member's own device. |
+| `tailscale` | [Tailscale](third_party/tailscale/) | Cursor | Integrations | Let Grok Bot reach MCP servers on your private Tailscale network: connect your own tailnet, or your team's company tailnets turned on by a team admin, with each member using their own device. |
 | `highlevel` | [HighLevel](third_party/highlevel/) | Cursor | Integrations | Work with contacts, conversations, opportunities, calendars, and payments. |
 | `finary` | [Finary](third_party/finary/) | Cursor | Integrations | Read your net worth, accounts, holdings, spending, and budgets. |
 | `tiktok-for-business` | [TikTok for Business](third_party/tiktok-for-business/) | Cursor | Integrations | Manage TikTok ad campaigns, ad groups, ads, audiences, creatives, and reports. |
