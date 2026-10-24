@@ -492,6 +492,36 @@ describe("Store", () => {
     ]);
   });
 
+  it("reads back gates, standing orders, and status containing Unicode line separators", async () => {
+    const { store } = await initializedStore();
+    await store.gates.park({
+      id: "release",
+      question: "Ship now?\u2028Copied from the brief",
+      options: "ship,wait",
+      defaultAnswer: "wait",
+    });
+    await store.standing.add({ line: "Never force push.\u2029Ask first." });
+
+    expect(await store.gates.list()).toEqual([
+      {
+        kind: "open",
+        id: "release",
+        question: "Ship now?\u2028Copied from the brief",
+        options: "ship,wait",
+        defaultAnswer: "wait",
+      },
+    ]);
+    expect(await store.standing.show()).toEqual([
+      { number: 1, line: "Never force push.\u2029Ask first." },
+    ]);
+    await store.units.add({ id: "u1", track: "build" });
+    await store.units.set({ id: "u1", state: "blocked\u2028on review" });
+    expect((await store.status.render()).summary.openGateIds).toEqual([
+      "release",
+    ]);
+    expect((await store.status.render()).changed).toBe("no derived changes");
+  });
+
   for (const forge of ["gh", "origin"] as const) {
     it(`resolves the ordered frontier from the ${forge} base chain and validates an optional pin`, async () => {
       const { directory, store } = await initializedStore();
