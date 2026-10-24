@@ -548,6 +548,8 @@ function render(charts, { lib, theme }, shown) {
 function finish({ work, out, inputs }, { files, charts }, ok, renderer) {
   unchanged(inputs, out);
   const pngs = renderer ? render(charts, renderer, published(work, out)) : [];
+  const tlc = path.join(work, "tlc");
+  fs.writeFileSync(path.join(tlc, WRITTEN), `${JSON.stringify(filesUnder(tlc))}\n`);
   publish(work, out, inputs);
   const written = [...charts, ...pngs, files.stories, files.summary]
     .map((f) => path.basename(f))
@@ -579,14 +581,59 @@ function renderFile(input, flags, { lib, theme }) {
 const published = (work, out) => (file) => rel(path.join(out, path.relative(work, file)));
 
 const OWN =
-  /^((chart|bug-\d+(-developer|-layered)?)\.(mmd|png)|stories\.md|summary\.json|tlc|\.DS_Store)$/;
+  /^((chart|bug-\d+(-developer|-layered)?)\.(mmd|png)|stories\.md|summary\.json|\.DS_Store)$/;
+const WRITTEN = ".written.json";
+
+// The regular files under `dir`, as paths relative to it with / separators, in a stable order.
+// A comparing run writes into tlc/fixed/ or tlc/against/, so the record has to reach below the
+// first level.
+function filesUnder(dir, prefix = "") {
+  const found = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  )) {
+    const at = `${prefix}${entry.name}`;
+    if (entry.isDirectory()) found.push(...filesUnder(path.join(dir, entry.name), `${at}/`));
+    else if (entry.isFile() && at !== WRITTEN) found.push(at);
+  }
+  return found;
+}
+
+// Everything under tlc/ that the previous run did not record. Without a valid record every entry
+// is foreign: an output folder from before the record existed needs a new --out folder, which is
+// cheaper than guessing which of its files were the user's.
+function foreignTlc(dir) {
+  let written;
+  try {
+    written = JSON.parse(fs.readFileSync(path.join(dir, WRITTEN), "utf8"));
+  } catch {}
+  const own = new Set([".DS_Store", WRITTEN]);
+  if (Array.isArray(written) && written.every((f) => typeof f === "string"))
+    for (const f of written) own.add(f);
+  const found = [];
+  const walk = (at, prefix) => {
+    for (const entry of fs.readdirSync(at, { withFileTypes: true })) {
+      const name = `${prefix}${entry.name}`;
+      if (entry.isDirectory()) {
+        // A folder is the run's own only when it holds something the run recorded.
+        if ([...own].some((f) => f.startsWith(`${name}/`))) walk(path.join(at, entry.name), `${name}/`);
+        else found.push(`tlc/${name}`);
+      } else if (!(entry.isFile() && own.has(name))) found.push(`tlc/${name}`);
+    }
+  };
+  walk(dir, "");
+  return found;
+}
 
 function foreign(dir) {
   try {
-    return fs
-      .readdirSync(dir)
-      .filter((f) => !OWN.test(f))
-      .sort();
+    const found = [];
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === "tlc" && entry.isDirectory()) {
+        found.push(...foreignTlc(path.join(dir, "tlc")));
+      } else if (!(entry.isFile() && OWN.test(entry.name))) found.push(entry.name);
+    }
+    return found.sort();
   } catch (e) {
     if (e.code === "ENOENT") return [];
     throw new CannotFinish(`cannot use ${rel(dir)} as the output folder: ${e.message}`);
