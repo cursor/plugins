@@ -154,7 +154,9 @@ On cloud agents, the agent can produce artifact files beyond the git diff — th
 const artifacts = await agent.listArtifacts();
 for (const a of artifacts) console.log(a.path, a.sizeBytes);
 
-const buffer = await agent.downloadArtifact(artifacts[0].path);
+if (artifacts.length > 0) {
+  const buffer = await agent.downloadArtifact(artifacts[0].path);
+}
 ```
 
 Local agents currently return an empty list from `listArtifacts()` and throw from `downloadArtifact()`. Treat artifact flows as cloud-only today.
