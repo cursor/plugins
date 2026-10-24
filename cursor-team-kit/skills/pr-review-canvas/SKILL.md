@@ -96,7 +96,7 @@ Read [styles.css](styles.css) and [renderer.js](renderer.js) from this skill dir
 |----------|-------|
 | `toggle(hdrElement)` | Toggle a `.file-body` open/closed |
 | `toggleBP(hdrElement)` | Toggle a `.bp-body` open/closed |
-| `renderDiff(target, diffInput)` | Render a unified diff. `target` can be a DOM element, string ID, or CSS selector. `diffInput` can be a raw patch string OR an array of lines -- both work. Automatically filters imports, collapses whitespace-only changes, detects moved code (blue/purple tint). |
+| `renderDiff(target, diffInput)` | Render a unified diff. `target` can be a DOM element, string ID, or CSS selector. `diffInput` can be a raw patch string OR an array of lines -- both work. Line numbers always come from the original hunk headers. Import lines collapse into an expandable "N import lines hidden" row, whitespace-only changes collapse into context lines, moved code is tinted (blue/purple). |
 | `esc(string)` | HTML-escape a string |
 
 **Rendering diffs -- use `data-diff` attributes with auto-discovery.**
@@ -163,8 +163,8 @@ Since renderer.js loads in `<head>`, you can also call `renderDiff(target, lines
 
 ### Diff features (handled automatically by renderer.js)
 
-- Filters out import-only lines
-- Collapses whitespace-only changes into context lines
+- Collapses import-only lines into an expandable "N import lines hidden" row (never silently dropped)
+- Collapses whitespace-only changes (leading/trailing whitespace only) into context lines
 - Detects moved code blocks (3+ consecutive lines deleted in one place and added identically elsewhere) -- renders in blue/purple instead of red/green
 - Near-matches (moved + small edit) get a different purple tint
 
