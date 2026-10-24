@@ -200,6 +200,10 @@ export type MergeBlocker =
       readonly kind: "merge-gate";
       readonly pr: PrContext;
       readonly reason: MergeGateReason;
+    }
+  | {
+      readonly kind: "branch-behind";
+      readonly pr: PrContext;
     };
 export type QueryFailure =
   | {
@@ -286,6 +290,7 @@ export type ProgressVerdict =
   | (Progress<"WAITING"> & {
       readonly frontier: PrContext;
       readonly reason:
+        | { readonly kind: "branch-behind"; readonly unmergedCount: number }
         | {
             readonly kind: "pending-checks";
             readonly pending: NonEmpty<PendingCheck>;
@@ -333,6 +338,11 @@ export type BlockerVerdict =
     });
 export type TimeoutVerdict = Terminal<"TIMEOUT", 5> & {
   readonly reason:
+    | {
+        readonly kind: "branch-behind";
+        readonly frontier: PrContext;
+        readonly unmergedCount: number;
+      }
     | {
         readonly kind: "pending-checks";
         readonly pending: NonEmpty<PendingCheck>;
