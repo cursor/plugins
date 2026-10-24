@@ -526,6 +526,23 @@ FromBase == Base!Safe
   );
 });
 
+test("a multi-line note is not part of the machine", () => {
+  const { regions } = parseMermaid(`stateDiagram-v2
+  [*] --> A
+  note right of A
+    Waits for the user.
+    A --> C : not a step
+  end note
+  A --> B : go
+  note left of B : done`);
+  assert.deepEqual([...regions.Main.states].sort(), ["A", "B"]);
+  assert.deepEqual(edges(regions.Main), ["A -> B : go"]);
+  assert.throws(
+    () => parseMermaid("stateDiagram-v2\n  [*] --> A\n  note right of A\n  A --> B : go"),
+    /note with no end note/,
+  );
+});
+
 test("the legend is not part of the machine", () => {
   const { regions } = parseMermaid(`stateDiagram-v2
   state "Legend" as legend {
