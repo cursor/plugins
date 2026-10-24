@@ -391,17 +391,61 @@ async function acquireLock(
     await handle.close();
   };
 
-  const takeOver = async (): Promise<void> => {
-    await unlink(path);
+  const heldBy = async (): Promise<never> => {
+    let retryHolder = "unknown";
     try {
-      await create();
-    } catch (retryError) {
-      if (errorCode(retryError) === "EEXIST") {
-        const retryHolder =
-          (await readFile(path, "utf8")).trim() || "unknown";
-        throw new UserError(`store lock held by pid ${retryHolder}`);
+      retryHolder = (await readFile(path, "utf8")).trim() || "unknown";
+    } catch {
+      retryHolder = "unknown";
+    }
+    throw new UserError(`store lock held by pid ${retryHolder}`);
+  };
+
+  // Replacing a stale lock is unlink-then-create, which is not atomic: two
+  // processes that both read the same dead holder could each unlink and the
+  // second unlink would remove the first one's fresh lock. Serialise the
+  // takeover itself through a second `wx` file so only one process performs
+  // the unlink; the other falls back to a plain create and, on EEXIST, reports
+  // the winner's pid.
+  const takeOver = async (): Promise<void> => {
+    const takeoverPath = `${path}.takeover`;
+    let takeoverHandle;
+    try {
+      takeoverHandle = await open(takeoverPath, "wx");
+    } catch (takeoverError) {
+      if (errorCode(takeoverError) !== "EEXIST") {
+        throw takeoverError;
       }
-      throw retryError;
+      // Another process is mid-takeover. Give it a moment to install its
+      // lock, then try the normal path once.
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      try {
+        await create();
+        return;
+      } catch (retryError) {
+        if (errorCode(retryError) === "EEXIST") {
+          return heldBy();
+        }
+        throw retryError;
+      }
+    }
+    try {
+      await takeoverHandle.close();
+      await unlink(path).catch((unlinkError) => {
+        if (errorCode(unlinkError) !== "ENOENT") {
+          throw unlinkError;
+        }
+      });
+      try {
+        await create();
+      } catch (retryError) {
+        if (errorCode(retryError) === "EEXIST") {
+          return heldBy();
+        }
+        throw retryError;
+      }
+    } finally {
+      await unlink(takeoverPath).catch(() => {});
     }
   };
 

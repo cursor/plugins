@@ -6,8 +6,10 @@ import {
   readFile,
   readdir,
   rm,
+  unlink,
   writeFile,
 } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 import { realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -434,6 +436,50 @@ describe("Store", () => {
     expect(stale).toEqual([String(exited.pid)]);
     await recovered.close();
     expect(await readdir(directory)).not.toContain(".orch.lock");
+  });
+
+  it("lets exactly one of two concurrent takers replace a stale lock", async () => {
+    const { directory } = await initializedStore();
+    const exited = Bun.spawn(["true"]);
+    await exited.exited;
+    await writeFile(join(directory, ".orch.lock"), `${exited.pid}\n`);
+
+    // Both stores stay open until both attempts settle, so the winner still
+    // holds the lock while the loser retries.
+    const stores = [useStore(directory, {}), useStore(directory, {})];
+    const results = await Promise.allSettled(
+      stores.map((store) =>
+        store.units.add({ id: `u-${randomUUID()}`, track: "build" })
+      )
+    );
+    const fulfilled = results.filter((r) => r.status === "fulfilled");
+    const rejected = results.filter(
+      (r): r is PromiseRejectedResult => r.status === "rejected"
+    );
+    expect(fulfilled).toHaveLength(1);
+    expect(rejected).toHaveLength(1);
+    expect(String(rejected[0].reason)).toMatch(/store lock held by pid/);
+    expect(await readdir(directory)).not.toContain(".orch.lock.takeover");
+    await Promise.all(stores.map((store) => store.close()));
+  });
+
+  it("does not unlink a stale lock while another process is mid-takeover", async () => {
+    const { directory } = await initializedStore();
+    const exited = Bun.spawn(["true"]);
+    await exited.exited;
+    await writeFile(join(directory, ".orch.lock"), `${exited.pid}\n`);
+    // Simulate a competing process that has claimed the takeover but not yet
+    // installed its lock.
+    await writeFile(join(directory, ".orch.lock.takeover"), "");
+
+    const store = useStore(directory, {});
+    await expect(
+      store.units.add({ id: "u1", track: "build" })
+    ).rejects.toThrow(/store lock held by pid/);
+    expect(await readFile(join(directory, ".orch.lock"), "utf8")).toBe(
+      `${exited.pid}\n`
+    );
+    await unlink(join(directory, ".orch.lock.takeover"));
   });
 
   it("blocks a writer and steals the pid lock only with force", async () => {
