@@ -1313,7 +1313,7 @@ export function openStore(
     await ensureLock();
   };
 
-  return {
+  const api: Store = {
     units: {
       add: async (params) => {
         await beginWrite();
@@ -1676,6 +1676,61 @@ export function openStore(
       if (release !== null) {
         await release();
       }
+    },
+  };
+
+  // The PID lock excludes other handles, but operations on this handle can
+  // still interleave their read/modify/write steps. Queue complete operations.
+  let pending: Promise<unknown> = Promise.resolve();
+  let closing: Promise<void> | null = null;
+  const enqueue = <Args extends unknown[], Result>(
+    operation: (...args: Args) => Promise<Result>
+  ): ((...args: Args) => Promise<Result>) => (...args) => {
+    if (closing !== null) {
+      return Promise.reject(new UserError("store is closed"));
+    }
+    const result = pending.then(() => operation(...args));
+    pending = result.then(() => undefined, () => undefined);
+    return result;
+  };
+
+  return {
+    units: {
+      add: enqueue(api.units.add),
+      set: enqueue(api.units.set),
+      get: enqueue(api.units.get),
+      list: enqueue(api.units.list),
+      counts: enqueue(api.units.counts),
+    },
+    ledger: {
+      record: enqueue(api.ledger.record),
+      check: enqueue(api.ledger.check),
+      summary: enqueue(api.ledger.summary),
+    },
+    inbox: {
+      push: enqueue(api.inbox.push),
+      drain: enqueue(api.inbox.drain),
+      peek: enqueue(api.inbox.peek),
+      count: enqueue(api.inbox.count),
+    },
+    gates: {
+      park: enqueue(api.gates.park),
+      list: enqueue(api.gates.list),
+      resolve: enqueue(api.gates.resolve),
+    },
+    frontier: {
+      set: enqueue(api.frontier.set),
+      show: enqueue(api.frontier.show),
+    },
+    standing: {
+      show: enqueue(api.standing.show),
+      add: enqueue(api.standing.add),
+    },
+    status: { render: enqueue(api.status.render) },
+    init: enqueue(api.init),
+    close: () => {
+      closing ??= pending.then(() => api.close());
+      return closing;
     },
   };
 }
