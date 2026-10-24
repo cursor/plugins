@@ -1,7 +1,7 @@
 ---
 name: startup-review
 description: Try to bootstrap and start a repository like a cold agent, then report where the path breaks down
-model: fast
+model: inherit
 readonly: true
 ---
 
