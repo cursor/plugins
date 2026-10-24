@@ -1,0 +1,44 @@
+{
+  "name": "seedream",
+  "displayName": "Seedream",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Generate Seedream images and retrieve the finished image.",
+  "author": {
+    "name": "Ace Data Cloud Dev",
+    "email": "dev@acedata.cloud"
+  },
+  "homepage": "https://platform.acedata.cloud/models",
+  "repository": "https://github.com/AceDataCloud/SeedreamCursor",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "seedream",
+    "seedream",
+    "image",
+    "acedatacloud",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "seedream",
+    "image",
+    "mcp"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "ACEDATACLOUD_API_TOKEN": {
+        "type": "string",
+        "title": "Ace Data Cloud API token",
+        "description": "Service API key from https://platform.acedata.cloud/console/applications with Seedream access."
+      }
+    },
+    "required": [
+      "ACEDATACLOUD_API_TOKEN"
+    ]
+  },
+  "mcpServers": "./mcp.json"
+}
