@@ -5,15 +5,17 @@
 1. `how` over the affected subsystem.
 2. `architect` for parallel design exploration.
 3. Write the throughput checkpoint as four todo items. A dimension that genuinely does not apply (single file, no fan-out) keeps its item with `n/a: <reason>` rather than being dropped:
-   - **Blocking first steps.** Gates run before fan-out.
+   - **Blocking first steps.** Gates run before fan-out. A red host or pull request check on the branch is one of those gates. Reproduce it and fix it before how or architect.
    - **Independent workstreams.** Disjoint files, services, or layers parallelize. Shared writes serialize.
    - **Shared mutable state.** Default to splitting the target (the **separate-before-serializing-shared-state** principle skill). Serialize only for real invariants.
    - **Smallest safe decomposition.** If one worker is best, name why.
+
+   Write these four items before architect fan-out and before code delegates. A missing item is not a start.
 4. Delegate code-writing to a subagent using your configured feature model (default `grok-4.7-xhigh-fast`) with a specific scope (file paths, named data shape and its organizing structure per **principle-model-the-domain**, a state machine over scattered booleans, a table/registry over branching, a typed model over repeated shape assumptions, chosen before the delegate writes logic, and success criteria). Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section. When the implementation admits multiple valid shapes (error handling, abstraction layer, test structure), delegate via the **arena** skill instead so the runners surface the alternatives and the cross-judge guards the pick. Mandatory: no skip-with-reason escape, and Laziness Protocol does not override it (the gain is review separation, not lines saved). A subagent forbidden to spawn satisfies this by owning the diff directly with the same review separation. No "standing by" reply that waits on a nested agent. Comments per **Comments**. Surgical edits, re-ground against the source for upstream-derived files. Port shared-primitive improvements to all consumers and verify each. Commit liberally.
-5. Verify on the matching surface. "Inconclusive" or wrong-surface is not a pass. Flag it.
+5. Verify on the matching surface. "Inconclusive" or wrong-surface is not a pass. Flag it. For a block or device driver, that surface is the host render test plus the guest serial log, not protection-domain clippy alone. After a hardware delegate, review dword-aligned config cycles, message-signaled interrupt capability writes, and the device command bit before trusting clippy.
 6. Rebase into small, ordered commits. Stack follow-ups.
-   Use the **sequence-verifiable-units** principle skill, building, verifying, and committing each small unit before the next.
-7. If the design is contested, `interrogate` before shipping.
+   Use the **sequence-verifiable-units** principle skill, building, verifying, and committing each small unit before the next. Waiting to be asked for a commit does not waive those units. Land each green unit before the final push unless the operator waives that.
+7. If the design is contested, `interrogate` before shipping. A green guest smoke does not cancel that step when how or arena left an explicit disagreement. A poll loop can hide a wrong interrupt record.
 8. Run **Opening a PR**.
 
 Code-coupled work (one feature, one migration) goes to a single owner with the checkpoint inline. That owner fans out internally after the blocking phase. Parent-level fan-out is for slices that produce independent artifacts (audits, cross-subsystem investigations, competing experiments). Rewrite the checkpoint at phase boundaries. Spawn a fresh owner rather than chaining interrupts.
