@@ -13,6 +13,7 @@ Apply the following discipline. The orchestrator compares candidates on these ax
 - Make boundaries visible. `not implemented` errors for bodies, `// TODO` pseudocode for tricky logic, doc comments stating intent and invariants. A reader should trace data from input to output by reading types and signatures alone.
 - Encode invariants in types: hard-to-misuse types > runtime checks > prose comments, per the **encode-lessons-in-structure** principle skill.
 - Validate at boundaries, trust types inside, per the **boundary-discipline** principle skill. Business logic as pure functions. The shell stays thin.
+- When the design hides `unsafe` inside a macro, prove a caller with `forbid(unsafe_code)` still compiles. That compile shows the lint stays quiet at the call site. It does not by itself show a maintainer should extend the shape.
 - Single source of truth per invariant. Derive instead of sync.
 - Idempotent state transitions where applicable, per the **make-operations-idempotent** principle skill. Ask what happens if the operation runs twice or crashes halfway.
 - Short call chains. If tracing the flow needs more than three files, flatten the hierarchy, per the **laziness-protocol** and **minimize-reader-load** principle skills.

@@ -14,6 +14,7 @@ Check the real thing, not a proxy:
 - Check process liveness directly, not indirectly through derived state
 - Read the actual value, not a cached or derived representation
 - When verification fails, suspect the observation method before suspecting the system
+- When the claim covers a guest image or a protection domain, run the cross compile, the host check, or the board smoke that matches that blast radius. A host test of a library nothing boots is a smaller claim.
 
 ## Script the check when you can
 
