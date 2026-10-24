@@ -25,7 +25,7 @@ Decompose the question into 2 to 4 angles, each a distinct slice of the subsyste
 
 ## 3. Synthesize (complex only)
 
-Once all explorers have returned, spawn one explainer with `references/explainer-prompt.md` and every explorer's findings filled in.
+Once all explorers have returned, harvest each explorer's final report into one scratch file by path, then point the explainer at that file only. Reconcile each explorer claim against a traced call path, the generator entry versus config-only strings, before synthesis. Spawn one explainer with `references/explainer-prompt.md` and that scratch file filled in.
 
 ## 4. Present
 
