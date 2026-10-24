@@ -1621,6 +1621,21 @@ test("statechart.mjs refuses unrecorded TLC files and invalid ownership records"
     assert.equal(readFileSync(join(tlc, "Pay.cfg"), "utf8"), "kept\n");
     rmSync(out, { recursive: true });
   }
+  // A comparing run writes into tlc/fixed/ or tlc/against/. Recorded files there pass; a file the
+  // record does not name, or a folder with nothing recorded in it, is reported by its full path.
+  mkdirSync(join(tlc, "fixed"), { recursive: true });
+  writeFileSync(join(tlc, "Pay.cfg"), "generated\n");
+  writeFileSync(join(tlc, "fixed", "Pay.cfg"), "generated\n");
+  writeFileSync(join(tlc, ".written.json"), '["Pay.cfg", "fixed/Pay.cfg"]\n');
+  const nested = node("statechart.mjs", ["from-spec", "Pay.tla", "--out", out], dir, env);
+  assert.doesNotMatch(nested.stderr, /did not write/, nested.stderr);
+  writeFileSync(join(tlc, "fixed", "Pay-backup.cfg"), "mine\n");
+  mkdirSync(join(tlc, "scratch"));
+  const nestedForeign = node("statechart.mjs", ["from-spec", "Pay.tla", "--out", out], dir, env);
+  assert.equal(nestedForeign.status, 2, nestedForeign.stderr);
+  assert.match(nestedForeign.stderr, /2 files that this command did not write, such as tlc\/fixed\/Pay-backup\.cfg/);
+  assert.equal(readFileSync(join(tlc, "fixed", "Pay-backup.cfg"), "utf8"), "mine\n");
+  rmSync(out, { recursive: true });
   for (const kind of ["directory", "symlink"]) {
     mkdirSync(tlc, { recursive: true });
     writeFileSync(join(tlc, ".written.json"), '["Pay.cfg"]\n');
