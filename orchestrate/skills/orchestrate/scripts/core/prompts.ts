@@ -34,16 +34,28 @@ export function renderPromptTemplate(
     templateCache.set(name, template);
   }
 
-  let rendered = template;
-  for (const [key, value] of Object.entries(vars)) {
-    rendered = rendered.replaceAll(`{{${key}}}`, value);
-  }
-
-  const unrendered = [...rendered.matchAll(/{{([^{}]+)}}/g)].map(m =>
-    m[1].trim()
+  // One pass over the template, placeholders resolved by lookup. Values are
+  // never re-scanned, so a value may contain `{{...}}` (a Vue or Handlebars
+  // snippet in an upstream handoff, a task description, an agent's output) or
+  // `$&`-style sequences without being read as a placeholder or as a
+  // replacement pattern. Only placeholders in the template itself can be
+  // unrendered.
+  const unrendered = new Set<string>();
+  const rendered = template.replace(
+    /{{([^{}]+)}}/g,
+    (placeholder, rawKey: string) => {
+      const key = rawKey.trim();
+      const value = Object.hasOwn(vars, key) ? vars[key] : undefined;
+      if (typeof value !== "string") {
+        unrendered.add(key);
+        return placeholder;
+      }
+      return value;
+    }
   );
-  if (unrendered.length > 0) {
-    const placeholders = [...new Set(unrendered)].join(", ");
+
+  if (unrendered.size > 0) {
+    const placeholders = [...unrendered].join(", ");
     throw new PlanValidationError(
       `template "${name}" has unrendered placeholders: ${placeholders}`
     );
