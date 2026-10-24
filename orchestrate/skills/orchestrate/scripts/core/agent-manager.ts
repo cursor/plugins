@@ -39,6 +39,17 @@ import {
 import { plannedBranchForTask } from "./branches.ts";
 import type { CommentDestinations } from "./comment-retry-queue.ts";
 
+function isDeliverableBranchStatus(
+  status: TaskState["status"] | undefined
+): boolean {
+  return (
+    status === "handed-off" ||
+    status === "error" ||
+    status === "cancelled" ||
+    status === "pruned"
+  );
+}
+
 const SPAWN_MAX_ATTEMPTS = 3;
 const SPAWN_RETRY_BACKOFF_MS = 2_000;
 const WAIT_WATCHDOG_POLL_INTERVAL_MS = 60_000;
@@ -406,32 +417,21 @@ export class AgentManager {
 
   branchForTask(t: PlanTask | TaskState): string {
     const planned = plannedBranchForTask(this.plan, t);
-    if ("branch" in t && t.branch.trim().length > 0) {
-      const actual = t.branch.trim();
-      if (
-        (t.type === "worker" || t.type === "subplanner") &&
-        actual !== planned
-      ) {
-        throw new PlanValidationError(
-          `${t.name}: branch must be ${planned}, got ${actual}`
-        );
-      }
-      return actual;
+    const recorded = (
+      "branch" in t ? t.branch : (this.getTask(t.name)?.branch ?? "")
+    ).trim();
+    if (!recorded) return planned;
+    const status = "status" in t ? t.status : this.getTask(t.name)?.status;
+    if (
+      (t.type === "worker" || t.type === "subplanner") &&
+      recorded !== planned &&
+      !isDeliverableBranchStatus(status)
+    ) {
+      throw new PlanValidationError(
+        `${t.name}: branch must be ${planned}, got ${recorded}`
+      );
     }
-    const existing = this.getTask(t.name);
-    if (existing?.branch && existing.branch.trim().length > 0) {
-      const actual = existing.branch.trim();
-      if (
-        (t.type === "worker" || t.type === "subplanner") &&
-        actual !== planned
-      ) {
-        throw new PlanValidationError(
-          `${t.name}: branch must be ${planned}, got ${actual}`
-        );
-      }
-      return actual;
-    }
-    return planned;
+    return recorded;
   }
 
   /**
@@ -726,7 +726,11 @@ export class AgentManager {
     // Subplanners resume from their own branch: the prior state.json and
     // committed handoffs inherit into the new clone, so the resumed subplanner
     // skips children that already handed off. Workers have no such internal
-    // state; keep their original startingRef.
+    // state; keep their original startingRef. Capture the cloud branch before
+    // touch resets bookkeeping to the planned name — spawn reads branchForTask,
+    // which rejects a pending worker or subplanner that is still on the
+    // deliverable branch.
+    const resumeFrom = s.branch;
     const resume = s.type === "subplanner" && (s.attempts ?? 0) > 0;
     this.touch(s, {
       status: "pending",
@@ -738,11 +742,12 @@ export class AgentManager {
       failureMode: null,
       startedAt: null,
       finishedAt: null,
-      startingRef: resume ? s.branch : s.startingRef,
+      branch: plannedBranchForTask(this.plan, s),
+      startingRef: resume ? resumeFrom : s.startingRef,
       note: `respawned by ${source} (was ${prevStatus}; attempts=${s.attempts ?? 0})`,
     });
     this.logAttention(
-      `${taskName}: respawned by ${source} (was ${prevStatus})${resume ? `; resuming from ${s.branch}` : ""}`
+      `${taskName}: respawned by ${source} (was ${prevStatus})${resume ? `; resuming from ${resumeFrom}` : ""}`
     );
     return s;
   }
