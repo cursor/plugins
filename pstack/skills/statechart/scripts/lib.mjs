@@ -593,7 +593,7 @@ export function parseMermaid(text) {
     if (
       !line ||
       line.startsWith("%%") ||
-      /^(stateDiagram|direction|classDef|class |note)/.test(line)
+      /^(stateDiagram|direction\b|classDef\b|class |note\b)/.test(line)
     )
       continue;
     let m = /^state\s+"([^"]*)"\s+as\s+([A-Za-z_]\w*)\s*(\{)?\s*$/.exec(line);
