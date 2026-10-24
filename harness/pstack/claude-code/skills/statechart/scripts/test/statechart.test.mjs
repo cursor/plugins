@@ -536,6 +536,32 @@ test("the legend is not part of the machine", () => {
   assert.deepEqual([...regions.Main.states].sort(), ["A", "B"]);
 });
 
+test("a state id that starts with a Mermaid keyword is still a state", () => {
+  const { regions } = parseMermaid(`stateDiagram-v2
+  direction LR
+  classDef wrong fill:#fadbd8
+  [*] --> draft
+  draft --> notebook : open
+  note right of draft : the first state
+  notebook --> saved : save
+  directionChosen --> saved : go
+  classified --> saved : file
+  class draft wrong`);
+  assert.deepEqual([...regions.Main.states].sort(), [
+    "classified",
+    "directionChosen",
+    "draft",
+    "notebook",
+    "saved",
+  ]);
+  assert.deepEqual(edges(regions.Main), [
+    "classified -> saved : file",
+    "directionChosen -> saved : go",
+    "draft -> notebook : open",
+    "notebook -> saved : save",
+  ]);
+});
+
 test("the parser refuses charts it cannot read", () => {
   assert.throws(() => parseMermaid("stateDiagram-v2\n  state A {\n  [*] --> B"), /unclosed/);
   assert.throws(() => parseMermaid("stateDiagram-v2\n  A ==> B"), /cannot read chart line/);
