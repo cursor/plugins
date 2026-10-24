@@ -163,7 +163,10 @@ export function compareMeasurement(
         detail,
       };
     }
-    const denom = Math.max(Math.abs(claimParsed.numeric), 1);
+    // Keep relative tolerance independent of the unit scale. Flooring at 1
+    // accepts large errors for fractional measurements (e.g. seconds).
+    // A zero claim retains the existing absolute-tolerance fallback.
+    const denom = Math.abs(claimParsed.numeric) || 1;
     const drift =
       Math.abs(measuredParsed.numeric - claimParsed.numeric) / denom;
     const outcome: MeasurementCheck["outcome"] =
@@ -204,7 +207,7 @@ interface NumericWithUnit {
  * fall through to string comparison instead of pretending it's numeric.
  */
 function parseNumericWithUnit(value: string): NumericWithUnit | null {
-  const match = /^([-+]?\d+(?:\.\d+)?)\s*([a-zA-Z%]+)?$/.exec(value.trim());
+  const match = /^([-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)\s*([a-zA-Z%]+)?$/.exec(value.trim());
   if (!match) return null;
   const numeric = Number.parseFloat(match[1]);
   if (!Number.isFinite(numeric)) return null;
@@ -214,7 +217,7 @@ function parseNumericWithUnit(value: string): NumericWithUnit | null {
 function parseFiniteNumber(value: string): number | null {
   // Used for the `measuredNumeric` display field: lenient leading-numeric
   // strip, separate from the end-anchored unit-aware comparison.
-  const match = /^[-+]?\d+(?:\.\d+)?/.exec(value.trim());
+  const match = /^[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?/.exec(value.trim());
   if (!match) return null;
   const parsed = Number.parseFloat(match[0]);
   return Number.isFinite(parsed) ? parsed : null;
