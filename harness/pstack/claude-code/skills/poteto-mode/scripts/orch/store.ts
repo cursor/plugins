@@ -1162,7 +1162,10 @@ function branchSha({
   branch: string;
   repo: string;
 }): string {
-  const sha = runGit({ args: ["rev-parse", branch], repo });
+  const sha = runGit({
+    args: ["rev-parse", "--verify", `refs/heads/${branch}^{commit}`],
+    repo,
+  });
   if (!/^[0-9a-f]{40,64}$/i.test(sha)) {
     throw new UserError(`git rev-parse ${branch} returned an invalid SHA`);
   }
@@ -1170,7 +1173,11 @@ function branchSha({
 }
 
 function currentBranch(repo: string): string {
-  return runGit({ args: ["symbolic-ref", "--short", "HEAD"], repo });
+  // --short abbreviates to heads/<branch> when a tag shares the branch name.
+  return runGit({ args: ["symbolic-ref", "HEAD"], repo }).replace(
+    /^refs\/heads\//,
+    ""
+  );
 }
 
 function trunkBranch(repo: string): string {
