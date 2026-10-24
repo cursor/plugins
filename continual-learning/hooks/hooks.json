@@ -5,6 +5,12 @@
       {
         "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/continual-learning-stop.ts"
       }
+    ],
+    "preToolUse": [
+      {
+        "command": "node ${CURSOR_PLUGIN_ROOT}/hooks/block-repo-agents-md.mjs",
+        "matcher": "Write|StrReplace"
+      }
     ]
   }
 }

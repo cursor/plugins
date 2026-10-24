@@ -1,16 +1,18 @@
 ---
 name: continual-learning
-description: Orchestrate continual learning by delegating transcript mining and AGENTS.md updates to `agents-memory-updater`.
+description: Orchestrate continual learning by delegating transcript mining and AGENTS.local.md updates to `agents-memory-updater`.
 disable-model-invocation: true
 ---
 
 # Continual Learning
 
-Keep `AGENTS.md` current by delegating the memory update flow to one subagent.
+Keep the user-scoped memory file current by delegating the memory update flow
+to one subagent.
 
 ## Trigger
 
-Use when the user asks to mine prior chats, maintain `AGENTS.md`, or run the continual-learning loop.
+Use when the user asks to mine prior chats, maintain memory, or run the
+continual-learning loop.
 
 ## Workflow
 
@@ -22,3 +24,5 @@ Use when the user asks to mine prior chats, maintain `AGENTS.md`, or run the con
 - Keep the parent skill orchestration-only.
 - Do not mine transcripts or edit files in the parent flow.
 - Do not bypass the subagent.
+- The updater must write `~/.cursor/projects/<slug>/AGENTS.local.md`, never
+  the repo-tracked `AGENTS.md`.
