@@ -1,0 +1,12 @@
+{
+  "name": "cursor-plugins-repo",
+  "private": true,
+  "description": "Repo-level tooling for cursor/plugins. Plugins themselves have no runtime dependencies; this only pins what scripts/validate-plugins.mjs needs.",
+  "scripts": {
+    "validate": "node scripts/validate-plugins.mjs"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  }
+}
