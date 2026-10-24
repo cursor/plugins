@@ -37,3 +37,7 @@ Only edit the verification skill's own directory (its SKILL.md, features/, and a
 6. **Ship or hand back.** Re-read every changed file first. If the user or calling workflow explicitly retains delivery ownership, return the outcome, changed files, coverage and gaps, exact commands and observed results, and retained evidence locations to that owner. Include the evidence paths even for clean or blocked outcomes. Leave commits, PR publication, and merging to it; a handoff does not mean the changes shipped. This changes only closeout, not the source wave, live pass, re-proofs, cleanup, or edit scope. Otherwise, for changed, open one PR of proven corrections and report its link; until then, the corrections are ready, not shipped. For clean or blocked, open no PR and report the outcome and coverage honestly. An installed workflow alone does not assign delivery ownership.
 
 Keep concise run notes (features covered, unreachable prerequisites, confirmed drift, outcome) in a scratch location; don't commit them.
+
+For an owner-retained clean run, the handoff is the clean report and its evidence,
+even though there are no corrections to publish. Return that report to the owner;
+say that no publication is needed, rather than that no handoff is needed.
