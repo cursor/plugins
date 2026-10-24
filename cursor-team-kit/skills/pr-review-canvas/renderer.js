@@ -114,11 +114,14 @@ function renderDiff(target, diffInput) {
   }
 
   var dels = [], adds = [], parsed = [];
-  var oL = 0, nL = 0, pD = false, pA = false;
+  var oL = 0, nL = 0, pD = false, pA = false, inHunk = false;
   for (var pi = 0; pi < wsOut.length; pi++) {
     var line = wsOut[pi];
-    if (line.startsWith('--- ') || line.startsWith('+++ ') || line.startsWith('diff ')) continue;
+    if (line.startsWith('diff ')) { inHunk = false; continue; }
+    // Within a hunk these prefixes are source text, e.g. -- count; / ++ count;.
+    if (!inHunk && (line.startsWith('--- ') || line.startsWith('+++ '))) continue;
     if (line.startsWith('@@')) {
+      inHunk = true;
       var hm = line.match(/@@ -(\d+)(?:,\d+)? \+(\d+)/);
       if (hm) { oL = parseInt(hm[1]); nL = parseInt(hm[2]); }
       parsed.push({ type: 'hunk', text: line }); pD = false; pA = false; continue;
