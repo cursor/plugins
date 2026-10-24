@@ -76,18 +76,37 @@ os.close(slave_fd)
 
 deadline = time.time() + 30
 buffer = b""
+sent = False
+saw_reply = False
 while time.time() < deadline:
     ready, _, _ = select.select([master_fd], [], [], 0.25)
     if not ready:
+        # The child already exited, or its reply has gone quiet.
+        if proc.poll() is not None or (sent and saw_reply):
+            break
         continue
-    chunk = os.read(master_fd, 4096)
-    buffer += chunk
-    if b"<ready text>" in buffer:
-        os.write(master_fd, b"help\n")
+    try:
+        chunk = os.read(master_fd, 4096)
+    except OSError:
         break
+    # EOF. An empty read is not another screen update; stop instead of
+    # spinning until the deadline.
+    if not chunk:
+        break
+    buffer += chunk
+    if sent:
+        saw_reply = True
+    elif b"<ready text>" in buffer and proc.poll() is None:
+        os.write(master_fd, b"help\n")
+        sent = True
 
 print(buffer.decode(errors="replace"))
-proc.terminate()
+if proc.poll() is None:
+    proc.terminate()
+    try:
+        proc.wait(timeout=2)
+    except subprocess.TimeoutExpired:
+        proc.kill()
 os.close(master_fd)
 ```
 
