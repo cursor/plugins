@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "qwen-image": {
+      "type": "http",
+      "url": "https://qwen-image.mcp.acedata.cloud/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ACEDATACLOUD_API_TOKEN}"
+      }
+    }
+  }
+}
