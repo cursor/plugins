@@ -65,7 +65,7 @@ const agent = Agent.create({
       type: "stdio",
       command: "npx",
       args: ["-y", "@modelcontextprotocol/server-github"],
-      env: { GITHUB_TOKEN: process.env.GITHUB_TOKEN! },
+      env: { GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_TOKEN! },
     },
   },
 });
@@ -179,7 +179,7 @@ mcpServers: {
     type: "stdio",
     command: "npx",
     args: ["-y", "@modelcontextprotocol/server-github"],
-    env: { GITHUB_TOKEN: process.env.GITHUB_TOKEN! },
+    env: { GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_TOKEN! },
   },
 },
 ```
