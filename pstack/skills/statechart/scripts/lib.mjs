@@ -89,7 +89,12 @@ export function parseValue(text) {
     i += m[0].length;
     if (m[0] === "TRUE") return true;
     if (m[0] === "FALSE") return false;
-    return /^-?\d+$/.test(m[0]) ? Number(m[0]) : m[0];
+    if (!/^-?\d+$/.test(m[0])) return m[0];
+    // TLC prints a set of consecutive integers that it has not rebuilt, such as 1..N, as a..b.
+    const to = /^\.\.(-?\d+)/.exec(src.slice(i));
+    if (!to) return Number(m[0]);
+    i += to[0].length;
+    return Array.from({ length: Math.max(0, to[1] - m[0] + 1) }, (_, k) => Number(m[0]) + k);
   };
   try {
     const v = value();
