@@ -183,7 +183,11 @@ This doesn't require `stream()` and fires for every transition. Useful for a pro
 ## Observing a Run You Didn't Launch
 
 ```typescript
-const existing = await Agent.getRun(runId, { runtime: "cloud", agentId: "bc-abc123", apiKey });
+const existing = await Agent.getRun(runId, {
+  runtime: "cloud",
+  agentId: "bc-00000000-0000-4000-8000-000000000001",
+  apiKey,
+});
 if (existing.supports("stream")) {
   for await (const event of existing.stream()) {
     // same loop
@@ -192,7 +196,7 @@ if (existing.supports("stream")) {
 const result = await existing.wait();
 ```
 
-Replayed streams reconstruct events from persisted state. Tool payloads (args/result) are present when the original run captured them; older runs may be sparser.
+`runId` must be `run-<uuid>` and `agentId` must be `bc-<uuid>`. `Agent.getRun` throws `ConfigurationError` for any other shape and does not send the request. Replayed streams reconstruct events from persisted state. Tool payloads (args/result) are present when the original run captured them; older runs may be sparser.
 
 ## Backpressure and Long Streams
 
