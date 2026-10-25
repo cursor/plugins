@@ -171,7 +171,14 @@ export function collectRunningAgentsInTree(
         parentAgentId: t.parentAgentId ?? null,
       });
     }
-    if (t.type === "subplanner" && t.status === "running") {
+    // A handed-off subplanner still has a branch. `crawl` reads it, and a
+    // worker left `running` there is a live cloud agent. Stopping at
+    // `running` makes `kill-tree` report an empty tree and leave that
+    // agent up.
+    if (
+      t.type === "subplanner" &&
+      (t.status === "running" || t.status === "handed-off")
+    ) {
       collectRunningAgentsInTree(
         { repoPath, branch: `orch/${ownSlug}/${t.name}`, slug: t.name },
         collected,
