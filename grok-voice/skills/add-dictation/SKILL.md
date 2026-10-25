@@ -122,7 +122,7 @@ ws.addEventListener("message", (e) => {
     else live = ev.text;                                                          // interim: may change
     render(committed + locked + live);
   } else if (ev.type === "transcript.done") ws.close();                          // after audio.done
-  else if (ev.type === "error") showError(ev.message);                           // most errors close the socket
+  else if (ev.type === "error") { showError(ev.message); ws.close(); }           // release the relay after an upstream error
 });
 // stop: ws.send(JSON.stringify({ type: "audio.done" }))
 // push-to-talk release: ws.send(JSON.stringify({ type: "Finalize" })) then keep streaming (docs show both `finalize` and `Finalize`; the examples use `Finalize`)
