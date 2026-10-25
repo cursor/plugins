@@ -626,12 +626,19 @@ export class AgentManager {
 
     let lastErr: unknown = null;
     for (let subAttempt = 1; subAttempt <= SPAWN_MAX_ATTEMPTS; subAttempt++) {
+      // Agent.create already opens a cloud agent. Dispose it if this
+      // attempt fails before send() returns, or the retry leaves it running.
+      let created: SDKAgent | undefined;
+      const disposeCreated = () =>
+        created
+          ? Promise.resolve(created[Symbol.asyncDispose]()).catch(() => {})
+          : undefined;
       try {
         const startingRef = this.startingRefForTask(def, s);
         if (startingRef !== s.startingRef) {
           this.touch(s, { startingRef });
         }
-        const agent = await Agent.create({
+        created = await Agent.create({
           apiKey: this.apiKey,
           name: `${this.plan.rootSlug}/${def.name}`,
           model: resolveModelSelection(
@@ -642,6 +649,7 @@ export class AgentManager {
             autoCreatePR: def.openPR ?? false,
           },
         });
+        const agent = created;
         // Persist IDs only after send() succeeds; a crash before run creation
         // should recover as an orphaned spawn.
         this.touch(s, {
@@ -678,9 +686,11 @@ export class AgentManager {
             `${def.name}: transient-retry succeeded on sub-attempt ${subAttempt}`
           );
         }
+        created = undefined;
         return { kind: "spawned", agent, run, s };
       } catch (err) {
         lastErr = err;
+        await disposeCreated();
         if (subAttempt < SPAWN_MAX_ATTEMPTS) {
           await sleep(SPAWN_RETRY_BACKOFF_MS * subAttempt);
         }
