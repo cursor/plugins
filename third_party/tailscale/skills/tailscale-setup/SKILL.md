@@ -27,17 +27,20 @@ If the row offers **Connect**, click it, approve on Tailscale's screen, then con
      "tagOwners": {
        "tag:grokbot": ["autogroup:admin"],
      },
+     "hosts": {
+       "mcp-server": "100.64.0.2",
+     },
      "grants": [
        {
          "src": ["tag:grokbot"],
-         "dst": ["mcp-server.tail1234.ts.net"],
+         "dst": ["mcp-server"],
          "ip":  ["tcp:443"],
        },
      ],
    }
    ```
 
-   List the user who will sign in (or `autogroup:admin`) in `tagOwners`. In the grant, use the user's real host names, `100.x` addresses, subnet-route CIDRs or tags, and only the ports their MCP servers listen on. If the policy still has the default allow-all rule, `tag:grokbot` can reach every device; point that out and suggest narrowing it.
+   List the user who will sign in (or `autogroup:admin`) in `tagOwners`. In the grant, use a tag, a `100.x` address, a subnet-route CIDR, or a host alias defined in `hosts`. A MagicDNS name such as `mcp-server.tail1234.ts.net` is not a destination selector, so the policy will not save; map that name to the device's `100.x` address in `hosts` and grant the alias. Grant only the ports the MCP servers listen on. If the policy still has the default allow-all rule, `tag:grokbot` can reach every device; point that out and suggest narrowing it.
 2. In Grok Bot, open the **Tailscale** plugin, click **Authenticate**, sign in to Tailscale and approve the device.
 3. If device approval is on, approve the device on the **Machines** page. With Tailnet Lock, sign it from a signing node (`tailscale lock sign <node-key>`); it can't reach anything until it's signed.
 
