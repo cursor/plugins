@@ -142,6 +142,19 @@ out.push(actions.length ? `Next == ${actions.map((a) => a.name).join(" \\/ ")}` 
 out.push("");
 out.push("Spec == Init /\\ [][Next]_vars");
 
+function nested(states, item) {
+  const paths = new Set();
+  for (const s of states) {
+    const at = `.${s}.`.indexOf(`.${item}.`);
+    if (at > 0) paths.add(s.slice(0, at + item.length));
+  }
+  if (paths.size > 1)
+    throw new Error(
+      `never line names "${item}", which is inside ${[...paths].map((p) => p.slice(0, -item.length - 1)).join(" and ")}; write the path, such as ${[...paths][0]}`,
+    );
+  const [path] = paths;
+  return path ? [...states].filter((s) => s === path || s.startsWith(`${path}.`)) : [];
+}
 function resolve(item) {
   const hits = [];
   for (const [ri, x] of vars.entries()) {
@@ -150,6 +163,11 @@ function resolve(item) {
       : [...x.states].filter((s) => s.startsWith(`${item}.`));
     if (inside.length) hits.push({ ri, inside });
   }
+  if (hits.length === 0)
+    for (const [ri, x] of vars.entries()) {
+      const inside = nested(x.states, item);
+      if (inside.length) hits.push({ ri, inside });
+    }
   if (hits.length === 0)
     throw new Error(`never line names "${item}", which is not a state in the chart`);
   if (hits.length > 1)
