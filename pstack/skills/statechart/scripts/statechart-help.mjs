@@ -280,7 +280,8 @@ Reading a chart
 
 Regenerate
   List every rule that is known to break with --expect-broken, the goals and the known bugs. Each
-  run then exits 0 until a rule changes, so one script rebuilds every chart and stops on any change:
+  run then exits 0 until a rule changes, so one script rebuilds every chart and stops when a rule
+  breaks or heals (a chart that only redraws does not stop it):
     set -e
     node statechart.mjs from-spec Code.tla --against Agreed.tla --expect-broken NoLostUpload --png
   A run that leaves a broken rule out of --expect-broken exits 1, and set -e stops the script there.
