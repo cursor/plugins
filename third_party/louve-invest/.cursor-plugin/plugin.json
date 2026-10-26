@@ -1,0 +1,32 @@
+{
+  "name": "louve-invest",
+  "displayName": "Louve Invest",
+  "version": "1.0.0",
+  "description": "View your Louve Invest SCPI and life insurance portfolio, review your transactions, and explore investment simulations.",
+  "author": {
+    "name": "Louve Invest",
+    "email": "developers@louveinvest.com"
+  },
+  "homepage": "https://louveinvest.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://app.louveinvest.com/img/icons/louve.svg",
+  "keywords": [
+    "louve invest",
+    "scpi",
+    "life insurance",
+    "assurance-vie",
+    "real estate",
+    "portfolio",
+    "investing",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "louve-invest",
+    "finance",
+    "investing",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

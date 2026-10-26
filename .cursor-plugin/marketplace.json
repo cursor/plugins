@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "louve-invest",
+      "source": "third_party/louve-invest",
+      "description": "View your Louve Invest SCPI and life insurance portfolio, review your transactions, and explore investment simulations."
     }
   ]
 }
