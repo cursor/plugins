@@ -1,0 +1,32 @@
+{
+  "name": "okara",
+  "displayName": "Okara",
+  "version": "1.0.0",
+  "description": "Read your Okara marketing workspace and generate posts, articles, images, and content strategy.",
+  "author": {
+    "name": "Okara",
+    "email": "services@okara.ai"
+  },
+  "homepage": "https://okara.ai",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "okara",
+    "marketing",
+    "ai cmo",
+    "seo",
+    "content",
+    "reddit",
+    "search console",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "okara",
+    "marketing",
+    "seo",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

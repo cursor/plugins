@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "okara",
+      "source": "third_party/okara",
+      "description": "Read your Okara marketing workspace and generate posts, articles, images, and content strategy."
     }
   ]
 }
