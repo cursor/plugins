@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "bitrefill",
+      "source": "third_party/bitrefill",
+      "description": "Browse and buy gift cards, mobile top-ups, and eSIMs from 1,500+ brands in 180+ countries."
     }
   ]
 }
