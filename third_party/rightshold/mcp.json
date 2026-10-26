@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "rightshold": {
+      "type": "http",
+      "url": "https://www.rightshold.com/mcp"
+    }
+  }
+}

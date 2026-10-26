@@ -1,0 +1,32 @@
+{
+  "name": "rightshold",
+  "displayName": "RightsHold",
+  "version": "1.0.0",
+  "description": "Check licenses and website AI policies, verify agents, and get signed Rights Receipts before using content.",
+  "author": {
+    "name": "RightsHold",
+    "email": "hello@rightshold.com"
+  },
+  "homepage": "https://www.rightshold.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://www.rightshold.com/brand/apple-touch-icon.png",
+  "keywords": [
+    "rightshold",
+    "licensing",
+    "copyright",
+    "creative commons",
+    "ai policy",
+    "robots.txt",
+    "attribution",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "rightshold",
+    "licensing",
+    "compliance",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

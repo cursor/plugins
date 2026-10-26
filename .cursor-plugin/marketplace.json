@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "rightshold",
+      "source": "third_party/rightshold",
+      "description": "Check licenses and website AI policies, verify agents, and get signed Rights Receipts before using content."
     }
   ]
 }
