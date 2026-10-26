@@ -1,0 +1,31 @@
+{
+  "name": "hostinger",
+  "displayName": "Hostinger",
+  "version": "1.0.0",
+  "description": "Deploy and manage Hostinger websites, WordPress, domains, DNS, VPS, and billing.",
+  "author": {
+    "name": "Hostinger"
+  },
+  "homepage": "https://hostinger.com",
+  "repository": "https://github.com/hostinger/api-mcp-server",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "hostinger",
+    "hosting",
+    "deployment",
+    "wordpress",
+    "domains",
+    "dns",
+    "vps",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "hostinger",
+    "hosting",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}

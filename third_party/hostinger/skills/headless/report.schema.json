@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hostinger Headless build report",
+  "description": "Written by run-log.mjs at the end of every run (including early stops) to ~/.hostinger/<domain>/reports/<run>.json.",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "consent", "run", "info", "timing", "tokens", "issues", "user_feedback", "skill_gaps", "what_went_well", "previous_runs"],
+  "properties": {
+    "schema_version": { "type": "string", "enum": ["1"] },
+    "generated_at": { "type": "string" },
+    "consent": {
+      "type": "object",
+      "required": ["sent"],
+      "properties": { "sent": { "type": "boolean" }, "note": { "type": "string" } }
+    },
+    "run": {
+      "type": "object",
+      "required": ["id", "kind"],
+      "properties": {
+        "id": { "type": "string" },
+        "kind": { "type": "string", "enum": ["build", "resume", "redesign", "iterate"] },
+        "skill": { "type": ["string", "null"] },
+        "follow_ups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["resumed_at"],
+            "properties": { "resumed_at": { "type": "string" }, "after_report_at": { "type": ["string", "null"] }, "reason": { "type": ["string", "null"] } }
+          }
+        }
+      }
+    },
+    "info": {
+      "type": "object",
+      "required": ["domain", "tool", "outcome"],
+      "properties": {
+        "domain": { "type": "string" },
+        "tool": { "type": ["string", "null"] },
+        "model": { "type": ["string", "null"] },
+        "os": { "type": "string" },
+        "node": { "type": "string" },
+        "mcp": { "type": ["string", "null"] },
+        "backend": { "type": ["string", "null"] },
+        "frontend": { "type": ["string", "null"] },
+        "outcome": { "type": "string", "enum": ["live", "stopped", "failed", "abandoned"] },
+        "stopped_at": { "type": ["string", "null"] },
+        "live_url": { "type": ["string", "null"] },
+        "admin_url": { "type": ["string", "null"] }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "required": ["started_at", "ended_at", "minutes_total", "stages"],
+      "properties": {
+        "started_at": { "type": "string" },
+        "ended_at": { "type": "string" },
+        "live_at": { "type": ["string", "null"] },
+        "minutes_total": { "type": ["number", "null"] },
+        "minutes_to_live": { "type": ["number", "null"] },
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["stage", "started_at", "ended_at", "result"],
+            "properties": {
+              "stage": { "type": "string", "enum": ["connect", "check_state", "refine", "provision", "content_model", "design", "frontend", "validate", "deploy", "done"] },
+              "phase": { "type": ["string", "null"] },
+              "started_at": { "type": "string" },
+              "ended_at": { "type": ["string", "null"] },
+              "result": { "type": ["string", "null"], "enum": ["ok", "ok_after_retries", "ok_with_fixups", "failed", "skipped", "stopped", null] },
+              "note": { "type": ["string", "null"] },
+              "minutes": { "type": ["number", "null"] },
+              "start_estimated": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "tokens": {
+      "description": "Only when the tool reports its own usage. Never read the user's transcripts to get it.",
+      "type": ["object", "null"],
+      "properties": {
+        "source": { "type": "string" },
+        "requests": { "type": "integer" },
+        "input": { "type": "integer" },
+        "output": { "type": "integer" },
+        "cache_read": { "type": "integer" },
+        "cache_write": { "type": "integer" },
+        "est_cost_usd": { "type": "number" }
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage", "symptom", "severity", "resolved", "user_had_to_intervene"],
+        "properties": {
+          "stage": { "type": "string" },
+          "symptom": { "type": "string" },
+          "cause": { "type": "string" },
+          "workaround": { "type": "string" },
+          "severity": { "type": "string", "enum": ["high", "medium", "low"] },
+          "resolved": { "type": "boolean" },
+          "user_had_to_intervene": { "type": "boolean" },
+          "logged_at": { "type": "string" }
+        }
+      }
+    },
+    "user_feedback": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage", "category", "paraphrase"],
+        "properties": { "stage": { "type": "string" }, "category": { "type": "string" }, "paraphrase": { "type": "string" }, "logged_at": { "type": "string" } }
+      }
+    },
+    "skill_gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["skill", "gap"],
+        "properties": { "skill": { "type": "string" }, "gap": { "type": "string" }, "stage": { "type": "string" }, "logged_at": { "type": "string" } }
+      }
+    },
+    "what_went_well": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["text"],
+        "properties": { "text": { "type": "string" }, "stage": { "type": "string" }, "logged_at": { "type": "string" } }
+      }
+    },
+    "logging_gaps": {
+      "description": "Where the run log is missing or unsure: unfinished stages, estimated starts, zero-length entries, stages never logged on a live build.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage", "problem"],
+        "properties": { "stage": { "type": "string" }, "phase": { "type": ["string", "null"] }, "problem": { "type": "string" } }
+      }
+    },
+    "previous_runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": { "run": { "type": ["string", "null"] }, "kind": { "type": ["string", "null"] }, "outcome": { "type": ["string", "null"] }, "minutes": { "type": ["number", "null"] }, "html": { "type": "string" } }
+      }
+    }
+  }
+}

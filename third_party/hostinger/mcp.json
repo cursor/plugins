@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "hostinger": {
+      "type": "http",
+      "url": "https://mcp.hostinger.com"
+    }
+  }
+}
