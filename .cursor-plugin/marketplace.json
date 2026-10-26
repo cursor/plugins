@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "testmu-ai",
+      "source": "third_party/testmu-ai",
+      "description": "Run HyperExecute jobs, triage failed tests, explain SmartUI visual diffs, run accessibility checks, and manage Test Manager cases with TestMu AI (formerly LambdaTest)."
     }
   ]
 }
