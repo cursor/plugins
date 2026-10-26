@@ -1,0 +1,32 @@
+{
+  "name": "datadoe",
+  "displayName": "DataDoe",
+  "version": "1.0.0",
+  "description": "Analyze and act on your Amazon Seller Central, Vendor Central, and Amazon Ads data.",
+  "author": {
+    "name": "DataDoe, Inc.",
+    "email": "kris@datadoe.com"
+  },
+  "homepage": "https://www.datadoe.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "datadoe",
+    "amazon",
+    "seller central",
+    "vendor central",
+    "amazon ads",
+    "sp-api",
+    "ecommerce",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "datadoe",
+    "amazon",
+    "ecommerce",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

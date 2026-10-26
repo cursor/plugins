@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "datadoe": {
+      "type": "http",
+      "url": "https://mcp.datadoe.com/mcp/v1"
+    }
+  }
+}
