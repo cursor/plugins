@@ -1,0 +1,34 @@
+{
+  "name": "artlist",
+  "displayName": "Artlist",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Generate images, videos, music, and voice-overs with AI, and find licensed music and sound effects in the Artlist catalog.",
+  "author": {
+    "name": "Artlist",
+    "email": "raphael.c@artlist.io"
+  },
+  "homepage": "https://artlist.io/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "artlist",
+    "ai video",
+    "ai image",
+    "music",
+    "sound effects",
+    "voice-over",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "artlist",
+    "media",
+    "generative ai",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

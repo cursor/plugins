@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "artlist": {
+      "type": "http",
+      "url": "https://mcp.artlist.io/mcp"
+    }
+  }
+}

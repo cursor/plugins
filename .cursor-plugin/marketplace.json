@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "artlist",
+      "source": "third_party/artlist",
+      "description": "Generate images, videos, music, and voice-overs with AI, and find licensed music and sound effects in the Artlist catalog."
     }
   ]
 }
