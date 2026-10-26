@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://developers.appfollow.io/schemas/appfollow.toolkit.findings/v1.json",
+  "title": "appfollow.toolkit.findings/v1",
+  "type": "object",
+  "required": ["schema", "report_type", "report_id", "generated_at", "source", "scope", "findings"],
+  "properties": {
+    "schema": { "const": "appfollow.toolkit.findings/v1" },
+    "report_type": { "enum": ["feedback", "aso", "competitors"] },
+    "report_id": { "type": "string", "minLength": 1 },
+    "generated_at": { "type": "string" },
+    "source": {
+      "type": "object",
+      "required": ["skill", "toolkit", "mcp"],
+      "properties": {
+        "skill": { "type": "string" },
+        "toolkit": { "type": "string" },
+        "mcp": { "type": "string" }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "required": ["type", "apps"],
+      "properties": {
+        "type": {
+          "enum": ["app", "collection", "collection_subset"],
+          "description": "app = one app (apps has 1 entry). collection = an entire collection (apps = all apps in it, collection_name identifies it). collection_subset = a user-chosen subset of apps from ONE collection (apps = only the chosen subset, not all of them; collection_name identifies the source collection). Spanning multiple collections in one report is not supported."
+        },
+        "collection_name": { "type": ["string", "null"] },
+        "apps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["store", "ext_id"],
+            "properties": {
+              "store": { "type": "string" },
+              "ext_id": { "type": "string" },
+              "apps_id": { "type": ["integer", "string", "null"] },
+              "title": { "type": "string" }
+            }
+          }
+        }
+      },
+      "if": { "properties": { "type": { "const": "collection_subset" } }, "required": ["type"] },
+      "then": { "required": ["collection_name"], "properties": { "collection_name": { "type": "string", "minLength": 1 } } }
+    },
+    "window": {
+      "type": "object",
+      "properties": {
+        "from": { "type": "string" },
+        "to": { "type": "string" },
+        "compared_to": { "type": ["string", "null"] }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "reviews_total": { "type": ["integer", "null"] },
+        "reviews_fetched": { "type": ["integer", "null"] },
+        "sampling": { "type": "string" },
+        "semantic_used": { "type": "boolean" },
+        "credits_spent_estimate": { "type": "number" }
+      }
+    },
+    "competitors": {
+      "type": "array",
+      "description": "Rivals in a competitors report. Kept out of scope.apps: scope.type has no target-plus-rivals value, so the target stays the sole scope.apps entry.",
+      "items": {
+        "type": "object",
+        "required": ["store", "ext_id"],
+        "properties": {
+          "store": { "type": "string" },
+          "ext_id": { "type": "string" },
+          "title": { "type": "string" },
+          "country": { "type": "string" },
+          "device": { "type": "string" },
+          "tracked_before_run": { "type": "boolean" }
+        }
+      }
+    },
+    "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } }
+  },
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "required": ["id", "type", "title", "description", "severity", "dedup_key", "status"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "severity": { "enum": ["critical", "high", "medium", "low", "info"] },
+        "priority_hint": { "enum": ["p0", "p1", "p2", "p3", null] },
+        "affected_apps": { "type": "array", "items": { "type": "string" } },
+        "metrics": { "type": "object" },
+        "evidence": {},
+        "suggested_labels": { "type": "array", "items": { "type": "string" } },
+        "suggested_action": { "type": ["object", "string", "null"] },
+        "dedup_key": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["proposed", "applied"] },
+        "expected_impact": {
+          "type": "object",
+          "properties": {
+            "metric": { "type": "string" },
+            "direction": { "enum": ["up", "down"] },
+            "magnitude": { "type": "string" },
+            "confidence": { "enum": ["high", "medium", "low"] },
+            "basis": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

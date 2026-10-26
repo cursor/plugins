@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{app_name}} — AppFollow competitor audit</title>
+    <style>
+      :root { color-scheme: light dark; --bg: #ffffff; --fg: #14181f; --muted: #5b6675; --card: #f5f7fa; --line: #e2e7ee; --accent: #0a84ff; --good: #1f8a4c; --warn-c: #b26a00; --bad: #c0392b; }
+      @media (prefers-color-scheme: dark) { :root { --bg: #0f1216; --fg: #e8ecf2; --muted: #9aa6b5; --card: #171b21; --line: #262c35; --good: #4cc38a; --warn-c: #e2b93b; --bad: #e5716a; } }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 2rem 1rem; background: var(--bg); color: var(--fg); font: 15px/1.55 -apple-system, system-ui, sans-serif; }
+      .wrap { max-width: 960px; margin: 0 auto; }
+      h1 { font-size: 1.6rem; margin: 0 0 .25rem; text-wrap: balance; }
+      h2 { font-size: 1.15rem; margin: 0 0 .5rem; }
+      h3 { font-size: .95rem; margin: 1rem 0 .35rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+      .muted { color: var(--muted); }
+      .warn { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; padding: .6rem .8rem; margin: .5rem 0; }
+      .pending { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--warn-c); border-radius: 8px; padding: .6rem .8rem; margin: .5rem 0; }
+      .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .75rem; margin: 1.25rem 0; }
+      .tile { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; }
+      .tile .n { font-size: 1.5rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+      .tile .l { font-size: .8rem; color: var(--muted); letter-spacing: .02em; text-transform: uppercase; }
+      section { margin: 1.75rem 0; }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin: .6rem 0; }
+      table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+      th, td { text-align: left; padding: .45rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+      th { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+      tr.self td { font-weight: 650; }
+      .scroll { overflow-x: auto; }
+      .pill { display: inline-block; padding: .05rem .55rem; border-radius: 999px; font-size: .78rem; font-weight: 600; border: 1px solid var(--line); }
+      .pill.good { color: var(--good); } .pill.mid { color: var(--warn-c); } .pill.miss { color: var(--bad); }
+      .flag { color: var(--warn-c); font-weight: 600; }
+      footer { margin-top: 2.5rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+      a { color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>{{app_name}} — competitor audit</h1>
+      <p class="muted">{{store_label}} · {{country}} · {{devices}} · {{generated_at}}</p>
+      <div class="warn">{{freshness_caveats}}</div>
+
+      <section aria-label="Headline">
+        <div class="tiles">{{kpi_tiles}}</div>
+      </section>
+
+      <section aria-label="Share of search">
+        <h2>Share of search</h2>
+        <p class="muted">Live store results across {{term_count}} terms in {{country}}. <strong>Unweighted</strong> — every term counts the same; no popularity or traffic weighting is applied. Coverage is the number of terms where the app appears at all; top-3 rate is the share of terms where it sits at position 3 or better.</p>
+        <div class="scroll"><table>{{share_of_search_table}}</table></div>
+        <p class="muted">Terms used: {{term_list}}</p>
+      </section>
+
+      <section aria-label="Newly discovered competitors">
+        <h2>Not tracked yet</h2>
+        <p class="muted">Apps that appear in the same results and are absent from every collection in the account.</p>
+        <div class="scroll"><table>{{discovered_table}}</table></div>
+        {{discovery_note}}
+      </section>
+
+      <section aria-label="Category position">
+        <h2>Category position</h2>
+        <div class="scroll"><table>{{category_table}}</table></div>
+        {{category_mismatch_note}}
+        {{category_pending_note}}
+      </section>
+
+      <section aria-label="Rating velocity">
+        <h2>Rating velocity — last 30 days</h2>
+        <p class="muted">App Store: incremental values (<code>type=diff</code>), one country per call — the average shown is the mean of the <strong>new</strong> ratings in the window, not the app's cumulative store average. Google Play has no incremental series: its rows show the cumulative average and rating count (<code>type=total</code>), labelled cumulative, with no star split.</p>
+        <h3>Average rating of new ratings</h3>
+        <div class="scroll"><table>{{avg_rating_table}}</table></div>
+        <h3>New ratings by star</h3>
+        <div class="scroll"><table>{{star_breakdown_table}}</table></div>
+        <p class="muted">{{negative_share_read}}</p>
+        {{partial_period_note}}
+      </section>
+
+      <section aria-label="Findings">
+        <h2>Findings</h2>
+        {{findings_appendix}}
+      </section>
+
+      <footer>
+        <p>Method &amp; limitations: competitors are ranked by how many of the {{term_count}} sampled store queries they appear in, then by average position — a single live snapshot taken {{generated_at}}, not a trend. Share of search is unweighted. Category positions are only comparable between apps in the same category; mismatches are flagged above. Rating figures are <strong>ratings, not reviews</strong>, filtered to {{country}} with one country per request — incremental over the window on the App Store, cumulative on Google Play. An empty category position means the app is not in that country's chart, not that data is still being collected. {{ios_truncation_note}} No install, download or revenue data exists in this pipeline, so nothing here is weighted by acquisition volume.</p>
+        <p>Generated by appfollow-ai-toolkit {{toolkit_version}} · <a href="https://developers.appfollow.io">developers.appfollow.io</a></p>
+      </footer>
+    </div>
+  </body>
+</html>

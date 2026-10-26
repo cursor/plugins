@@ -1,0 +1,32 @@
+{
+  "name": "appfollow",
+  "displayName": "AppFollow",
+  "version": "1.3.0",
+  "description": "Analyze App Store and Google Play reviews, ratings and ASO from your AppFollow account: feedback reports, keyword and metadata suggestions, and competitor audits. Connects via MCP.",
+  "author": {
+    "name": "AppFollow"
+  },
+  "homepage": "https://appfollow.io",
+  "repository": "https://github.com/AppFollow/appfollow-ai-toolkit",
+  "license": "Apache-2.0",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "appfollow",
+    "app store",
+    "google play",
+    "reviews",
+    "ratings",
+    "aso",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "appfollow",
+    "reviews",
+    "aso",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/",
+  "mcpServers": "./mcp.json"
+}
