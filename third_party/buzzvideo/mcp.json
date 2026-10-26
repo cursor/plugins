@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "buzzvideo": {
+      "type": "http",
+      "url": "https://webapi.buzzvideo.ai/mcp"
+    }
+  }
+}

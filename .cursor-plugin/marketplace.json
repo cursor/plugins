@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "buzzvideo",
+      "source": "third_party/buzzvideo",
+      "description": "Create marketing images, videos, AI avatar clips, and voiceovers with your BuzzVideo account."
     }
   ]
 }

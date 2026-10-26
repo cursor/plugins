@@ -1,0 +1,31 @@
+{
+  "name": "buzzvideo",
+  "displayName": "BuzzVideo",
+  "version": "1.0.0",
+  "description": "Create marketing images, videos, AI avatar clips, and voiceovers with your BuzzVideo account.",
+  "author": {
+    "name": "BuzzVideo",
+    "email": "info@buzzvideo.ai"
+  },
+  "homepage": "https://buzzvideo.ai",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://buzzvideo.ai/images/logo-icon-180.png",
+  "keywords": [
+    "buzzvideo",
+    "video generation",
+    "image generation",
+    "voiceover",
+    "ai avatar",
+    "marketing",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "buzzvideo",
+    "video",
+    "marketing",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
