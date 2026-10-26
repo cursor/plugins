@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "myanimetracker",
+      "source": "third_party/myanimetracker",
+      "description": "Look up anime watch orders, filler episode guides, and what's airing this week."
     }
   ]
 }

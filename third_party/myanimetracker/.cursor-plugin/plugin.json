@@ -1,0 +1,30 @@
+{
+  "name": "myanimetracker",
+  "displayName": "MyAnimeTracker",
+  "version": "1.0.0",
+  "description": "Look up anime watch orders, filler episode guides, and what's airing this week.",
+  "author": {
+    "name": "MyAnimeTracker",
+    "email": "support@myanimetracker.com"
+  },
+  "homepage": "https://myanimetracker.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://myanimetracker.com/logo-light-plate.png",
+  "keywords": [
+    "myanimetracker",
+    "anime",
+    "watch order",
+    "filler",
+    "airing schedule",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "myanimetracker",
+    "anime",
+    "entertainment",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

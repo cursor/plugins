@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "myanimetracker": {
+      "type": "http",
+      "url": "https://myanimetracker.com/api/mcp/account"
+    }
+  }
+}
