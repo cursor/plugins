@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "odyssey365",
+      "source": "third_party/odyssey365",
+      "description": "Manage Odyssey60 project boards, tasks, notes, calendar events, routines, and records."
     }
   ]
 }

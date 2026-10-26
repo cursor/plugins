@@ -1,0 +1,32 @@
+{
+  "name": "odyssey365",
+  "displayName": "Odyssey365",
+  "version": "1.0.0",
+  "description": "Manage your Odyssey60 project boards, tasks, notes, calendar events, routines, and records. Turn plans into boards, get progress briefings, and manage your day through conversation.",
+  "author": {
+    "name": "Odyssey365",
+    "email": "contact@odyssey365.app"
+  },
+  "homepage": "https://product.odyssey365.app/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "odyssey365",
+    "odyssey60",
+    "project boards",
+    "tasks",
+    "notes",
+    "calendar",
+    "productivity",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "odyssey365",
+    "productivity",
+    "tasks",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

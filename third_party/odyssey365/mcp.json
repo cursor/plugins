@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "odyssey365": {
+      "type": "http",
+      "url": "https://mcp-odyssey30-60.odyssey365.app/"
+    }
+  }
+}
