@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "spiderlook",
+      "source": "third_party/spiderlook",
+      "description": "Research rivals using your Spiderlook projects, stored posts, ads, website evidence, metrics, signals, and sales battlecards."
     }
   ]
 }
