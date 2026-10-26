@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "infinite-audience": {
+      "type": "http",
+      "url": "https://mcp.infiniteaudience.ai/mcp"
+    }
+  }
+}

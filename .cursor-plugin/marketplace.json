@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "infinite-audience",
+      "source": "third_party/infinite-audience",
+      "description": "Resolve identities, enrich consumer data, and discover precision audiences for your activation channels."
     }
   ]
 }

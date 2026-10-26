@@ -1,0 +1,30 @@
+{
+  "name": "infinite-audience",
+  "displayName": "Infinite Audience",
+  "version": "1.0.0",
+  "description": "Resolve identities, enrich consumer data, and discover precision audiences for your activation channels.",
+  "author": {
+    "name": "Infinite Audience"
+  },
+  "homepage": "https://infiniteaudience.ai",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://infiniteaudience.ai/assets/ia-shield.png",
+  "keywords": [
+    "infinite audience",
+    "identity resolution",
+    "data enrichment",
+    "audiences",
+    "segments",
+    "marketing",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "infinite-audience",
+    "marketing",
+    "audiences",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
