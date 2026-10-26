@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ppj-venture-labs": {
+      "type": "http",
+      "url": "https://app.kalender-sync.de/mcp"
+    }
+  }
+}

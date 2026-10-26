@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "ppj-venture-labs",
+      "source": "third_party/ppj-venture-labs",
+      "description": "Check availability and manage events and calendar syncs across Google Calendar, Outlook, iCloud, and CalDAV."
     }
   ]
 }

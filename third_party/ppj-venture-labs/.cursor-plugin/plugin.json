@@ -1,0 +1,32 @@
+{
+  "name": "ppj-venture-labs",
+  "displayName": "Kalender Sync",
+  "version": "1.0.0",
+  "description": "Check availability and manage events and calendar syncs across Google Calendar, Outlook, iCloud, and CalDAV.",
+  "author": {
+    "name": "PPJ Venture Labs UG (haftungsbeschränkt)",
+    "email": "paul@ppj.ventures"
+  },
+  "homepage": "https://kalender-sync.de/en/mcp/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "kalender-sync",
+    "calendar",
+    "google calendar",
+    "outlook",
+    "icloud",
+    "caldav",
+    "calendar sync",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "calendar",
+    "scheduling",
+    "productivity",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
