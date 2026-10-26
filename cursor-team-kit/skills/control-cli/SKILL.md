@@ -55,7 +55,7 @@ Read the terminal output to find the inspector URL, then use Chrome DevTools-com
 
 ## Minimal PTY Harness
 
-Use a PTY script when you need deterministic waits in a repo that does not have tmux or a demo harness. Keep it temporary unless the user asks to add a reusable test.
+Use a PTY script when you need deterministic waits in a repo that does not have tmux or a demo harness. Replace the readiness and reply markers with concrete output from the CLI. The reply marker must identify command completion and must not appear in the command itself, because a PTY can echo input before the CLI responds. Keep the harness temporary unless the user asks to add a reusable test.
 
 ```python
 import os
@@ -74,15 +74,15 @@ proc = subprocess.Popen(
 )
 os.close(slave_fd)
 
-deadline = time.time() + 30
+deadline = time.monotonic() + 30
 buffer = b""
 sent = False
-saw_reply = False
-while time.time() < deadline:
+reply = b""
+while time.monotonic() < deadline:
     ready, _, _ = select.select([master_fd], [], [], 0.25)
     if not ready:
-        # The child already exited, or its reply has gone quiet.
-        if proc.poll() is not None or (sent and saw_reply):
+        # An idle PTY can still be waiting for a delayed command reply.
+        if proc.poll() is not None:
             break
         continue
     try:
@@ -95,7 +95,9 @@ while time.time() < deadline:
         break
     buffer += chunk
     if sent:
-        saw_reply = True
+        reply += chunk
+        if b"<reply text>" in reply:
+            break
     elif b"<ready text>" in buffer and proc.poll() is None:
         os.write(master_fd, b"help\n")
         sent = True
@@ -107,6 +109,7 @@ if proc.poll() is None:
         proc.wait(timeout=2)
     except subprocess.TimeoutExpired:
         proc.kill()
+        proc.wait()
 os.close(master_fd)
 ```
 
