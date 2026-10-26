@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "studiomeyer": {
+      "type": "http",
+      "url": "https://memory.studiomeyer.io/mcp"
+    }
+  }
+}
