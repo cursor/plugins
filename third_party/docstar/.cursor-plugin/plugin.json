@@ -1,0 +1,28 @@
+{
+  "name": "docstar",
+  "displayName": "DocStar",
+  "version": "1.0.0",
+  "description": "Document your API from code, publish the docs, and let AI assistants look up and call your endpoints.",
+  "author": {
+    "name": "Walkover"
+  },
+  "homepage": "https://docstar.io/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "docstar",
+    "api docs",
+    "documentation",
+    "developer docs",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "docstar",
+    "documentation",
+    "api",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

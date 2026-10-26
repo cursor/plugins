@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "docstar",
+      "source": "third_party/docstar",
+      "description": "Document your API from code, publish the docs, and let AI assistants look up and call your endpoints."
     }
   ]
 }
