@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "rinston": {
+      "type": "http",
+      "url": "https://rinston.com/api/agent/mcp"
+    }
+  }
+}

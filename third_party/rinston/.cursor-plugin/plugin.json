@@ -1,0 +1,28 @@
+{
+  "name": "rinston",
+  "displayName": "Rinston",
+  "version": "0.1.0",
+  "description": "Read the messages on your Rinston workspace phone number.",
+  "author": {
+    "name": "Rinston"
+  },
+  "homepage": "https://rinston.com",
+  "repository": "https://github.com/lamxjason/rinston-plugin",
+  "license": "MIT",
+  "logo": "https://rinston.com/favicon.svg",
+  "keywords": [
+    "rinston",
+    "phone",
+    "messages",
+    "front desk",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "rinston",
+    "phone",
+    "messaging",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
