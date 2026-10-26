@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "aicut",
+      "source": "third_party/aicut",
+      "description": "Make AI videos, images, voiceovers and full AI Video Story episodes on Veo, Kling, Seedance and more, then post them to TikTok, YouTube and Instagram. Every generation is priced before it spends."
     }
   ]
 }

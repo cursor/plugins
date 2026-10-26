@@ -1,0 +1,31 @@
+{
+  "name": "aicut",
+  "displayName": "Aicut",
+  "version": "1.0.0",
+  "description": "Make AI videos, images, voiceovers and full AI Video Story episodes on Veo, Kling, Seedance and more, then post them to TikTok, YouTube and Instagram. Every generation is priced before it spends.",
+  "author": {
+    "name": "Aicut",
+    "email": "info@aicut.pro"
+  },
+  "homepage": "https://www.aicut.pro/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "aicut",
+    "video generation",
+    "image generation",
+    "voiceover",
+    "ai video",
+    "social publishing",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "aicut",
+    "video",
+    "media",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
