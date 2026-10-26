@@ -1,6 +1,6 @@
 ---
 name: fix-ci
-description: Find failing PR checks, inspect logs or external check links, and apply focused fixes
+description: Find failing pull request checks, inspect logs or external check links, and apply focused fixes. Use when an open pull request on the current branch has a red host or continuous integration check, including during feature work, or when the user asks to get a pull request green.
 ---
 
 # Fix CI
