@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "enginy",
+      "source": "third_party/enginy",
+      "description": "Find and enrich B2B prospects, manage lists, and prepare outreach campaigns."
     }
   ]
 }
