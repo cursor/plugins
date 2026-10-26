@@ -1,0 +1,31 @@
+{
+  "name": "novuhq",
+  "displayName": "Agent Inbox",
+  "version": "1.0.0",
+  "description": "Give your agent its own email inbox to message people and wait for answers and approvals.",
+  "author": {
+    "name": "Novu"
+  },
+  "homepage": "https://agentinbox.md",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "agent inbox",
+    "novu",
+    "email",
+    "slack",
+    "telegram",
+    "approvals",
+    "human in the loop",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "novu",
+    "email",
+    "messaging",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

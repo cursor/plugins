@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "novuhq": {
+      "type": "http",
+      "url": "https://mcp.agentinbox.md"
+    }
+  }
+}
