@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "bitilinks",
+      "source": "third_party/bitilinks",
+      "description": "List and create Agent Factory (智能体工场) projects and tasks."
     }
   ]
 }

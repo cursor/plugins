@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "bitilinks": {
+      "type": "http",
+      "url": "https://agent.bitilinks.cn/api/connector/mcp",
+      "headers": {
+        "Authorization": "Bearer ${AF_CONNECTOR_TOKEN}"
+      }
+    }
+  }
+}

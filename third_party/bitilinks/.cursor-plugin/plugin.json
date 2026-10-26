@@ -1,0 +1,43 @@
+{
+  "name": "bitilinks",
+  "displayName": "Agent Factory",
+  "version": "1.0.0",
+  "description": "List and create Agent Factory (智能体工场) projects and tasks.",
+  "author": {
+    "name": "Bitilinks"
+  },
+  "homepage": "https://agent.bitilinks.cn",
+  "repository": "https://github.com/bitlink0521/agent-factory-plugin",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "agent-factory",
+    "bitilinks",
+    "智能体工场",
+    "projects",
+    "tasks",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "agent-factory",
+    "productivity",
+    "tasks",
+    "mcp"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "AF_CONNECTOR_TOKEN": {
+        "type": "string",
+        "title": "Agent Factory PAT",
+        "description": "Agent Factory personal access token (afpat_…), issued by POST https://agent.bitilinks.cn/api/connector/tokens after signing in."
+      }
+    },
+    "required": [
+      "AF_CONNECTOR_TOKEN"
+    ]
+  },
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}

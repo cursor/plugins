@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">智能体工场</title>
+  <rect width="512" height="512" rx="96" fill="#FFFFFF"/>
+  <!-- scale 6.2 from 64-unit mark; center at 256,256 -->
+  <g fill="#111111" transform="translate(256 256) scale(6.2) translate(-32 -32)">
+    <rect x="22" y="4" width="20" height="25" rx="10"/>
+    <rect x="22" y="4" width="20" height="25" rx="10" transform="rotate(120 32 32)"/>
+    <rect x="22" y="4" width="20" height="25" rx="10" transform="rotate(240 32 32)"/>
+  </g>
+</svg>
