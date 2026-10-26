@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "marqeta": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@marqeta/marqeta-mcp"
+      ],
+      "env": {
+        "MARQETA_API_URL": "${MARQETA_API_URL}",
+        "MARQETA_USERNAME": "${MARQETA_USERNAME}",
+        "MARQETA_PASSWORD": "${MARQETA_PASSWORD}",
+        "MARQETA_SCOPE": "read"
+      }
+    }
+  }
+}
