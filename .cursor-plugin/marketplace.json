@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "embarko",
+      "source": "third_party/embarko",
+      "description": "Deploy and host apps and websites built with AI, and get a live URL."
     }
   ]
 }
