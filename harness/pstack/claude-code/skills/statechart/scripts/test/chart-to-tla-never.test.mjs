@@ -73,3 +73,26 @@ test("a never line names a nested composite by its caption, and asks for the pat
     /names "Sending", which is inside Work\.Upload and Idle; write the path, such as Work\.Upload\.Sending/,
   );
 });
+
+test("dots in captions are not hierarchy boundaries for never lines", () => {
+  const dir = mkdtempSync(join(tmpdir(), "statechart-"));
+  const chart = `stateDiagram-v2
+  state Work {
+    state "Saving" as Saving
+    state "Saving..." as Pending
+    [*] --> Saving
+    Saving --> Pending : save
+  }
+  [*] --> Work
+  %% never NoSave: Saving -- Saving is forbidden, pending is allowed.
+`;
+  const r = run(dir, chart, "Dots");
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(readFileSync(join(dir, "Dots.tla"), "utf8"), /^NoSave == ~\(main = "Work\.Saving"\)$/m);
+  const missing = run(dir, chart.replace('    state "Saving" as Saving\n', '').replace('[*] --> Saving', '[*] --> Pending').replace('    Saving --> Pending : save\n', ''), "Missing");
+  assert.notEqual(missing.status, 0);
+  assert.match(missing.stderr, /not a state in the chart/);
+  const dotted = run(dir, chart.replace('NoSave: Saving --', 'NoSave: Saving... --'), "Dotted");
+  assert.equal(dotted.status, 0, dotted.stderr);
+  assert.match(readFileSync(join(dir, "Dotted.tla"), "utf8"), /^NoSave == ~\(main = "Work\.Saving\.\.\."\)$/m);
+});

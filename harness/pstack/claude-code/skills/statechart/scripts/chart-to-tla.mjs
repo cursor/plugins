@@ -142,30 +142,23 @@ out.push(actions.length ? `Next == ${actions.map((a) => a.name).join(" \\/ ")}` 
 out.push("");
 out.push("Spec == Init /\\ [][Next]_vars");
 
-function nested(states, item) {
-  const paths = new Set();
-  for (const s of states) {
-    const at = `.${s}.`.indexOf(`.${item}.`);
-    if (at > 0) paths.add(s.slice(0, at + item.length));
-  }
-  if (paths.size > 1)
+function nested(declarations, item) {
+  const matches = declarations.filter((d) => d.depth > 0 && d.caption === item);
+  if (matches.length > 1)
     throw new Error(
-      `never line names "${item}", which is inside ${[...paths].map((p) => p.slice(0, -item.length - 1)).join(" and ")}; write the path, such as ${[...paths][0]}`,
+      `never line names "${item}", which is inside ${matches.map((d) => d.path.slice(0, -item.length - 1)).join(" and ")}; write the path, such as ${matches[0].path}`,
     );
-  const [path] = paths;
-  return path ? [...states].filter((s) => s === path || s.startsWith(`${path}.`)) : [];
+  return matches[0]?.states ?? [];
 }
 function resolve(item) {
   const hits = [];
   for (const [ri, x] of vars.entries()) {
-    const inside = x.states.has(item)
-      ? [item]
-      : [...x.states].filter((s) => s.startsWith(`${item}.`));
+    const inside = x.declarations.find((d) => d.path === item)?.states ?? [];
     if (inside.length) hits.push({ ri, inside });
   }
   if (hits.length === 0)
     for (const [ri, x] of vars.entries()) {
-      const inside = nested(x.states, item);
+      const inside = nested(x.declarations, item);
       if (inside.length) hits.push({ ri, inside });
     }
   if (hits.length === 0)

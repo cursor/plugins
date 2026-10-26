@@ -651,7 +651,7 @@ export function parseMermaid(text) {
     );
 
   function region(p) {
-    const out = { states: new Set(), initial: new Set(), transitions: [] };
+    const out = { states: new Set(), initial: new Set(), transitions: [], declarations: [] };
     const info = new Map();
     const declaredInRegion = new Set();
     (function collect(q) {
@@ -687,6 +687,7 @@ export function parseMermaid(text) {
           if (out.states.has(full))
             throw new Error(`two states have the caption "${full}"; give each its own caption`);
           out.states.add(full);
+          out.declarations.push({ path: full, caption: display(c.name), states: [full], depth });
           info.set(c.name, { all: [full], initial: [full], depth });
           all.push(full);
           continue;
@@ -703,6 +704,7 @@ export function parseMermaid(text) {
           throw new Error(
             `${display(c.name)} has no [*] --> start, so a transition into it has nowhere to land`,
           );
+        out.declarations.push({ path: full, caption: display(c.name), states: inner, depth });
         info.set(c.name, { all: inner, initial, depth });
         all.push(...inner);
       }
