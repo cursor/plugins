@@ -592,6 +592,23 @@ describe("Store", () => {
       }
     });
 
+    it(`anchors a merged ${forge} replacement over closed branch history`, async () => {
+      const { directory, store } = await initializedStore();
+      const stack = await makeGitStack(directory);
+      await withFakeForge({
+        directory, forge,
+        currentRows: forgeRows(forge, [
+          { number: 12, state: "merged", head: "stack/open", base: "stack/closed" },
+          { number: 9, state: "closed", head: "stack/open", base: "main" },
+        ]),
+        operation: async () => {
+          const frontier = await store.frontier.set({ repo: stack.repo, forge });
+          expect(frontier.prs.map((row) => row.pr)).toEqual([10, 13, 12, 14]);
+          expect(frontier.lowestUnmerged).toBe(14);
+        },
+      });
+    });
+
     it(`still rejects multiple active ${forge} PRs on one branch`, async () => {
       const { directory, store } = await initializedStore();
       const stack = await makeGitStack(directory);
