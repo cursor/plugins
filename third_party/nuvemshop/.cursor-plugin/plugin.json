@@ -1,0 +1,32 @@
+{
+  "name": "nuvemshop",
+  "displayName": "Nuvemshop",
+  "version": "1.0.0",
+  "description": "Manage your Nuvemshop store's products, inventory, orders, customers, and promotions.",
+  "author": {
+    "name": "Nuvemshop",
+    "email": "agustin.parraquini@tiendanube.com"
+  },
+  "homepage": "https://www.nuvemshop.com.br",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "nuvemshop",
+    "tiendanube",
+    "ecommerce",
+    "products",
+    "inventory",
+    "orders",
+    "coupons",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "nuvemshop",
+    "ecommerce",
+    "brazil",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
