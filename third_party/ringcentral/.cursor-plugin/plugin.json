@@ -1,0 +1,30 @@
+{
+  "name": "ringcentral",
+  "displayName": "RingCentral",
+  "version": "1.0.0",
+  "description": "RingEX Phone MCP server for calling, SMS, and voicemail.",
+  "author": {
+    "name": "RingCentral"
+  },
+  "homepage": "https://www.ringcentral.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "ringcentral",
+    "ringex",
+    "phone",
+    "calling",
+    "sms",
+    "voicemail",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "ringcentral",
+    "communications",
+    "telephony",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

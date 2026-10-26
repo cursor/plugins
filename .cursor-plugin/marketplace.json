@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "ringcentral",
+      "source": "third_party/ringcentral",
+      "description": "RingEX Phone MCP server for calling, SMS, and voicemail."
     }
   ]
 }
