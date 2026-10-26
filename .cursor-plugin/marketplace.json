@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "salesloft",
+      "source": "third_party/salesloft",
+      "description": "Look up accounts, people, opportunities, and conversations in Salesloft."
     }
   ]
 }

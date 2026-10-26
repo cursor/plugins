@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "salesloft": {
+      "type": "http",
+      "url": "https://mcp.salesloft.com/mcp",
+      "placement": "server"
+    }
+  }
+}
