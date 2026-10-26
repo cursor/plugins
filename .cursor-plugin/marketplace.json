@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "sourceful",
+      "source": "third_party/sourceful",
+      "description": "Set up FTW, explain home energy and plans, and check equipment health with owner-approved access."
     }
   ]
 }

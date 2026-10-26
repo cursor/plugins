@@ -117,6 +117,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `feishu` | [Feishu](third_party/feishu/) | Cursor | Integrations | Search, create, and update Feishu docs, and read Feishu messages and groups. |
 | `framer` | [Framer](third_party/framer/) | Cursor | Integrations | Design, build, and edit your Framer sites, pages, and CMS content. |
 | `vanta` | [Vanta](third_party/vanta/) | Cursor | Integrations | Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta. |
+| `sourceful` | [FTW](third_party/sourceful/) | Sourceful Labs AB | Integrations | Set up FTW, explain home energy and plans, and check equipment health with owner-approved access. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

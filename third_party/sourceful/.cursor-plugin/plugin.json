@@ -1,0 +1,33 @@
+{
+  "name": "sourceful",
+  "displayName": "FTW",
+  "version": "1.3.0",
+  "description": "Set up FTW, explain home energy and plans, and check equipment health with owner-approved access.",
+  "author": {
+    "name": "Sourceful Labs AB",
+    "email": "support@sourceful.energy"
+  },
+  "homepage": "https://ftw.sourceful.energy",
+  "repository": "https://github.com/srcfl/ftw-plugin",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "ftw",
+    "sourceful",
+    "home energy",
+    "solar",
+    "battery",
+    "electric vehicle",
+    "raspberry pi",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "energy",
+    "smart home",
+    "ev charging",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
+}
