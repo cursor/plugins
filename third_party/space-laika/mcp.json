@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "space-laika": {
+      "type": "http",
+      "url": "https://visaphoto.io/mcp"
+    }
+  }
+}
