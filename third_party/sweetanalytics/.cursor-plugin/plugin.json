@@ -1,0 +1,29 @@
+{
+  "name": "sweetanalytics",
+  "displayName": "Sweet Analytics",
+  "version": "1.0.0",
+  "description": "Query sales, product performance, and business analytics from your Sweet Analytics ecommerce account.",
+  "author": {
+    "name": "Sweet Analytics",
+    "email": "miguel.martinez@sweetanalytics.com"
+  },
+  "homepage": "https://sweetanalytics.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "sweet analytics",
+    "ecommerce",
+    "analytics",
+    "sales",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "sweet analytics",
+    "ecommerce",
+    "analytics",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
