@@ -647,6 +647,11 @@
       "name": "ringcentral-team-chat",
       "source": "third_party/ringcentral-team-chat",
       "description": "RingEX Team Chat remote MCP server."
+    },
+    {
+      "name": "traderwai",
+      "source": "third_party/traderwai",
+      "description": "Live market charts, OHLC data, AI-marked chart analysis, and strategy backtests, plus a read-only view of connected broker accounts and positions."
     }
   ]
 }

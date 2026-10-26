@@ -119,6 +119,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `vanta` | [Vanta](third_party/vanta/) | Cursor | Integrations | Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta. |
 | `ringcentral` | [RingCentral](third_party/ringcentral/) | Cursor | Integrations | RingEX Phone remote MCP server. |
 | `ringcentral-team-chat` | [RingCentral Team Chat](third_party/ringcentral-team-chat/) | Cursor | Integrations | RingEX Team Chat remote MCP server. |
+| `traderwai` | [TraderWAI Charts](third_party/traderwai/) | Cursor | Integrations | Live market charts, OHLC data, AI-marked chart analysis, and strategy backtests, plus a read-only view of connected broker accounts and positions. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

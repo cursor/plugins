@@ -1,0 +1,31 @@
+{
+  "name": "traderwai",
+  "displayName": "TraderWAI Charts",
+  "version": "1.0.0",
+  "description": "Live market charts, OHLC data, AI-marked chart analysis, and strategy backtests, plus a read-only view of connected broker accounts and positions.",
+  "author": {
+    "name": "FLEXIN AGILE LTD",
+    "email": "info@traderwai.com"
+  },
+  "homepage": "https://traderwai.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "traderwai",
+    "trading",
+    "charts",
+    "forex",
+    "crypto",
+    "backtesting",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "traderwai",
+    "finance",
+    "trading",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

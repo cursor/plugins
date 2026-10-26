@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "traderwai": {
+      "type": "http",
+      "url": "https://mcp.traderwai.com/charts/v2"
+    }
+  }
+}
