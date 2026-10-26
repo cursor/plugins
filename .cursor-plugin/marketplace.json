@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "mindmux",
+      "source": "third_party/mindmux",
+      "description": "Give agents persistent, shared project memory with versioned MindMux Cloud Brain pages."
     }
   ]
 }
