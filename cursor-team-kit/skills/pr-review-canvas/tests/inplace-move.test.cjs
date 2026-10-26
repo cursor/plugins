@@ -57,3 +57,23 @@ test("the same block removed above and inserted below is still a move", () => {
   assert.doesNotMatch(html, /class="diff-del"/);
   assert.doesNotMatch(html, /class="diff-add"/);
 });
+
+test("an EOF newline marker does not turn an in-place edit into a move", () => {
+  const html = render([
+    "@@ -10,4 +10,4 @@",
+    "-    if (ready) {",
+    "-      start();",
+    "-      return cache;",
+    "-    }",
+    "\\ No newline at end of file",
+    "+    if (ready) {",
+    "+      start();",
+    "+      return fresh;",
+    "+    }",
+  ]);
+  assert.doesNotMatch(html, /diff-moved/);
+  assert.match(html, /class="diff-del".*return cache;/);
+  assert.match(html, /class="diff-add".*return fresh;/);
+  assert.match(html, /No newline at end of file/);
+  assert.match(html, /class="diff-add"><td class="diff-ln"><\/td><td class="diff-ln">10<\/td>/);
+});

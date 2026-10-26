@@ -117,20 +117,25 @@ function renderDiff(target, diffInput) {
   }
 
   var dels = [], adds = [], parsed = [];
-  var oL = 0, nL = 0, pD = false, pA = false;
+  var oL = 0, nL = 0, pD = false, pA = false, metadata = 0;
   for (var pi = 0; pi < wsOut.length; pi++) {
     var line = wsOut[pi];
     if (line.startsWith('--- ') || line.startsWith('+++ ') || line.startsWith('diff ')) continue;
+    // Git's EOF marker is metadata: retain it without advancing either file
+    // position or the adjacency used to distinguish an edit from a move.
+    if (line === '\\ No newline at end of file') {
+      parsed.push({ type: 'meta', text: line }); metadata++; continue;
+    }
     if (line.startsWith('@@')) {
       var hm = line.match(/@@ -(\d+)(?:,\d+)? \+(\d+)/);
       if (hm) { oL = parseInt(hm[1]); nL = parseInt(hm[2]); }
       parsed.push({ type: 'hunk', text: line }); pD = false; pA = false; continue;
     }
     if (line.startsWith('+')) {
-      var ae = { type:'add', code:line.slice(1), newLine:nL, consecutive:pA, idx:parsed.length };
+      var ae = { type:'add', code:line.slice(1), newLine:nL, consecutive:pA, idx:parsed.length - metadata };
       adds.push(ae); parsed.push(ae); nL++; pA = true; pD = false;
     } else if (line.startsWith('-')) {
-      var de = { type:'del', code:line.slice(1), oldLine:oL, consecutive:pD, idx:parsed.length };
+      var de = { type:'del', code:line.slice(1), oldLine:oL, consecutive:pD, idx:parsed.length - metadata };
       dels.push(de); parsed.push(de); oL++; pD = true; pA = false;
     } else {
       var c = line.startsWith(' ') ? line.slice(1) : line;
@@ -142,7 +147,7 @@ function renderDiff(target, diffInput) {
   var rows = [];
   for (var ri = 0; ri < parsed.length; ri++) {
     var p = parsed[ri];
-    if (p.type === 'hunk') {
+    if (p.type === 'hunk' || p.type === 'meta') {
       rows.push('<tr class="diff-hunk"><td class="diff-ln"></td><td class="diff-ln"></td><td class="diff-code">' + esc(p.text) + '</td></tr>');
     } else if (p.type === 'add') {
       var ai2 = -1; for (var fa=0;fa<adds.length;fa++) if(adds[fa].idx===p.idx){ai2=fa;break;}
