@@ -526,6 +526,17 @@ FromBase == Base!Safe
   );
 });
 
+test("a quoted floating note does not consume the following machine", () => {
+  const { regions } = parseMermaid(`stateDiagram-v2
+  [*] --> A
+  note "Waiting for a reply" as N
+  A --> B : reply arrives
+  note "Done: all replies received" as Done
+`);
+  assert.deepEqual([...regions.Main.states], ["A", "B"]);
+  assert.deepEqual(regions.Main.transitions.map(({ from, to }) => [from, to]), [["A", "B"]]);
+});
+
 test("a multi-line note is not part of the machine", () => {
   const { regions } = parseMermaid(`stateDiagram-v2
   [*] --> A

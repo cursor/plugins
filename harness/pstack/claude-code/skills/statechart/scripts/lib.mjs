@@ -573,7 +573,7 @@ export function parseMermaid(text) {
       inNote = !/^\s*end\s+note\s*$/.test(raw);
       continue;
     }
-    if (/^\s*note\s[^:]*$/.test(raw)) {
+    if (/^\s*note\s+(?:left|right)\s+of\s+[A-Za-z_]\w*\s*$/.test(raw)) {
       inNote = true;
       continue;
     }
