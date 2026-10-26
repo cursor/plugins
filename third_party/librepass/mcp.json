@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "librepass": {
+      "type": "http",
+      "url": "https://librepass.co/mcp/"
+    }
+  }
+}
