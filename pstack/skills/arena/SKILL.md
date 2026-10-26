@@ -39,10 +39,12 @@ Walk each losing candidate once more for what is worth porting into the base, us
 
 If the candidates converge on one shape, that is strong agreement. Note it and ship the consensus shape. No graft is needed. If they wildly diverge, Phase A was under-specified. Reframe and re-run rather than averaging the divergence.
 
+Write one synthesis note that names what it overrides in the base. That note is the only implementation contract. The implementer prompt cites that path and the exact verify commands, not the base sketch the note overrides.
+
 ## Phase F: Verify
 
-Verify the synthesized artifact like any other output, per the **prove-it-works** principle skill. If verification finds a problem the arena missed, either Phase A was wrong (re-frame and re-run) or a candidate caught it and you missed the graft (go back to Phase E). Don't paper over it.
+Verify the synthesized artifact like any other output, per the **prove-it-works** principle skill. The parent checks the merged tree against the synthesis contract. The implementer's own pass count is not that check. If verification finds a problem the arena missed, either Phase A was wrong (re-frame and re-run) or a candidate caught it and you missed the graft (go back to Phase E). Don't paper over it.
 
 ## Outputs
 
-One synthesized artifact, with a short synthesis note alongside naming the base and why, the cross-judge's verdict, each graft with its source candidate, what was rejected and why, any convergence or dropouts, and the verification result.
+One synthesized artifact, with a short synthesis note alongside naming the base and why, the cross-judge's verdict, each graft with its source candidate, what was rejected and why, any convergence or dropouts, and the verification result. When the run is multi-hour or unattended, copy the synthesis and the grounding into the show-me-your-work trail. A scratch directory under `/tmp` is not that trail.

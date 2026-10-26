@@ -17,6 +17,9 @@ Place validation, type narrowing, and error handling at system boundaries. Trust
 
 **Applications:**
 
+Parsing boundaries:
+- Keep typed user entry and document-relative resolution on separate paths. Do not send a fragment-only or path-relative reference through the typed-entry normalizer.
+
 Validation and error handling:
 - Validate config at parse time (the boundary), not inside business logic
 - Parse raw data into domain types at the boundary
