@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "mrscraper",
+      "source": "third_party/mrscraper",
+      "description": "Web scraping and Google search for AI agents: fetch any public page as Markdown, HTML or a screenshot, and get parsed Google results."
     }
   ]
 }
