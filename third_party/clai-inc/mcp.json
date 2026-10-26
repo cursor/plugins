@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "clai-inc": {
+      "type": "http",
+      "url": "https://app.goclai.com/mcp"
+    }
+  }
+}

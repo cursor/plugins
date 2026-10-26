@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "clai-inc",
+      "source": "third_party/clai-inc",
+      "description": "Work with Clai deals, signature packages, tasks, and document insights."
     }
   ]
 }
