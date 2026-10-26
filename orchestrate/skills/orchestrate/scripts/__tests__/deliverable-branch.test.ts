@@ -108,6 +108,25 @@ describe("recorded deliverable branches", () => {
       expect(mgr.branchForTask(respawned)).toBe(
         "orch/ship-slice/slice-planner"
       );
+
+      // A repeated request before spawning must keep the saved resume branch.
+      mgr.respawnTask("slice-planner");
+      expect(respawned.startingRef).toBe(cloudBranch);
+
+      // A spawn that fails before reporting a new cloud branch leaves the
+      // planned bookkeeping branch in state, not a cloneable resume ref.
+      mgr.touch(respawned, { status: "error", attempts: 2 });
+      mgr.respawnTask("slice-planner");
+      expect(respawned.startingRef).toBe(cloudBranch);
+
+      // A subsequent run that does report a branch replaces the prior ref.
+      mgr.touch(respawned, {
+        status: "error",
+        branch: "cursor/slice-planner-next",
+        attempts: 3,
+      });
+      mgr.respawnTask("slice-planner");
+      expect(respawned.startingRef).toBe("cursor/slice-planner-next");
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

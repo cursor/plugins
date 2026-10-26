@@ -730,7 +730,10 @@ export class AgentManager {
     // touch resets bookkeeping to the planned name — spawn reads branchForTask,
     // which rejects a pending worker or subplanner that is still on the
     // deliverable branch.
-    const resumeFrom = s.branch;
+    const plannedBranch = plannedBranchForTask(this.plan, s);
+    // A previous respawn (or a spawn failure before reporting a branch) has
+    // already replaced branch with bookkeeping. Keep its saved clone ref.
+    const resumeFrom = s.branch === plannedBranch ? s.startingRef : s.branch;
     const resume = s.type === "subplanner" && (s.attempts ?? 0) > 0;
     this.touch(s, {
       status: "pending",
@@ -742,7 +745,7 @@ export class AgentManager {
       failureMode: null,
       startedAt: null,
       finishedAt: null,
-      branch: plannedBranchForTask(this.plan, s),
+      branch: plannedBranch,
       startingRef: resume ? resumeFrom : s.startingRef,
       note: `respawned by ${source} (was ${prevStatus}; attempts=${s.attempts ?? 0})`,
     });
