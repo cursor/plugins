@@ -1,0 +1,31 @@
+{
+  "name": "flowbeacon-ai",
+  "displayName": "FlowBeacon AI",
+  "version": "1.0.0",
+  "description": "Governance and security checks for AI agents and automations: evaluate workflows, inspect policies, and explain violations.",
+  "author": {
+    "name": "FlowBeacon AI",
+    "email": "justin@flowbeacon.ai"
+  },
+  "homepage": "https://flowbeacon.ai/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://flowbeacon.ai/logos/logo_light.svg",
+  "keywords": [
+    "flowbeacon",
+    "governance",
+    "security",
+    "ai agents",
+    "automations",
+    "policy",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "flowbeacon",
+    "governance",
+    "security",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "flowbeacon-ai",
+      "source": "third_party/flowbeacon-ai",
+      "description": "Governance and security checks for AI agents and automations: evaluate workflows, inspect policies, and explain violations."
     }
   ]
 }
