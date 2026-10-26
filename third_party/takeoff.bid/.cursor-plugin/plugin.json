@@ -1,0 +1,31 @@
+{
+  "name": "takeoff.bid",
+  "displayName": "takeoff.bid",
+  "version": "0.1.7",
+  "description": "Load plan PDFs, check sheet scales and saved quantities, trace plan linework, and stage takeoff and estimating changes for review in takeoff.bid.",
+  "author": {
+    "name": "Mason Earl",
+    "email": "hi@masonearl.com"
+  },
+  "publisher": "takeoff.bid",
+  "homepage": "https://takeoff.bid",
+  "repository": "https://github.com/masonearl/construction-takeoff-plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "takeoff.bid",
+    "construction",
+    "takeoff",
+    "estimating",
+    "plans",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "construction",
+    "estimating",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}

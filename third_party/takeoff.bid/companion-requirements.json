@@ -1,0 +1,113 @@
+{
+  "schema_version": 2,
+  "description": "Local and remote MCP inventories. Local tools match the 0.9.1-dev companion capability dump. Remote tools match the 2026-10-17 cloud operations list. Discovery does not verify native Apply/Undo or quantity accuracy. Do not enable a local server and a remote server under the same name.",
+  "minimum_companion_version": "0.9.1-dev",
+  "source_notes": {
+    "local": "Companion capability dump dated 2026-10-09, helper_version 0.9.1-dev. Private app checkout was not readable from this environment.",
+    "remote": "Cloud operations list dated 2026-10-17 from takeoff.bid cloud/lib/operations.ts and cloud/lib/estimate-operations.ts. A remote-MCP plugin manifest is a planned option only and is not shipped here."
+  },
+  "default_profile": "local",
+  "profiles": {
+    "local": {
+      "transport": "local_stdio",
+      "legacy_disabled_tools": ["create_project", "link_hardhat_job"],
+      "workflows": {
+        "plan-import": {
+          "name": "Reviewed plan import",
+          "tools": {"propose_project_import": ["name", "client_name", "project_number", "workspace", "documents", "reason"]},
+          "proposal_tools": ["propose_project_import"]
+        },
+        "page-scales": {
+          "name": "Page scale suggestions and review",
+          "tools": {
+            "suggest_page_scales": ["project_id", "pages", "limit", "offset"],
+            "propose_page_scales": ["project_id", "expected_revision", "pages"]
+          },
+          "proposal_tools": ["propose_page_scales"]
+        },
+        "paged-reads": {
+          "name": "Bounded saved-project reads",
+          "tools": {
+            "export_quantities": ["section", "limit", "offset", "expected_revision"],
+            "list_sheets": ["pages", "limit", "offset", "summary_only"],
+            "list_calculation_types": ["include_measurements", "limit", "offset"],
+            "summarize_linework": ["region", "max_segments"]
+          },
+          "proposal_tools": []
+        },
+        "project-metadata": {
+          "name": "Available tools and reviewed project metadata",
+          "tools": {"propose_project_metadata": ["project_id", "expected_revision", "project_number", "client_name", "name"]},
+          "proposal_tools": ["propose_project_metadata"]
+        },
+        "gas-tracing": {
+          "name": "Gas linework selection and tracing",
+          "tools": {
+            "summarize_linework": ["region", "grid"],
+            "trace_linework": ["region", "layer_regex", "stroke_width_pt", "dash_pattern", "color_hex", "top_n", "offset", "bridge_text_gaps", "gap_points"]
+          },
+          "proposal_tools": []
+        },
+        "calculation-library": {
+          "name": "Natural gas calculation library",
+          "tools": {"propose_calculation_library": ["project_id", "expected_revision", "library"]},
+          "proposal_tools": ["propose_calculation_library"]
+        }
+      },
+      "known_tools": [
+        "health", "get_capabilities",
+        "list_projects", "get_project", "propose_project_import", "propose_project_metadata",
+        "list_sheets", "suggest_page_scales", "propose_page_scales", "read_live_project",
+        "get_rendering_context", "validate_rendering", "prepare_rendering_revision",
+        "propose_rendering_review", "propose_rendering_visibility", "export_rendering",
+        "read_estimate_context", "propose_estimate_change", "export_estimate_bid_sheet",
+        "export_quantities", "read_native_quantity_export",
+        "analyze_plan_page",
+        "list_calculation_types", "evaluate_calculation_type", "propose_calculation_change",
+        "export_calculation_results", "propose_calculation_library", "list_calculation_catalog",
+        "export_calculation_preview",
+        "summarize_linework", "trace_linework", "render_sheet_region", "measure_geometry",
+        "save_traced_measurement",
+        "get_model_context", "search_model_elements", "get_model_element", "propose_model_edit",
+        "read_live_estimate", "preview_estimate_commands", "apply_estimate_commands",
+        "export_live_estimate",
+        "get_live_app_status", "list_live_projects", "list_live_change_history",
+        "update_live_project_metadata", "undo_live_changes", "import_live_project",
+        "stage_and_import_plans", "stamp_takeoff", "open_project", "close_project",
+        "list_project_library", "read_pay_item_matches", "preview_pay_item_matches",
+        "apply_pay_item_matches", "export_pay_item_schedule", "read_live_plan_view",
+        "navigate_plan_page", "stop_takeoff_walkthrough", "snapshot_plan_view",
+        "get_takeoff_write_status", "list_takeoff_labels"
+      ],
+      "collisions": {
+        "create_project": "Local helper: disabled legacy write. The launcher keeps TAKEOFF_MCP_ENABLE_LEGACY_WRITES=0. Do not advertise this tool.",
+        "export_quantities": "Local helper: paged saved-file export with section, limit, offset and expected_revision.",
+        "list_projects": "Local helper: saved library discovery. Carry the project UUID into later calls.",
+        "get_project": "Local helper: saved project inspect.",
+        "suggest_page_scales": "Local helper: scale-bar and note evidence with pages, limit and offset.",
+        "export_calculation_results": "Local helper: export calculated fields after native review."
+      }
+    },
+    "remote": {
+      "transport": "https",
+      "planned": true,
+      "legacy_disabled_tools": [],
+      "workflows": {},
+      "known_tools": [
+        "create_project", "get_project", "create_takeoff", "calibrate_sheet",
+        "add_measurement", "save_group", "export_quantities", "get_history",
+        "undo_change", "get_estimate", "preview_estimate", "update_estimate",
+        "export_estimate", "inspect_estimate_pay_items", "run_estimate_bid_check",
+        "find_outreach_suppliers", "export_estimate_outreach", "undo_estimate"
+      ],
+      "collisions": {
+        "create_project": "Remote product MCP: live project create. Not the local disabled write.",
+        "export_quantities": "Remote product MCP: export for the selected project. Not the local paged section/limit/offset/expected_revision call.",
+        "get_project": "Remote product MCP: live project inspect.",
+        "list_projects": "Not listed in the 2026-10-17 remote operations inventory.",
+        "suggest_page_scales": "Not listed remotely. Remote inventory uses calibrate_sheet.",
+        "export_calculation_results": "Not listed in the 2026-10-17 remote operations inventory."
+      }
+    }
+  }
+}

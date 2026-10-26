@@ -118,6 +118,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `framer` | [Framer](third_party/framer/) | Cursor | Integrations | Design, build, and edit your Framer sites, pages, and CMS content. |
 | `vanta` | [Vanta](third_party/vanta/) | Cursor | Integrations | Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta. |
 | `ringcentral` | [RingCentral](third_party/ringcentral/) | Cursor | Integrations | RingEX Phone remote MCP server. |
+| `takeoff.bid` | [takeoff.bid](third_party/takeoff.bid/) | Cursor | Integrations | Load plan PDFs, check sheet scales and saved quantities, trace plan linework, and stage takeoff and estimating changes for review in takeoff.bid. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

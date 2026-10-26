@@ -642,6 +642,11 @@
       "name": "ringcentral",
       "source": "third_party/ringcentral",
       "description": "RingEX Phone remote MCP server."
+    },
+    {
+      "name": "takeoff.bid",
+      "source": "third_party/takeoff.bid",
+      "description": "Load plan PDFs, check sheet scales and saved quantities, trace plan linework, and stage takeoff and estimating changes for review in takeoff.bid."
     }
   ]
 }

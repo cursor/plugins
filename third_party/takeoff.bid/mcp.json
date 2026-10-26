@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "takeoff.bid": {
+      "command": "/bin/sh",
+      "args": [
+        "-c",
+        "#!/bin/sh\nset -eu\nif [ \"$(uname -s)\" != Darwin ]; then\n  echo 'takeoff.bid requires a local macOS session with the takeoff.bid companion installed.' >&2\n  exit 69\nfi\ncompanion=\"$HOME/.local/bin/takeoff-mcp\"\nif [ ! -x \"$companion\" ]; then\n  echo 'takeoff.bid companion is missing. In takeoff.bid open 3D Model > AI tools, export AI setup, and follow its installation instructions. Expected ~/.local/bin/takeoff-mcp.' >&2\n  exit 69\nfi\nexport TAKEOFF_MCP_ENABLE_LEGACY_WRITES=0\nexec \"$companion\"\n"
+      ],
+      "env": {
+        "TAKEOFF_MCP_ENABLE_LEGACY_WRITES": "0"
+      }
+    }
+  }
+}
