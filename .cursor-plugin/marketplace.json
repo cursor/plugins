@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "obi",
+      "source": "third_party/obi",
+      "description": "Compare taxi and rideshare prices, book Uber or Lyft rides, find nearby places, and get transit routes."
     }
   ]
 }

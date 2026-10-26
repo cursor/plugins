@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "obi": {
+      "type": "http",
+      "url": "https://api.bellhop.me/mcp"
+    }
+  }
+}

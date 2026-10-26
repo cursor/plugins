@@ -1,0 +1,31 @@
+{
+  "name": "obi",
+  "displayName": "Obi",
+  "version": "1.0.0",
+  "description": "Compare taxi and rideshare prices, book Uber or Lyft rides, find nearby places, and get transit routes.",
+  "author": {
+    "name": "Obi"
+  },
+  "homepage": "https://rideobi.com/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "obi",
+    "rideshare",
+    "taxi",
+    "uber",
+    "lyft",
+    "transit",
+    "travel",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "obi",
+    "rideshare",
+    "travel",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
