@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "drip-apex",
+      "source": "third_party/drip-apex",
+      "description": "Read A/B test experiments, goals, and results, and create draft tests and variations in Apex."
     }
   ]
 }
