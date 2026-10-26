@@ -567,7 +567,16 @@ export function parseMermaid(text) {
     implicit.set(id, part());
   };
   const body = text.replace(/^\s*---[ \t]*\r?\n[^]*?\r?\n---[ \t]*(\r?\n|$)/, "");
+  let inNote = false;
   for (const raw of body.split("\n")) {
+    if (inNote) {
+      inNote = !/^\s*end\s+note\s*$/.test(raw);
+      continue;
+    }
+    if (/^\s*note\s+(?:left|right)\s+of\s+[A-Za-z_]\w*\s*$/.test(raw)) {
+      inNote = true;
+      continue;
+    }
     const line = raw.trim().replace(/(\[\*\]|[A-Za-z_]\w*):::[\w-]+/g, "$1");
     const when = /^%%\s*when\s+(not\s+)?(.+)$/.exec(line);
     if (when) {
@@ -644,6 +653,7 @@ export function parseMermaid(text) {
     }
     throw new Error(`cannot read chart line: ${line}`);
   }
+  if (inNote) throw new Error("the chart has a note with no end note");
   if (stack.length !== 1) throw new Error("the chart has an unclosed {");
   if (root.parts.length > 1)
     throw new Error(
