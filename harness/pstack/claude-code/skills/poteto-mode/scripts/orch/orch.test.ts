@@ -592,6 +592,27 @@ describe("Store", () => {
       }
     });
 
+    it(`resolves ${forge} branches when tags share their names`, async () => {
+      const { directory, store } = await initializedStore();
+      const stack = await makeGitStack(directory);
+      git({ repo: stack.repo, args: ["tag", "stack/open", "main"] });
+      git({ repo: stack.repo, args: ["tag", "stack/closed", "main"] });
+      await withFakeForge({
+        directory, forge,
+        operation: async () => {
+          const frontier = await store.frontier.set({ repo: stack.repo, forge });
+          expect(
+            frontier.prs.map((row) => [row.branches, row.sha])
+          ).toEqual([
+            ["stack/merged", stack.mergedSha],
+            ["stack/closed", stack.closedSha],
+            ["stack/open", stack.openSha],
+            ["stack/draft", stack.draftSha],
+          ]);
+        },
+      });
+    });
+
     it(`still rejects multiple active ${forge} PRs on one branch`, async () => {
       const { directory, store } = await initializedStore();
       const stack = await makeGitStack(directory);
