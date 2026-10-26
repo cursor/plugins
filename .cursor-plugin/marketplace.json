@@ -642,6 +642,11 @@
       "name": "ringcentral",
       "source": "third_party/ringcentral",
       "description": "RingEX Phone remote MCP server."
+    },
+    {
+      "name": "agent-exchangeagentexchange",
+      "source": "third_party/agent-exchangeagentexchange",
+      "description": "Check brand AI visibility, rank AI-recommended brands, qualify leads, and call live data tools."
     }
   ]
 }
