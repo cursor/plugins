@@ -1,0 +1,29 @@
+{
+  "name": "whisper-memos",
+  "displayName": "Whisper Memos",
+  "version": "1.0.0",
+  "description": "Read, summarize and act on the voice memos you record with Whisper Memos.",
+  "author": {
+    "name": "Median Tech, s.r.o.",
+    "email": "hello@whispermemos.com"
+  },
+  "homepage": "https://whispermemos.com",
+  "repository": "https://github.com/whispermemos/whisper-memos-plugin",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "whisper memos",
+    "voice memos",
+    "transcription",
+    "notes",
+    "productivity",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "whisper-memos",
+    "productivity",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

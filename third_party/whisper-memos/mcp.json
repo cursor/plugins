@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "whisper-memos": {
+      "type": "http",
+      "url": "https://whispermemos.com/mcp"
+    }
+  }
+}

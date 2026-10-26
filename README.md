@@ -117,6 +117,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `feishu` | [Feishu](third_party/feishu/) | Cursor | Integrations | Search, create, and update Feishu docs, and read Feishu messages and groups. |
 | `framer` | [Framer](third_party/framer/) | Cursor | Integrations | Design, build, and edit your Framer sites, pages, and CMS content. |
 | `vanta` | [Vanta](third_party/vanta/) | Cursor | Integrations | Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta. |
+| `whisper-memos` | [Whisper Memos](third_party/whisper-memos/) | Median Tech, s.r.o. | Integrations | Read, summarize and act on the voice memos you record with Whisper Memos. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

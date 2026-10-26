@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "whisper-memos",
+      "source": "third_party/whisper-memos",
+      "description": "Read, summarize and act on the voice memos you record with Whisper Memos."
     }
   ]
 }
