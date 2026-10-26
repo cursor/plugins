@@ -628,7 +628,7 @@ async function readGates(store: string): Promise<readonly Gate[]> {
     const id = lines.shift() ?? "";
     const fields = new Map<string, string>();
     for (const value of lines) {
-      const match = /^- ([^:]+): (.*)$/.exec(value);
+      const match = /^- ([^:]+): (.*)$/s.exec(value);
       if (match === null) {
         throw new UserError(`gates.md has a malformed gate ${id}`);
       }
@@ -740,7 +740,7 @@ async function readStanding(
   }
   const result: StandingLine[] = [];
   for (const value of raw.split("\n").filter((item) => item.length > 0)) {
-    const match = /^([1-9]\d*)\. (.+)$/.exec(value);
+    const match = /^([1-9]\d*)\. (.+)$/s.exec(value);
     const number = Number(match?.[1] ?? 0);
     if (match === null || number !== result.length + 1) {
       throw new UserError("preferences.md has malformed numbering");
@@ -798,7 +798,7 @@ function countRecord(value: unknown): Record<string, number> | null {
 }
 
 function previousSummary(raw: string): StatusSummary | null {
-  const match = /<!-- orch-summary (.+) -->/.exec(raw);
+  const match = /<!-- orch-summary (.+) -->/s.exec(raw);
   if (match === null) {
     return null;
   }
