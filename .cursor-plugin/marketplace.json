@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "lannis",
+      "source": "third_party/lannis",
+      "description": "Issue invoices and track your taxes in Argentina."
     }
   ]
 }

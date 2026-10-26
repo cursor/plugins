@@ -1,0 +1,29 @@
+{
+  "name": "lannis",
+  "displayName": "Lannis",
+  "version": "1.0.0",
+  "description": "Issue invoices and track your taxes in Argentina.",
+  "author": {
+    "name": "Lannis",
+    "email": "joaquin@lannis.app"
+  },
+  "homepage": "https://lannis.app",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://lannis.app/icon-512.png",
+  "keywords": [
+    "lannis",
+    "invoicing",
+    "taxes",
+    "argentina",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "lannis",
+    "finance",
+    "invoicing",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
