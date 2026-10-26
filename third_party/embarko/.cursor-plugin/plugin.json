@@ -1,0 +1,29 @@
+{
+  "name": "embarko",
+  "displayName": "Embarko",
+  "version": "1.0.0",
+  "description": "Deploy and host apps built with AI coding agents and get a live URL.",
+  "author": {
+    "name": "Walkover"
+  },
+  "homepage": "https://embarko.ai/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://embarko.ai/assets/embarko-icon.svg",
+  "keywords": [
+    "embarko",
+    "deploy",
+    "hosting",
+    "publish",
+    "live url",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "embarko",
+    "deployment",
+    "hosting",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
