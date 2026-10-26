@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ringcentral": {
+      "type": "http",
+      "url": "https://mcp.labs.ringcentral.com/ringex/phone"
+    }
+  }
+}

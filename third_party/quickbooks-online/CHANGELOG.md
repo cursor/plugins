@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.1.1
+
+- Updated the plugin description to cover financial insights, invoicing, payroll, and QuickBooks Capital.
+
 ## 1.1.0
 
 - Added `mcp.json`: the plugin now declares Intuit's hosted HTTP MCP server at `https://mcp-e2e.quickbooks.intuit.com/mcp` instead of relying on a Cursor-side server definition.

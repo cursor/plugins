@@ -1,11 +1,11 @@
 {
   "name": "quickbooks-online",
   "displayName": "QuickBooks Online",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "minClientVersions": {
     "cursor": "3.19.0"
   },
-  "description": "Read invoices, bills, expenses, customers, accounts, and financial reports.",
+  "description": "QuickBooks turns your business's financial data into clear, decision-ready insights, and now takes action on it too. Analyze profitability, cash flow, and balance sheet health, and benchmark your performance against similar businesses in your industry and region. See who owes you money and which bills are coming due with A/R and A/P aging, and break down sales by customer or product to find what is driving revenue. Create, update, send, duplicate, and schedule invoices and estimates. Add customers and products, generate, and send payment links and reminders, always with a clear preview and your confirmation before anything is sent. Get fast read-only answers on payroll and QuickBooks Capital. Look up payroll details, and when you need to, add an employee or set base pay. Check your QuickBooks Capital loans and peer lending benchmarks.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

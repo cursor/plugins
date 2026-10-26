@@ -1,15 +1,8 @@
 import fs from "node:fs";
-import process from "node:process";
+import path from "node:path";
 
-export function findTlc() {
-  const { TLA2TOOLS, JAVA } = process.env;
-  if (!TLA2TOOLS)
-    throw new Error(
-      "Cannot find TLC. Download tla2tools.jar from a TLA+ release:\n  https://github.com/tlaplus/tlaplus/releases\nThen set TLA2TOOLS to the path of tla2tools.jar, and JAVA to a java binary (Java 11 or later).",
-    );
-  if (!fs.existsSync(TLA2TOOLS)) throw new Error(`TLA2TOOLS is ${TLA2TOOLS}, which does not exist.`);
-  return { jar: TLA2TOOLS, java: JAVA || "java" };
-}
+const tuples = new WeakSet();
+export const isTuple = (v) => tuples.has(v);
 
 export function parseValue(text) {
   const src = text.trim();
@@ -45,7 +38,9 @@ export function parseValue(text) {
     ws();
     if (peek("<<")) {
       i += 2;
-      return list(">>", value);
+      const items = list(">>", value);
+      tuples.add(items);
+      return items;
     }
     if (peek("{")) {
       i++;
@@ -106,7 +101,7 @@ export function parseValue(text) {
 }
 
 // One state as TLC prints it: "/\ x = 1" lines, or "x = 1" for one variable.
-function parseState(text) {
+export function parseState(text) {
   const lines = text.split("\n").filter((l) => l.trim() !== "");
   const conjuncts = [];
   for (const line of lines) {
@@ -154,7 +149,7 @@ export function ruleSentences(tla) {
 export const tlaVariables = (code) =>
   [...code.matchAll(/\bVARIABLES?\s+(\w+(?:\s*,\s*\w+)*)/g)].flatMap((m) => m[1].split(/\s*,\s*/));
 
-function splitCommentsKeepingOffsets(text) {
+export function splitCommentsKeepingOffsets(text) {
   let code = "";
   let notes = "";
   let block = 0;
@@ -199,6 +194,9 @@ function splitCommentsKeepingOffsets(text) {
 }
 
 const IDENTIFIER = /(?<![\\.\w])[A-Za-z_]\w*(?!\w)(?!\s*\|->)/g;
+const QUALIFIED = /(?<![\\.\w!])[A-Za-z_]\w*(?:![A-Za-z_]\w*)+/g;
+const PRIMED = /(?<![\\.\w])([A-Za-z_]\w*)'/g;
+const UNCHANGED_CLAUSE = /\bUNCHANGED\s*(?:<<[\s\S]*?>>|[A-Za-z_]\w*)/g;
 const CITATION = /[\w./-]+\.[A-Za-z]\w*:\d+|#L\d+/;
 
 const DEPTH = { "(": 1, "[": 1, "{": 1, ")": -1, "]": -1, "}": -1 };
@@ -246,24 +244,13 @@ function conjuncts(bare, from, to, lineStart) {
   return [first, ...cuts.map((c) => c + 2)].map((a, i) => [a, cuts[i] ?? to]);
 }
 
-export function uncitedConditions(text) {
-  const { code, notes } = splitCommentsKeepingOffsets(text);
-  const bare = code.replace(/"(?:[^"\\\n]|\\.)*"/g, (s) => " ".repeat(s.length));
-  const variables = new Set(tlaVariables(bare));
-  const starts = [0, ...[...bare.matchAll(/\n/g)].map((m) => m.index + 1)];
-  const lineOf = (at) => {
-    let lo = 0;
-    let hi = starts.length - 1;
-    while (lo < hi) {
-      const mid = (lo + hi + 1) >> 1;
-      if (starts[mid] <= at) lo = mid;
-      else hi = mid - 1;
-    }
-    return lo;
-  };
-  const lineStart = (at) => starts[lineOf(at)];
-  const lines = { bare: bare.split("\n"), notes: notes.split("\n") };
+export const blankStrings = (code) =>
+  code.replace(/"(?:[^"\\\n]|\\.)*"/g, (s) => " ".repeat(s.length));
 
+export function definitions(text, instancedReads = new Map(), parameters = []) {
+  const { code, notes } = splitCommentsKeepingOffsets(text);
+  const bare = blankStrings(code);
+  const variables = new Set([...parameters, ...tlaVariables(bare)]);
   const defs = new Map();
   const nextItem = /^(?![ \t\n]|\/\\|\\\/)/gm;
   for (const m of bare.matchAll(
@@ -271,20 +258,24 @@ export function uncitedConditions(text) {
   )) {
     const from = m.index + m[0].length;
     nextItem.lastIndex = from;
-    defs.set(m[1], { from, to: nextItem.exec(bare)?.index ?? bare.length, line: lineOf(m.index) });
+    defs.set(m[1], { at: m.index, from, to: nextItem.exec(bare)?.index ?? bare.length });
   }
+  const known = (id) => defs.has(id) || instancedReads.has(id);
   const direct = (body) => {
-    const ids = body.match(IDENTIFIER) ?? [];
+    const plain = body.replace(UNCHANGED_CLAUSE, " ").replace(PRIMED, " ");
+    const qualified = (plain.match(QUALIFIED) ?? []).filter(known);
+    const ids = plain.replace(QUALIFIED, (q) => (known(q) ? " " : q)).match(IDENTIFIER) ?? [];
     return {
       reads: ids.filter((id) => variables.has(id)),
-      writes: [...body.matchAll(/(?<![\\.\w])([A-Za-z_]\w*)'/g)]
-        .map((m) => m[1])
-        .filter((id) => variables.has(id)),
+      writes: [...body.matchAll(PRIMED)].map((m) => m[1]).filter((id) => variables.has(id)),
       acts: PRIMES_OR_UNCHANGED.test(body),
-      calls: [...new Set(ids.filter((id) => defs.has(id)))],
+      calls: [...new Set([...ids.filter(known), ...qualified])],
     };
   };
-  const own = new Map([...defs].map(([name, d]) => [name, direct(bare.slice(d.from, d.to))]));
+  const own = new Map([
+    ...[...instancedReads].map(([name, reads]) => [name, direct(reads.join(" "))]),
+    ...[...defs].map(([name, d]) => [name, direct(bare.slice(d.from, d.to))]),
+  ]);
   const through = (start) => {
     const out = { reads: new Set(start.reads), writes: new Set(start.writes), acts: start.acts };
     const seen = new Set(start.calls);
@@ -301,6 +292,24 @@ export function uncitedConditions(text) {
     }
     return out;
   };
+  return { code, notes, bare, defs, direct, own, through };
+}
+
+export function uncitedConditions(text) {
+  const { code, notes, bare, defs, direct, own, through } = definitions(text);
+  const starts = [0, ...[...bare.matchAll(/\n/g)].map((m) => m.index + 1)];
+  const lineOf = (at) => {
+    let lo = 0;
+    let hi = starts.length - 1;
+    while (lo < hi) {
+      const mid = (lo + hi + 1) >> 1;
+      if (starts[mid] <= at) lo = mid;
+      else hi = mid - 1;
+    }
+    return lo;
+  };
+  const lineStart = (at) => starts[lineOf(at)];
+  const lines = { bare: bare.split("\n"), notes: notes.split("\n") };
   const cited = (from, to, { above }) => {
     for (let l = from; l <= to; l++) if (CITATION.test(lines.notes[l])) return true;
     for (let l = from - 1; above && !lines.bare[l].trim() && lines.notes[l].trim(); l--)
@@ -317,7 +326,7 @@ export function uncitedConditions(text) {
       if (part.acts || [...part.reads].every((v) => changes.has(v))) continue;
       const first = lineOf(a + bare.slice(a, b).search(/\S/));
       const last = lineOf(a + bare.slice(a, b).trimEnd().length - 1);
-      if (cited(first, last, { above: first > d.line })) continue;
+      if (cited(first, last, { above: first > lineOf(d.at) })) continue;
       found.push({
         line: first + 1,
         action,
@@ -326,6 +335,33 @@ export function uncitedConditions(text) {
     }
   }
   return found;
+}
+
+const TEMPORAL = /\[\]|(?<!<)<>(?!>)|~>|-\+->|\\(?:AA|EE)\b|\b[WS]F_/;
+
+export function checkedOnlyInInitialStates(spec, property) {
+  const bodies = new Map();
+  const modules = new Set();
+  const read = (module) => {
+    const file = path.join(path.dirname(spec), `${module}.tla`);
+    if (modules.has(module) || !fs.existsSync(file)) return;
+    modules.add(module);
+    const { bare, defs } = definitions(fs.readFileSync(file, "utf8"));
+    for (const [name, d] of defs)
+      bodies.set(name, [...(bodies.get(name) ?? []), bare.slice(d.from, d.to)]);
+    for (const [, names] of bare.matchAll(/\b(?:EXTENDS|INSTANCE)\s+(\w+(?:\s*,\s*\w+)*)/g))
+      names.split(/\s*,\s*/).forEach(read);
+  };
+  read(path.basename(spec, ".tla"));
+  const seen = new Set();
+  const temporal = (name) => {
+    if (seen.has(name)) return false;
+    seen.add(name);
+    return (bodies.get(name) ?? []).some(
+      (body) => TEMPORAL.test(body) || (body.match(IDENTIFIER) ?? []).some(temporal),
+    );
+  };
+  return bodies.has(property) && !temporal(property);
 }
 
 function unescapeDot(s) {
@@ -350,7 +386,7 @@ export function parseDot(text) {
   for (const line of text.split("\n")) {
     let m = edgeRe.exec(line);
     if (m) {
-      const e = { from: m[1], to: m[2], action: m[3] ? unescapeDot(m[3]) : "" };
+      const e = { from: m[1], to: m[2], action: m[3] ? unescapeDot(m[3]).split("(")[0] : "" };
       const id = `${e.from} ${e.to} ${e.action}`;
       if (seen.has(id)) continue;
       seen.add(id);
@@ -408,8 +444,8 @@ export function parseTraces(text) {
     const [vars, end] = stateAt(i);
     i = end;
     if (head[1] === "1") {
-      current = { invariant, steps: [] };
-      traces.push(current);
+      current = invariant && { invariant, steps: [] };
+      if (current) traces.push(current);
     }
     current?.steps.push({ action: head[2] === "Initial" ? null : head[2], vars });
   }
@@ -420,41 +456,36 @@ export function parseTraces(text) {
 // action property, a bare state predicate, which TLC checks only in the initial states, as a
 // property of the initial state, and any other formula as a temporal property.
 export const BROKEN_PROPERTY =
-  /^Error: (Invariant \S+ is violated|Action property \S+ is violated\.|Property \S+ is violated by the initial state:|Temporal properties were violated\.)/m;
+  /^Error: (Invariant .+? is violated|Action property .+? is violated\.|Property .+? is violated by the initial state:|Temporal properties were violated\.)/m;
 
 // With -continue, TLC prints "Model checking completed" even after broken invariants, and not
-// when it stopped early. TLC can also throw a Java exception of its own while it reports a state
-// that breaks a rule, and stop early. An error in the rule's formula throws one of TLC's own
-// exceptions in place of java.*.
+// when it stopped early.
 export function tlcOutputWarning(text, file) {
   const lines = text.split("\n");
-  const named = (re) => new Set(lines.map((l) => re.exec(l)?.[1]).filter(Boolean));
-  const broken = named(/^Error: Invariant (\S+) is violated/);
-  const failed = [...named(/^Error: Evaluating invariant (\S+) failed\./)];
-  const thrown = [...text.matchAll(/^The exception was a (\S+)\n: (?:([\w.$]+):)?(.*)$/gm)].map(
-    ([, cls, cause, message]) => `${cause ?? cls}: ${message.trim()}`,
-  );
-  const crashed =
-    failed.length > 0 &&
-    failed.every((r) => broken.has(r)) &&
-    thrown.length > 0 &&
-    thrown.every((t) => t.startsWith("java."));
-  const reported = crashed
-    ? /^Error: (Invariant \S+ is violated|The behavior up to this point is|Evaluating invariant \S+ failed\.|TLC threw an unexpected exception\.|The error occurred when TLC was evaluating the nested)/
-    : /^Error: (Invariant \S+ is violated|Action property \S+ is violated\.|Property \S+ is violated by the initial state:|The behavior up to this point is|Temporal properties were violated\.|The following behavior constitutes a counter-example:)/;
+  const broken = [
+    ...new Set(
+      lines.map((l) => /^Error: Invariant (\S+) is violated/.exec(l)?.[1]).filter(Boolean),
+    ),
+  ];
+  const reported =
+    /^Error: (Invariant .+? is violated|Action property .+? is violated\.|Property .+? is violated by the initial state:|The behavior up to this point is|Temporal properties were violated\.|The following behavior constitutes a counter-example:)/;
   const other = lines.find((l) => l.startsWith("Error: ") && !reported.test(l));
+  if (other && broken.length) {
+    const thrown = /^The exception was a (\S+)\n: (?:([\w$]+(?:\.[\w$]+)+):)?(.*)$/m.exec(text);
+    const error = thrown
+      ? `${thrown[2] ?? thrown[1]}: ${thrown[3].trim()}`
+      : other.slice(7).replace(/\.$/, "");
+    const rules = joinAnd(broken);
+    return `TLC found that ${rules} ${broken.length === 1 ? "is" : "are"} broken, and then stopped on an error: ${error}. The paths that TLC printed before it stopped are complete, but TLC did not check every state, so the charts can miss states that break ${rules}. A smaller constant can let TLC finish.`;
+  }
   if (other)
     throw new Error(
       `${file}: TLC stopped on an error that is not a broken rule: ${other.slice(7)}`,
     );
-  if (crashed) {
-    const rules = failed.join(", ");
-    return `TLC found that ${rules} ${failed.length === 1 ? "is" : "are"} broken, and then failed with ${thrown[0]}. TLC stopped before it checked every state, so the charts can miss states that break ${rules}. The failure is in TLC, not in the rule. Do not weaken ${rules} because of it. A smaller constant can let TLC finish.`;
-  }
   // TLC stops at the first broken temporal property, and at an initial state that breaks a
   // PROPERTY, and then does not print that it completed.
   if (
-    !/^(Model checking completed\.|Error: (Temporal properties were violated\.|Property \S+ is violated by the initial state:))/m.test(
+    !/^(Model checking completed\.|Error: (Temporal properties were violated\.|Property .+? is violated by the initial state:))/m.test(
       text,
     )
   )
@@ -508,6 +539,8 @@ export const escapeMermaidQuotes = (s) => String(s).replaceAll('"', "#quot;");
 
 export const LEGEND_ID = "legend";
 export const FULL_LABELS = "%% labels in full";
+export const NO_LOOPS = "%% self-loops left out";
+export const BROKEN_MARK = "statechart broken";
 
 export function parseMermaid(text) {
   const names = new Map();
@@ -764,7 +797,7 @@ function guardHolds(guard, at) {
   return guard.not ? !hits.some(Boolean) : hits.every(Boolean);
 }
 
-export function productOf(regions) {
+export function productOf(regions, { loops = true } = {}) {
   const names = Object.keys(regions);
   const rs = Object.values(regions);
   const join = (parts) => parts.join(" | ");
@@ -793,7 +826,7 @@ export function productOf(regions) {
   const queue = [...starts];
   const step = (from, to, label) => {
     const [a, b] = [join(from), join(to)];
-    if (a === b) return;
+    if (a === b && !loops) return;
     out.transitions.push({ from: a, to: b, label });
     if (!seen.has(b)) {
       seen.add(b);
@@ -826,9 +859,9 @@ export function productOf(regions) {
   return out;
 }
 
-export function compareCharts(expectedRegions, actualRegions) {
-  const expected = productOf(expectedRegions);
-  const actual = productOf(actualRegions);
+export function compareCharts(expectedRegions, actualRegions, { loops = true } = {}) {
+  const expected = productOf(expectedRegions, { loops });
+  const actual = productOf(actualRegions, { loops });
   const edgeSet = (m) => {
     const labeled = new Set();
     const out = new Set();
@@ -873,9 +906,15 @@ export const STATUS_CLASSES = [
   "classDef works fill:#f4f6f7,stroke:#566573,color:#1b2631",
   "classDef wrong fill:#fdedec,stroke:#c0392b,color:#7b241c",
   "classDef fixed fill:#e9f7ef,stroke:#1e8449,color:#145a32",
+  "classDef mixed fill:#fdebd0,stroke:#d35400,color:#7e5109",
+  "classDef after fill:#ffffff,stroke:#808b96,color:#566573",
+  "classDef worse fill:#f4ecf7,stroke:#7d3c98,color:#4a235a",
   "classDef worksPath fill:#f4f6f7,stroke:#1f3a93,stroke-width:4px,color:#1b2631",
   "classDef wrongPath fill:#fdedec,stroke:#1f3a93,stroke-width:4px,color:#7b241c",
   "classDef fixedPath fill:#e9f7ef,stroke:#1f3a93,stroke-width:4px,color:#145a32",
+  "classDef mixedPath fill:#fdebd0,stroke:#1f3a93,stroke-width:4px,color:#7e5109",
+  "classDef afterPath fill:#ffffff,stroke:#1f3a93,stroke-width:4px,color:#566573",
+  "classDef worsePath fill:#f4ecf7,stroke:#1f3a93,stroke-width:4px,color:#4a235a",
 ];
 
 export const GROUP_PALETTE = [
@@ -910,6 +949,9 @@ export function groupColorProblem(color) {
 const BORDERS = {
   Wrong: ["stroke:#c0392b,stroke-width:4px", "#7b241c"],
   Fixed: ["stroke:#1e8449,stroke-width:4px", "#145a32"],
+  Mixed: ["stroke:#d35400,stroke-width:4px", "#7e5109"],
+  After: ["stroke:#808b96,stroke-width:4px", "#566573"],
+  Worse: ["stroke:#7d3c98,stroke-width:4px", "#4a235a"],
   Path: ["stroke:#1f3a93,stroke-width:4px", "#1b2631"],
 };
 export function groupClassDef(base, fill, border) {

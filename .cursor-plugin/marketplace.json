@@ -379,6 +379,11 @@
       "description": "Search, read, and send Microsoft Teams chats and channel messages."
     },
     {
+      "name": "power-bi",
+      "source": "third_party/power-bi",
+      "description": "Browse Microsoft Power BI workspaces and render report pages."
+    },
+    {
       "name": "finance",
       "source": "third_party/finance",
       "description": "Link your bank, card, and investment accounts through Plaid so Grok can answer questions about balances, spending, subscriptions, and investments. You'll share contact details, account and balance info, transactions, credit and loans, and investments. Grok syncs and stores your linked account data so the connector can work, and Grok Bot's privacy mode still controls whether your conversations are stored or used for training. Access is read-only, xAI never sees or stores your bank login, and you can unlink accounts anytime from cursor.com.",
@@ -442,6 +447,11 @@
       "name": "daloopa",
       "source": "third_party/daloopa",
       "description": "Pull source-linked fundamentals, KPIs, filings, and prices."
+    },
+    {
+      "name": "pitchbook",
+      "source": "third_party/pitchbook",
+      "description": "Research private companies, deals, investors, and funds."
     },
     {
       "name": "excalidraw",
@@ -526,7 +536,7 @@
     {
       "name": "quickbooks-online",
       "source": "third_party/quickbooks-online",
-      "description": "Read invoices, bills, expenses, customers, accounts, and financial reports."
+      "description": "QuickBooks turns your business's financial data into clear, decision-ready insights, and now takes action on it too. Analyze profitability, cash flow, and balance sheet health, and benchmark your performance against similar businesses in your industry and region. See who owes you money and which bills are coming due with A/R and A/P aging, and break down sales by customer or product to find what is driving revenue. Create, update, send, duplicate, and schedule invoices and estimates. Add customers and products, generate, and send payment links and reminders, always with a clear preview and your confirmation before anything is sent. Get fast read-only answers on payroll and QuickBooks Capital. Look up payroll details, and when you need to, add an employee or set base pay. Check your QuickBooks Capital loans and peer lending benchmarks."
     },
     {
       "name": "workday",
@@ -561,7 +571,7 @@
     {
       "name": "tailscale",
       "source": "third_party/tailscale",
-      "description": "Let Grok Bot reach MCP servers on your private Tailscale network. On your own tailnet it joins as one tag:grokbot device; on your team's company tailnet, turned on by a team admin, it uses each member's own device.",
+      "description": "Let Grok Bot reach MCP servers on your private Tailscale network: connect your own tailnet, or your team's company tailnets turned on by a team admin, with each member using their own device.",
       "minClientVersions": {
         "cursor": "never",
         "grokbot": "0.49.0",
@@ -627,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "ringcentral",
+      "source": "third_party/ringcentral",
+      "description": "RingEX Phone remote MCP server."
     }
   ]
 }
