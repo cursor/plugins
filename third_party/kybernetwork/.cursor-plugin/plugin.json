@@ -1,0 +1,33 @@
+{
+  "name": "kybernetwork",
+  "displayName": "KyberSwap",
+  "version": "1.0.0",
+  "description": "Quote swaps, inspect pools, and build swap, zap, and gasless limit-order calldata across 18 EVM chains with KyberSwap.",
+  "author": {
+    "name": "KyberNetwork",
+    "email": "tram@kyber.network"
+  },
+  "homepage": "https://kyberswap.com/",
+  "repository": "https://github.com/KyberNetwork/kyberswap-mcp",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "kyberswap",
+    "kyber network",
+    "defi",
+    "dex aggregator",
+    "swap",
+    "limit orders",
+    "liquidity",
+    "evm",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "kyberswap",
+    "defi",
+    "crypto",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

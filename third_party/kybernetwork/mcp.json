@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "kybernetwork": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:KyberNetwork/kyberswap-mcp"
+      ]
+    }
+  }
+}

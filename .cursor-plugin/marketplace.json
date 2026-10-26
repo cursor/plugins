@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "kybernetwork",
+      "source": "third_party/kybernetwork",
+      "description": "Quote swaps, inspect pools, and build swap, zap, and gasless limit-order calldata across 18 EVM chains with KyberSwap."
     }
   ]
 }
