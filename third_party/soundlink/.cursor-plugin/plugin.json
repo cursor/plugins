@@ -1,0 +1,30 @@
+{
+  "name": "soundlink",
+  "displayName": "Soundlink",
+  "version": "1.0.0",
+  "description": "Pull music marketing insights like acquisition costs and retention into AI-powered workflows.",
+  "author": {
+    "name": "Soundlink",
+    "email": "ariel@getsoundlink.com"
+  },
+  "homepage": "https://getsoundlink.com/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://www.getsoundlink.com/images/logo-bimi.svg",
+  "keywords": [
+    "soundlink",
+    "music",
+    "marketing",
+    "advertising",
+    "analytics",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "soundlink",
+    "music",
+    "marketing",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

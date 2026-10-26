@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "soundlink",
+      "source": "third_party/soundlink",
+      "description": "Pull music marketing insights like acquisition costs and retention into AI-powered workflows."
     }
   ]
 }

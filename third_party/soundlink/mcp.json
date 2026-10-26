@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "soundlink": {
+      "type": "http",
+      "url": "https://api.getsoundlink.com/mcp"
+    }
+  }
+}
