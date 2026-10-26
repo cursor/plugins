@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "hpsilab",
+      "source": "third_party/hpsilab",
+      "description": "Quantitative stock analysis and pre-trade risk checks for position sizing and portfolio exposure."
     }
   ]
 }

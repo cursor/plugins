@@ -1,0 +1,31 @@
+{
+  "name": "hpsilab",
+  "displayName": "HPSILab Quant Finance",
+  "version": "1.0.0",
+  "description": "Quantitative stock analysis and pre-trade risk checks for position sizing and portfolio exposure.",
+  "author": {
+    "name": "HPSILab",
+    "email": "haiyun@hpsilab.com"
+  },
+  "homepage": "https://hpsilab.com/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "hpsilab",
+    "quant finance",
+    "stocks",
+    "risk",
+    "position sizing",
+    "portfolio",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "hpsilab",
+    "finance",
+    "risk",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
