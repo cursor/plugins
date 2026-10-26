@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "spacefast",
+      "source": "third_party/spacefast",
+      "description": "Publish websites, dashboards, reports, and small web tools to shareable Spacefast links."
     }
   ]
 }
