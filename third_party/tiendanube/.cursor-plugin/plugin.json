@@ -1,0 +1,32 @@
+{
+  "name": "tiendanube",
+  "displayName": "Tiendanube",
+  "version": "1.0.0",
+  "description": "Manage your Tiendanube store's products, inventory, orders, customers, and promotions.",
+  "author": {
+    "name": "Tiendanube",
+    "email": "agustin.parraquini@tiendanube.com"
+  },
+  "homepage": "https://www.tiendanube.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "tiendanube",
+    "nuvemshop",
+    "ecommerce",
+    "products",
+    "inventory",
+    "orders",
+    "coupons",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "tiendanube",
+    "ecommerce",
+    "latam",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
