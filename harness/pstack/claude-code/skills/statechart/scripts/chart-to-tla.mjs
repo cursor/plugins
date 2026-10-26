@@ -142,14 +142,25 @@ out.push(actions.length ? `Next == ${actions.map((a) => a.name).join(" \\/ ")}` 
 out.push("");
 out.push("Spec == Init /\\ [][Next]_vars");
 
+function nested(declarations, item) {
+  const matches = declarations.filter((d) => d.depth > 0 && d.caption === item);
+  if (matches.length > 1)
+    throw new Error(
+      `never line names "${item}", which is inside ${matches.map((d) => d.path.slice(0, -item.length - 1)).join(" and ")}; write the path, such as ${matches[0].path}`,
+    );
+  return matches[0]?.states ?? [];
+}
 function resolve(item) {
   const hits = [];
   for (const [ri, x] of vars.entries()) {
-    const inside = x.states.has(item)
-      ? [item]
-      : [...x.states].filter((s) => s.startsWith(`${item}.`));
+    const inside = x.declarations.find((d) => d.path === item)?.states ?? [];
     if (inside.length) hits.push({ ri, inside });
   }
+  if (hits.length === 0)
+    for (const [ri, x] of vars.entries()) {
+      const inside = nested(x.declarations, item);
+      if (inside.length) hits.push({ ri, inside });
+    }
   if (hits.length === 0)
     throw new Error(`never line names "${item}", which is not a state in the chart`);
   if (hits.length > 1)
