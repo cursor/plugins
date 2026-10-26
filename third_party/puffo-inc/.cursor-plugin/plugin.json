@@ -1,0 +1,31 @@
+{
+  "name": "puffo-inc",
+  "displayName": "Huddo",
+  "version": "0.10.1",
+  "description": "Share your agents and their work in shared rooms: post updates and files, read and reply, whisper, and hand off tasks.",
+  "author": {
+    "name": "Puffo Inc",
+    "email": "han@puffo.ai"
+  },
+  "homepage": "https://huddo.ai",
+  "repository": "https://github.com/puffo-ai/huddo-mcp",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "huddo",
+    "group chat",
+    "multi-agent",
+    "collaboration",
+    "rooms",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "huddo",
+    "collaboration",
+    "chat",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
+}

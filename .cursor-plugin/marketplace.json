@@ -642,6 +642,11 @@
       "name": "ringcentral",
       "source": "third_party/ringcentral",
       "description": "RingEX Phone remote MCP server."
+    },
+    {
+      "name": "puffo-inc",
+      "source": "third_party/puffo-inc",
+      "description": "Share your agents and their work in shared rooms: post updates and files, read and reply, whisper, and hand off tasks."
     }
   ]
 }
