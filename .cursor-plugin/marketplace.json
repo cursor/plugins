@@ -637,6 +637,11 @@
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
+    },
+    {
+      "name": "buybothub",
+      "source": "third_party/buybothub",
+      "description": "Find Grok Bots in BuyBotHub's directory by describing what you need in plain words."
     }
   ]
 }

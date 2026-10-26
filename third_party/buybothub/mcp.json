@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "buybothub": {
+      "type": "http",
+      "url": "https://www.buybothub.com/mcp?plain=1"
+    }
+  }
+}

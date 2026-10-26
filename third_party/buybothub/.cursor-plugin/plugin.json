@@ -1,0 +1,30 @@
+{
+  "name": "buybothub",
+  "displayName": "BuyBotHub Bot Finder",
+  "version": "1.0.0",
+  "description": "Find Grok Bots in BuyBotHub's directory by describing what you need in plain words.",
+  "author": {
+    "name": "BuyBotHub",
+    "email": "info@buybothub.com"
+  },
+  "homepage": "https://www.buybothub.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://www.buybothub.com/brand/buybothub-icon-512.png",
+  "keywords": [
+    "buybothub",
+    "grok",
+    "bots",
+    "directory",
+    "search",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "buybothub",
+    "grok",
+    "bots",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
