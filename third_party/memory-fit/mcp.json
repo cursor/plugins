@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "memory-fit": {
+      "type": "http",
+      "url": "https://api.memory.fit/mcp"
+    }
+  }
+}
