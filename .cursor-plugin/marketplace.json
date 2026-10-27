@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "cantonotes",
+      "source": "third_party/cantonotes",
+      "description": "Read your CantoNotes meetings, notes, transcripts, Intelligence, and to-dos."
     }
   ]
 }
