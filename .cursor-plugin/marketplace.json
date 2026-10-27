@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "viasocket",
+      "source": "third_party/viasocket",
+      "description": "Connect to 2,300+ apps through one MCP endpoint to read app data, automate tasks, and run multi-step workflows."
     }
   ]
 }
