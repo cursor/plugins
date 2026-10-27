@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "sellerpro-international-business-technol",
+      "source": "third_party/sellerpro-international-business-technol",
+      "description": "Search the SellerPro 360 Amazon seller forum and list supported Amazon marketplaces."
     }
   ]
 }

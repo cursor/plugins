@@ -1,0 +1,30 @@
+{
+  "name": "sellerpro-international-business-technol",
+  "displayName": "SellerPro 360",
+  "version": "1.0.0",
+  "description": "Search the SellerPro 360 Amazon seller forum and list supported Amazon marketplaces.",
+  "author": {
+    "name": "SELLERPRO INTERNATIONAL BUSINESS TECHNOLOGY HOLDINGS LIMITED",
+    "email": "hello@sellerpro360.com"
+  },
+  "homepage": "https://sellerpro360.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://sellerpro360.com/assets/sellerpro360-star-logo-CAveNUyV.png",
+  "keywords": [
+    "sellerpro360",
+    "amazon",
+    "seller central",
+    "amazon marketplaces",
+    "seller forum",
+    "ecommerce",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "amazon",
+    "ecommerce",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
