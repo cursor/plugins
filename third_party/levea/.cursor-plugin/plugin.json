@@ -1,0 +1,30 @@
+{
+  "name": "levea",
+  "displayName": "Levea",
+  "version": "1.0.0",
+  "description": "Edit videos from plain-language prompts: clips, captions, reframing, voiceover, and export.",
+  "author": {
+    "name": "Levea",
+    "email": "brajendra@livecore.ai"
+  },
+  "homepage": "https://www.livecore.ai",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "levea",
+    "video",
+    "video editing",
+    "captions",
+    "clips",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "levea",
+    "video",
+    "media",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

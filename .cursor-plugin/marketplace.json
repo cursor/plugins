@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "levea",
+      "source": "third_party/levea",
+      "description": "Edit videos from plain-language prompts: clips, captions, reframing, voiceover, and export."
     }
   ]
 }
