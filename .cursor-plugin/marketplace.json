@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "audiencelab",
+      "source": "third_party/audiencelab",
+      "description": "Board apps, prepare ad creatives, fund a wallet, and launch paid user-acquisition campaigns."
     }
   ]
 }

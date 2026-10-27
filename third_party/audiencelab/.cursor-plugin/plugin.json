@@ -1,0 +1,30 @@
+{
+  "name": "audiencelab",
+  "displayName": "Audiencelab",
+  "version": "1.0.0",
+  "description": "Board apps, prepare ad creatives, fund a wallet, and launch paid user-acquisition campaigns.",
+  "author": {
+    "name": "Audiencelab",
+    "email": "support@geeklab.app"
+  },
+  "homepage": "https://audiencelab.ai",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.jpg",
+  "keywords": [
+    "audiencelab",
+    "user acquisition",
+    "advertising",
+    "campaigns",
+    "creatives",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "audiencelab",
+    "marketing",
+    "advertising",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "audiencelab": {
+      "type": "http",
+      "url": "https://mcp.audiencelab.ai/mcp"
+    }
+  }
+}
