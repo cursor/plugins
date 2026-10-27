@@ -647,6 +647,11 @@
       "name": "ringcentral-chat",
       "source": "third_party/ringcentral-chat",
       "description": "Read team chats and posts, send messages, and manage teams, tasks, and notes."
+    },
+    {
+      "name": "storeagent",
+      "source": "third_party/storeagent",
+      "description": "Manage your WooCommerce store: products, descriptions, coupons, reviews, orders, and chat widget settings."
     }
   ]
 }

@@ -1,0 +1,27 @@
+{
+  "name": "storeagent",
+  "displayName": "StoreAgent",
+  "version": "1.0.0",
+  "description": "Manage your WooCommerce store: products, descriptions, coupons, reviews, orders, and chat widget settings.",
+  "author": {
+    "name": "StoreAgent"
+  },
+  "homepage": "https://storeagent.ai",
+  "license": "MIT",
+  "logo": "https://storeagent.ai/wp-content/uploads/2024/10/favicon.png",
+  "keywords": [
+    "storeagent",
+    "woocommerce",
+    "wordpress",
+    "ecommerce",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "storeagent",
+    "woocommerce",
+    "ecommerce",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

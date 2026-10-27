@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "storeagent": {
+      "type": "http",
+      "url": "https://api.storeagent.ai/mcp/<store-domain>"
+    }
+  }
+}
