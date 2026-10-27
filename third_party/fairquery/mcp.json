@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "fairquery": {
+      "type": "http",
+      "url": "https://mcp.getfairquery.com/mcp"
+    }
+  }
+}

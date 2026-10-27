@@ -1,0 +1,32 @@
+{
+  "name": "fairquery",
+  "displayName": "Fairquery",
+  "version": "1.0.0",
+  "description": "Redact PII and secrets, check email syntax, look up OSV vulnerabilities, list sanctions sources, and read public job boards.",
+  "author": {
+    "name": "Fairquery",
+    "email": "info@getfairquery.com"
+  },
+  "homepage": "https://getfairquery.com/",
+  "license": "MIT",
+  "logo": "https://getfairquery.com/android-chrome-512x512.png",
+  "keywords": [
+    "fairquery",
+    "pii",
+    "redaction",
+    "email validation",
+    "osv",
+    "vulnerabilities",
+    "sanctions",
+    "jobs",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "fairquery",
+    "security",
+    "compliance",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

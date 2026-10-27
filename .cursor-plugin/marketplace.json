@@ -647,6 +647,11 @@
       "name": "ringcentral-chat",
       "source": "third_party/ringcentral-chat",
       "description": "Read team chats and posts, send messages, and manage teams, tasks, and notes."
+    },
+    {
+      "name": "fairquery",
+      "source": "third_party/fairquery",
+      "description": "Redact PII and secrets, check email syntax, look up OSV vulnerabilities, list sanctions sources, and read public job boards."
     }
   ]
 }
