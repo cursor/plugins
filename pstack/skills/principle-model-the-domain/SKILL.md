@@ -21,4 +21,6 @@ Reach for:
 
 Do not force an abstraction. Prefer boring code if the current shape is already clear, local, and unlikely to grow. Be skeptical of an abstraction that adds indirection without removing branches, duplicated rules, invalid states, or lifecycle risk.
 
+When one table cannot express rules that depend on which devices share a bus, write those rules as explicit invariants of the image kind. Leave them out of scattered one-off branches.
+
 The sign that you skipped this is a new feature that grows an existing if/else chain by one more branch, or a second boolean that must stay in sync with the first. Temporal decomposition is another sign. Phase-named modules repeat the same domain rules across steps.

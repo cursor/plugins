@@ -16,6 +16,6 @@ When two or more fixes that share one premise have failed the same gate, suspect
 - **Follow the evidence.** If it contradicts the premise, the cause is elsewhere. Look for what the failures have in common that the premise did not predict. If it confirms the premise, ask the next "why" per [Fix Root Causes](../principle-fix-root-causes/SKILL.md). The earlier fixes may have treated a consequence instead of the cause.
 - **Remove the condition instead of compensating for it**, per the [Laziness Protocol](../principle-laziness-protocol/SKILL.md). If the evidence shows that one part always lands on the losing side, change what puts it there. A mechanism that cleans up after it leaves the cause in place and adds work on every run.
 
-**Stop:** Do not start the next fix before the premise is written down and tested.
+**Stop:** Do not start the next fix before the premise is written down and tested. When the investigation moves to a new premise, revert or drop the edits that only served the discarded premise before the next smoke.
 
 This principle is distinct from [Redesign from First Principles](../principle-redesign-from-first-principles/SKILL.md), which rebuilds a design around a new requirement. It questions a fact the current design assumes.

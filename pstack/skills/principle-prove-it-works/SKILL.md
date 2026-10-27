@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Prove It Works
 
-Verify every task output by checking the real thing directly. Do not infer from proxies, self-reports, or "it compiles."
+Verify every task output by checking the real thing directly. Do not infer from proxies, self-reports, or "it compiles." For a firmware or multi-architecture port, a guest smoke is necessary and it is not sufficient until the cross-target protection-domain check has finished green.
 
 **Why:** Unverified work has unknown correctness. Indirect verification (file mtimes, output freshness, agent self-reports, cached screenshots) feels cheaper than direct observation. Acting on a wrong inference costs far more than checking the source.
 
@@ -14,6 +14,9 @@ Check the real thing, not a proxy:
 - Check process liveness directly, not indirectly through derived state
 - Read the actual value, not a cached or derived representation
 - When verification fails, suspect the observation method before suspecting the system
+- Grep the captured serial transcript for the load-bearing strings. A delegate summary is not the transcript.
+- A recipe exit code is unreliable when the shell pipeline ends in `tail` or `echo`. Read the recipe status line and the log.
+- A subagent completion notice is a prompt to read the log, not a pass.
 
 ## Script the check when you can
 

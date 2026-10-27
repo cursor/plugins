@@ -8,3 +8,4 @@ disable-model-invocation: true
 
 - **Consolidate decisions.** Do not repeat the same choice in several places. Put it behind one source of truth and pass the result as a simple flag.
 - **Minimize the diff.** Make the smallest change that solves the problem. Fewer lines beat "elegant" boilerplate.
+- **Parameterize the boundary.** When a queue or config struct has no address or transport field, change the machine description and the device backends. Do not add a parallel role graph per architecture.
