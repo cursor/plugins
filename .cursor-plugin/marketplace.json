@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "expandeo",
+      "source": "third_party/expandeo",
+      "description": "Compare e-shop prices in Europe and the US, find cheaper alternatives, and check price history."
     }
   ]
 }

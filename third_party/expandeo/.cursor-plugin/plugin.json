@@ -1,0 +1,30 @@
+{
+  "name": "expandeo",
+  "displayName": "Expandeo",
+  "version": "1.0.0",
+  "description": "Compare e-shop prices in Europe and the US, find cheaper alternatives, and check price history.",
+  "author": {
+    "name": "Expandeo.com",
+    "email": "info@expandeo.com"
+  },
+  "homepage": "https://www.expandeo.com/agentic-shopping",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://www.expandeo.com/img/expandeo_symbol_plate.png",
+  "keywords": [
+    "expandeo",
+    "price comparison",
+    "shopping",
+    "e-commerce",
+    "price history",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "expandeo",
+    "shopping",
+    "price comparison",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
