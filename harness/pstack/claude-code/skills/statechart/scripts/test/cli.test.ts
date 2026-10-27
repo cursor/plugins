@@ -275,13 +275,21 @@ async function signalWhile<T extends { dir: string; reached: (parent: string) =>
 
 async function assertGone(pid: number) {
   for (let i = 0; ; i++) {
+    let code: string | undefined;
     try {
       process.kill(pid, 0);
     } catch (error) {
-      assert.equal((error as NodeJS.ErrnoException).code, "ESRCH");
-      return;
+      code = (error as NodeJS.ErrnoException).code;
+      // macOS gives EPERM for a process group of only zombies, until they are reaped.
+      if (code !== "EPERM") {
+        assert.equal(code, "ESRCH");
+        return;
+      }
     }
-    assert.ok(i < 250, `Process ${pid} is still running.`);
+    assert.ok(
+      i < 250,
+      `Process ${pid} ${code ? "exited, but it was not reaped" : "is still running"}.`,
+    );
     await sleep(20);
   }
 }
