@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ttmi": {
+      "type": "http",
+      "url": "https://ttmi.ai/mcp"
+    }
+  }
+}
