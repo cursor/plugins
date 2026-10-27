@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "agentconsult": {
+      "type": "http",
+      "url": "https://buybox.agentconsult.ai/mcp"
+    }
+  }
+}

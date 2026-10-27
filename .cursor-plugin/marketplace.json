@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "agentconsult",
+      "source": "third_party/agentconsult",
+      "description": "Save buying criteria for homes, cars, or anything else, and score and rank listings against your budget, must-haves, and dealbreakers."
     }
   ]
 }

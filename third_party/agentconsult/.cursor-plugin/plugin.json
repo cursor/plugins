@@ -1,0 +1,31 @@
+{
+  "name": "agentconsult",
+  "displayName": "BuyBox",
+  "version": "1.0.0",
+  "description": "Save buying criteria for homes, cars, or anything else, and score and rank listings against your budget, must-haves, and dealbreakers.",
+  "author": {
+    "name": "Agentic Consulting LLC",
+    "email": "tyler@agentconsult.ai"
+  },
+  "homepage": "https://buybox.agentconsult.ai",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://buybox.agentconsult.ai/icon.png",
+  "keywords": [
+    "buybox",
+    "buying criteria",
+    "shopping",
+    "listings",
+    "real estate",
+    "cars",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "buybox",
+    "shopping",
+    "listings",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
