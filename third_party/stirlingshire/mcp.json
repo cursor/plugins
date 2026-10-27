@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "stirlingshire": {
+      "type": "http",
+      "url": "https://app.stirlingshire.net/"
+    }
+  }
+}
