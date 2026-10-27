@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "korpiai": {
+      "type": "http",
+      "url": "https://backend.korpi.ai/mcp"
+    }
+  }
+}

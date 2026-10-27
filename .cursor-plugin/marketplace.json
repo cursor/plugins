@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "korpiai",
+      "source": "third_party/korpiai",
+      "description": "Make faceless short-form videos, images, clips, and voiceovers, and post to TikTok, YouTube, and Instagram."
     }
   ]
 }

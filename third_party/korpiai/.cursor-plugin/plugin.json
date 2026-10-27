@@ -1,0 +1,39 @@
+{
+  "name": "korpiai",
+  "displayName": "KorpiAI",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Make faceless short-form videos, images, clips, and voiceovers, and post to TikTok, YouTube, and Instagram.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://korpi.ai",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "korpiai",
+    "korpi",
+    "short-form video",
+    "faceless video",
+    "ai video",
+    "image generation",
+    "voiceover",
+    "tiktok",
+    "youtube",
+    "instagram",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "korpiai",
+    "video",
+    "content creation",
+    "social media",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
