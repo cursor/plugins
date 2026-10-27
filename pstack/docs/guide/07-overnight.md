@@ -85,7 +85,7 @@ The contract above drives one task to one finish condition. Some nights hold mor
 /poteto-mode autopilot these five changes, but don't merge. i'll land them in the morning.
 ```
 
-[Orchestrate](../../skills/poteto-mode/playbooks/orchestrate.md) is for a program that outlives any single agent: multi-day, many stacked PRs, fleets of subagents under one standing coordinator chat. The coordinator authors briefs, collects what its subagents finish, keeps the lowest unmerged PR green, and never writes code itself. It's deliberately heavy machinery. If one agent could finish the work in a session, the playbook itself routes you back to the overnight contract above:
+[Orchestrate](../../skills/poteto-mode/playbooks/orchestrate.md) is for a program that outlives any single agent: multi-day, many stacked PRs, fleets of subagents under one standing coordinator chat. The coordinator decides which agent does each piece of work, checks what each one produces, and never writes code itself. If one agent could finish the work in a session, the playbook itself routes you back to the overnight contract above:
 
 ```text
 /poteto-mode orchestrate the store migration. own it until every package is converted and merged. i'll check in twice a day.
