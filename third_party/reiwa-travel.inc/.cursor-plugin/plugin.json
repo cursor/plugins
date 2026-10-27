@@ -1,0 +1,30 @@
+{
+  "name": "reiwa-travel.inc",
+  "displayName": "NEWT",
+  "version": "1.0.0",
+  "description": "Search and compare overseas package tours and hotels on newt.net with live prices and availability.",
+  "author": {
+    "name": "Reiwa Travel, Inc."
+  },
+  "homepage": "https://newt.net/",
+  "repository": "https://github.com/reiwa-travel/newt-mcp-server",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "newt",
+    "reiwa travel",
+    "travel",
+    "tours",
+    "hotels",
+    "flights",
+    "japan",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "newt",
+    "travel",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

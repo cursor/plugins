@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "reiwa-travel.inc",
+      "source": "third_party/reiwa-travel.inc",
+      "description": "Search and compare overseas package tours and hotels on newt.net with live prices and availability."
     }
   ]
 }
