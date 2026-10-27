@@ -1,0 +1,33 @@
+{
+  "name": "bottle-your-brand",
+  "displayName": "Bottle Your Brand",
+  "version": "1.0.0",
+  "description": "Turn any image into custom die-cut stickers with sizing and print guidance.",
+  "author": {
+    "name": "Bottle Your Brand",
+    "email": "info@bottleyourbrand.com"
+  },
+  "homepage": "https://www.bottleyourbrand.com/",
+  "repository": "https://github.com/BottleYourBrand/print-shop-plugin",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "stickers",
+    "custom-stickers",
+    "die-cut",
+    "vinyl",
+    "printing",
+    "print-shop",
+    "labels",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "stickers",
+    "printing",
+    "commerce",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
+}

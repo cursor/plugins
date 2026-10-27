@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "print-shop": {
+      "type": "http",
+      "url": "https://mcp.bottleyourbrand.com/mcp"
+    }
+  }
+}
