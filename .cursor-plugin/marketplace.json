@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "larridin",
+      "source": "third_party/larridin",
+      "description": "Read your recent projects, collaborators, meetings, and blockers from Larridin Work Context."
     }
   ]
 }

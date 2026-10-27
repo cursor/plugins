@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "larridin": {
+      "type": "http",
+      "url": "https://app.larridin.com/mcp/larridin"
+    }
+  }
+}
