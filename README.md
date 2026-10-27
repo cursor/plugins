@@ -119,6 +119,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `vanta` | [Vanta](third_party/vanta/) | Cursor | Integrations | Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta. |
 | `ringcentral-phone` | [RingCentral Phone](third_party/ringcentral-phone/) | Cursor | Integrations | Read call activity, AI call notes, SMS, voicemail, and fax, and send SMS. |
 | `ringcentral-chat` | [RingCentral Chat](third_party/ringcentral-chat/) | Cursor | Integrations | Read team chats and posts, send messages, and manage teams, tasks, and notes. |
+| `meridian-dispatch` | [Meridian Dispatch](third_party/meridian-dispatch/) | Meridian Dispatch | Integrations | Plan trips in conversation and search travel guides to countries, towns, sights, hikes, ski resorts, and festivals. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

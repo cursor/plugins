@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "meridian-dispatch": {
+      "type": "http",
+      "url": "https://www.meridiandispatch.com/api/mcp"
+    }
+  }
+}
