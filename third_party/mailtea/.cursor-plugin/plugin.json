@@ -1,0 +1,36 @@
+{
+  "name": "mailtea",
+  "displayName": "Mailtea",
+  "version": "0.10.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Send email and newsletters with Mailtea over MCP, plus skills for email and website design.",
+  "author": {
+    "name": "Mailtea",
+    "email": "support@mailtea.app"
+  },
+  "homepage": "https://mailtea.app",
+  "repository": "https://github.com/mailtea-app/mailtea-agent-plugin",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "mailtea",
+    "email",
+    "newsletter",
+    "transactional email",
+    "contacts",
+    "automations",
+    "website",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "mailtea",
+    "email",
+    "newsletter",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
+}

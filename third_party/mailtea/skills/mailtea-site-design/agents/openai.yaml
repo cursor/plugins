@@ -1,0 +1,7 @@
+interface:
+  display_name: "Mailtea website design"
+  short_description: "Build and restyle your publication website as a draft."
+  icon_small: "./assets/mailtea-mark.svg"
+  icon_large: "./assets/mailtea-mark.svg"
+  brand_color: "#2158ff"
+  default_prompt: "Use $mailtea-site-design to draft a home page for my publication. Do not publish it yet."

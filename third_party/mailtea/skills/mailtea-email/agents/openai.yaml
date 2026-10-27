@@ -1,0 +1,7 @@
+interface:
+  display_name: "Mailtea email"
+  short_description: "Send, schedule, and check delivery from a conversation."
+  icon_small: "./assets/mailtea-mark.svg"
+  icon_large: "./assets/mailtea-mark.svg"
+  brand_color: "#2158ff"
+  default_prompt: "Use $mailtea-email to help me send my first email. Check my setup and guide me through anything missing."

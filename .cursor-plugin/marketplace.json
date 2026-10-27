@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "mailtea",
+      "source": "third_party/mailtea",
+      "description": "Send email and newsletters with Mailtea over MCP, plus skills for email and website design."
     }
   ]
 }

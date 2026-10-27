@@ -1,0 +1,7 @@
+interface:
+  display_name: "Mailtea email design"
+  short_description: "Design welcome emails, newsletters, and reusable templates."
+  icon_small: "./assets/mailtea-mark.svg"
+  icon_large: "./assets/mailtea-mark.svg"
+  brand_color: "#2158ff"
+  default_prompt: "Use $mailtea-email-design to draft a welcome email with one clear call to action. Do not send it yet."
