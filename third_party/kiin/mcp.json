@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "kiin": {
+      "type": "http",
+      "url": "https://mcp.kiin.co"
+    }
+  }
+}
