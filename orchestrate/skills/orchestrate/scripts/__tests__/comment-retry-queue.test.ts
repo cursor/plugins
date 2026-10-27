@@ -419,7 +419,9 @@ describe("invalid persisted required comment queues", () => {
   ]) {
     for (const operation of ["enqueue", "drain"] as const) {
       test(`${operation} preserves ${name} without posting`, async () => {
-        const workspace = mkdtempSync(join(tmpdir(), "orch-comment-corruption-"));
+        const workspace = mkdtempSync(
+          join(tmpdir(), "orch-comment-corruption-")
+        );
         const posts: SlackPost[] = [];
         const queuePath = commentRetryQueuePath(workspace);
         try {

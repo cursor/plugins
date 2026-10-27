@@ -54,10 +54,18 @@ describe("compareMeasurement / applyMeasurementParser / buildMeasurementEnv", ()
       ["0 s", "0.09 s", "match"],
       ["0 s", "0.2 s", "value-mismatch"],
     ] as const) {
-      const result = compareMeasurement({ spec: baseSpec, measured, claim: claim(after) });
+      const result = compareMeasurement({
+        spec: baseSpec,
+        measured,
+        claim: claim(after),
+      });
       expect(result.outcome).toBe(outcome);
     }
-    const result = compareMeasurement({ spec: baseSpec, measured: "0.1 s", claim: claim("0.01 s") });
+    const result = compareMeasurement({
+      spec: baseSpec,
+      measured: "0.1 s",
+      claim: claim("0.01 s"),
+    });
     expect(result.driftFraction).toBeCloseTo(9);
   });
 

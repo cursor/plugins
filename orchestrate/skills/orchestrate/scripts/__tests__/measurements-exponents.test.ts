@@ -2,7 +2,11 @@ import { expect, test } from "bun:test";
 import { compareMeasurement } from "../measurements.ts";
 
 function check(measured: string, claimed: string) {
-  return compareMeasurement({ spec: { name: "bytes", command: "printf metric" }, measured, claim: { name: "bytes", before: "0", op: "→", after: claimed } });
+  return compareMeasurement({
+    spec: { name: "bytes", command: "printf metric" },
+    measured,
+    claim: { name: "bytes", before: "0", op: "→", after: claimed },
+  });
 }
 
 test("native large-number output uses numeric tolerance", () => {

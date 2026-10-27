@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -21,7 +21,11 @@ function git(repo: string, ...args: string[]): string {
  * for a root planner and one subplanner. The root marks the subplanner
  * `handed-off`; the subplanner's own branch still has a `running` child.
  */
-function fixtureRepo(): { repoPath: string; rootBranch: string; rootSlug: string } {
+function fixtureRepo(): {
+  repoPath: string;
+  rootBranch: string;
+  rootSlug: string;
+} {
   const repoPath = mkdtempSync(join(tmpdir(), "orch-kill-tree-"));
   git(repoPath, "init", "-q", "-b", "main");
   git(repoPath, "config", "user.email", "t@example.com");
@@ -73,20 +77,53 @@ function fixtureRepo(): { repoPath: string; rootBranch: string; rootSlug: string
 describe("kill-tree walks handed-off subplanners like crawl", () => {
   test("descendsIntoSubplanner follows running and handed-off subplanners only", () => {
     const base = { name: "x", agentId: null, runId: null, parentAgentId: null };
-    expect(descendsIntoSubplanner({ ...base, type: "subplanner", status: "running" } as never)).toBe(true);
-    expect(descendsIntoSubplanner({ ...base, type: "subplanner", status: "handed-off" } as never)).toBe(true);
-    expect(descendsIntoSubplanner({ ...base, type: "subplanner", status: "done" } as never)).toBe(false);
-    expect(descendsIntoSubplanner({ ...base, type: "worker", status: "running" } as never)).toBe(false);
+    expect(
+      descendsIntoSubplanner({
+        ...base,
+        type: "subplanner",
+        status: "running",
+      } as never)
+    ).toBe(true);
+    expect(
+      descendsIntoSubplanner({
+        ...base,
+        type: "subplanner",
+        status: "handed-off",
+      } as never)
+    ).toBe(true);
+    expect(
+      descendsIntoSubplanner({
+        ...base,
+        type: "subplanner",
+        status: "done",
+      } as never)
+    ).toBe(false);
+    expect(
+      descendsIntoSubplanner({
+        ...base,
+        type: "worker",
+        status: "running",
+      } as never)
+    ).toBe(false);
   });
 
   test("a running agent under a handed-off subplanner is both crawled and collected", () => {
     const { repoPath, rootBranch, rootSlug } = fixtureRepo();
 
     const out: string[] = [];
-    crawlBranch({ repoPath, branch: rootBranch, slug: rootSlug }, 0, out, new Set());
+    crawlBranch(
+      { repoPath, branch: rootBranch, slug: rootSlug },
+      0,
+      out,
+      new Set()
+    );
     expect(out.join("\n")).toContain("verifier");
 
-    const victims = collectRunningAgentsInTree({ repoPath, branch: rootBranch, slug: rootSlug });
+    const victims = collectRunningAgentsInTree({
+      repoPath,
+      branch: rootBranch,
+      slug: rootSlug,
+    });
     expect(victims.map(v => v.agentId)).toEqual(["agent-verifier"]);
     expect(victims[0]?.branch).toBe(`orch/${rootSlug}/child-planner`);
   });

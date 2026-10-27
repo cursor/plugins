@@ -4,7 +4,9 @@ import { parseHandoffBranch, resolveRunBranch } from "../core/handoff.ts";
 
 describe("parseHandoffBranch / resolveRunBranch", () => {
   test("A branch written as a one-item list is read", () => {
-    const body = ["## Branch", "- `agent/listed-abc1`", "## What I did"].join("\n");
+    const body = ["## Branch", "- `agent/listed-abc1`", "## What I did"].join(
+      "\n"
+    );
     expect(parseHandoffBranch(body)).toBe("agent/listed-abc1");
   });
 

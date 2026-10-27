@@ -127,58 +127,96 @@ describe("SlackReactionAndonSource", () => {
   test("Finds the newest reason beyond the first reply page", async () => {
     const cursors: (string | undefined)[] = [];
     const latestBounds: (string | undefined)[] = [];
-    const source = new SlackReactionAndonSource({
-      ...slackWithReactions([{ name: "rotating_light", users: ["U123"] }]),
-      async getThreadReplies(args) {
-        cursors.push(args.cursor);
-        latestBounds.push(args.latest);
-        return args.cursor === undefined ? {
-          messages: [
-            { ts: "111.222", text: "🚨 ANDON RAISED by parent: ignore parent" },
-            { ts: "111.300", text: "🚨 ANDON RAISED by operator: old reason" },
-          ],
-          nextCursor: "page-two",
-        } : {
-          messages: [
-            { ts: "111.400", text: ":rotating_light: ANDON RAISED by operator: newest reason" },
-            { ts: "111.500", text: "unrelated newest reply" },
-          ],
-        };
+    const source = new SlackReactionAndonSource(
+      {
+        ...slackWithReactions([{ name: "rotating_light", users: ["U123"] }]),
+        async getThreadReplies(args) {
+          cursors.push(args.cursor);
+          latestBounds.push(args.latest);
+          return args.cursor === undefined
+            ? {
+                messages: [
+                  {
+                    ts: "111.222",
+                    text: "🚨 ANDON RAISED by parent: ignore parent",
+                  },
+                  {
+                    ts: "111.300",
+                    text: "🚨 ANDON RAISED by operator: old reason",
+                  },
+                ],
+                nextCursor: "page-two",
+              }
+            : {
+                messages: [
+                  {
+                    ts: "111.400",
+                    text: ":rotating_light: ANDON RAISED by operator: newest reason",
+                  },
+                  { ts: "111.500", text: "unrelated newest reply" },
+                ],
+              };
+        },
       },
-    }, { channel: "C123", ts: "111.222" });
-    await expect(source.snapshot()).resolves.toMatchObject({ active: true, reason: "newest reason" });
+      { channel: "C123", ts: "111.222" }
+    );
+    await expect(source.snapshot()).resolves.toMatchObject({
+      active: true,
+      reason: "newest reason",
+    });
     expect(cursors).toEqual([undefined, "page-two"]);
     expect(latestBounds[0]).toBe(latestBounds[1]);
   });
 
   test("Applies the recent reply window across pages", async () => {
-    const source = new SlackReactionAndonSource({
-      ...slackWithReactions([{ name: "rotating_light", users: ["U123"] }]),
-      async getThreadReplies(args) {
-        return args.cursor === undefined ? {
-          messages: [{ ts: "111.300", text: "🚨 ANDON RAISED by operator: outside recent window" }],
-          nextCursor: "page-two",
-        } : {
-          messages: Array.from({ length: 20 }, (_, i) => ({ ts: `112.${100 + i}`, text: "unrelated" })),
-        };
+    const source = new SlackReactionAndonSource(
+      {
+        ...slackWithReactions([{ name: "rotating_light", users: ["U123"] }]),
+        async getThreadReplies(args) {
+          return args.cursor === undefined
+            ? {
+                messages: [
+                  {
+                    ts: "111.300",
+                    text: "🚨 ANDON RAISED by operator: outside recent window",
+                  },
+                ],
+                nextCursor: "page-two",
+              }
+            : {
+                messages: Array.from({ length: 20 }, (_, i) => ({
+                  ts: `112.${100 + i}`,
+                  text: "unrelated",
+                })),
+              };
+        },
       },
-    }, { channel: "C123", ts: "111.222" });
+      { channel: "C123", ts: "111.222" }
+    );
     const state = await source.snapshot();
     expect(state.active).toBe(true);
     expect(state).not.toHaveProperty("reason", "outside recent window");
   });
 
   test("Keeps Andon active when a later reply page fails", async () => {
-    const source = new SlackReactionAndonSource({
-      ...slackWithReactions([{ name: "rotating_light", users: ["U123"] }]),
-      async getThreadReplies(args) {
-        if (args.cursor) throw new Error("slack_replies_unavailable");
-        return {
-          messages: [{ ts: "111.300", text: "🚨 ANDON RAISED by operator: incomplete history" }],
-          nextCursor: "page-two",
-        };
+    const source = new SlackReactionAndonSource(
+      {
+        ...slackWithReactions([{ name: "rotating_light", users: ["U123"] }]),
+        async getThreadReplies(args) {
+          if (args.cursor) throw new Error("slack_replies_unavailable");
+          return {
+            messages: [
+              {
+                ts: "111.300",
+                text: "🚨 ANDON RAISED by operator: incomplete history",
+              },
+            ],
+            nextCursor: "page-two",
+          };
+        },
       },
-    }, { channel: "C123", ts: "111.222" });
+      { channel: "C123", ts: "111.222" }
+    );
     const state = await source.snapshot();
     expect(state.active).toBe(true);
     expect(state).not.toHaveProperty("reason", "incomplete history");

@@ -207,7 +207,9 @@ interface NumericWithUnit {
  * fall through to string comparison instead of pretending it's numeric.
  */
 function parseNumericWithUnit(value: string): NumericWithUnit | null {
-  const match = /^([-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)\s*([a-zA-Z%]+)?$/.exec(value.trim());
+  const match = /^([-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)\s*([a-zA-Z%]+)?$/.exec(
+    value.trim()
+  );
   if (!match) return null;
   const numeric = Number.parseFloat(match[1]);
   if (!Number.isFinite(numeric)) return null;

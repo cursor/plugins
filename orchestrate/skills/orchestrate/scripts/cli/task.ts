@@ -32,7 +32,11 @@ export const MAX_BOOT_MS = 30 * 60 * 1000;
 const ACTIVE_ROOT_RUN_STATUSES = new Set(["pending", "running"]);
 
 type AgentListApi = {
-  list: (opts: { runtime: "cloud"; limit: number; cursor?: string }) => Promise<unknown>;
+  list: (opts: {
+    runtime: "cloud";
+    limit: number;
+    cursor?: string;
+  }) => Promise<unknown>;
   listRuns?: (
     agentId: string,
     opts: { runtime: "cloud"; limit: number }
