@@ -1,0 +1,13 @@
+interface:
+  display_name: "FrameOS Captions"
+  short_description: "Restyle clip captions and export captioned MP4s"
+  default_prompt: "Use $frameos-captions to give my latest clip bold MrBeast-style captions, a bit bigger, and send me the captioned MP4."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "frameos"
+      description: "FrameOS MCP server"
+      transport: "streamable_http"
+      url: "https://frameos.studio/mcp"

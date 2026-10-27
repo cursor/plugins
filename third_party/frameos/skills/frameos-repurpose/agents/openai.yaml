@@ -1,0 +1,13 @@
+interface:
+  display_name: "FrameOS Repurpose"
+  short_description: "Turn one long video into a full content pack"
+  default_prompt: "Use $frameos-repurpose to plan a content pack from my latest episode: clips, captions, thumbnails and post copy."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "frameos"
+      description: "FrameOS MCP server"
+      transport: "streamable_http"
+      url: "https://frameos.studio/mcp"

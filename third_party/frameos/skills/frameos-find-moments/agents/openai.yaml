@@ -1,0 +1,13 @@
+interface:
+  display_name: "FrameOS Find Moments"
+  short_description: "Search episode transcripts for quotes and moments"
+  default_prompt: "Use $frameos-find-moments to find where my latest episode talks about pricing, with timestamped quotes."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "frameos"
+      description: "FrameOS MCP server"
+      transport: "streamable_http"
+      url: "https://frameos.studio/mcp"

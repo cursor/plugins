@@ -1,0 +1,13 @@
+interface:
+  display_name: "FrameOS Library"
+  short_description: "Find, organise and bulk-export your FrameOS clips"
+  default_prompt: "Use $frameos-library to show my recent FrameOS projects and the best clips from the newest one."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "frameos"
+      description: "FrameOS MCP server"
+      transport: "streamable_http"
+      url: "https://frameos.studio/mcp"

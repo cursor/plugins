@@ -1,0 +1,13 @@
+interface:
+  display_name: "FrameOS Setup"
+  short_description: "Connect FrameOS and check your account"
+  default_prompt: "Use $frameos-setup to check that FrameOS is connected and show my workspace and credit balance."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "frameos"
+      description: "FrameOS MCP server"
+      transport: "streamable_http"
+      url: "https://frameos.studio/mcp"

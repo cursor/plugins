@@ -1,0 +1,13 @@
+interface:
+  display_name: "FrameOS Thumbnails"
+  short_description: "Make thumbnail options from real frames of your clips"
+  default_prompt: "Use $frameos-thumbnails to make 16:9 YouTube thumbnail options from my best clip and tell me the credit cost first."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "frameos"
+      description: "FrameOS MCP server"
+      transport: "streamable_http"
+      url: "https://frameos.studio/mcp"

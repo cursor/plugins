@@ -1,0 +1,13 @@
+interface:
+  display_name: "FrameOS Publish"
+  short_description: "Draft social copy and post clips, one confirmed post at a time"
+  default_prompt: "Use $frameos-publish to draft an Instagram caption for my top clip and show me the post before publishing."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "frameos"
+      description: "FrameOS MCP server"
+      transport: "streamable_http"
+      url: "https://frameos.studio/mcp"

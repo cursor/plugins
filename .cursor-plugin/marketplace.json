@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "frameos",
+      "source": "third_party/frameos",
+      "description": "Turn long videos into captioned short clips with FrameOS: submit a link or upload, track the render, restyle captions, export MP4s, make thumbnails, draft social copy, and post to connected accounts."
     }
   ]
 }

@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "frameos": {
+      "type": "http",
+      "url": "https://frameos.studio/mcp",
+      "headers": {
+        "X-FrameOS-Plugin-Version": "0.1.1"
+      },
+      "auth": {
+        "CLIENT_ID": "xdXqonkwYm2XzM1Z",
+        "scopes": [
+          "frameos:mcp",
+          "offline_access"
+        ]
+      }
+    }
+  }
+}

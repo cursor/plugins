@@ -1,0 +1,13 @@
+interface:
+  display_name: "FrameOS Clip"
+  short_description: "Turn a long video into ranked short clips"
+  default_prompt: "Use $frameos-clip to turn this video into 3 vertical shorts and show me the best clips first."
+policy:
+  allow_implicit_invocation: true
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "frameos"
+      description: "FrameOS MCP server"
+      transport: "streamable_http"
+      url: "https://frameos.studio/mcp"
