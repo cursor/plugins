@@ -1,0 +1,29 @@
+{
+  "name": "otc-llc",
+  "displayName": "OTC",
+  "version": "1.0.0",
+  "description": "Help create a passkey.",
+  "author": {
+    "name": "OTC LLC",
+    "email": "ai@otc.network"
+  },
+  "homepage": "https://otc.network",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "otc",
+    "passkey",
+    "webauthn",
+    "authentication",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "otc",
+    "passkey",
+    "security",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

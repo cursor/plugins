@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "otc-llc",
+      "source": "third_party/otc-llc",
+      "description": "Help create a passkey."
     }
   ]
 }
