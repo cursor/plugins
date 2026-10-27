@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "greenlandai",
+      "source": "third_party/greenlandai",
+      "description": "Query companies, resource deposits, infrastructure, projects, and commodities, and trace supply chains and ownership."
     }
   ]
 }

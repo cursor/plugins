@@ -1,0 +1,31 @@
+{
+  "name": "greenlandai",
+  "displayName": "Greenland AI",
+  "version": "1.0.0",
+  "description": "Query companies, resource deposits, infrastructure, projects, and commodities, and trace supply chains and ownership.",
+  "author": {
+    "name": "Greenland AI Limited",
+    "email": "info@greenlandai.ai"
+  },
+  "homepage": "https://greenlandai.ai",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://greenlandai.ai/brand/greenlandai-mark-1024.png",
+  "keywords": [
+    "greenlandai",
+    "companies",
+    "natural resources",
+    "infrastructure",
+    "commodities",
+    "supply chain",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "greenlandai",
+    "data",
+    "supply chain",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
