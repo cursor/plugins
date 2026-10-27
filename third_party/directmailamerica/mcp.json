@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "directmailamerica": {
+      "type": "http",
+      "url": "https://directmailamerica.com/api/mcp"
+    }
+  }
+}
