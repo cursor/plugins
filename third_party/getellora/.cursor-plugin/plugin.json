@@ -1,0 +1,30 @@
+{
+  "name": "getellora",
+  "displayName": "Ellora",
+  "version": "1.0.0",
+  "description": "Review AI drafts against your team's voice profile and revise until they pass.",
+  "author": {
+    "name": "Ellora",
+    "email": "hello@getellora.com"
+  },
+  "homepage": "https://getellora.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "ellora",
+    "brand voice",
+    "writing",
+    "editing",
+    "review",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "ellora",
+    "writing",
+    "brand voice",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

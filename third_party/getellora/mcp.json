@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "getellora": {
+      "type": "http",
+      "url": "https://api.getellora.com/v1/external/mcp"
+    }
+  }
+}

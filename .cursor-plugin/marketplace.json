@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "getellora",
+      "source": "third_party/getellora",
+      "description": "Review AI drafts against your team's voice profile and revise until they pass."
     }
   ]
 }
