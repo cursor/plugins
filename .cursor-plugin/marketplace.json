@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "parsewise",
+      "source": "third_party/parsewise",
+      "description": "Extract, analyze, and query documents with Parsewise agents."
     }
   ]
 }

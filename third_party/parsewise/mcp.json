@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "parsewise": {
+      "type": "http",
+      "url": "https://api.parsewise.ai/mcp",
+      "placement": "server"
+    }
+  }
+}
