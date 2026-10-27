@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "vori",
+      "source": "third_party/vori",
+      "description": "Search products, analyze sales and inventory, review invoices, and manage pricing, promotions, and ordering for your grocery stores."
     }
   ]
 }

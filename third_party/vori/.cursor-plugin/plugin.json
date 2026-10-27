@@ -1,0 +1,32 @@
+{
+  "name": "vori",
+  "displayName": "VoriOS",
+  "version": "1.0.0",
+  "description": "Search products, analyze sales and inventory, review invoices, and manage pricing, promotions, and ordering for your grocery stores.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://vori.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "vori",
+    "vorios",
+    "grocery",
+    "retail",
+    "inventory",
+    "pricing",
+    "invoices",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "vori",
+    "grocery",
+    "retail",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
