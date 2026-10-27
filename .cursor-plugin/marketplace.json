@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "popnow",
+      "source": "third_party/popnow",
+      "description": "Create and edit images, generate short videos, music, and voiceovers, improve media, and discover creative style presets. Media generation uses prepaid PopNow credits."
     }
   ]
 }

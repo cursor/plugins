@@ -1,0 +1,31 @@
+{
+  "name": "popnow",
+  "displayName": "PopNow",
+  "version": "1.0.0",
+  "description": "Create and edit images, generate short videos, music, and voiceovers, improve media, and discover creative style presets. Media generation uses prepaid PopNow credits.",
+  "author": {
+    "name": "PopNow AI, LLC",
+    "email": "support@popnow.ai"
+  },
+  "homepage": "https://popnow.ai",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "popnow",
+    "image generation",
+    "video generation",
+    "music",
+    "voiceover",
+    "media",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "popnow",
+    "media",
+    "creative",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
