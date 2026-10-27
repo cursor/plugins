@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "bostad.io",
+      "source": "third_party/bostad.io",
+      "description": "Search homes for sale in Sweden from participating estate agents and get ranked links to the broker listings."
     }
   ]
 }

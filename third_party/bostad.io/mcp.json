@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "bostad.io": {
+      "type": "http",
+      "url": "https://api.bostad.io/mcp"
+    }
+  }
+}

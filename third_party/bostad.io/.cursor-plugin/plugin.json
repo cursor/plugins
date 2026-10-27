@@ -1,0 +1,29 @@
+{
+  "name": "bostad.io",
+  "displayName": "Bostad.io",
+  "version": "1.0.0",
+  "description": "Search homes for sale in Sweden from participating estate agents and get ranked links to the broker listings.",
+  "author": {
+    "name": "Bostad.io",
+    "email": "dev@bostad.io"
+  },
+  "homepage": "https://bostad.io",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "bostad.io",
+    "real estate",
+    "housing",
+    "sweden",
+    "listings",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "bostad.io",
+    "real estate",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
