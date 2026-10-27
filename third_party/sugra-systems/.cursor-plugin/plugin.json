@@ -1,0 +1,37 @@
+{
+  "name": "sugra-systems",
+  "displayName": "Sugra API",
+  "version": "1.2.1",
+  "description": "Query economic indicators, central banks, market data, filings, news, weather, and more, with sources cited.",
+  "author": {
+    "name": "Sugra Systems, Inc.",
+    "email": "support@sugra.systems"
+  },
+  "homepage": "https://sugra.systems",
+  "repository": "https://github.com/Sugra-Systems/sugra-api-plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "sugra",
+    "economic data",
+    "macroeconomics",
+    "central banks",
+    "market data",
+    "company filings",
+    "news",
+    "weather",
+    "climate",
+    "public data",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "sugra",
+    "data",
+    "finance",
+    "economics",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}
