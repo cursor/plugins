@@ -1,0 +1,31 @@
+{
+  "name": "twelvedata",
+  "displayName": "Twelve Data",
+  "version": "1.0.0",
+  "description": "Real-time and historical market data from Twelve Data: stocks, forex, crypto, ETFs and mutual funds. Quotes and price history, 60+ technical indicators, fundamentals, earnings, dividends, market movers and symbol search.",
+  "author": {
+    "name": "Twelve Data",
+    "email": "posetrov@twelvedata.com"
+  },
+  "homepage": "https://twelvedata.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "twelvedata",
+    "market-data",
+    "stocks",
+    "forex",
+    "crypto",
+    "technical-indicators",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "twelvedata",
+    "finance",
+    "market-data",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
