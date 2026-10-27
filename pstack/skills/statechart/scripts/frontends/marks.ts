@@ -1,5 +1,5 @@
 import { EC, type Mark, memo, type Part, type TraceState, type Value } from "../ir.ts";
-import { messageState, textOf } from "./messages.ts";
+import { actionOf, messageState } from "./messages.ts";
 import { BRACKET, isSpace, parseValue, tokenEnd, unreadable } from "./value.ts";
 
 const markTexts = (chunk: string, top: number[], inner: number[]) => {
@@ -81,8 +81,8 @@ export function readCounterexample(messages: Iterable<Part>) {
   const trace: TraceState[] = [];
   for (const m of messages) {
     if (typeof m === "string") continue;
-    const head = m.code === EC.TLC_STATE_PRINT2 && /^\d+: <([^\s>]+)/.exec(textOf(m));
-    if (head) trace.push({ action: head[1], vars: messageState(m) });
+    const action = m.code === EC.TLC_STATE_PRINT2 ? actionOf(m) : undefined;
+    if (action !== undefined) trace.push({ action, vars: messageState(m) });
     else if (
       m.code === EC.TLC_INVARIANT_VIOLATED_INITIAL ||
       m.code === EC.TLC_PROPERTY_VIOLATED_INITIAL

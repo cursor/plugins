@@ -565,6 +565,18 @@ test("a passing check above the chart budget writes no chart.mmd and gives the s
   assert.match(r.report, /^## Rules that hold\nTypeOK, NoDeadlock$/m);
 });
 
+test("a property that INSTANCE actions break above the chart budget draws their qualified names and the loop", () => {
+  const dir = copyCase("CounterInstance", (d) => overBudget(path.join(d, "verdict-1.out")));
+  const r = run(dir);
+  assert.equal(r.status, 1);
+  assert.equal(r.configs.ChartRun, undefined);
+  assert.match(
+    r.report,
+    /^1\. C!Up: 1\n2\. C!Up: 2\n3\. C!Back: 1\nThe run loops through "1" and "2" forever\.$/m,
+  );
+  assert.match(read(path.join(r.out, "chart.mmd")), /^  s\d+ --> s\d+: C!Back$/m);
+});
+
 test("a drawing run that counts more states than the chart budget gives only the bug paths", () => {
   const dir = copyCase("FirstRule", (d) => overBudget(path.join(d, "ChartRun.out")));
   const r = run(dir);
