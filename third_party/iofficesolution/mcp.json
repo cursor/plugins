@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "iofficesolution": {
+      "type": "http",
+      "url": "https://mcp.innovationalofficesolution.com/pulse-convert/"
+    }
+  }
+}
