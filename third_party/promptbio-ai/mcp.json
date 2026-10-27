@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "promptbio-ai": {
+      "type": "http",
+      "url": "https://platform.promptbio.ai/mcp"
+    }
+  }
+}

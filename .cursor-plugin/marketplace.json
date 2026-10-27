@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "promptbio-ai",
+      "source": "third_party/promptbio-ai",
+      "description": "Process biological data and run biomarker discovery workflows on PromptBio's life sciences platform."
     }
   ]
 }

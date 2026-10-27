@@ -1,0 +1,30 @@
+{
+  "name": "promptbio-ai",
+  "displayName": "PromptBio",
+  "version": "1.0.0",
+  "description": "Process biological data and run biomarker discovery workflows on PromptBio's life sciences platform.",
+  "author": {
+    "name": "PromptBio AI",
+    "email": "shashi@promptbio.ai"
+  },
+  "homepage": "https://promptbio.ai",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "promptbio",
+    "life sciences",
+    "bioinformatics",
+    "biomarker discovery",
+    "genomics",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "promptbio",
+    "life sciences",
+    "bioinformatics",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
