@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "rephraseai": {
+      "type": "http",
+      "url": "https://www.rephraseai.com/cursor/mcp"
+    }
+  }
+}
