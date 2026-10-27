@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "airtasker": {
+      "type": "http",
+      "url": "https://mcp.airtasker.com/mcp"
+    }
+  }
+}

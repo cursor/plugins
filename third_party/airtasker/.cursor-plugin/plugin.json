@@ -1,0 +1,30 @@
+{
+  "name": "airtasker",
+  "displayName": "Airtasker",
+  "version": "0.1.0",
+  "description": "Post everyday jobs and hire local Taskers, or browse nearby paid work and make offers.",
+  "author": {
+    "name": "Airtasker",
+    "email": "regan.mcgregor@airtasker.com"
+  },
+  "homepage": "https://www.airtasker.com",
+  "repository": "https://github.com/airtasker/airtasker-mcp-server",
+  "license": "Apache-2.0",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "airtasker",
+    "tasks",
+    "marketplace",
+    "local services",
+    "gig work",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "airtasker",
+    "marketplace",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}

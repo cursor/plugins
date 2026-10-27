@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "airtasker",
+      "source": "third_party/airtasker",
+      "description": "Post everyday jobs and hire local Taskers, or browse nearby paid work and make offers."
     }
   ]
 }
