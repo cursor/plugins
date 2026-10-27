@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "bookipi": {
+      "type": "http",
+      "url": "http://mcp.bkpi.co/mcp"
+    }
+  }
+}

@@ -647,6 +647,11 @@
       "name": "ringcentral-chat",
       "source": "third_party/ringcentral-chat",
       "description": "Read team chats and posts, send messages, and manage teams, tasks, and notes."
+    },
+    {
+      "name": "bookipi",
+      "source": "third_party/bookipi",
+      "description": "Create and send invoices, chase payments, log expenses, manage customers and contracts, and pull reports from your Bookipi account."
     }
   ]
 }
