@@ -1,0 +1,30 @@
+{
+  "name": "attention",
+  "displayName": "Attention",
+  "version": "1.1.0",
+  "description": "Search sales conversations, read call transcripts, and get AI-powered insights from Attention.",
+  "author": {
+    "name": "Attention",
+    "email": "team@attention.tech"
+  },
+  "homepage": "https://docs.attention.com/attention-mcp-server",
+  "repository": "https://github.com/attentiontech/attention",
+  "license": "MIT",
+  "keywords": [
+    "attention",
+    "mcp",
+    "sales",
+    "conversations",
+    "transcripts",
+    "coaching",
+    "conversation-intelligence"
+  ],
+  "category": "integrations",
+  "tags": [
+    "mcp",
+    "sales",
+    "conversation-intelligence"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}

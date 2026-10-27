@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "attention": {
+      "type": "http",
+      "url": "https://api.attention.tech/mcp"
+    }
+  }
+}

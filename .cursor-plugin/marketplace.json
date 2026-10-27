@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "attention",
+      "source": "third_party/attention",
+      "description": "Search sales conversations, read call transcripts, and get AI-powered insights from Attention."
     }
   ]
 }
