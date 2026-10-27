@@ -1,0 +1,30 @@
+{
+  "name": "secondpage",
+  "displayName": "SecondPage",
+  "version": "1.0.0",
+  "description": "Publish reports, dashboards, decks, and guides as versioned web pages, and revise them from teammate comments.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://secondpage.cc",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://secondpage.cc/brand/secondpage-tile-paper.png",
+  "keywords": [
+    "secondpage",
+    "publishing",
+    "web pages",
+    "reports",
+    "dashboards",
+    "comments",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "secondpage",
+    "publishing",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

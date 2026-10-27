@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "secondpage": {
+      "type": "http",
+      "url": "https://mcp.secondpage.cc/mcp"
+    }
+  }
+}
