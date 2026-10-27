@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "skycloak",
+      "source": "third_party/skycloak",
+      "description": "Manage managed Keycloak clusters, realms, users, roles, groups, applications, SSO, and audit events."
     }
   ]
 }

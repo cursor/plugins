@@ -1,0 +1,32 @@
+{
+  "name": "skycloak",
+  "displayName": "Skycloak",
+  "version": "1.0.0",
+  "description": "Manage managed Keycloak clusters, realms, users, roles, groups, applications, SSO, and audit events.",
+  "author": {
+    "name": "Skycloak",
+    "email": "guilliano.molaire@skycloak.io"
+  },
+  "homepage": "https://skycloak.io",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "skycloak",
+    "keycloak",
+    "identity",
+    "iam",
+    "sso",
+    "oidc",
+    "authentication",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "skycloak",
+    "keycloak",
+    "identity",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
