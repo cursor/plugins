@@ -1,0 +1,31 @@
+{
+  "name": "hamster",
+  "displayName": "Hamster",
+  "version": "3.5.1",
+  "description": "Read and update Hamster briefs, plans, and tasks, and turn approved briefs into shipped code.",
+  "author": {
+    "name": "Hamster",
+    "email": "jeremiah@tryhamster.com"
+  },
+  "homepage": "https://tryhamster.com",
+  "repository": "https://github.com/gethamster/plugin",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "hamster",
+    "briefs",
+    "planning",
+    "task-orchestration",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "planning",
+    "product",
+    "code-review",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/",
+  "agents": "./agents/"
+}

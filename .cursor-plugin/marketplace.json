@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "hamster",
+      "source": "third_party/hamster",
+      "description": "Read and update Hamster briefs, plans, and tasks, and turn approved briefs into shipped code."
     }
   ]
 }
