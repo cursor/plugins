@@ -647,6 +647,11 @@
       "name": "ringcentral-chat",
       "source": "third_party/ringcentral-chat",
       "description": "Read team chats and posts, send messages, and manage teams, tasks, and notes."
+    },
+    {
+      "name": "pickfu",
+      "source": "third_party/pickfu",
+      "description": "Run fast consumer polls with real people. Draft, preview, and publish PickFu polls, then read results."
     }
   ]
 }

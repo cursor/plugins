@@ -1,0 +1,29 @@
+{
+  "name": "pickfu",
+  "displayName": "PickFu",
+  "version": "0.1.0",
+  "description": "Run fast consumer polls with real people. Draft, preview, and publish PickFu polls, then read results.",
+  "author": {
+    "name": "PickFu"
+  },
+  "homepage": "https://www.pickfu.com",
+  "repository": "https://github.com/pickfu/pickfu-mcp-plugin",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "pickfu",
+    "consumer research",
+    "polls",
+    "surveys",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "pickfu",
+    "research",
+    "polls",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
+}
