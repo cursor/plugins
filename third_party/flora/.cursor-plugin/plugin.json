@@ -1,0 +1,25 @@
+{
+  "name": "flora",
+  "displayName": "FLORA",
+  "version": "1.0.0",
+  "description": "Generate images, video, and 3D with leading models and iterate on a shareable FLORA canvas.",
+  "author": {
+    "name": "FLORA",
+    "email": "harish@florafauna.ai"
+  },
+  "homepage": "https://flora.ai",
+  "repository": "https://github.com/florafauna-ai/flora-mcp-skills",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "flora",
+    "image-generation",
+    "video-generation",
+    "3d",
+    "creative",
+    "canvas",
+    "mcp"
+  ],
+  "category": "integrations",
+  "mcpServers": "./mcp.json"
+}

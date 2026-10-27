@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "flora",
+      "source": "third_party/flora",
+      "description": "Generate images, video, and 3D with leading models and iterate on a shareable FLORA canvas."
     }
   ]
 }
