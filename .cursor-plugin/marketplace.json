@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "stella",
+      "source": "third_party/stella",
+      "description": "Search legal sources and work with your accessible matters, documents, templates, and contacts in stella."
     }
   ]
 }
