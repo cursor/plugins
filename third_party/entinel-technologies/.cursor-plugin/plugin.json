@@ -1,0 +1,30 @@
+{
+  "name": "entinel-technologies",
+  "displayName": "Entergram",
+  "version": "1.0.0",
+  "description": "Find, summarize, and reply to Telegram conversations, and manage CRM notes, tickets, and follow-ups in Entergram.",
+  "author": {
+    "name": "Entinel Technologies OÜ",
+    "email": "veer@entergram.com"
+  },
+  "homepage": "https://entergram.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://www.entergram.com/logo.png",
+  "keywords": [
+    "entergram",
+    "telegram",
+    "crm",
+    "messaging",
+    "tickets",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "entergram",
+    "telegram",
+    "crm",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

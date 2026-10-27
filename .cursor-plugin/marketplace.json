@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "entinel-technologies",
+      "source": "third_party/entinel-technologies",
+      "description": "Find, summarize, and reply to Telegram conversations, and manage CRM notes, tickets, and follow-ups in Entergram."
     }
   ]
 }
