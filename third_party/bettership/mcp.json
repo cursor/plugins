@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "bettership": {
+      "type": "http",
+      "url": "https://api.bettership.ai/mcp"
+    }
+  }
+}

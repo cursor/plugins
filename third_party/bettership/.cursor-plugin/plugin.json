@@ -1,0 +1,32 @@
+{
+  "name": "bettership",
+  "displayName": "Bettership",
+  "version": "0.1.14",
+  "description": "Use your published Bettership skills, prompts, context packs, and Library.",
+  "author": {
+    "name": "Bettership",
+    "email": "jesse@bettership.ai"
+  },
+  "homepage": "https://www.bettership.ai",
+  "repository": "https://github.com/Bettership/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "bettership",
+    "learning",
+    "skills",
+    "library",
+    "prompts",
+    "context packs",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "bettership",
+    "learning",
+    "knowledge",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}

@@ -120,6 +120,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `ringcentral-phone` | [RingCentral Phone](third_party/ringcentral-phone/) | Cursor | Integrations | Read call activity, AI call notes, SMS, voicemail, and fax, and send SMS. |
 | `ringcentral-chat` | [RingCentral Chat](third_party/ringcentral-chat/) | Cursor | Integrations | Read team chats and posts, send messages, and manage teams, tasks, and notes. |
 | `servicenow` | [ServiceNow](third_party/servicenow/) | Cursor | Integrations | Call the tools your admin publishes on a ServiceNow instance. |
+| `bettership` | [Bettership](third_party/bettership/) | Bettership | Integrations | Use your published Bettership skills, prompts, context packs, and Library. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
