@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "telnyx",
+      "source": "third_party/telnyx",
+      "description": "Search Telnyx API docs and manage AI Assistants, voice calls, messaging, and phone numbers."
     }
   ]
 }
