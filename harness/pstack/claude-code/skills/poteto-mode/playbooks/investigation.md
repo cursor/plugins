@@ -4,7 +4,7 @@
 
 Investigation requests are read-only. They produce a cited explanation or a recommendation, not a code change.
 
-1. Route through the **how** skill. For motivation questions, also route through the **why** skill.
+1. Route through the **how** skill. For motivation questions, also route through the **why** skill. Ground in the primary source for the exact version in use (the pinned library source, or a vendor's `/llms.txt` docs index) before docs pages or memory, since docs often trail the pinned version.
 2. Throughput checkpoint stays one line: `throughput checkpoint: n/a, read-only investigation`.
 3. Produce the `how`-shaped output (Overview / Key Concepts / How It Works / Where Things Live / Gotchas), or a recommendation with a tradeoffs table if the request is a decision between alternatives.
 4. Apply the **unslop** skill to the reply.

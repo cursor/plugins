@@ -34,6 +34,10 @@ Design it twice. Require at least two structurally distinct candidates before sy
 
 Screen every candidate against [`references/design-red-flags.md`](references/design-red-flags.md) before synthesis. Assume the next contributor is an agent that sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Prefer the design where a change that looks right from one file is right for the whole repo.
 
+Before comparing, define the counted unit as everything a user must learn (every key, option, verb, and route), not the number of top-level blocks, and set a budget for it. A design can cut blocks while its learned surface stays the same size.
+
+Test guessability with a blind probe. Show a fresh agent, on a different model, about a third of the surface, have it guess the rest, and score the guesses against an answer key written before the probe. Use the score as the pass bar. After any rename taken from a probe, run a fresh probe, because the old score now measures fit.
+
 Compare viable candidates on interface depth. Prefer the design that hides more complexity behind a smaller, simpler public surface. A rich interface can keep call chains short by concentrating capability instead of scattering it across layers.
 
 Arena returns one synthesized design package. Its synthesis decision fills the rationale's "Synthesis decision" section.
