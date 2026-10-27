@@ -1,0 +1,24 @@
+{
+  "name": "flaim-fantasy",
+  "displayName": "Flaim Fantasy",
+  "version": "1.0.0",
+  "description": "Read-only start/sit, waiver, and trade advice from your ESPN, Yahoo, and Sleeper fantasy leagues.",
+  "author": {
+    "name": "Flaim Fantasy LLC",
+    "email": "fantasy@flaim.app"
+  },
+  "homepage": "https://flaim.app",
+  "repository": "https://github.com/jdguggs10/flaim-fantasy",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "flaim",
+    "fantasy-sports",
+    "espn",
+    "yahoo",
+    "sleeper",
+    "mcp"
+  ],
+  "category": "integrations",
+  "mcpServers": "./mcp.json"
+}

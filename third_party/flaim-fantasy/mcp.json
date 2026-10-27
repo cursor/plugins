@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "flaim-fantasy": {
+      "type": "http",
+      "url": "https://api.flaim.app/mcp?auth=required"
+    }
+  }
+}
