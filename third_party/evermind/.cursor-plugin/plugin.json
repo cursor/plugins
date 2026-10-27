@@ -1,0 +1,31 @@
+{
+  "name": "evermind",
+  "displayName": "EverMe",
+  "version": "1.0.0",
+  "description": "Long-term memory for your agents: recall preferences, project context, and decisions across sessions.",
+  "author": {
+    "name": "EverMind",
+    "email": "haoran.sun@evermind.ai"
+  },
+  "homepage": "https://everme.evermind.ai",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "everme",
+    "evermind",
+    "memory",
+    "long-term memory",
+    "recall",
+    "context",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "everme",
+    "memory",
+    "productivity",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

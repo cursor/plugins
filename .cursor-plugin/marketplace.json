@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "evermind",
+      "source": "third_party/evermind",
+      "description": "Long-term memory for your agents: recall preferences, project context, and decisions across sessions."
     }
   ]
 }
