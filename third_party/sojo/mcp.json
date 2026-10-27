@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "sojo": {
+      "type": "http",
+      "url": "https://sojo.gg/mcp"
+    }
+  }
+}
