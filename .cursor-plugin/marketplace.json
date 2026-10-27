@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "corply",
+      "source": "third_party/corply",
+      "description": "Form and run Delaware C-corps: cap tables, founder stock, SAFEs, board consents, and filings."
     }
   ]
 }

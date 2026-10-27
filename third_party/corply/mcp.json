@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "corply": {
+      "type": "http",
+      "url": "https://corply.dev/mcp"
+    }
+  }
+}
