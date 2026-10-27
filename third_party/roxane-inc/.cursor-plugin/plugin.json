@@ -1,0 +1,30 @@
+{
+  "name": "roxane-inc",
+  "displayName": "PrivOS",
+  "version": "1.0.0",
+  "description": "Connect to your PrivOS workspace through the official privos CLI. Read and post room messages, manage tasks, lists, items, agents, and rooms, with every write shown as a dry run until you confirm it.",
+  "author": {
+    "name": "Roxane, Inc.",
+    "email": "info@privos.ai"
+  },
+  "homepage": "https://privos.ai",
+  "repository": "https://github.com/PrivOS-AI/privos",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "privos",
+    "workspace",
+    "chat",
+    "tasks",
+    "lists",
+    "agents",
+    "cli"
+  ],
+  "category": "integrations",
+  "tags": [
+    "privos",
+    "workspace",
+    "cli"
+  ],
+  "skills": "./skills/"
+}

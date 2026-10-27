@@ -652,6 +652,11 @@
       "name": "servicenow",
       "source": "third_party/servicenow",
       "description": "Call the tools your admin publishes on a ServiceNow instance."
+    },
+    {
+      "name": "roxane-inc",
+      "source": "third_party/roxane-inc",
+      "description": "Read and post PrivOS room messages and manage tasks, lists, items, agents, and rooms through the privos CLI."
     }
   ]
 }
