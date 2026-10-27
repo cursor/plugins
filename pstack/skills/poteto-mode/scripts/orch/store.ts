@@ -411,7 +411,7 @@ async function acquireLock(
     if (errorCode(error) !== "EEXIST") {
       throw error;
     }
-    let holder = "unknown";
+    let holder: string;
     try {
       holder = (await readFile(path, "utf8")).trim() || "unknown";
     } catch {
