@@ -1,0 +1,29 @@
+{
+  "name": "klaracase",
+  "displayName": "klaracase",
+  "version": "1.0.0",
+  "description": "Search German court decisions, statutes, and EU legal acts, and check citations.",
+  "author": {
+    "name": "SPARQ VENTURES UG",
+    "email": "altan@klaracase.de"
+  },
+  "homepage": "https://klaracase.de",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "klaracase",
+    "legal research",
+    "german law",
+    "court decisions",
+    "statutes",
+    "citations",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "klaracase",
+    "legal",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
