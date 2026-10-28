@@ -1,0 +1,32 @@
+{
+  "name": "brandwise",
+  "displayName": "Brandwise",
+  "version": "1.0.0",
+  "description": "Read and reply to Instagram, Facebook, and TikTok comments, DMs, and support emails using your Brandwise knowledge base.",
+  "author": {
+    "name": "Brandwise"
+  },
+  "homepage": "https://brandwise.ai",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "brandwise",
+    "social media",
+    "comments",
+    "dms",
+    "customer support",
+    "instagram",
+    "facebook",
+    "tiktok",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "brandwise",
+    "social media",
+    "customer support",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

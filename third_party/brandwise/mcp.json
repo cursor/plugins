@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "brandwise": {
+      "type": "http",
+      "url": "https://mcp.brandwise.ai/api/mcp"
+    }
+  }
+}
