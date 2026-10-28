@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "msg91": {
+      "type": "http",
+      "url": "https://mcp.msg91.com/mcp"
+    }
+  }
+}

@@ -121,6 +121,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `ringcentral-chat` | [RingCentral Chat](third_party/ringcentral-chat/) | Cursor | Integrations | Read team chats and posts, send messages, and manage teams, tasks, and notes. |
 | `servicenow` | [ServiceNow](third_party/servicenow/) | Cursor | Integrations | Call the tools your admin publishes on a ServiceNow instance. |
 | `rippling` | [Rippling](third_party/rippling/) | Cursor | Integrations | Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires. |
+| `msg91` | [MSG91](third_party/msg91/) | MSG91 | Integrations | Look up MSG91 docs and API request formats for SMS, WhatsApp, email, voice, RCS, and OTP messaging. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "msg91",
+      "source": "third_party/msg91",
+      "description": "Look up MSG91 docs and API request formats for SMS, WhatsApp, email, voice, RCS, and OTP messaging."
     }
   ]
 }
