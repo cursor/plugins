@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "glassfrog": {
+      "type": "http",
+      "url": "https://app.glassfrog.com/api/v5/mcp/core"
+    }
+  }
+}
