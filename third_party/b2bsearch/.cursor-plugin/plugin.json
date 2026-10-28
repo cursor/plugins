@@ -1,0 +1,33 @@
+{
+  "name": "b2bsearch",
+  "displayName": "b2bsearch",
+  "version": "1.0.0",
+  "description": "Search B2B people and company data on Apify: free segment counts, people with live emails, decision makers by domain, company lists with funding, work emails, and job postings as hiring signals.",
+  "author": {
+    "name": "b2bsearch"
+  },
+  "homepage": "https://apify.com/b2bsearch",
+  "repository": "https://github.com/ilyaviache/b2bsearch-plugin",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "b2bsearch",
+    "b2b",
+    "leads",
+    "prospecting",
+    "email-finder",
+    "company-data",
+    "jobs",
+    "apify",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "sales",
+    "prospecting",
+    "enrichment",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}
