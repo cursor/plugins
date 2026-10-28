@@ -1,0 +1,29 @@
+{
+  "name": "pengju",
+  "displayName": "LitSynth",
+  "version": "1.0.0",
+  "description": "AI literature review generation with traceable citations. Agents can read release info, validate screening protocols, and with an account token prepare papers and generate cited reviews under plan and credit rules.",
+  "author": {
+    "name": "Pengju, LLC",
+    "email": "support@litsource.net"
+  },
+  "homepage": "https://litsource.net",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "litsynth",
+    "literature review",
+    "citations",
+    "research",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "litsynth",
+    "research",
+    "citations",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
