@@ -1,0 +1,40 @@
+{
+  "name": "josystems",
+  "displayName": "Perps",
+  "version": "1.0.2",
+  "description": "Run the open-source Perps bot for Jupiter Perps (SOL, BTC, ETH): read market packets, size positions inside an owner-set leverage cap, and manage exits. Paper mode by default.",
+  "author": {
+    "name": "Bentayga Empire LLC",
+    "email": "lano@bentaygaempirellc.com"
+  },
+  "homepage": "https://github.com/BadmonLano/perps",
+  "repository": "https://github.com/BadmonLano/perps",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "perps",
+    "jupiter perps",
+    "solana",
+    "perpetuals",
+    "trading bot",
+    "paper trading"
+  ],
+  "category": "integrations",
+  "tags": [
+    "perps",
+    "trading",
+    "solana",
+    "crypto"
+  ],
+  "skills": [
+    "skills/perps-boss",
+    "skills/pnl-tracker",
+    "skills/forensics",
+    "skills/sub-skills/autoagent",
+    "skills/sub-skills/code-monitor",
+    "skills/sub-skills/learnings-summarizer",
+    "skills/sub-skills/morning-brief",
+    "skills/sub-skills/owner-ping",
+    "skills/sub-skills/warden"
+  ]
+}

@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "josystems",
+      "source": "third_party/josystems",
+      "description": "Run the open-source Perps bot for Jupiter Perps (SOL, BTC, ETH): read market packets, size positions inside an owner-set leverage cap, and manage exits. Paper mode by default."
     }
   ]
 }

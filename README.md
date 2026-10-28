@@ -121,6 +121,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `ringcentral-chat` | [RingCentral Chat](third_party/ringcentral-chat/) | Cursor | Integrations | Read team chats and posts, send messages, and manage teams, tasks, and notes. |
 | `servicenow` | [ServiceNow](third_party/servicenow/) | Cursor | Integrations | Call the tools your admin publishes on a ServiceNow instance. |
 | `rippling` | [Rippling](third_party/rippling/) | Cursor | Integrations | Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires. |
+| `josystems` | [Perps](third_party/josystems/) | Bentayga Empire LLC | Integrations | Run the open-source Perps bot for Jupiter Perps (SOL, BTC, ETH): read market packets, size positions inside an owner-set leverage cap, and manage exits. Paper mode by default. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
