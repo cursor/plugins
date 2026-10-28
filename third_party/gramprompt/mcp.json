@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "gramprompt": {
+      "type": "http",
+      "url": "https://gramprompt.com/mcp"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "gramprompt",
+  "displayName": "GramPrompt",
+  "version": "1.0.0",
+  "description": "Search gyms in a city or nearby and compare addresses, ratings, indicative day-pass prices, and session availability.",
+  "author": {
+    "name": "GramPrompt",
+    "email": "MUBARAKPATEL@AITHLETE.NET"
+  },
+  "homepage": "https://gramprompt.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://gramprompt.com/apple-touch-icon.png",
+  "keywords": [
+    "gramprompt",
+    "gyms",
+    "fitness",
+    "day pass",
+    "local search",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "gramprompt",
+    "fitness",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
