@@ -1,0 +1,31 @@
+{
+  "name": "solomon",
+  "displayName": "Solomon",
+  "version": "1.0.0",
+  "description": "Query e-commerce sales, orders, products, ad spend, marketing attribution, and site analytics from Solomon.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://www.solomon.com.br",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "solomon",
+    "e-commerce",
+    "analytics",
+    "marketing attribution",
+    "ad spend",
+    "roas",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "solomon",
+    "e-commerce",
+    "analytics",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
