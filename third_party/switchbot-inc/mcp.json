@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "switchbot-inc": {
+      "type": "http",
+      "url": "https://mindclip-mcp.switchbot.net/mcp"
+    }
+  }
+}

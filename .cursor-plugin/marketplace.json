@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "switchbot-inc",
+      "source": "third_party/switchbot-inc",
+      "description": "Review AI MindClip voice recordings, transcripts, summaries, to-dos, and recaps."
     }
   ]
 }
