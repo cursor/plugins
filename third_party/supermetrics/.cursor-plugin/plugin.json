@@ -1,0 +1,32 @@
+{
+  "name": "supermetrics",
+  "displayName": "Supermetrics",
+  "version": "1.0.0",
+  "description": "Query live marketing data from 170+ sources, including Google Ads, Meta Ads, GA4, LinkedIn, TikTok, HubSpot, and Shopify.",
+  "author": {
+    "name": "Supermetrics",
+    "email": "ivana.pesic@supermetrics.com"
+  },
+  "homepage": "https://supermetrics.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "supermetrics",
+    "marketing",
+    "analytics",
+    "google ads",
+    "meta ads",
+    "google analytics",
+    "reporting",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "supermetrics",
+    "marketing",
+    "analytics",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

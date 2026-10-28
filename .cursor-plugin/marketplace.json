@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "supermetrics",
+      "source": "third_party/supermetrics",
+      "description": "Query live marketing data from 170+ sources, including Google Ads, Meta Ads, GA4, LinkedIn, TikTok, HubSpot, and Shopify."
     }
   ]
 }
