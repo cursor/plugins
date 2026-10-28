@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "nordsynk": {
+      "type": "http",
+      "url": "https://mcp.nordsynk.se/mcp"
+    }
+  }
+}

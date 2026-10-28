@@ -1,0 +1,32 @@
+{
+  "name": "nordsynk",
+  "displayName": "Nordsynk for Fortnox",
+  "version": "1.0.0",
+  "description": "Read and prepare Fortnox invoices, vouchers, ledgers, and reports, with browser approval before changes.",
+  "author": {
+    "name": "Nordbeam AB",
+    "email": "hello@nordbeam.io"
+  },
+  "homepage": "https://nordsynk.se/fortnox-mcp",
+  "repository": "https://github.com/nordbeam/nordsynk-fortnox-mcp",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "nordsynk",
+    "fortnox",
+    "accounting",
+    "bookkeeping",
+    "invoices",
+    "sweden",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "nordsynk",
+    "fortnox",
+    "accounting",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
+}
