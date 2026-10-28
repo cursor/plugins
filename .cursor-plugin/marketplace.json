@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "tanatasa",
+      "source": "third_party/tanatasa",
+      "description": "Shop Singapore beauty products in SGD, build guest carts, and prepare hosted Stripe checkout after explicit buyer approval."
     }
   ]
 }

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "tanatasa": {
+      "type": "http",
+      "url": "https://tanatasa.sg/mcp"
+    }
+  }
+}
