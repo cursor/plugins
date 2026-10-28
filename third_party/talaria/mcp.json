@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "talaria": {
+      "type": "http",
+      "url": "https://api.newtalaria.com/mcp"
+    }
+  }
+}

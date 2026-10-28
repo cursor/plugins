@@ -1,0 +1,30 @@
+{
+  "name": "talaria",
+  "displayName": "Talaria",
+  "version": "1.0.0",
+  "description": "Triage errors, traces, and session replays from Talaria in your coding agent.",
+  "author": {
+    "name": "Talaria Labs",
+    "email": "heath@newtalaria.com"
+  },
+  "homepage": "https://www.newtalaria.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "talaria",
+    "errors",
+    "traces",
+    "session replay",
+    "observability",
+    "issue triage",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "talaria",
+    "observability",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
