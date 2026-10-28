@@ -21,11 +21,14 @@ done
 
 [ $# -ge 1 ] || { echo "usage: worktree-remove.sh [--dry-run] [-C <repo>] <worktree-path>..." >&2; exit 2; }
 
-if [ -z "$repo" ]; then
-	repo=$(git -C "$1" rev-parse --show-toplevel 2>/dev/null) \
-		|| repo=$(git rev-parse --show-toplevel 2>/dev/null) \
-		|| { echo "error: not in a git repo; pass -C <repo>" >&2; exit 1; }
-fi
+# Always operate from the primary worktree. `rev-parse --show-toplevel` on a
+# linked checkout returns that checkout, and `git worktree remove` refuses to
+# delete the current working directory.
+seed="${repo:-$1}"
+[ -n "${repo:-}" ] || seed=$(git rev-parse --show-toplevel 2>/dev/null || true)
+[ -n "$seed" ] || seed=$1
+repo=$(git -C "$seed" worktree list --porcelain 2>/dev/null | awk '/^worktree /{print $2; exit}')
+[ -n "$repo" ] || { echo "error: not a git repo; pass -C <repo>" >&2; exit 1; }
 cd "$repo" || exit 1
 git rev-parse --git-dir >/dev/null 2>&1 || { echo "error: not a git repo: $repo" >&2; exit 1; }
 
