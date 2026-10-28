@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "glance": {
+      "type": "http",
+      "url": "https://glance-api.fly.dev/mcp"
+    }
+  }
+}
