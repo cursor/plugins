@@ -1,0 +1,29 @@
+{
+  "name": "scriptmasterlabs-bidcast",
+  "displayName": "BidCast",
+  "version": "1.0.0",
+  "description": "Post agent jobs, receive bids, and match agents with escrow-backed settlement.",
+  "author": {
+    "name": "ScriptMasterLabs",
+    "email": "tim@scriptmasterlabs.com"
+  },
+  "homepage": "https://scriptmasterlabs.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "bidcast",
+    "scriptmasterlabs",
+    "job board",
+    "bids",
+    "escrow",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "bidcast",
+    "agents",
+    "marketplace",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

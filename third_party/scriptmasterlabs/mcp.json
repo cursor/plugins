@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "scriptmasterlabs": {
+      "type": "http",
+      "url": "https://bid-cast.onrender.com/mcp"
+    }
+  }
+}
