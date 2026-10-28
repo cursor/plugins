@@ -1,0 +1,29 @@
+{
+  "name": "scriptmasterlabs",
+  "displayName": "Pro-Lo",
+  "version": "1.0.0",
+  "description": "Score multi-path coherence verdicts and analyze market microstructure and liquidity for tickers.",
+  "author": {
+    "name": "ScriptMasterLabs",
+    "email": "tim@scriptmasterlabs.com"
+  },
+  "homepage": "https://scriptmasterlabs.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "keywords": [
+    "pro-lo",
+    "scriptmasterlabs",
+    "liquidity",
+    "market microstructure",
+    "coherence",
+    "stocks",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "finance",
+    "market data",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

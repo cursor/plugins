@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "scriptmasterlabs": {
+      "type": "http",
+      "url": "https://pro-lo.onrender.com/api/mcp/rpc"
+    }
+  }
+}
