@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "scriptmasterlabs": {
+      "type": "http",
+      "url": "https://b20.scriptmasterlabs.com/mcp"
+    }
+  }
+}
