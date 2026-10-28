@@ -1,0 +1,31 @@
+{
+  "name": "anglelabs",
+  "displayName": "Artifact Publisher",
+  "version": "1.0.0",
+  "description": "Publish self-contained HTML to an unlisted share link and read page comments back over MCP.",
+  "author": {
+    "name": "Angle Labs GmbH",
+    "email": "contact@artifactpublisher.com"
+  },
+  "homepage": "https://artifactpublisher.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT-0",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "artifact publisher",
+    "html",
+    "share link",
+    "publishing",
+    "feedback",
+    "artifacts",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "artifact-publisher",
+    "publishing",
+    "html",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

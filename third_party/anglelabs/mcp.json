@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "anglelabs": {
+      "type": "http",
+      "url": "https://app.artifactpublisher.com/mcp"
+    }
+  }
+}
