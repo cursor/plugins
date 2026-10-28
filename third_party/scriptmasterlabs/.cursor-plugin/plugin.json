@@ -1,0 +1,29 @@
+{
+  "name": "scriptmasterlabs",
+  "displayName": "Cascade Graph",
+  "version": "1.0.0",
+  "description": "Cascade Graph MCP: jury-scored cascade signal analysis for market events.",
+  "author": {
+    "name": "ScriptMasterLabs",
+    "email": "tim@scriptmasterlabs.com"
+  },
+  "homepage": "https://scriptmasterlabs.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "scriptmasterlabs",
+    "cascade graph",
+    "market events",
+    "signals",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "scriptmasterlabs",
+    "markets",
+    "signals",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
