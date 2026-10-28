@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "scriptmasterlabs": {
+      "type": "http",
+      "url": "https://agent-browser-r7d2.onrender.com/mcp"
+    }
+  }
+}

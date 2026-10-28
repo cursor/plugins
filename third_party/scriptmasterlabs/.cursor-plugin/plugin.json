@@ -1,0 +1,28 @@
+{
+  "name": "scriptmasterlabs",
+  "displayName": "ScriptMasterLabs",
+  "version": "1.0.0",
+  "description": "Pay-per-call web browsing and content extraction MCP for AI agents.",
+  "author": {
+    "name": "ScriptMasterLabs",
+    "email": "tim@scriptmasterlabs.com"
+  },
+  "homepage": "https://scriptmasterlabs.com",
+  "license": "MIT",
+  "logo": "assets/logo.jpg",
+  "keywords": [
+    "scriptmasterlabs",
+    "web browsing",
+    "scraping",
+    "content extraction",
+    "x402",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "scriptmasterlabs",
+    "browser",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
