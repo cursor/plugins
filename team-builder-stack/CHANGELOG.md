@@ -2,6 +2,12 @@
 
 Changes to the Team Builder Stack, for people using it. Newer entries come first. A release turns Unreleased into a version entry.
 
+## 0.25.3 (2026-10-28)
+
+- The team map builds when Who verifies says none, in any case and with or without a reason. The map marks no bot as the verifier and says the bot writes nothing and tells its manager bot, or you, that the check couldn't run. A misspelled bot name under Who verifies still stops the build, and the team map check now lists it too. The check also accepts Hands to: none with a reason.
+- The apply checklist adds a Team map Page line under Records and logs when your spec has no team map line, and the 0.25.2 checklist lists the Team Builder operating guide's profile fact 3 sentence.
+- The release checks also catch a skill that has a bot act in a named connector product, such as posting in a named chat app.
+
 ## 0.25.2 (2026-10-27)
 
 - Wording fixes, so the skills describe only what you see and do in Grok Bot. A bot saves its setup facts to its memory as profile facts. You add apps and plugins from Connect apps. The team map is a Page (or a Markdown document if you prefer). A model bot shares a Bot template. Approvals happen in a bot's own chat, not in a group chat. A rule that must never be broken goes in your Auto-review rules in Settings.

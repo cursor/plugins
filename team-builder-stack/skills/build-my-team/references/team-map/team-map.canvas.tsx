@@ -100,6 +100,10 @@ interface MapBody {
   voiceSkill: string
   /** The bot that checks work when a bot can't start a fresh checker itself */
   verifier: string
+  /** Who verifies says none: a bot that can't start a fresh checker writes nothing and says so */
+  noVerifier?: boolean
+  /** The reason after none, when Who verifies gives one */
+  verifierReason?: string
   /** In a proposal, who verified before, when that changes */
   verifierWas?: string
   bots: MapBot[]
@@ -137,6 +141,8 @@ type Children = Parameters<typeof Stack>[0]['children']
 
 type Place = { level: 'team' } | { level: 'bot'; bot: string } | { level: 'skill'; bot: string; skill: string }
 
+const noVerifierLine = (reason?: string) =>
+  `None${reason ? (/^(?:because|since|until)\b/i.test(reason) ? ` ${reason}` : `, ${reason}`) : ''}. The bot writes nothing and tells its manager bot, or you, that the check couldn't run`
 const TYPE_LABEL: Record<string, string> = { builder: 'Builder', manager: 'Manager', owner: 'Owner', specialist: 'Specialist' }
 const CHANGE_LABEL: Record<Change, string> = { added: 'Added', changed: 'Changed', removed: 'Removed' }
 const CHANGE_TONE: Record<Change, 'added' | 'renamed' | 'deleted'> = { added: 'added', changed: 'renamed', removed: 'deleted' }
@@ -355,7 +361,7 @@ function TeamLevel({ body, showChanges, go }: { body: MapBody; showChanges: bool
         <H2>Runs the team</H2>
         <Field label="Who verifies, when a bot can't start a fresh checker">
           <Row gap={6} wrap>
-            <Value text={body.verifier ? name(body.verifier) : ''} slot="a specialist or manager bot" />
+            <Value text={body.noVerifier ? noVerifierLine(body.verifierReason) : body.verifier ? name(body.verifier) : ''} slot="a specialist or manager bot" />
             {showChanges && body.verifierWas && (
               <Pill size="sm" tone="renamed">
                 Changed

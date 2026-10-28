@@ -33,6 +33,8 @@ python3 build_team_map.py --check --spec /workspace/team-builder-stack/team-spec
 
 `--check` writes nothing. It exits non-zero and prints a plain list of what is missing, per bot and skill.
 
+Who verifies is either a specialist or manager bot under Your team, or none, in any case and with or without a reason. Anything else, such as a misspelled bot name, is listed by `--check` and stops a build. A bot named under Your team is matched first, so a bot whose name starts with None is still that bot. With none, the map marks no bot as the verifier and says the bot writes nothing and tells its manager bot, or you, that the check couldn't run, with the reason when one is given.
+
 ## How each bot looks
 
 Each bot on the map is a colored shape with its initials, drawn with plain CSS, so the map ships no image files.

@@ -198,6 +198,41 @@ def none_without_reason(value):
     return bool(re.fullmatch(r"none[.!]?", value.strip(), re.I))
 
 
+NONE_RE = re.compile(r"none(?:[.!]?\s*$|\s*[,;:(]\s*(.*?)\)?[.!]?\s*$|\s+(?:yet|for now)[.!]?\s*$|\s+((?:because|since|until)\b.*?)[.!]?\s*$)", re.I)
+
+
+def says_none(value):
+    """None alone, or none, and why, in any case. A name such as None Bot is not none."""
+    return bool(NONE_RE.match((value or "").strip()))
+
+
+def none_reason(value):
+    match = NONE_RE.match((value or "").strip())
+    return (match.group(1) or match.group(2) or "").strip() if match else ""
+
+
+def verifier_problem(verifier, bots):
+    """bots is (name, type) pairs from Your team. Empty and none are valid answers.
+
+    A bot's name is matched first, so a bot named like none is still that bot.
+    """
+    if not verifier:
+        return ""
+    kind = next((t for n, t in bots if n.lower() == verifier.lower()), None)
+    if kind is None:
+        if says_none(verifier):
+            return ""
+        return f"Your team: Who verifies names {verifier}, which isn't a block under Your team. Name a specialist or manager bot, or write none"
+    if kind not in ("specialist", "manager"):
+        return f"Your team: Who verifies must be a specialist or manager bot, and {verifier} is {kind or 'not typed yet'}"
+    return ""
+
+
+def no_verifier_line(reason):
+    joined = f" {reason}" if re.match(r"(?:because|since|until)\b", reason, re.I) else f", {reason}"
+    return f"none{joined if reason else ''}. The bot writes nothing and tells its manager bot, or you, that the check couldn't run"
+
+
 def needs_review(value):
     """A review value that starts with none is not a review point."""
     text = (value or "").strip()
@@ -965,12 +1000,13 @@ def body_of(spec, skills_dir, pictures_dir=None, spec_dir=None, current_bots=Non
     assign_pictures(bots, pictures_dir, spec_dir)
     by_name = {b["name"].lower(): b["id"] for b in bots}
     verifier = value(team["fields"].get("Who verifies", ""))
-    if verifier:
-        v = next((b for b in bots if b["name"].lower() == verifier.lower()), None)
-        if not v:
-            sys.exit(f"Your team: Who verifies names {verifier}, which isn't a block under Your team")
-        if v["type"] not in ("specialist", "manager"):
-            sys.exit(f"Your team: Who verifies must be a specialist or manager bot, and {verifier} is {v['type'] or 'not typed yet'}")
+    problem = verifier_problem(verifier, [(b["name"], b["type"]) for b in bots])
+    if problem:
+        sys.exit(problem)
+    no_verifier = verifier.lower() not in by_name and says_none(verifier)
+    verifier_reason = none_reason(verifier) if no_verifier else ""
+    if no_verifier:
+        verifier = ""
 
     workflows = {}
     for e in work["entries"]:
@@ -1073,6 +1109,8 @@ def body_of(spec, skills_dir, pictures_dir=None, spec_dir=None, current_bots=Non
                  "timeZone": value(role.get("Home time zone", ""))},
         "voiceSkill": value(work["fields"].get("Writing voice skill", "")),
         "verifier": by_name.get(verifier.lower(), "") if verifier else "",
+        "noVerifier": no_verifier,
+        "verifierReason": verifier_reason,
         "bots": bots, "skills": skills, "handoffs": handoffs, "systems": systems,
         "routines": routines,
     }
@@ -1122,9 +1160,12 @@ def compare(now, before):
         names = {s["name"] for s in x["steps"]}
         x["steps"] += [dict(s, change="removed") for s in o["steps"] if s["name"] not in names]
 
-    if now["verifier"] != before["verifier"]:
+    def verifier_key(body):
+        return "none" if body.get("noVerifier") else body["verifier"]
+
+    if verifier_key(now) != verifier_key(before):
         names = {b["id"]: b["name"] for b in before["bots"]}
-        now["verifierWas"] = names.get(before["verifier"], "") or "empty"
+        now["verifierWas"] = "none" if before.get("noVerifier") else (names.get(before["verifier"], "") or "empty")
         counts["changed"] += 1
     # Group by from/to, then match each route on its own. An exact route stays
     # put, and a leftover pair is an edit, so one route is a change rather than
@@ -1369,7 +1410,7 @@ def document_view(data):
         "proposal": {"title": ("Proposed change" if data["before"] else "Proposed team"), "summary": proposal["summary"]} if proposal else None,
         "specLine": "".join([f", version {spec['version']}" if spec["version"] else "", f", {spec['date']}" if spec["date"] else ""]),
         "role": {k: filled(v, slot) for (k, v), slot in zip(body["role"].items(), ["your role", "what you drive, and how it's measured", "what you manage", "how many", "your home time zone"])},
-        "verifier": names.get(body["verifier"], "") or "to fill in: the specialist or manager bot that checks work when a bot can't start a fresh checker",
+        "verifier": no_verifier_line(body.get("verifierReason", "")) if body.get("noVerifier") else (names.get(body["verifier"], "") or "to fill in: the specialist or manager bot that checks work when a bot can't start a fresh checker"),
         "verifierWas": body.get("verifierWas", "") if changes else "",
         "runs": [b for b in bot_views if b["runs"]],
         "units": [b for b in bot_views if not b["runs"]],
@@ -1517,7 +1558,7 @@ def check_step_lines(prefix, lines, problems, reviews_by_number=None, step_numbe
             problems.append(f"{prefix}: {label} is blank")
         elif none_without_reason(found[label]):
             problems.append(f"{prefix}: {label} is none without a reason")
-        elif label == "Hands to" and not states_wait(found[label]):
+        elif label == "Hands to" and not states_wait(found[label]) and not none_reason(found[label]):
             problems.append(f"{prefix}: Hands to does not say whether it waits")
         for phrase in PLACEHOLDER_PHRASES:
             if phrase in found.get(label, "").lower():
@@ -1634,6 +1675,10 @@ def check_spec_fields(spec):
         problems.extend(look_problems(entry["name"], fields))
         if entry["name"].lower() == "team builder" and "Plugin version applied" not in fields:
             problems.append("bot Team Builder: Plugin version applied is missing")
+    named = [(e["name"], value(e["fields"].get("Type", "")).lower()) for e in team["entries"] if not (e["blank"] or is_slot(e["name"]))]
+    problem = verifier_problem(value(team["fields"].get("Who verifies", "")), named)
+    if problem:
+        problems.append(problem)
     for line in team["lists"].get("Handoffs", []):
         parsed = parse_handoff(line, by_name)
         if parsed.get("error"):

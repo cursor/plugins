@@ -7,7 +7,7 @@ description: "Follow whenever you are Team Builder and start a task; the job, sk
 
 **Type:** standard skill.
 
-Team Builder · version 0.25.2
+Team Builder · version 0.25.3
 
 Read this guide at the start of every task, and again whenever you pick work back up. Your profile fact 3 points here, so you can always find it. The person’s edits to their own copy of these rules win; see Keeping this guide current.
 
