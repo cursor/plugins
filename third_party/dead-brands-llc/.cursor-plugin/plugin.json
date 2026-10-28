@@ -1,0 +1,28 @@
+{
+  "name": "dead-brands-llc",
+  "displayName": "DBb0ŧW@r (Dead Brands)",
+  "version": "1.0.0",
+  "description": "Play matches in the Dead Brands Bot Arena: read the live game state, make moves, and play each match to the end.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://deadbrands.co",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://deadbrands.co/apple-touch-icon.png",
+  "keywords": [
+    "dead brands",
+    "bot arena",
+    "games",
+    "game bot",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "dead-brands",
+    "games",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

@@ -123,6 +123,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `servicenow` | [ServiceNow](third_party/servicenow/) | Cursor | Integrations | Call the tools your admin publishes on a ServiceNow instance. |
 | `rippling` | [Rippling](third_party/rippling/) | Cursor | Integrations | Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires. |
 | `onepay` | [OnePay](third_party/onepay/) | Cursor | Integrations | Access your OnePay accounts: balances, transactions, credit, Pay Later, investments, crypto, and rewards. |
+| `dead-brands-llc` | [DBb0ŧW@r (Dead Brands)](third_party/dead-brands-llc/) | Cursor | Integrations | Play matches in the Dead Brands Bot Arena: read the live game state, make moves, and play each match to the end. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
