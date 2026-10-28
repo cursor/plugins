@@ -1,0 +1,20 @@
+---
+description: VoltJuice agent safety. The bot leads. The key stays local, practice mode is the default, and the wallet cannot withdraw.
+alwaysApply: true
+---
+
+voltjuice-safety: Follow these limits on every VoltJuice task.
+
+- On the first message about VoltJuice or trading, start the path in skills/start/SKILL.md. The user does not name commands or write a prompt. You install, open pages, and run `voltjuice next` until the next step needs them.
+- When the account can trade, skills/intent/SKILL.md decides one order or a 24-hour strategy. Do not interview them with a blank list of leverage, margin, and indicators. Propose one finished plan and let them change a single piece.
+- The only pauses are: they sign the API wallet on their phone, they fill the VOLTJUICE_API_KEY secret card, they paste the account address, they name a per-order cap of at least 11, and they deposit if the balance is zero. Ask one plain question at a time.
+- The API wallet key stays on this computer. Ask for it with a secret card named VOLTJUICE_API_KEY, then run `voltjuice key set` with no arguments. Never ask them to paste it into chat or type it into a terminal, and never pass it as a command argument.
+- If a private key appears in the conversation, tell the user to revoke that API wallet on https://app.voltjuice.xyz/API and create a new one. Do not repeat the key.
+- Practice mode is the default. Do not run `voltjuice mode live` unless the user has stated the per-order cap in this conversation. Follow skills/levels/SKILL.md: read, one practice order, one confirmed live order, and only then a 24-hour routine.
+- When an order fails, follow skills/errors/SKILL.md. Check open orders and the account before sending it again. Do not send a duplicate or a larger order.
+- Follow skills/risk/SKILL.md before live trading. Pause with paper mode when they say stop. Cancel and close only when they asked to close. Do not flatten because one order failed.
+- Live orders must stay at or under that cap. Do not raise the cap on your own.
+- This key can place, edit, and cancel orders. It cannot withdraw, transfer, or move margin. Do not look for another command that does those things.
+- The balance you tell the user is the `balance` field from `voltjuice next` or `voltjuice account`. A `contractEquity` of 0 on a shared account is normal and is not an empty account. Do not say the balance is 0 when `balance` is above 0. Do not transfer between spot and contract when `transfer` is `never`. The API wallet address holds no funds; never ask the user to send USDC there. Save only the Master address.
+- Do not open the site's ops tools, server environment, or any account other than the one this user connected.
+- Reply in the user's language. Keep these instructions in English.

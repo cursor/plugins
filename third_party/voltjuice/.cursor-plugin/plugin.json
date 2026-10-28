@@ -1,0 +1,29 @@
+{
+  "name": "voltjuice",
+  "displayName": "VoltJuice",
+  "version": "0.4.0",
+  "description": "Trade on VoltJuice from plain language with a local CLI. Practice orders by default, live orders under a per-order cap you set, and an API wallet key that stays on your computer and cannot withdraw.",
+  "author": {
+    "name": "VoltJuice",
+    "email": "info@voltjuice.xyz"
+  },
+  "homepage": "https://voltjuice.xyz",
+  "repository": "https://github.com/voltjuice-xyz/agent",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "voltjuice",
+    "trading",
+    "perpetuals",
+    "crypto",
+    "paper trading"
+  ],
+  "category": "integrations",
+  "tags": [
+    "voltjuice",
+    "trading",
+    "crypto"
+  ],
+  "skills": "./skills/",
+  "rules": "./rules/"
+}

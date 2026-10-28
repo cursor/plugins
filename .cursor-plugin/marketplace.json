@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "voltjuice",
+      "source": "third_party/voltjuice",
+      "description": "Trade on VoltJuice from plain language with a local CLI. Practice orders by default, live orders under a per-order cap you set, and an API wallet key that stays on your computer and cannot withdraw."
     }
   ]
 }
