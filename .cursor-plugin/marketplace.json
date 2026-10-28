@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "delivra",
+      "source": "third_party/delivra",
+      "description": "Explore email and SMS campaign performance, subscriber activity, engagement metrics, top domains, and poll results."
     }
   ]
 }

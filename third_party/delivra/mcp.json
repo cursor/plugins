@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "delivra": {
+      "type": "http",
+      "url": "https://integration.delivra.com/mcp"
+    }
+  }
+}
