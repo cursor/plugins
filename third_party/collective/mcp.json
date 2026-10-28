@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "collective": {
+      "type": "http",
+      "url": "https://api.collective.work/mcp/talent"
+    }
+  }
+}

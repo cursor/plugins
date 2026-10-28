@@ -1,0 +1,31 @@
+{
+  "name": "collective",
+  "displayName": "Collective Job Search",
+  "version": "1.0.0",
+  "description": "Search Collective's job board for contract and permanent roles, and compare them against your talent profile.",
+  "author": {
+    "name": "Collective",
+    "email": "paul@collective.work"
+  },
+  "homepage": "https://collective.work",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "collective",
+    "jobs",
+    "job search",
+    "freelance",
+    "contract",
+    "recruiting",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "collective",
+    "jobs",
+    "careers",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
