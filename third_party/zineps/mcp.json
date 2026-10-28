@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "zineps": {
+      "type": "http",
+      "url": "https://mcp.zineps.com/mcp"
+    }
+  }
+}

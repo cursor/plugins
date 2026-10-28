@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "zineps",
+      "source": "third_party/zineps",
+      "description": "Find orders, check shipments and tracking, review invoices, and manage shipping tasks."
     }
   ]
 }

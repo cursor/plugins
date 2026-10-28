@@ -1,0 +1,31 @@
+{
+  "name": "zineps",
+  "displayName": "Zineps",
+  "version": "1.0.0",
+  "description": "Find orders, check shipments and tracking, review invoices, and manage shipping tasks.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://www.zineps.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "zineps",
+    "shipping",
+    "logistics",
+    "orders",
+    "tracking",
+    "invoices",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "zineps",
+    "shipping",
+    "logistics",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
