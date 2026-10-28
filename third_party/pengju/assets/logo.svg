@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="LitSynth">
+  <rect width="64" height="64" rx="14" fill="#141413"/>
+  <path
+    d="M12 18c8 4.5 13 4.5 20 0v28c-7 4.5-12 4.5-20 0V18Z"
+    fill="none"
+    stroke="#FAF9F5"
+    stroke-width="3.75"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M52 18c-8 4.5-13 4.5-20 0v28c7 4.5 12 4.5 20 0V18Z"
+    fill="none"
+    stroke="#FAF9F5"
+    stroke-width="3.75"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M32 18v28"
+    fill="none"
+    stroke="#FAF9F5"
+    stroke-width="3.75"
+    stroke-linecap="round"
+  />
+</svg>
