@@ -1,0 +1,30 @@
+{
+  "name": "scriptmasterlabs",
+  "displayName": "GhostKey",
+  "version": "1.0.0",
+  "description": "Delegated session-key MCP: scoped, expiring keys so agents can act without holding master credentials.",
+  "author": {
+    "name": "ScriptMasterLabs",
+    "email": "tim@scriptmasterlabs.com"
+  },
+  "homepage": "https://scriptmasterlabs.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "scriptmasterlabs",
+    "ghostkey",
+    "session keys",
+    "delegation",
+    "credentials",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "scriptmasterlabs",
+    "security",
+    "credentials",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
