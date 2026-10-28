@@ -1,0 +1,33 @@
+{
+  "name": "phonic",
+  "displayName": "Phonic",
+  "version": "0.2.0",
+  "description": "Build and test Phonic voice agents: configure agents, discover voices, search docs, and work with phone calls, browser voice, tools, and post-call processing.",
+  "author": {
+    "name": "Phonic",
+    "email": "support@phonic.ai"
+  },
+  "homepage": "https://phonic.ai",
+  "repository": "https://github.com/Phonic-Co/skills",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "phonic",
+    "voice",
+    "voice-ai",
+    "voice-agents",
+    "conversational-ai",
+    "speech-to-speech",
+    "phone-calls",
+    "telephony",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "phonic",
+    "voice",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}
