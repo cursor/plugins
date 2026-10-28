@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "insurmagic": {
+      "type": "http",
+      "url": "https://app.hallofelix.de/api/mcp"
+    }
+  }
+}

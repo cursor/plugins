@@ -1,0 +1,32 @@
+{
+  "name": "insurmagic",
+  "displayName": "HalloFelix",
+  "version": "1.0.0",
+  "description": "Work in your HalloFelix account: calls and transcripts, customers, call campaigns, phone, e-mail and WhatsApp assistants, and the WhatsApp inbox.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://www.hallofelix.de",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "hallofelix",
+    "insurmagic",
+    "insurance",
+    "insurance brokers",
+    "phone assistant",
+    "whatsapp",
+    "call transcripts",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "hallofelix",
+    "insurance",
+    "communication",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
