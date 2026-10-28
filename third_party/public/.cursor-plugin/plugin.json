@@ -1,0 +1,32 @@
+{
+  "name": "public",
+  "displayName": "Public",
+  "version": "1.0.0",
+  "description": "View your Public brokerage accounts, check market data, and preview trades with preflight checks.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://public.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "public",
+    "brokerage",
+    "investing",
+    "market data",
+    "options",
+    "bonds",
+    "prediction markets",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "public",
+    "finance",
+    "investing",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
