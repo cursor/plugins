@@ -1,0 +1,28 @@
+{
+  "name": "scriptmasterlabs",
+  "displayName": "x402 Pay",
+  "version": "1.0.0",
+  "description": "Make and verify per-call USDC payments over x402 from agents.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://scriptmasterlabs.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "scriptmasterlabs",
+    "x402",
+    "payments",
+    "usdc",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "scriptmasterlabs",
+    "x402",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
