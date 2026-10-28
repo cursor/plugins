@@ -1,0 +1,29 @@
+{
+  "name": "replai",
+  "displayName": "Replai",
+  "version": "1.0.0",
+  "description": "Set up, test and publish an AI customer support Agent for your SaaS product.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://replai.tw",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://replai.tw/app-icon-1024.png",
+  "keywords": [
+    "replai",
+    "customer support",
+    "support agent",
+    "knowledge base",
+    "saas",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "replai",
+    "customer support",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

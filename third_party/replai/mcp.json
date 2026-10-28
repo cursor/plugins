@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "replai": {
+      "type": "http",
+      "url": "https://api.replai.tw/mcp"
+    }
+  }
+}
