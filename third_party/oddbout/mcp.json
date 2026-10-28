@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "oddbout": {
+      "type": "http",
+      "url": "https://mcp.oddbout.com/mcp"
+    }
+  }
+}
