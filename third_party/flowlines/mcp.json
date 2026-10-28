@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "flowlines": {
+      "type": "http",
+      "url": "https://api.flowlines.ai/mcp"
+    }
+  }
+}

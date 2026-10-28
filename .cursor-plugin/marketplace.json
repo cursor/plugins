@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "flowlines",
+      "source": "third_party/flowlines",
+      "description": "Instrument MCP servers with OpenTelemetry and analyze how agents use their tools."
     }
   ]
 }

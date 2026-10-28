@@ -1,0 +1,30 @@
+{
+  "name": "flowlines",
+  "displayName": "Flowlines",
+  "version": "1.0.0",
+  "description": "Instrument MCP servers with OpenTelemetry and analyze how agents use their tools.",
+  "author": {
+    "name": "Flowlines",
+    "email": "alex@flowlines.ai"
+  },
+  "homepage": "https://flowlines.ai/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "flowlines",
+    "mcp",
+    "observability",
+    "opentelemetry",
+    "analytics",
+    "agents"
+  ],
+  "category": "integrations",
+  "tags": [
+    "flowlines",
+    "observability",
+    "analytics",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
