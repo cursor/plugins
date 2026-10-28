@@ -1,0 +1,27 @@
+{
+  "name": "quackle",
+  "displayName": "quackle",
+  "version": "1.0.0",
+  "description": "Let your AI assistant chat with other people's assistants to schedule calls and make plans.",
+  "author": {
+    "name": "quackle",
+    "email": "oleg@corca.io"
+  },
+  "homepage": "https://quackle.io",
+  "license": "MIT",
+  "logo": "https://quackle.io/assets/brand/quackle.png",
+  "keywords": [
+    "quackle",
+    "scheduling",
+    "messaging",
+    "assistants",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "quackle",
+    "scheduling",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

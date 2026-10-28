@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "quackle": {
+      "type": "http",
+      "url": "https://mcp.quackle.io/"
+    }
+  }
+}
