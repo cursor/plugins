@@ -1,0 +1,31 @@
+{
+  "name": "parqet",
+  "displayName": "Parqet",
+  "version": "1.0.0",
+  "description": "Chat about your Parqet portfolios, holdings, transactions, and investment strategy.",
+  "author": {
+    "name": "Parqet",
+    "email": "sumit@parqet.com"
+  },
+  "homepage": "https://parqet.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "parqet",
+    "portfolio",
+    "investments",
+    "holdings",
+    "transactions",
+    "finance",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "parqet",
+    "finance",
+    "portfolio",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

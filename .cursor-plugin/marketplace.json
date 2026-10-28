@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "parqet",
+      "source": "third_party/parqet",
+      "description": "Chat about your Parqet portfolios, holdings, transactions, and investment strategy."
     }
   ]
 }
