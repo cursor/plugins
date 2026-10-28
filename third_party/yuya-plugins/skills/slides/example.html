@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>slides — スライドの作り方</title>
+<!-- slides runtime v1 -->
+<style data-slides>
+/* slides runtime v1 — copied verbatim into every deck; never edit per deck. */
+:root {
+  --bg: #e9e7e1; --stage: #fbfaf7; --ink: #1c1c1a; --muted: #67655f; --line: #dcd9d0; --card: #ffffff;
+  --accent: #2f5d8a; --accent-soft: #e3ecf5; --code-bg: #f1efe8;
+  --good: #2e7d4f; --good-soft: #e0f1e6; --warn: #9a620b; --warn-soft: #fbeed6; --bad: #b23b3b; --bad-soft: #f7e1e1;
+  --font: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Hiragino Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ss-bar: 48px; --ss-w: 1280px; --ss-h: 720px; --ss-dur: .5s; --ss-ease: cubic-bezier(.2, .7, .2, 1);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e0f12; --stage: #17191e; --ink: #ebe9e4; --muted: #a09d96; --line: #2f323a; --card: #1f2228;
+    --accent: #8db8e3; --accent-soft: #1e2b39; --code-bg: #23262c;
+    --good: #6fcf97; --good-soft: #18301f; --warn: #e8b25c; --warn-soft: #33270f; --bad: #ec8080; --bad-soft: #3a1c1c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e0f12; --stage: #17191e; --ink: #ebe9e4; --muted: #a09d96; --line: #2f323a; --card: #1f2228;
+  --accent: #8db8e3; --accent-soft: #1e2b39; --code-bg: #23262c;
+  --good: #6fcf97; --good-soft: #18301f; --warn: #e8b25c; --warn-soft: #33270f; --bad: #ec8080; --bad-soft: #3a1c1c;
+  color-scheme: dark;
+}
+@media (prefers-reduced-motion: reduce) { :root { --ss-dur: .01s; } }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+a { color: var(--accent); }
+
+/* ---------- stage: fit mode scales a fixed design size into the window ---------- */
+.deck { position: fixed; left: var(--ss-cx, 50%); top: var(--ss-cy, calc((100% - var(--ss-bar)) / 2)); width: var(--ss-w); height: var(--ss-h);
+  background: var(--stage); border-radius: 16px; box-shadow: 0 10px 40px rgba(0, 0, 0, .12); overflow: hidden;
+  transform: translate(-50%, -50%) scale(var(--ss-scale, 1)); transform-origin: center center; }
+:is(:root, .ss-frame)[data-ss-immersive] .deck { border-radius: 0; box-shadow: none; }
+/* a deck inside a course unit: the unit box is the frame, so nothing is fixed to the window */
+.ss-frame { position: absolute; inset: 0; overflow: hidden; }
+.ss-frame .deck, .ss-frame .ss-bar, .ss-frame .ss-pop { position: absolute; }
+/* maximized (data-ss-max): the frame in fullscreen, or without the Fullscreen API filling the window above the course */
+.ss-frame[data-ss-max] { background: var(--bg); }
+.ss-frame[data-ss-max="pseudo"] { position: fixed; z-index: 1000; }
+.ss-unit-end { position: absolute; left: 50%; bottom: calc(var(--ss-bar) + 14px); transform: translateX(-50%); z-index: 25; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.ss-unit-end[hidden] { display: none; }
+.ss-unit-end button { border: 2px solid var(--accent); background: var(--card); color: var(--accent); border-radius: 999px; padding: 8px 20px; font: inherit; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(0, 0, 0, .12); }
+.ss-unit-end button.primary { background: var(--accent); color: var(--card); }
+.ss-probe { position: fixed; left: 0; top: 0; width: 0; height: 0; visibility: hidden; pointer-events: none;
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
+
+.slide { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 18px; padding: 56px 72px 44px;
+  opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s linear .35s;
+  --fs-h1: 60px; --fs-h2: 38px; --fs-h3: 24px; --fs-body: 22px; --fs-lead: 26px; --fs-small: 16px; --fs-num: 72px; }
+.slide.active { opacity: 1; visibility: visible; transition: opacity .35s ease; z-index: 1; }
+.deck[data-transition="none"] .slide { transition: none; }
+.deck[data-transition="slide"] .slide { transition: opacity .35s ease, transform .45s var(--ss-ease), visibility 0s linear .45s; transform: translateX(calc(var(--ss-dir, 1) * 60px)); }
+.deck[data-transition="slide"] .slide.active { transform: none; transition: opacity .35s ease, transform .45s var(--ss-ease); }
+.slide > .notes, aside.notes { display: none; }
+
+/* ---------- flow mode: narrow windows reflow slides into scrollable columns ---------- */
+:is(:root, .ss-frame)[data-ss-mode="flow"] .deck { left: var(--ss-il, 0px); top: var(--ss-it, 0px); width: calc(100% - var(--ss-il, 0px) - var(--ss-ir, 0px));
+  height: calc(100% - var(--ss-it, 0px) - var(--ss-reserve, var(--ss-bar))); transform: none; border-radius: 0; box-shadow: none; }
+:is(:root, .ss-frame)[data-ss-mode="flow"] .slide:not([data-fixed]) { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: 28px 18px 32px; gap: 14px;
+  --fs-h1: 32px; --fs-h2: 24px; --fs-h3: 18px; --fs-body: 16px; --fs-lead: 17px; --fs-small: 13px; --fs-num: 44px; }
+:is(:root, .ss-frame)[data-ss-mode="flow"] .slide:not([data-fixed]) :is(.cols, .cols-2, .cols-3, .cols-4, .cols-2-1, .cols-1-2) { grid-template-columns: minmax(0, 1fr); }
+:is(:root, .ss-frame)[data-ss-mode="flow"] .slide:not([data-fixed]) .row { flex-wrap: wrap; }
+:is(:root, .ss-frame)[data-ss-mode="flow"] .slide[data-fixed] { inset: auto; left: 0; top: 0; width: var(--ss-w); height: var(--ss-h); background: var(--stage);
+  transform: translate(var(--ss-fx, 0px), var(--ss-fy, 0px)) scale(var(--ss-fs, 1)); transform-origin: 0 0; }
+:is(:root, .ss-frame)[data-ss-mode="flow"] .deck[data-transition="slide"] .slide[data-fixed]:not(.active) { transform: translate(var(--ss-fx, 0px), var(--ss-fy, 0px)) scale(var(--ss-fs, 1)); }
+
+/* ---------- typography & layout kit (sizes follow the mode) ----------
+   Element defaults sit in :where(.slide) so any deck class selector overrides them. */
+.slide { font-size: var(--fs-body); line-height: 1.6; overflow-wrap: anywhere; }
+:where(.slide) h1, :where(.slide) h2, :where(.slide) h3, :where(.slide) p, :where(.slide) ul, :where(.slide) ol { margin: 0; }
+:where(.slide) h1 { font-size: var(--fs-h1); line-height: 1.2; font-weight: 900; letter-spacing: -.01em; text-wrap: balance; }
+:where(.slide) h2 { font-size: var(--fs-h2); line-height: 1.3; font-weight: 900; text-wrap: balance; }
+:where(.slide) h3 { font-size: var(--fs-h3); line-height: 1.4; font-weight: 700; }
+:where(.slide) ul, :where(.slide) ol { padding-left: 1.3em; display: flex; flex-direction: column; gap: .35em; }
+.kicker { font-size: var(--fs-small); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.lead { font-size: var(--fs-lead); color: var(--muted); line-height: 1.55; text-wrap: pretty; }
+.muted { color: var(--muted); } .small { font-size: var(--fs-small); } .mono { font-family: var(--font-mono); }
+.accent { color: var(--accent); } .good { color: var(--good); } .warn { color: var(--warn); } .bad { color: var(--bad); }
+.num { font-size: var(--fs-num); font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
+:where(.slide) code { font-family: var(--font-mono); font-size: .86em; background: var(--code-bg); padding: .08em .35em; border-radius: 5px; }
+:where(.slide) pre { margin: 0; font-family: var(--font-mono); font-size: calc(var(--fs-body) * .72); line-height: 1.55; background: var(--code-bg);
+  border: 1px solid var(--line); border-radius: 10px; padding: .9em 1.1em; white-space: pre-wrap; overflow-wrap: anywhere; }
+:where(.slide) pre code { background: none; padding: 0; font-size: 1em; }
+:where(.slide) table { border-collapse: collapse; width: 100%; font-size: calc(var(--fs-body) * .82); }
+:where(.slide) th, :where(.slide) td { text-align: left; padding: .45em .7em; border-bottom: 1px solid var(--line); vertical-align: top; }
+:where(.slide) th { color: var(--muted); font-weight: 700; font-size: .88em; }
+:where(.slide) svg { max-width: 100%; }
+.src { margin-top: auto; font-size: var(--fs-small); color: var(--muted); }
+
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.row { display: flex; gap: 18px; align-items: center; }
+.cols, .cols-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.cols-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.cols-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.cols-2-1 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 24px; }
+.cols-1-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 24px; }
+.fill { flex: 1 1 auto; min-height: 0; } .center { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+.middle { margin-block: auto; }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: .8em 1em; display: flex; flex-direction: column; gap: .4em; }
+.card.accent { background: var(--accent-soft); border-color: transparent; color: inherit; }
+.card.good { background: var(--good-soft); border-color: transparent; color: inherit; }
+.card.warn { background: var(--warn-soft); border-color: transparent; color: inherit; }
+.card.bad { background: var(--bad-soft); border-color: transparent; color: inherit; }
+.card > h3 { font-size: calc(var(--fs-body) * 1.02); }
+.pill { display: inline-block; font-size: var(--fs-small); font-weight: 700; padding: .15em .7em; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.callout { border-left: 4px solid var(--accent); padding: .2em 0 .2em 1em; font-size: var(--fs-lead); }
+.numbered { list-style: none; padding: 0 !important; counter-reset: ss-n; }
+.numbered > li { counter-increment: ss-n; position: relative; padding-left: 2.1em; }
+.numbered > li::before { content: counter(ss-n); position: absolute; left: 0; top: .1em; width: 1.5em; height: 1.5em; border-radius: 50%;
+  background: var(--accent); color: var(--stage); font-size: .8em; font-weight: 700; display: grid; place-items: center; }
+
+/* slide variants */
+.slide.cover { justify-content: center; gap: 22px; }
+.slide.cover h1 { font-size: calc(var(--fs-h1) * 1.1); }
+.slide.section { justify-content: center; }
+.slide.section .num { color: var(--accent); }
+.slide.end { justify-content: center; align-items: center; text-align: center; }
+
+/* ---------- builds: data-step reveals, data-anim entrances ---------- */
+[data-step], [data-only], [data-until], [data-anim] { transition: opacity var(--ss-dur) var(--ss-ease), transform var(--ss-dur) var(--ss-ease),
+  filter var(--ss-dur) var(--ss-ease), background-color var(--ss-dur) ease, color var(--ss-dur) ease, box-shadow var(--ss-dur) ease, stroke-dashoffset calc(var(--ss-dur) * 2) var(--ss-ease);
+  transition-delay: calc(var(--i, 0) * 90ms + var(--d, 0ms)); }
+:is([data-step], [data-only], [data-until]):not(.on), .slide:not(.ss-in) [data-anim]:not([data-step], [data-only], [data-until]) { opacity: 0; transform: translateY(18px); pointer-events: none; }
+[data-anim="fade"]:is(:is([data-step], [data-only], [data-until]):not(.on), .slide:not(.ss-in) :not([data-step], [data-only], [data-until])) { transform: none; }
+[data-anim="left"]:is(:is([data-step], [data-only], [data-until]):not(.on), .slide:not(.ss-in) :not([data-step], [data-only], [data-until])) { transform: translateX(-36px); }
+[data-anim="right"]:is(:is([data-step], [data-only], [data-until]):not(.on), .slide:not(.ss-in) :not([data-step], [data-only], [data-until])) { transform: translateX(36px); }
+[data-anim="zoom"]:is(:is([data-step], [data-only], [data-until]):not(.on), .slide:not(.ss-in) :not([data-step], [data-only], [data-until])) { transform: scale(.9); }
+[data-anim="pop"]:is(:is([data-step], [data-only], [data-until]):not(.on), .slide:not(.ss-in) :not([data-step], [data-only], [data-until])) { transform: scale(.6); }
+[data-anim="pop"] { transition-timing-function: cubic-bezier(.3, 1.6, .5, 1); }
+[data-anim="blur"]:is(:is([data-step], [data-only], [data-until]):not(.on), .slide:not(.ss-in) :not([data-step], [data-only], [data-until])) { transform: none; filter: blur(8px); }
+/* highlight: always visible, emphasised while its step is current */
+[data-anim="highlight"]:not(.on), .slide:not(.ss-in) [data-anim="highlight"]:not([data-step], [data-only], [data-until]) { opacity: 1; transform: none; pointer-events: auto; }
+[data-anim="highlight"].now { background-color: var(--accent-soft); box-shadow: 0 0 0 3px var(--accent); border-radius: 10px; }
+/* draw: SVG strokes trace in (set pathLength="1" on the element) */
+[data-anim="draw"] { stroke-dasharray: 1; stroke-dashoffset: 0; }
+[data-anim="draw"]:is(:is([data-step], [data-only], [data-until]):not(.on), .slide:not(.ss-in) :not([data-step], [data-only], [data-until])) { opacity: 1; transform: none; stroke-dashoffset: 1; }
+/* dim-past: earlier steps fade back so the current one leads */
+.dim-past [data-step].on:not(.now) { opacity: .42; }
+.slide.ss-noanim * { transition: none !important; }
+
+/* ---------- chrome ---------- */
+.ss-bar { position: fixed; left: 0; right: 0; bottom: 0; height: calc(var(--ss-bar) + env(safe-area-inset-bottom, 0px)); display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center; gap: 10px; padding: 0 calc(12px + env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) calc(12px + env(safe-area-inset-left, 0px));
+  color: var(--muted); font: 13px/1 var(--font); z-index: 20; user-select: none; -webkit-user-select: none; transition: opacity .3s ease; }
+.ss-prog { position: absolute; left: 0; top: 0; height: 2px; background: var(--accent); width: 0; transition: width .35s var(--ss-ease); }
+/* one button language with video/runtime.css .ev-btn */
+.ss-bar button { appearance: none; background: transparent; color: var(--ink); border: 0; border-radius: 8px; height: 36px; min-width: 36px;
+  padding: 0 8px; font: 15px/1 var(--font); cursor: pointer; display: inline-grid; place-items: center; }
+.ss-bar button:hover { background: var(--line); }
+.ss-bar button:focus-visible, .ss-bar input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ss-bar button:disabled { opacity: .35; cursor: default; background: transparent; }
+.ss-bar button[aria-pressed="true"] { color: var(--accent); }
+.ss-bar button svg { display: block; }
+.ss-bar [hidden] { display: none !important; }
+.ss-center { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.ss-mid { min-width: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 12px; }
+.ss-dots { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
+.ss-bar .ss-dots button { min-width: 0; width: 18px; height: 22px; padding: 0; border: 0; background: none; }
+.ss-dots button::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: background .2s, transform .2s; }
+.ss-dots button:hover::before { background: var(--muted); }
+.ss-dots button[aria-current="true"]::before { background: var(--accent); transform: scale(1.35); }
+.ss-jump { display: flex; align-items: center; gap: 6px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.ss-jump input { width: 3.4em; height: 30px; text-align: center; font: 600 14px/1 var(--font); color: var(--ink); background: var(--card);
+  border: 1px solid var(--line); border-radius: 7px; -moz-appearance: textfield; appearance: textfield; }
+.ss-jump input::-webkit-inner-spin-button, .ss-jump input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.ss-count { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ss-bar button.ss-count { color: var(--muted); font-size: 13px; min-width: 0; padding: 0 4px; }
+.ss-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); padding-left: 4px; }
+.ss-pips { display: flex; gap: 3px; align-items: center; flex-shrink: 0; }
+.ss-pips i { width: 10px; height: 4px; border-radius: 2px; background: var(--line); }
+.ss-pips i.on { background: var(--accent); }
+.ss-pips span { font-variant-numeric: tabular-nums; }
+.ss-tools { display: flex; gap: 6px; justify-content: flex-end; }
+@media (max-width: 720px) { .ss-title { display: none; } .ss-bar { display: flex; gap: 6px; padding-left: calc(8px + env(safe-area-inset-left, 0px)); padding-right: calc(8px + env(safe-area-inset-right, 0px)); } .ss-center { flex: 1 1 auto; justify-content: center; } .ss-tools { gap: 4px; } }
+@media (max-width: 520px) { .ss-opt, .ss-dots { display: none !important; } .ss-bar button { min-width: 34px; } }
+:is(:root, .ss-frame)[data-ss-immersive] .ss-bar { background: color-mix(in srgb, var(--bg) 86%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+:is(:root, .ss-frame)[data-ss-idle] .ss-bar { opacity: 0; pointer-events: none; }
+:is(:root, .ss-frame)[data-ss-max][data-ss-idle] { cursor: none; }
+
+.ss-pop { position: fixed; right: 12px; bottom: calc(var(--ss-bar) + 6px); z-index: 30; width: min(420px, calc(100vw - 24px)); max-height: min(70vh, 560px);
+  overflow: auto; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 14px 40px rgba(0, 0, 0, .18);
+  padding: 8px; font: 14px/1.45 var(--font); }
+.ss-pop[hidden] { display: none; }
+.ss-pop h4 { margin: 6px 8px 8px; font-size: 12px; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
+.ss-toc { list-style: none; margin: 0; padding: 0; }
+.ss-toc button { all: unset; box-sizing: border-box; width: 100%; display: flex; gap: 10px; padding: 7px 8px; border-radius: 8px; cursor: pointer; }
+.ss-toc button:hover, .ss-toc button:focus-visible { background: var(--accent-soft); }
+.ss-toc button[aria-current="true"] { color: var(--accent); font-weight: 700; }
+.ss-toc b { min-width: 2em; text-align: right; color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+.ss-keys { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0 8px 8px; }
+.ss-keys kbd { font: 12px/1 var(--font-mono); background: var(--code-bg); border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px; white-space: nowrap; }
+
+/* ---------- print: one page per slide, every step shown ---------- */
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  html, body { height: auto; overflow: visible; background: none; }
+  .ss-bar, .ss-pop { display: none !important; }
+  .deck { position: static; transform: none; width: auto; height: auto; box-shadow: none; border-radius: 0; background: none; }
+  .slide { position: relative; opacity: 1; visibility: visible; width: var(--ss-w); height: var(--ss-h); break-after: page; background: var(--stage); }
+  .slide :is([data-step], [data-only], [data-until], [data-anim]) { opacity: 1 !important; transform: none !important; filter: none !important; stroke-dashoffset: 0 !important; }
+}
+</style>
+<style>
+.flow-fig { width: 100%; height: auto; color: var(--ink); }
+.flow-fig .box { fill: var(--card); stroke: var(--line); stroke-width: 2; }
+.flow-fig .box.hot { fill: var(--accent-soft); stroke: var(--accent); }
+.flow-fig text { fill: currentColor; font: 700 22px var(--font); }
+.flow-fig .sub { fill: var(--muted); font-weight: 400; font-size: 16px; }
+.flow-fig .edge { fill: none; stroke: var(--accent); stroke-width: 3; }
+.meter { display: flex; flex-direction: column; gap: 14px; }
+.meter .track { height: 18px; border-radius: 9px; background: var(--code-bg); overflow: hidden; }
+.meter .fill { height: 100%; width: 0; background: var(--accent); border-radius: 9px; transition: width .9s var(--ss-ease); }
+.meter .readout { font-size: 18px; color: var(--muted); }
+.sfx-demo { flex-wrap: wrap; gap: 8px; }
+.sfx-demo button { font: inherit; font-size: 16px; padding: 8px 14px; min-height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+</style>
+</head>
+<body>
+<main class="deck" data-size="1280x720" data-sound>
+
+<section class="slide cover" id="top">
+  <div class="kicker" data-anim="fade">slides</div>
+  <h1 data-anim>スライドは HTML 1 枚で、<br>どこでも同じように動く</h1>
+  <p class="lead" data-anim style="--d:150ms">画面にフィット・キーとスワイプ・ステップごとの permalink。このデッキ自体がサンプルです。</p>
+  <p class="small muted" data-anim style="--d:300ms">→ / Space で進む · ? でキー操作</p>
+</section>
+
+<section class="slide" id="fit" data-title="画面にフィットする">
+  <div class="kicker">Layout</div>
+  <h2>広い画面では縮小表示、狭い画面では組み替える</h2>
+  <div class="cols-2">
+    <div class="card" data-step="1"><h3>fit モード</h3><p>1280×720 のステージを、比率を保ってウィンドウに収める。PC とプロジェクタ向け。</p></div>
+    <div class="card accent" data-step="2"><h3>flow モード</h3><p>縮小率が 0.45 を切るとスマホ向けに切り替え、段組みを縦に並べてスライド内をスクロールさせる。</p></div>
+  </div>
+  <p data-step="3" data-anim="fade">座標で描いた図は <code>data-fixed</code> を付けると、flow モードでも縮小表示のまま残ります。</p>
+  <p class="src" data-step-pos></p>
+</section>
+
+<section class="slide" id="steps" data-title="ステップと permalink">
+  <div class="kicker">Builds</div>
+  <h2>ステップごとに URL が変わる</h2>
+  <ol class="numbered dim-past">
+    <li data-step="1">要素に <code>data-step="1"</code> を付けると、1 回目の → で現れる</li>
+    <li data-step="2">URL の末尾は <code>#3.2</code>（3 枚目のステップ 2）になる</li>
+    <li data-step="3">そのリンクを開くと、アニメーション抜きでこの状態から始まる</li>
+    <li data-step="4">← は即座に 1 つ前の状態へ戻る。R で最初から再生</li>
+  </ol>
+</section>
+
+<section class="slide" id="diagram" data-title="図を順番に描く">
+  <div class="kicker">SVG</div>
+  <h2>図は線を引く順番で説明する</h2>
+  <svg class="flow-fig" viewBox="0 0 1100 300" role="img" aria-labelledby="fig-t">
+    <title id="fig-t">デッキから相対 URL と外部 HTTPS ページへリンクする</title>
+    <rect class="box" x="10" y="100" width="260" height="100" rx="14"/>
+    <text x="140" y="145" text-anchor="middle">deck.html</text>
+    <text class="sub" x="140" y="175" text-anchor="middle">deck.html</text>
+    <path class="edge" data-step="1" data-anim="draw" pathLength="1" d="M270 130 C 380 130 400 60 520 60"/>
+    <g data-step="1" data-anim="fade" style="--d:350ms"><rect class="box hot" x="520" y="20" width="560" height="80" rx="14"/>
+      <text x="800" y="70" text-anchor="middle">相対リンク: other.html#3.2</text></g>
+    <path class="edge" data-step="2" data-anim="draw" pathLength="1" d="M270 170 C 380 170 400 240 520 240"/>
+    <g data-step="2" data-anim="fade" style="--d:350ms"><rect class="box hot" x="520" y="200" width="560" height="80" rx="14"/>
+      <text x="800" y="250" text-anchor="middle">外部リンク: https://example.org/guide</text></g>
+  </svg>
+  <p data-step="3">試す: <a href="#steps.2">このデッキの「ステップと permalink」のステップ 2 を開く</a></p>
+</section>
+
+<section class="slide" id="highlight" data-title="表の行を順に強調">
+  <div class="kicker">Highlight</div>
+  <h2>見えたままの要素を、順番に強調する</h2>
+  <table>
+    <thead><tr><th>既存デッキ</th><th>持ち込んだもの</th></tr></thead>
+    <tbody>
+      <tr data-step="1" data-anim="highlight"><td>段階的な説明</td><td>ジャンプ時はステップの最終状態を即座に組み立てる</td></tr>
+      <tr data-step="2" data-anim="highlight"><td>ema-deep-dive ほか</td><td><code>#N.S</code> の permalink、進捗バー、自動再生</td></tr>
+      <tr data-step="3" data-anim="highlight"><td>レイアウトの調整</td><td>1280×720 ステージの縮小フィット、シーン演出</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="slide" id="scene" data-title="スクリプトで動かすシーン" data-scene="meter" data-steps="3">
+  <div class="kicker">Scenes</div>
+  <h2>複雑な動きは scene に書く</h2>
+  <div class="cols-2-1">
+    <div class="meter">
+      <div class="track"><div class="fill"></div></div>
+      <div class="readout">step 0 — まだ何もしていない</div>
+    </div>
+    <div class="card small">
+      <p><code>step(ctx, k)</code> は状態 k をいちから描く。ジャンプ時は <code>ctx.animate</code> が false。</p>
+      <p><code>ctx.later</code> / <code>ctx.every</code> のタイマーは、ステップやスライドを離れると止まる。</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide section" id="ui">
+  <div class="num" data-anim="pop">02</div>
+  <h2 data-anim style="--d:120ms">下のバーはどのデッキでも同じ</h2>
+</section>
+
+<section class="slide" id="bar" data-title="ナビゲーションバー">
+  <div class="kicker">Chrome</div>
+  <h2>12 枚まではドット、それより多ければ番号入力</h2>
+  <div class="cols-3" data-stagger>
+    <div class="card"><h3>位置</h3><p>ドットか番号入力。数字キーを打って Enter でも移動できる。</p></div>
+    <div class="card"><h3>ステップ</h3><p>このスライドに何ステップあるかをバーに表示し、P で自動再生する。</p></div>
+    <div class="card"><h3>目次</h3><p>☰ または T で、全スライドのタイトル一覧から移動できる。</p></div>
+  </div>
+</section>
+
+<section class="slide" id="sound" data-title="効果音（オプション）">
+  <div class="kicker">Sound</div>
+  <h2>音は見る人が 🔇 を押したときだけ鳴る</h2>
+  <div class="cols-2-1">
+    <div class="stack">
+      <p><code>.deck</code> に <code>data-sound</code> を付けるとバーに 🔇 が出る（S キーでも切り替え）。最初はオフ。</p>
+      <p>オンの間は、→ で進むたびにステップの音とスライドの音が鳴る。戻る・ジャンプでは鳴らない。</p>
+      <div class="row sfx-demo">
+        <button type="button" data-sfx="correct">正解</button>
+        <button type="button" data-sfx="wrong">はずれ</button>
+        <button type="button" data-sfx="xp">XP</button>
+        <button type="button" data-sfx="levelup">レベルアップ</button>
+        <button type="button" data-sfx="finale">フィナーレ</button>
+      </div>
+    </div>
+    <div class="card small">
+      <p><code>YESSlides.sfx('correct')</code> — オフの間は何もせず false を返す。</p>
+      <p>音だけで伝える情報は作らない。消音で見ても同じことがわかるように。</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="code" data-title="作り方">
+  <div class="kicker">Authoring</div>
+  <h2>template.html をコピーして、section を足していく</h2>
+<pre><code>&lt;section class="slide" data-title="短いタイトル"&gt;
+  &lt;h2&gt;主張を 1 行で&lt;/h2&gt;
+  &lt;ul class="dim-past"&gt;
+    &lt;li data-step="1"&gt;1 つめ&lt;/li&gt;
+    &lt;li data-step="2" data-anim="left"&gt;2 つめ&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/section&gt;</code></pre>
+</section>
+
+<section class="slide end" id="end">
+  <h2 data-anim>HTML ファイルを開いて確認する</h2>
+  <p class="muted" data-anim style="--d:120ms">印刷すると 1 ページ 1 スライドの PDF になります</p>
+</section>
+
+</main>
+<script data-slides>
+/* slides runtime v1 — copied verbatim into every deck; never edit per deck.
+   Deck API (window.YESSlides): scene(name, def), go(slide, step), next(), prev(), sfx(name, n), pageUrl(id, hash), state.
+   One page may hold several decks (course units): each is a createDeck() instance; the API acts on the one last shown. */
+(() => {
+  'use strict';
+  const DOTS_MAX = 12;       // more slides than this: a number input instead of dots
+  const FLOW_BELOW = 0.45;   // fit scale under which the deck reflows (phones)
+  const PAD = 16;
+
+  /* ---------- pure helpers (exported for tests) ---------- */
+  function px(v) { return parseFloat(v) || 0; }
+  function parseSize(text) {
+    const m = /^\s*(\d{3,4})\s*x\s*(\d{3,4})\s*$/.exec(text || '');
+    return m ? { w: +m[1], h: +m[2] } : { w: 1280, h: 720 };
+  }
+  // "#5" | "#5.2" | "#intro" | "#intro.2" → { slide, step } (slide may be an id); anything else → null
+  function parseHash(hash) {
+    const m = /^#(?:(\d{1,4})|([A-Za-z][\w-]{0,63}))(?:\.(\d{1,3}))?$/.exec(hash || '');
+    if (!m) return null;
+    return { slide: m[1] ? +m[1] - 1 : m[2], step: m[3] ? +m[3] : 0 };
+  }
+  // the opening state (slide 1, no step) is the bare URL, so the plain link stays clean
+  function formatHash(slide, step) { return slide === 0 && step === 0 ? '' : '#' + (slide + 1) + (step > 0 ? '.' + step : ''); }
+  function fitScale(vw, vh, w, h, pad) { return Math.max(0.05, Math.min((vw - 2 * pad) / w, (vh - 2 * pad) / h)); }
+  // Links are regular relative, fragment, or HTTP(S) URLs on any static host.
+  function pageHref(loc, id, hash, framed) {
+    if (!id || /[\x00-\x20<>"'\\]/.test(id) || id.startsWith('//')) return null;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(id) && !/^https?:/i.test(id)) return null;
+    const frag = hash && /^#[\w.~!$&*+,;=:@/?%-]{1,255}$/.test(hash) ? hash : '';
+    return { href: id + frag, target: /^https?:/i.test(id) || framed ? '_blank' : '' };
+  }
+  // A build element is shown at `step` when from <= step <= until.
+  function buildRange(el) {
+    const only = el.getAttribute('data-only');
+    if (only != null) return { from: +only || 0, until: +only || 0 };
+    const from = +el.getAttribute('data-step') || 0;
+    const u = el.getAttribute('data-until');
+    return { from, until: u == null ? Infinity : +u };
+  }
+
+  /* ---------- page-wide: scene registry, sound, deck instances ---------- */
+  const scenes = Object.create(null);
+  const decks = [];
+  let current = null, started = false;
+
+  /* ---------- sound: opt-in per deck (data-sound), off until the viewer turns it on ---------- */
+  // Synthesized one-shots (no audio files). The AudioContext is created by the tap that turns sound on,
+  // so browsers never block it; while off every call is a no-op. Sound only doubles what the slide shows.
+  const PENTA = [0, 2, 4, 7, 9];
+  const snd = { on: false, ac: null, out: null, noise: null };
+  function audio() {
+    if (snd.ac) { if (snd.ac.state === 'suspended' && snd.ac.resume) snd.ac.resume(); return snd.ac; }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    try {
+      const ac = new AC(), comp = ac.createDynamicsCompressor(), out = ac.createGain();
+      out.gain.value = 0.4; out.connect(comp); comp.connect(ac.destination);
+      const buf = ac.createBuffer(1, ac.sampleRate, ac.sampleRate), d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      Object.assign(snd, { ac, out, noise: buf });
+      return ac;
+    } catch { return null; }
+  }
+  function tone(f, dur, type, vol, at, f2) {
+    const ac = snd.ac, t = ac.currentTime + (at || 0), o = ac.createOscillator(), g = ac.createGain();
+    o.type = type || 'square'; o.frequency.setValueAtTime(f, t);
+    if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.1, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(snd.out); o.start(t); o.stop(t + dur + 0.03);
+  }
+  function hiss(dur, vol, f1, f2) {
+    const ac = snd.ac, t = ac.currentTime, s = ac.createBufferSource(), fl = ac.createBiquadFilter(), g = ac.createGain();
+    s.buffer = snd.noise; fl.type = 'bandpass'; fl.frequency.setValueAtTime(f1, t); fl.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(fl); fl.connect(g); g.connect(snd.out); s.start(t); s.stop(t + dur + 0.05);
+  }
+  const note = k => 523.25 * Math.pow(2, (PENTA[k % 5] + 12 * Math.floor(k / 5)) / 12);
+  const SFX = {
+    tap: () => tone(880, 0.05, 'square', 0.06),
+    step: n => { const f = note(Math.min(Math.max(0, (n | 0) - 1), 14)); tone(f, 0.12, 'triangle', 0.14); tone(f * 2, 0.06, 'sine', 0.04); },
+    slide: () => { hiss(0.22, 0.25, 600, 4000); tone(330, 0.18, 'sine', 0.08, 0, 990); },
+    pop: () => tone(500, 0.09, 'sine', 0.14, 0, 1300),
+    correct: () => [0, 4, 7, 12].forEach((s, k) => tone(523.25 * Math.pow(2, s / 12), 0.14, 'square', 0.08, k * 0.07)),
+    wrong: () => tone(170, 0.2, 'sawtooth', 0.09, 0, 110),
+    xp: () => { tone(988, 0.07, 'square', 0.07); tone(1319, 0.2, 'square', 0.07, 0.07); },
+    levelup: () => [0, 4, 7, 11, 14].forEach((s, k) => tone(392 * Math.pow(2, s / 12), 0.3, 'sawtooth', 0.05, k * 0.06)),
+    finale: () => {
+      [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, k) => tone(f, 0.16, 'square', 0.08, k * 0.1));
+      [1047, 1319, 1568, 2093].forEach(f => tone(f, 1.4, 'sawtooth', 0.03, 0.75));
+      for (let k = 0; k < 12; k++) tone(1800 + Math.random() * 2400, 0.08, 'sine', 0.03, 0.8 + k * 0.08);
+    },
+  };
+  function sfx(name, n) {
+    if (!snd.on || !SFX[name] || !audio()) return false;
+    try { SFX[name](n); return true; } catch { return false; }
+  }
+
+  // control icons: path data shared byte for byte with video/runtime.js (runtime.test.ts compares them)
+  const ICONS = {
+    play: 'M7 4.8v14.4L19 12z',
+    pause: 'M8 5v14M16 5v14',
+    prev: 'M15 5l-7 7 7 7',
+    next: 'M9 5l7 7-7 7',
+    replay: 'M4.5 12a7.5 7.5 0 1 0 2.2-5.3L4.5 9M4.5 4.5V9H9',
+    toc: 'M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01',
+    sound: 'M4 9h3l5-4v14l-5-4H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11',
+    soundOff: 'M4 9h3l5-4v14l-5-4H4zM16 9.5l5 5M21 9.5l-5 5',
+    help: 'M12 3a9 9 0 1 1 0 18a9 9 0 1 1 0-18zM9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.4M12 17h.01',
+    maximize: 'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5',
+    restore: 'M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5',
+  };
+  const setIcon = (b, name) => { b.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+    + `<path d="${ICONS[name]}"/></svg>`; };
+
+  function mk(tag, attrs, text) {
+    const e = document.createElement(tag);
+    for (const k in attrs || {}) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  /* ---------- links to other documents ---------- */
+  function isFramed() { try { return window.self !== window.top; } catch { return true; } }
+  // A host page may resolve data-page links itself (window.YESHost.resolveLink); otherwise the plain rules apply.
+  function resolveLink(id, hash) {
+    const host = window.YESHost;
+    if (host && typeof host.resolveLink === 'function') {
+      try {
+        const r = host.resolveLink(id, hash, { framed: isFramed() });
+        if (r && typeof r.href === 'string') return { href: r.href, target: typeof r.target === 'string' ? r.target : '' };
+      } catch { /* fall back to the plain rules */ }
+    }
+    return pageHref(location, id, hash, isFramed());
+  }
+  function wireLinks(root) {
+    root.querySelectorAll('a[data-page]').forEach(a => {
+      const v = a.getAttribute('data-page') || '', i = v.indexOf('#');
+      const r = resolveLink(i < 0 ? v : v.slice(0, i), i < 0 ? '' : v.slice(i));
+      if (!r) return;
+      a.setAttribute('href', r.href);
+      if (r.target) { a.setAttribute('target', r.target); a.setAttribute('rel', 'noopener'); } else { a.removeAttribute('target'); }
+    });
+  }
+
+  /* ---------- deck-independent helpers ---------- */
+  function makeCtx(root, bucket, animate) {
+    const ctx = {
+      root, animate,
+      $: sel => root.querySelector(sel), $$: sel => [...root.querySelectorAll(sel)],
+      later(ms, fn) { const t = setTimeout(fn, animate ? ms : 0); bucket.push(['t', t]); return t; },
+      every(ms, fn) { const t = setInterval(fn, ms); bucket.push(['i', t]); return t; },
+    };
+    return ctx;
+  }
+  function clearBucket(b) { b.forEach(([k, t]) => (k === 't' ? clearTimeout(t) : clearInterval(t))); b.length = 0; }
+  // Jumps land on end states: finish one-shot CSS keyframe animations too (looping ones keep running).
+  function settle(s) {
+    if (!s.getAnimations) return;
+    s.getAnimations({ subtree: true }).forEach(a => {
+      const t = a.effect && a.effect.getComputedTiming ? a.effect.getComputedTiming() : null;
+      if (t && isFinite(t.endTime)) { try { a.finish(); } catch { /* not finishable */ } }
+    });
+  }
+  function editable(t) { return t && t.closest && t.closest('input, textarea, select, [contenteditable=""], [contenteditable="true"]'); }
+
+  /* ---------- one deck ---------- */
+  // opts.frame: the element that carries data-ss-* and the --ss-* vars (the page root for a standalone deck)
+  // opts.mount: where the bar and popover go; opts.standalone: owns the URL fragment and the window
+  // opts.isActive(): whether keys and swipes are this deck's; opts.onChange(state, rest): position changed
+  function createDeck(deck, opts) {
+    const frame = opts.frame, standalone = !!opts.standalone;
+    const isActive = opts.isActive || (() => true);
+    const S = { cur: -1, step: 0, n: 0, mode: 'fit', playing: null };
+    let slides = [], bar, els = {}, sceneRuns = new Map(), stepTimers = [], idleTimer = null;
+    function setSound(on) {
+      snd.on = !!on && !!audio();
+      if (els.sound) { setIcon(els.sound, snd.on ? 'sound' : 'soundOff'); els.sound.setAttribute('aria-pressed', String(snd.on)); }
+      if (snd.on) sfx('pop');
+    }
+
+    function stepsOf(i) {
+      const s = slides[i]; if (!s) return 0;
+      if (s._ssSteps != null) return s._ssSteps;
+      let max = +s.getAttribute('data-steps') || 0;
+      s.querySelectorAll('[data-step],[data-only],[data-until]').forEach(el => {
+        const r = buildRange(el); max = Math.max(max, r.from, isFinite(r.until) ? r.until : 0);
+      });
+      const sc = scenes[s.getAttribute('data-scene')];
+      if (sc && sc.steps) max = Math.max(max, sc.steps);
+      return (s._ssSteps = max);
+    }
+    function titleOf(i) {
+      const s = slides[i];
+      const t = s.getAttribute('data-title') || (s.querySelector('h1,h2,h3') || {}).textContent || '';
+      return t.replace(/\s+/g, ' ').trim() || 'Slide ' + (i + 1);
+    }
+    function resolveSlide(v) {
+      if (typeof v === 'number') return Math.max(0, Math.min(S.n - 1, v));
+      const i = slides.findIndex(s => s.id === v);
+      return i < 0 ? null : i;
+    }
+
+    /* ---------- scenes: scripted animation with timers that die with the step or slide ---------- */
+    function sceneOf(i) { return slides[i] && scenes[slides[i].getAttribute('data-scene')]; }
+    function sceneEnter(i, animate) {
+      const sc = sceneOf(i); if (!sc) return;
+      const bucket = []; sceneRuns.set(i, bucket);
+      try { if (sc.enter) sc.enter(makeCtx(slides[i], bucket, animate)); } catch (e) { console.error(e); }
+    }
+    function sceneStep(i, k, animate) {
+      const sc = sceneOf(i); clearBucket(stepTimers);
+      if (!sc || !sc.step) return;
+      try { sc.step(makeCtx(slides[i], stepTimers, animate), k); } catch (e) { console.error(e); }
+    }
+    function sceneLeave(i) {
+      const sc = sceneOf(i); clearBucket(stepTimers);
+      const b = sceneRuns.get(i); if (b) { clearBucket(b); sceneRuns.delete(i); }
+      if (sc && sc.leave) { try { sc.leave(makeCtx(slides[i], [], false)); } catch (e) { console.error(e); } }
+    }
+
+    /* ---------- render ---------- */
+    function applyBuilds(s, step) {
+      s.querySelectorAll('[data-step],[data-only],[data-until]').forEach(el => {
+        const r = buildRange(el), on = step >= r.from && step <= r.until;
+        el.classList.toggle('on', on);
+        el.classList.toggle('now', on && step === r.from);
+        el.classList.toggle('past', on && step > r.from);
+      });
+      const total = stepsOf(S.cur);
+      s.querySelectorAll('[data-step-pos]').forEach(el => { el.textContent = total ? 'ステップ ' + step + ' / ' + total : ''; });
+    }
+    // animate: run transitions; otherwise land on the final state at once (jumps, going back, links).
+    function show(i, step, animate) {
+      i = Math.max(0, Math.min(S.n - 1, i));
+      step = Math.max(0, Math.min(stepsOf(i), step | 0));
+      const changed = i !== S.cur;
+      const s = slides[i];
+      if (changed) {
+        stopPlay();
+        if (S.cur >= 0) { deck.style.setProperty('--ss-dir', i > S.cur ? '-1' : '1'); sceneLeave(S.cur); slides[S.cur].classList.remove('active'); slides[S.cur].setAttribute('aria-hidden', 'true'); }
+        S.cur = i; S.step = step;
+        s.classList.add('ss-noanim'); s.classList.remove('ss-in');
+        applyBuilds(s, animate ? 0 : step);
+        void s.offsetWidth;
+        s.classList.add('active'); s.removeAttribute('aria-hidden');
+        if (s.scrollTop) s.scrollTop = 0;
+        deck.style.setProperty('--ss-dir', '1');
+        sceneEnter(i, animate);
+        if (animate) { s.classList.remove('ss-noanim'); void s.offsetWidth; s.classList.add('ss-in'); applyBuilds(s, step); }
+        else { s.classList.add('ss-in'); void s.offsetWidth; s.classList.remove('ss-noanim'); settle(s); }
+        sceneStep(i, step, animate);
+      } else {
+        S.step = step;
+        if (!animate) s.classList.add('ss-noanim');
+        applyBuilds(s, step);
+        if (!animate) { void s.offsetWidth; s.classList.remove('ss-noanim'); settle(s); }
+        sceneStep(i, step, animate);
+      }
+      current = self;
+      renderChrome();
+      writeHash();
+      // forward moves chime (jumps, going back and links stay quiet); data-sound="manual" leaves it all to the deck
+      if (animate && deck.getAttribute('data-sound') !== 'manual') sfx(changed ? 'slide' : 'step', step);
+    }
+    function next() { if (S.step < stepsOf(S.cur)) show(S.cur, S.step + 1, true); else if (S.cur < S.n - 1) show(S.cur + 1, 0, true); }
+    function prev() { if (S.step > 0) show(S.cur, S.step - 1, false); else if (S.cur > 0) show(S.cur - 1, stepsOf(S.cur - 1), false); }
+    function nextSlide() { if (S.cur < S.n - 1) show(S.cur + 1, 0, true); }
+    function prevSlide() { if (S.cur > 0) show(S.cur - 1, 0, true); }
+    function jump(i, step) { const k = resolveSlide(i); if (k == null) return; step = step || 0; show(k, step, step === 0); }
+    function replay() { const i = S.cur; S.cur = -2; slides[i].classList.remove('active'); sceneLeave(i); show(i, 0, true); }
+
+    /* ---------- hash ---------- */
+    function writeHash() {
+      const h = formatHash(S.cur, S.step);
+      if (opts.onChange) opts.onChange({ slide: S.cur, step: S.step, steps: stepsOf(S.cur), count: S.n }, h.slice(1));
+      if (!standalone || location.hash === h) return;
+      try { history.replaceState(null, '', h || location.pathname + location.search); } catch { /* the fragment is a convenience */ }
+    }
+    function readHash(hash) {
+      const h = parseHash(hash == null ? location.hash : hash); if (!h) return false;
+      const i = resolveSlide(h.slide); if (i == null) return false;
+      if (i === S.cur && Math.min(h.step, stepsOf(i)) === S.step) return true;
+      show(i, h.step, false);
+      return true;
+    }
+
+    /* ---------- layout ---------- */
+    // Safe-area insets (notch, home indicator) as px, read from a probe padded with env().
+    let probe = null;
+    function insets() {
+      if (!standalone && !frame.hasAttribute('data-ss-max')) return { t: 0, r: 0, b: 0, l: 0 };
+      if (!probe) { probe = mk('div', { class: 'ss-probe', 'aria-hidden': 'true' }); document.body.appendChild(probe); }
+      const cs = getComputedStyle(probe);
+      return { t: px(cs.paddingTop), r: px(cs.paddingRight), b: px(cs.paddingBottom), l: px(cs.paddingLeft) };
+    }
+    function layout() {
+      const size = parseSize(deck.getAttribute('data-size'));
+      const root = frame;
+      // clientWidth/Height: innerWidth can grow past the screen on mobile when content overflows
+      const box = standalone ? null : frame.getBoundingClientRect();
+      const W = box ? box.width : root.clientWidth || window.innerWidth, H = box ? box.height : root.clientHeight || window.innerHeight;
+      if (!W || !H) return;
+      const ins = insets();
+      const landscape = W > H * 1.15;
+      // short landscape screens (phones on their side) and a maximized deck give the stage every pixel;
+      // the bar floats over it and hides when idle
+      const immersive = root.hasAttribute('data-ss-max') || (standalone && landscape && H < 520);
+      root.toggleAttribute('data-ss-immersive', immersive);
+      const reserve = immersive ? ins.b : (bar.offsetHeight || 48);
+      const aw = W - ins.l - ins.r, ah = H - ins.t - reserve;
+      const scale = fitScale(aw, ah, size.w, size.h, immersive ? 0 : PAD);
+      const flowAllowed = deck.getAttribute('data-flow') !== 'never';
+      S.mode = flowAllowed && !landscape && scale < FLOW_BELOW ? 'flow' : 'fit';
+      root.setAttribute('data-ss-mode', S.mode);
+      const set = (k, v) => root.style.setProperty(k, v);
+      set('--ss-w', size.w + 'px'); set('--ss-h', size.h + 'px'); set('--ss-scale', String(scale));
+      set('--ss-cx', (ins.l + aw / 2) + 'px'); set('--ss-cy', (ins.t + ah / 2) + 'px');
+      set('--ss-il', ins.l + 'px'); set('--ss-it', ins.t + 'px'); set('--ss-ir', ins.r + 'px'); set('--ss-reserve', reserve + 'px');
+      // fixed slides in flow mode: scale the design size into the reflowed stage
+      const fs = Math.min(aw / size.w, ah / size.h);
+      set('--ss-fs', String(fs));
+      set('--ss-fx', ((aw - size.w * fs) / 2) + 'px');
+      set('--ss-fy', Math.max(0, (ah - size.h * fs) / 2) + 'px');
+      poke();
+    }
+
+    /* ---------- maximize: the Fullscreen API on the frame, else the frame fills the window ---------- */
+    // data-ss-max on the frame is the state: "api" | "pseudo", absent while off
+    const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement || null;
+    const maxed = () => frame.getAttribute('data-ss-max') || 'off';
+    function setMax(m) {
+      if (m === 'off') frame.removeAttribute('data-ss-max'); else frame.setAttribute('data-ss-max', m);
+      const label = m === 'off' ? '全画面' : '全画面を終了';
+      els.full.setAttribute('aria-label', label); els.full.title = label + ' (F)'; setIcon(els.full, m === 'off' ? 'maximize' : 'restore');
+      layout();
+    }
+    function enterMax() {
+      if (maxed() !== 'off') return;
+      const req = frame.requestFullscreen || frame.webkitRequestFullscreen;
+      const enabled = document.fullscreenEnabled ?? document.webkitFullscreenEnabled;
+      if (!req || enabled === false) return setMax('pseudo');
+      // fullscreenchange marks the real one; a refusal falls back to filling the window
+      try { Promise.resolve(req.call(frame)).catch(() => { if (maxed() === 'off') setMax('pseudo'); }); } catch { setMax('pseudo'); }
+    }
+    function exitMax() {
+      if (maxed() === 'off') return;
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (fsEl() === frame && exit) Promise.resolve(exit.call(document)).catch(() => {});
+      setMax('off');
+    }
+    const toggleMax = () => (maxed() === 'off' ? enterMax() : exitMax());
+    // the browser's own exit (its Esc, a gesture) ends "api" too
+    const onFsChange = () => setMax(fsEl() === frame ? 'api' : maxed() === 'api' ? 'off' : maxed());
+
+    /* ---------- chrome ---------- */
+    function btn(icon, aria, onClick) {
+      const b = mk('button', { type: 'button', 'aria-label': aria, title: aria });
+      if (icon) setIcon(b, icon);
+      b.addEventListener('click', e => { e.stopPropagation(); onClick(); b.blur(); });
+      return b;
+    }
+    function buildChrome() {
+      bar = mk('nav', { class: 'ss-bar', 'aria-label': 'スライド操作' });
+      els.prog = mk('div', { class: 'ss-prog' });
+      els.prev = btn('prev', '前へ (←)', () => { stopPlay(); prev(); });
+      els.next = btn('next', '次へ (→ / Space)', () => { stopPlay(); next(); });
+      els.mid = mk('div', { class: 'ss-mid' });
+      if (S.n <= DOTS_MAX) {
+        els.dots = mk('div', { class: 'ss-dots', role: 'group', 'aria-label': 'スライド' });
+        slides.forEach((_, i) => els.dots.appendChild(btn('', (i + 1) + '. ' + titleOf(i), () => jump(i))));
+        els.count = btn('', '目次 (T)', () => togglePop('toc'));
+        els.count.classList.add('ss-count');
+        els.mid.append(els.dots, els.count);
+      } else {
+        els.jump = mk('label', { class: 'ss-jump' });
+        els.input = mk('input', { type: 'number', inputmode: 'numeric', min: '1', max: String(S.n), 'aria-label': 'スライド番号 (G)', title: 'スライド番号 (G)' });
+        const commit = () => { const v = parseInt(els.input.value, 10); if (v >= 1 && v <= S.n) jump(v - 1); else renderChrome(); };
+        els.input.addEventListener('change', commit);
+        els.input.addEventListener('keydown', e => {
+          e.stopPropagation();
+          if (e.key === 'Enter') { commit(); els.input.blur(); }
+          else if (e.key === 'Escape') { renderChrome(); els.input.blur(); }
+        });
+        els.input.addEventListener('focus', () => els.input.select());
+        els.jump.append(els.input, mk('span', { class: 'ss-count' }, '/ ' + S.n));
+        els.mid.append(els.jump);
+      }
+      els.pips = mk('div', { class: 'ss-pips', 'aria-label': 'ステップ' });
+      els.title = mk('span', { class: 'ss-title' });
+      els.mid.append(els.pips);
+      els.tools = mk('div', { class: 'ss-tools' });
+      els.play = btn('play', '自動再生 (P)', togglePlay);
+      els.replay = btn('replay', 'アニメーションを最初から (R)', replay);
+      els.toc = btn('toc', '目次 (T)', () => togglePop('toc'));
+      els.help = btn('help', 'キー操作 (?)', () => togglePop('help'));
+      els.tools.append(els.play, els.replay, els.toc);
+      if (deck.hasAttribute('data-sound')) {
+        els.sound = btn('soundOff', '効果音 (S)', () => setSound(!snd.on));
+        els.sound.setAttribute('aria-pressed', 'false');
+        els.tools.append(els.sound);
+      }
+      // it stays on narrow screens, where a tap is the only way in
+      els.full = btn('maximize', '全画面', toggleMax); els.full.title = '全画面 (F)'; els.full.classList.add('ss-fs');
+      els.help.classList.add('ss-opt');
+      els.tools.append(els.full, els.help);
+      const center = mk('div', { class: 'ss-center' });
+      center.append(els.prev, els.mid, els.next);
+      bar.append(els.prog, els.title, center, els.tools);
+      opts.mount.appendChild(bar);
+
+      els.pop = mk('div', { class: 'ss-pop', role: 'dialog', hidden: '' });
+      opts.mount.appendChild(els.pop);
+      document.addEventListener('pointerdown', e => { if (!els.pop.hidden && !els.pop.contains(e.target) && !bar.contains(e.target)) closePop(); });
+    }
+    function renderChrome() {
+      const total = stepsOf(S.cur);
+      els.prog.style.width = ((S.cur + (total ? S.step / (total + 1) : 0) + 1) / S.n * 100) + '%';
+      els.prev.disabled = S.cur === 0 && S.step === 0;
+      els.next.disabled = S.cur === S.n - 1 && S.step === total;
+      if (els.dots) {
+        [...els.dots.children].forEach((d, i) => d.setAttribute('aria-current', String(i === S.cur)));
+        els.count.textContent = (S.cur + 1) + ' / ' + S.n;
+      } else if (document.activeElement !== els.input) els.input.value = String(S.cur + 1);
+      els.pips.replaceChildren();
+      if (total > 0 && total <= 10) {
+        for (let k = 1; k <= total; k++) els.pips.appendChild(mk('i', k <= S.step ? { class: 'on' } : {}));
+      } else if (total > 10) els.pips.appendChild(mk('span', {}, S.step + '/' + total));
+      els.pips.hidden = !total;
+      els.title.textContent = titleOf(S.cur);
+      const s = slides[S.cur];
+      els.play.hidden = !total;
+      els.replay.hidden = !(total || sceneOf(S.cur) || s.querySelector('[data-anim]'));
+      if (els.pop.dataset.kind === 'toc' && !els.pop.hidden) renderToc();
+    }
+    function renderToc() {
+      els.pop.replaceChildren(mk('h4', {}, '目次'));
+      const ul = mk('ul', { class: 'ss-toc' });
+      slides.forEach((_, i) => {
+        const li = mk('li'), b = mk('button', { type: 'button', 'aria-current': String(i === S.cur) });
+        b.append(mk('b', {}, String(i + 1)), mk('span', {}, titleOf(i)));
+        b.addEventListener('click', () => { closePop(); jump(i); });
+        li.appendChild(b); ul.appendChild(li);
+      });
+      els.pop.appendChild(ul);
+      const cur = ul.children[S.cur]; if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: 'nearest' });
+    }
+    const KEYS = [['→ / Space / PageDown', '次へ（ステップ → スライド）'], ['← / PageUp', '前へ'], ['Shift + → / ←', 'ステップを飛ばしてスライド移動'],
+      ['Home / End', '最初 / 最後'], ['数字 → Enter', 'そのスライドへ'], ['G', 'スライド番号を入力 / 目次'], ['T', '目次'], ['R', 'アニメーションを最初から'],
+      ['P', 'ステップを自動再生'], ['S', '効果音 オン / オフ（対応デッキ）'], ['F', '全画面 / 終了'], ['スワイプ', '左右でページ送り'], ['Esc', '閉じる / 全画面を終了']];
+    function renderHelp() {
+      els.pop.replaceChildren(mk('h4', {}, 'キー操作'));
+      const dl = mk('div', { class: 'ss-keys' });
+      KEYS.forEach(([k, v]) => dl.append(mk('kbd', {}, k), mk('span', {}, v)));
+      els.pop.appendChild(dl);
+    }
+    function togglePop(kind) {
+      if (!els.pop.hidden && els.pop.dataset.kind === kind) return closePop();
+      els.pop.dataset.kind = kind; els.pop.hidden = false;
+      if (kind === 'toc') renderToc(); else renderHelp();
+      const first = els.pop.querySelector('[aria-current="true"]') || els.pop.querySelector('button');
+      if (first) first.focus({ preventScroll: true });
+    }
+    function closePop() { els.pop.hidden = true; }
+
+    function stopPlay() { if (S.playing) { clearInterval(S.playing); S.playing = null; } if (els.play) { els.play.setAttribute('aria-pressed', 'false'); setIcon(els.play, 'play'); } }
+    function togglePlay() {
+      if (S.playing) return stopPlay();
+      const total = stepsOf(S.cur); if (!total) return;
+      if (S.step >= total) show(S.cur, 0, false);
+      els.play.setAttribute('aria-pressed', 'true'); setIcon(els.play, 'pause');
+      const ms = +deck.getAttribute('data-autoplay') || 2600;
+      S.playing = setInterval(() => { if (S.step < stepsOf(S.cur)) show(S.cur, S.step + 1, true); if (S.step >= stepsOf(S.cur)) stopPlay(); }, ms);
+    }
+    function poke() {
+      frame.removeAttribute('data-ss-idle');
+      clearTimeout(idleTimer);
+      if (frame.hasAttribute('data-ss-immersive')) {
+        idleTimer = setTimeout(() => { if (els.pop.hidden) frame.setAttribute('data-ss-idle', ''); }, 2600);
+      }
+    }
+
+    /* ---------- input ---------- */
+    let digits = '', digitsTimer = null;
+    function onKey(e) {
+      if (!isActive() || e.metaKey || e.ctrlKey || e.altKey || e.defaultPrevented) return;
+      if (editable(e.target)) return;
+      const inSlideControl = e.target.closest && e.target.closest('.slide button, .slide a[href], .slide summary');
+      const k = e.key;
+      if (k === 'Escape') { digits = ''; if (!els.pop.hidden) closePop(); else exitMax(); return; }
+      if (/^[0-9]$/.test(k)) { digits += k; clearTimeout(digitsTimer); digitsTimer = setTimeout(() => { digits = ''; }, 1600); return; }
+      if (k === 'Enter' && digits) { e.preventDefault(); const v = +digits; digits = ''; if (v >= 1 && v <= S.n) jump(v - 1); return; }
+      const fitNav = S.mode === 'fit';
+      const go = fn => { e.preventDefault(); stopPlay(); closePop(); fn(); };
+      if (e.shiftKey && k === 'ArrowRight') return go(nextSlide);
+      if (e.shiftKey && k === 'ArrowLeft') return go(prevSlide);
+      if (k === ' ' && inSlideControl) return;
+      if (k === 'ArrowRight' || k === 'PageDown' || (k === ' ' && !e.shiftKey) || (fitNav && k === 'ArrowDown')) return go(next);
+      if (k === 'ArrowLeft' || k === 'PageUp' || (k === ' ' && e.shiftKey) || (fitNav && k === 'ArrowUp')) return go(prev);
+      if (k === 'Home') return go(() => jump(0));
+      if (k === 'End') return go(() => jump(S.n - 1));
+      const lk = k.toLowerCase();
+      if (lk === 'g') { e.preventDefault(); if (els.input) els.input.focus(); else togglePop('toc'); }
+      else if (lk === 't' || lk === 'o') togglePop('toc');
+      else if (lk === 'r') { stopPlay(); replay(); }
+      else if (lk === 'p') togglePlay();
+      else if (lk === 'f') { e.preventDefault(); toggleMax(); }
+      else if (lk === 's' && els.sound) setSound(!snd.on);
+      else if (k === '?') togglePop('help');
+    }
+    let tx = null, ty = null;
+    function onTouchStart(e) {
+      const t = e.touches[0];
+      if (!isActive() || e.touches.length > 1 || (e.target.closest && e.target.closest('input, textarea, select, pre, [data-no-swipe], .ss-bar, .ss-pop'))) { tx = null; return; }
+      tx = t.clientX; ty = t.clientY;
+    }
+    function onTouchEnd(e) {
+      if (tx == null) return;
+      const t = e.changedTouches[0], dx = t.clientX - tx, dy = t.clientY - ty; tx = ty = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) { stopPlay(); if (dx < 0) next(); else prev(); }
+    }
+
+
+    /* ---------- init ---------- */
+    slides = [...deck.querySelectorAll(':scope > .slide')];
+    S.n = slides.length; if (!S.n) return null;
+    slides.forEach(s => { s.setAttribute('aria-hidden', 'true'); s.setAttribute('role', 'group'); s.setAttribute('aria-roledescription', 'slide'); });
+    // stagger: children of [data-stagger] enter one after another
+    deck.querySelectorAll('[data-stagger]').forEach(p => [...p.children].forEach((c, i) => { c.style.setProperty('--i', String(i)); if (!c.hasAttribute('data-anim') && !c.hasAttribute('data-step')) c.setAttribute('data-anim', p.getAttribute('data-stagger') || 'up'); }));
+    wireLinks(standalone ? document : deck);
+    buildChrome();
+    layout();
+    if (standalone) {
+      window.addEventListener('resize', layout);
+      // a fragment cleared from the address bar (or by the viewer) means the opening state
+      window.addEventListener('hashchange', () => { if (!readHash() && location.hash === '') show(0, 0, false); });
+    } else if (window.ResizeObserver) new ResizeObserver(layout).observe(frame);
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('touchstart', onTouchStart, { passive: true });
+    document.addEventListener('touchend', onTouchEnd, { passive: true });
+    document.addEventListener('pointermove', poke, { passive: true });
+    document.addEventListener('pointerdown', poke, { passive: true });
+
+    const self = {
+      deck, show, next, prev, jump, replay, layout, stepsOf, readHash, setSound, stopPlay, closePop, exitMax,
+      resetSteps() { slides.forEach(s => { delete s._ssSteps; }); },
+      get state() { return { slide: S.cur, step: S.step, steps: stepsOf(S.cur), count: S.n, mode: S.mode }; },
+    };
+    decks.push(self);
+    return self;
+  }
+
+  /* ---------- boot: the page's own deck (decks inside course units are created by their unit) ---------- */
+  function start() {
+    if (started) return; started = true;
+    const deck = [...document.querySelectorAll('.deck')].find(d => !d.closest('.su-unit'));
+    if (!deck) return;
+    const d = createDeck(deck, { frame: document.documentElement, mount: document.body, standalone: true });
+    if (!d) return;
+    if (!d.readHash()) d.show(0, 0, true);
+    try { window.focus(); } catch { /* ignore */ }
+  }
+
+  const NONE = { slide: -1, step: 0, steps: 0, count: 0, mode: 'fit' };
+  const api = {
+    scene(name, def) { scenes[name] = def || {}; decks.forEach(d => d.resetSteps()); },
+    go(slide, step) { if (current) current.jump(slide, step); },
+    next() { if (current) current.next(); },
+    prev() { if (current) current.prev(); },
+    replay() { if (current) current.replay(); },
+    // play a built-in sound; does nothing (returns false) unless the deck has data-sound and the viewer turned it on
+    sfx,
+    get sound() { return snd.on; },
+    pageUrl(id, hash) { const r = resolveLink(id, hash || ''); return r && r.href; },
+    get state() { return current ? current.state : NONE; },
+  };
+  window.YESSlides = api;
+  window.__yesSlides = { parseSize, parseHash, formatHash, fitScale, pageHref, buildRange, start, api, createDeck };
+
+  /* ---------- a deck as a course unit (YESUnits contract: see video/runtime.js) ---------- */
+  (window.YESUnits = window.YESUnits || { kinds: {} }).kinds.slides = function slidesUnit(root, data, host) {
+    root.classList.add('ss-frame');
+    let active = false, opened = false, best = (host.saved && host.saved.frac) || 0, done = !!(host.saved && host.saved.done);
+    const endRow = mk('div', { class: 'ss-unit-end', hidden: '' });
+    const d = createDeck(root.querySelector('.deck'), {
+      frame: root, mount: root, isActive: () => active,
+      onChange(st, rest) {
+        if (!active) return;
+        // progress = furthest position reached, counting every step of every slide
+        let total = 0, at = 0;
+        for (let i = 0; i < st.count; i++) { const n = d.stepsOf(i) + 1; if (i < st.slide) at += n; total += n; }
+        const frac = Math.min(1, (at + st.step + 1) / total);
+        if (frac > best) { best = frac; host.progress(frac); }
+        const end = st.slide === st.count - 1 && st.step === st.steps;
+        if (end && !done) { done = true; host.complete(); }
+        endRow.replaceChildren();
+        if (end) for (const a of host.endActions()) {
+          const b = mk('button', a.primary ? { type: 'button', class: 'primary' } : { type: 'button' }, a.label);
+          // the next step leaves this unit: drop out of the maximized deck first
+          b.addEventListener('click', () => { d.exitMax(); a.run(); }); endRow.appendChild(b);
+        }
+        endRow.hidden = !end;
+        host.setRest(rest);
+        host.position(rest);
+      },
+    });
+    root.appendChild(endRow);
+    return {
+      show(rest) {
+        active = true; root.hidden = false; d.layout();
+        if (!(rest && d.readHash('#' + rest))) { if (!opened) d.show(0, 0, true); else d.show(d.state.slide, d.state.step, false); }
+        opened = true;
+      },
+      hide() { d.exitMax(); active = false; d.stopPlay(); d.closePop(); root.hidden = true; },
+    };
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else setTimeout(start, 0);
+})();
+</script>
+<script>
+document.querySelectorAll('[data-sfx]').forEach(b => b.addEventListener('click', () => {
+  if (!YESSlides.sfx(b.dataset.sfx)) b.animate([{ transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'none' }], 200);
+}));
+YESSlides.scene('meter', {
+  steps: 3,
+  step(ctx, k) {
+    const fill = ctx.$('.fill'), out = ctx.$('.readout');
+    const labels = ['step 0 — まだ何もしていない', 'step 1 — 1/3 まで', 'step 2 — 2/3 まで', 'step 3 — 完了'];
+    fill.style.transition = ctx.animate ? '' : 'none';
+    fill.style.width = (k / 3 * 100) + '%';
+    out.textContent = ctx.animate && k > 0 ? '…' : labels[k];
+    if (ctx.animate && k > 0) ctx.later(900, () => { out.textContent = labels[k]; });
+  },
+});
+</script>
+</body>
+</html>

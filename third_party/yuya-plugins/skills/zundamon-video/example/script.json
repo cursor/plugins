@@ -1,0 +1,252 @@
+{
+  "title": "空はなぜ青い？ 夕焼けはなぜ赤い？",
+  "subtitle": "ずんだもんと四国めたんの掛け合い解説",
+  "description": "空が青いのは海が映っているからではありません。\n空気の分子が光をどう散らばらせるかから、青い空・赤い夕焼け・白い雲を一つの仕組みで説明します。",
+  "goals": [
+    "空が青い理由を、光の波の長さと散乱で説明できる",
+    "夕焼けが赤く、雲が白く見える理由を、同じ仕組みで言える"
+  ],
+  "cast": [
+    "metan",
+    "zundamon"
+  ],
+  "speed": 1.1,
+  "sources": [
+    {
+      "title": "Rayleigh scattering (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Rayleigh_scattering",
+      "note": "散乱は波長の4乗に反比例"
+    },
+    {
+      "title": "Air mass (astronomy) (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Air_mass_(astronomy)",
+      "note": "地平線の空気の厚みは天頂のおよそ40倍"
+    }
+  ],
+  "claims": [
+    {
+      "line": "c1-3.0",
+      "source": 0,
+      "quote": "the amount of scattering is inversely proportional to the fourth power of the wavelength"
+    },
+    {
+      "line": "c1-3.1",
+      "derived": "c1-3.0"
+    },
+    {
+      "line": "c2-1.3",
+      "source": 1,
+      "quote": "the horizon air mass in the more realistic spherical atmosphere is usually less than 40"
+    },
+    {
+      "line": "c2-1.4",
+      "derived": "c2-1.3"
+    }
+  ],
+  "assumes": [
+    "光には色ごとに違う波の長さがある、と聞いたことがある程度でよい"
+  ],
+  "chapters": [
+    {
+      "id": "c1",
+      "title": "青い光ほど散らばる",
+      "scenes": [
+        {
+          "id": "c1-0",
+          "role": "hook",
+          "lines": [
+            {
+              "who": "zundamon",
+              "face": "smile",
+              "text": "めたん、見てほしいのだ。今日の空、すっごく青いのだ！"
+            },
+            {
+              "who": "metan",
+              "face": "jito",
+              "text": "夕方には真っ赤になるくせに、気まぐれな空ね。",
+              "aside": true
+            },
+            {
+              "who": "zundamon",
+              "face": "think",
+              "text": "同じ空なのに色が変わるのは、不思議なのだ……。"
+            },
+            {
+              "who": "metan",
+              "face": "smile",
+              "text": "今回は、空の色の仕組みを解説するわ。"
+            },
+            {
+              "who": "metan",
+              "face": "normal",
+              "text": "見終わるころには、夕焼けが赤い理由まで説明できるはずよ。"
+            }
+          ]
+        },
+        {
+          "id": "c1-1",
+          "role": "mechanism",
+          "lines": [
+            {
+              "who": "zundamon",
+              "face": "smile",
+              "text": "空が青いのは、海の青が映っているからなのだ！"
+            },
+            {
+              "who": "metan",
+              "face": "jito",
+              "text": "海のない砂漠の上でも、空は青いわよ。"
+            },
+            {
+              "who": "metan",
+              "face": "normal",
+              "text": "青く見えるのは、空気が光を散らばらせるからなの。"
+            }
+          ]
+        },
+        {
+          "id": "c1-2",
+          "role": "mechanism",
+          "lines": [
+            {
+              "who": "metan",
+              "text": "太陽の白い光には、虹の色がぜんぶ混ざっているの。"
+            },
+            {
+              "who": "metan",
+              "text": "色の違いは波の長さの違いで、青は短く、赤は長いの。"
+            },
+            {
+              "who": "zundamon",
+              "face": "think",
+              "text": "波の長さが違うと、何が変わるのだ？"
+            },
+            {
+              "who": "metan",
+              "text": "空気の分子は、光の波よりずっと小さな粒なの。"
+            },
+            {
+              "who": "metan",
+              "text": "小さな粒は、波の短い光ほど四方八方に散らばらせるわ。これが散乱よ。"
+            }
+          ]
+        },
+        {
+          "id": "c1-3",
+          "role": "mechanism",
+          "lines": [
+            {
+              "who": "metan",
+              "text": "波の長さの4乗が効くから、青は赤のおよそ6倍も散らばるわ。"
+            },
+            {
+              "who": "zundamon",
+              "face": "surprised",
+              "text": "6倍も！ だから空のどこを見ても、青が目に届くのだ。"
+            },
+            {
+              "who": "zundamon",
+              "face": "troubled",
+              "text": "でも、紫ならもっと散らばるのだ？"
+            },
+            {
+              "who": "metan",
+              "face": "think",
+              "text": "日光に紫は少ないし、人の目は紫を感じにくいの。"
+            },
+            {
+              "who": "zundamon",
+              "face": "smile",
+              "text": "紫は少なくて見えにくいから、空は青く見えるのだ。"
+            }
+          ]
+        }
+      ],
+      "quiz": {
+        "q": "空気の分子が、赤より青い光を多く散らばらせるのは、なぜかしら？",
+        "a": "分子が光の波よりずっと小さく、波の短い光ほど強く散乱されるからよ。",
+        "q_who": "metan",
+        "a_who": "metan",
+        "think": 5
+      }
+    },
+    {
+      "id": "c2",
+      "title": "夕焼けと白い雲",
+      "scenes": [
+        {
+          "id": "c2-1",
+          "role": "mechanism",
+          "lines": [
+            {
+              "who": "zundamon",
+              "face": "think",
+              "text": "じゃあ夕焼けは？ 夕方だけ赤が散らばるのだ？"
+            },
+            {
+              "who": "metan",
+              "face": "normal",
+              "text": "散らばり方は同じよ。変わるのは、光が空気を通る道のりなの。"
+            },
+            {
+              "who": "metan",
+              "text": "昼は太陽が高いから、光は空気の層を短く通り抜けるわ。"
+            },
+            {
+              "who": "metan",
+              "text": "夕方は太陽が低く、地平線近くではおよそ40倍の空気を通るの。"
+            },
+            {
+              "who": "zundamon",
+              "face": "panic",
+              "text": "40倍も！ 青い光は途中で散らばりきってしまうのだ。"
+            },
+            {
+              "who": "metan",
+              "face": "smile",
+              "text": "そう。目まで届くのは、散らばりにくい赤やオレンジよ。"
+            },
+            {
+              "who": "zundamon",
+              "face": "cry",
+              "style": "なみだめ",
+              "text": "青い光は、途中で置いてけぼりなのだ……。"
+            }
+          ]
+        },
+        {
+          "id": "c2-2",
+          "role": "mechanism",
+          "lines": [
+            {
+              "who": "zundamon",
+              "face": "think",
+              "text": "じゃあ、雲が白いのはなぜなのだ？"
+            },
+            {
+              "who": "metan",
+              "face": "normal",
+              "text": "雲の水滴は、光の波よりずっと大きな粒なの。"
+            },
+            {
+              "who": "metan",
+              "text": "大きな粒はどの色も同じだけ散らばらせるから、白く見えるのよ。"
+            },
+            {
+              "who": "zundamon",
+              "face": "smile",
+              "text": "粒が小さいと青、大きいと白。粒の大きさで色が決まるのだ！"
+            }
+          ]
+        }
+      ],
+      "quiz": {
+        "q": "夕焼けが赤く見えるのは、なぜかしら？",
+        "a": "光が空気を長く通るあいだに青が散らばって減り、赤が残るからなのだ。",
+        "q_who": "metan",
+        "a_who": "zundamon",
+        "think": 5
+      }
+    }
+  ]
+}

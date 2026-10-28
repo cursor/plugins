@@ -1,0 +1,132 @@
+<style>
+/* Dialogue board: the content box is 1072x448 and its bottom corners sit under the characters,
+   so scenes start at the top and anything that runs low stays narrow and centred. */
+.scene { justify-content: flex-start; }
+.sky-narrow { max-width: 680px; margin: 0 auto; width: 100%; }
+
+/* light colours mean the light itself, in every scene */
+.sky-blue { color: #3b82f6; } .sky-red { color: #e5484d; } .sky-violet { color: #8b5cf6; }
+
+.sky-myth { display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 32px; font-weight: 800; }
+.sky-myth .tag { font-size: 20px; color: var(--bad); border: 2px solid var(--bad); border-radius: 999px; padding: 2px 14px; }
+.sky-x { color: var(--bad); font-size: 40px; font-weight: 900; }
+
+.sky-spectrum { height: 26px; border-radius: 13px; background: linear-gradient(90deg, #8b5cf6, #3b82f6, #22a06b, #eab308, #f97316, #e5484d); }
+.sky-ends { display: flex; justify-content: space-between; font-size: 22px; font-weight: 700; }
+
+.sky-svg { display: block; width: 100%; height: auto; }
+.sky-svg text { font-family: inherit; font-weight: 700; }
+
+.sky-bars { display: flex; flex-direction: column; gap: 12px; }
+.sky-bar { display: grid; grid-template-columns: 150px 1fr 110px; align-items: center; gap: 16px; font-size: 24px; font-weight: 700; }
+.sky-bar i { display: block; height: 30px; border-radius: 8px; width: calc(var(--v) / 9.4 * 100%); background: var(--c); }
+.sky-bar .n { font-variant-numeric: tabular-nums; text-align: right; }
+.sky-note { font-size: 22px; color: var(--muted); text-align: center; }
+
+.sky-two { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.sky-two .ev-card { display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; }
+.sky-two .res { font-size: 30px; font-weight: 900; }
+</style>
+
+<!-- ===== c1 青い光ほど散らばる ===== -->
+<section class="scene" data-scene="c1-0">
+  <div class="ev-stack sky-narrow" style="margin-top:24px">
+    <div class="ev-row" data-at="0" data-out="3" style="justify-content:center; gap:28px">
+      <div class="ev-card" style="width:240px; height:150px; background:linear-gradient(#4f8fd8,#a9d0f5)"></div>
+      <div class="ev-card" data-at="1" style="width:240px; height:150px; background:linear-gradient(#e86b3a,#f6c27a)"></div>
+    </div>
+    <div class="ev-col ev-center" data-at="3" style="gap:12px">
+      <h2 class="ev-title">空はなぜ青い？<br>夕焼けはなぜ赤い？</h2>
+      <span class="ev-pill" data-at="4">ゴール：夕焼けが赤い理由まで説明できる</span>
+    </div>
+  </div>
+</section>
+<section class="scene" data-scene="c1-1">
+  <div class="ev-kicker">空の色の仕組み</div>
+  <h2 class="ev-title">空はなぜ青い？</h2>
+  <div class="sky-myth" data-at="0"><span class="tag">よくある誤解</span>海の青が映っている<span class="sky-x" data-at="1">✗</span></div>
+  <div class="ev-row" style="justify-content:center" data-at="2"><span class="ev-pill">空気が光を散らばらせる</span></div>
+</section>
+
+<section class="scene" data-scene="c1-2">
+  <h2 class="ev-h">小さな粒が、光を散らばらせる</h2>
+  <div class="ev-col" style="gap:8px" data-at="0">
+    <div class="sky-spectrum"></div>
+    <div class="sky-ends"><span class="sky-blue" data-at="1">← 波が短い（青・約450 nm）</span><span class="sky-red" data-at="1">波が長い（赤・約700 nm）→</span></div>
+  </div>
+  <svg class="sky-svg sky-narrow" viewBox="0 0 680 200" role="img" aria-label="太陽の光が空気の分子に当たり、青い光が四方に散らばり、赤い光はほぼまっすぐ進む">
+    <g data-at="3">
+      <circle cx="60" cy="100" r="34" fill="#f5b400"/>
+      <text x="60" y="166" text-anchor="middle" font-size="20" fill="currentColor">太陽</text>
+      <line x1="100" y1="100" x2="318" y2="100" stroke="currentColor" stroke-width="6" opacity=".35"/>
+      <circle cx="340" cy="100" r="12" fill="currentColor"/>
+      <text x="340" y="150" text-anchor="middle" font-size="20" fill="currentColor">空気の分子</text>
+    </g>
+    <g data-at="4" stroke="#3b82f6" stroke-width="5" stroke-linecap="round" fill="none">
+      <path d="M352 88 L420 26"/><path d="M328 88 L262 26"/><path d="M340 84 L340 14"/>
+      <path d="M356 104 L440 132"/><path d="M324 104 L248 150"/>
+    </g>
+    <g data-at="4">
+      <line x1="360" y1="100" x2="640" y2="100" stroke="#e5484d" stroke-width="5" stroke-linecap="round"/>
+      <text x="640" y="84" text-anchor="end" font-size="20" fill="#e5484d">赤はほぼまっすぐ</text>
+      <text x="470" y="34" font-size="20" fill="#3b82f6">青は四方へ</text>
+    </g>
+  </svg>
+</section>
+
+<section class="scene" data-scene="c1-3">
+  <h2 class="ev-h">散らばりやすさ（赤を 1 としたとき）</h2>
+  <div class="sky-bars sky-narrow" style="max-width:760px">
+    <div class="sky-bar" data-at="0"><span class="sky-red">赤 700 nm</span><i style="--v:1; --c:#e5484d"></i><span class="n">1 倍</span></div>
+    <div class="sky-bar" data-at="0"><span style="color:#22a06b">緑 530 nm</span><i style="--v:3; --c:#22a06b"></i><span class="n">3 倍</span></div>
+    <div class="sky-bar" data-at="0" data-focus="0,1"><span class="sky-blue">青 450 nm</span><i style="--v:5.9; --c:#3b82f6"></i><span class="n">約 6 倍</span></div>
+    <div class="sky-bar" data-at="2" data-focus="2,3"><span class="sky-violet">紫 400 nm</span><i style="--v:9.4; --c:#8b5cf6"></i><span class="n">約 9 倍</span></div>
+  </div>
+  <div class="sky-note" data-at="3">紫は日光に少なく、目も感じにくい → 空は青に見える</div>
+</section>
+
+<!-- ===== c2 夕焼けと白い雲 ===== -->
+<section class="scene" data-scene="c2-1">
+  <h2 class="ev-h">変わるのは、空気の中の道のり</h2>
+  <svg class="sky-svg" style="max-width:880px; margin:0 auto" viewBox="0 0 1000 300" role="img" aria-label="昼は太陽光が大気を短く通り、夕方は地平線近くから大気を斜めに長く通る">
+    <path d="M40 300 Q500 150 960 300" fill="none" stroke="#3b82f6" stroke-width="90" opacity=".14"/>
+    <path d="M40 300 Q500 200 960 300" fill="var(--line)" stroke="currentColor" stroke-width="3"/>
+    <text x="900" y="236" text-anchor="end" font-size="20" fill="currentColor" opacity=".7">大気の層</text>
+    <circle cx="500" cy="244" r="9" fill="currentColor"/>
+    <text x="500" y="284" text-anchor="middle" font-size="20" fill="currentColor">見ている人</text>
+    <g data-at="2">
+      <circle cx="500" cy="32" r="22" fill="#f5b400"/>
+      <line x1="500" y1="60" x2="500" y2="230" stroke="#f5b400" stroke-width="6" stroke-dasharray="2 10" stroke-linecap="round"/>
+      <text x="530" y="40" font-size="22" fill="currentColor">昼：短い道のり</text>
+    </g>
+    <g data-at="3">
+      <circle cx="40" cy="200" r="22" fill="#f97316"/>
+      <line x1="66" y1="203" x2="488" y2="242" stroke="#f97316" stroke-width="6" stroke-dasharray="2 10" stroke-linecap="round"/>
+      <text x="40" y="160" font-size="22" fill="currentColor">夕方：長い道のり</text>
+    </g>
+    <g data-at="3">
+      <rect x="250" y="120" width="170" height="44" rx="22" fill="#f97316"/>
+      <text x="335" y="150" text-anchor="middle" font-size="22" fill="#fff">空気 約 40 倍</text>
+    </g>
+  </svg>
+  <div class="ev-row" style="justify-content:center; gap:16px" data-at="5">
+    <span class="ev-pill" style="background:#3b82f622; color:#3b82f6">青：途中で散らばって減る</span>
+    <span class="ev-pill" style="background:#e5484d22; color:#e5484d">赤・オレンジ：目まで届く</span>
+  </div>
+</section>
+
+<section class="scene" data-scene="c2-2">
+  <h2 class="ev-h">粒の大きさで、色が決まる</h2>
+  <div class="sky-two">
+    <div class="ev-card" data-at="0" data-focus="0">
+      <h3>空気の分子</h3>
+      <svg class="sky-svg" viewBox="0 0 240 70" style="width:240px" aria-hidden="true"><circle cx="80" cy="35" r="6" fill="currentColor"/><text x="112" y="42" font-size="18" fill="currentColor">波より小さい</text></svg>
+      <div class="res sky-blue">青ほど散らばる → 青い空</div>
+    </div>
+    <div class="ev-card" data-at="1" data-focus="1,2">
+      <h3>雲の水滴</h3>
+      <svg class="sky-svg" viewBox="0 0 240 70" style="width:240px" aria-hidden="true"><circle cx="70" cy="35" r="30" fill="#dbe7f5" stroke="currentColor" stroke-width="2"/><text x="112" y="42" font-size="18" fill="currentColor">波より大きい</text></svg>
+      <div class="res" data-at="2">全色が同じだけ → 白い雲</div>
+    </div>
+  </div>
+</section>

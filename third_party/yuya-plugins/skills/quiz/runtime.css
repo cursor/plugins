@@ -1,0 +1,28 @@
+/* quiz unit runtime. Tokens (--accent etc.) come from the host page. */
+.qz { position: absolute; inset: 0; overflow-y: auto; background: var(--bg); padding: 36px 40px 80px; font-size: 16px; line-height: 1.7; word-break: auto-phrase; }
+.qz-in { max-width: 820px; margin: 0 auto; }
+.qz-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.qz-head h1 { font-size: 26px; margin: 0; font-weight: 900; line-height: 1.35; }
+.qz-head span { color: var(--muted); }
+.qz-q { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; }
+.qz-n { font-size: 13px; font-weight: 700; color: var(--accent); }
+.qz-from { font-size: 12px; color: var(--muted); }
+.qz-t { font-size: 18px; font-weight: 700; margin: 4px 0 12px; }
+.qz-ch { display: flex; gap: 10px; align-items: flex-start; width: 100%; text-align: left; border: 2px solid var(--line); background: var(--card); border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; cursor: pointer; font-size: 15px; line-height: 1.55; }
+.qz-ch:hover:not(:disabled) { border-color: var(--accent); }
+.qz-ch:disabled { cursor: default; }
+.qz-ch b { flex: none; width: 1.6em; color: var(--muted); }
+.qz-ch.right { border-color: var(--good); background: var(--good-soft); }
+.qz-ch.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.qz-ch .mark { margin-left: auto; font-weight: 900; white-space: nowrap; }
+.qz-ch.right .mark { color: var(--good); }
+.qz-ch.wrong .mark { color: var(--bad); }
+.qz-why { margin-top: 6px; padding: 10px 14px; border-radius: 10px; background: var(--bg); font-size: 14px; }
+.qz-why[hidden], .qz-result[hidden] { display: none; }
+.qz-result { text-align: center; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px; margin-top: 8px; }
+.qz-result .score { font-size: 40px; font-weight: 900; }
+.qz-result .crown { color: var(--gold, var(--warn)); font-weight: 900; font-size: 18px; }
+.qz-acts { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 14px; }
+.qz-act { border: 2px solid var(--accent); background: var(--card); color: var(--accent); border-radius: 999px; padding: 10px 24px; font-weight: 700; cursor: pointer; }
+.qz-act.primary { background: var(--accent); color: var(--card); }
+@media (max-width: 600px) { .qz { padding: 20px 14px 60px; } }

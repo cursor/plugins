@@ -1,0 +1,226 @@
+/* video unit runtime — scene kit, stage, captions, controls. Tokens (--accent etc.) come from the host page. */
+/* top bar: chapter + segmented progress */
+.ev-top { position: absolute; left: 0; right: 0; top: 0; height: 56px; display: flex; align-items: center; gap: 18px; padding: 0 40px; z-index: 3; }
+.ev-chname { font-size: 17px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.ev-chname b { color: var(--accent); margin-right: 10px; }
+.ev-segs { flex: 1; display: flex; gap: 6px; }
+.ev-segs i { flex: var(--w) 1 0; height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; position: relative; }
+.ev-segs i::after { content: ""; position: absolute; inset: 0; width: calc(var(--f, 0) * 100%); background: var(--accent); }
+
+/* scenes: content box is 1152 x 536 (stage minus top bar and caption band) */
+.scene { position: absolute; left: 64px; right: 64px; top: 72px; bottom: 120px; display: flex; flex-direction: column; justify-content: center; gap: 22px;
+  opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s linear .35s; }
+.scene.active { opacity: 1; visibility: visible; transition: opacity .35s ease; z-index: 1; }
+.scene [data-at] { transition: opacity .45s ease, transform .5s cubic-bezier(.2,.7,.2,1); }
+.scene [data-at]:not(.on) { opacity: 0; transform: translateY(14px); }
+.scene [data-focus] { transition: opacity .35s ease, box-shadow .35s ease, border-color .35s ease; }
+/* dim unfocused siblings, but never reveal an element whose build has not started */
+.scene.has-focus [data-focus]:not(.focus):not([data-at]:not(.on)) { opacity: .4; }
+.scene .focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-soft); }
+
+/* scene kit */
+.ev-kicker { font-size: 18px; font-weight: 700; letter-spacing: .08em; color: var(--accent); }
+.ev-h { font-size: 44px; line-height: 1.3; font-weight: 900; margin: 0; text-wrap: balance; }
+.ev-title { font-size: 60px; line-height: 1.25; font-weight: 900; margin: 0; text-wrap: balance; }
+.ev-sub { font-size: 26px; color: var(--muted); margin: 0; }
+.ev-row { display: flex; gap: 24px; align-items: center; }
+.ev-col { display: flex; flex-direction: column; gap: 16px; }
+.ev-grid-2, .ev-grid-3, .ev-grid-4 { display: grid; gap: 20px; }
+.ev-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ev-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ev-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ev-card { background: var(--card); border: 2px solid var(--line); border-radius: 18px; padding: 20px 26px; }
+.ev-card h3 { margin: 0 0 6px; font-size: 28px; font-weight: 900; }
+.ev-card p { margin: 0; font-size: 22px; color: var(--muted); line-height: 1.5; }
+.ev-card.accent { border-color: var(--accent); background: var(--accent-soft); }
+.ev-card.good { border-color: var(--good); background: var(--good-soft); }
+.ev-card.warn { border-color: var(--warn); background: var(--warn-soft); }
+.ev-card.bad { border-color: var(--bad); background: var(--bad-soft); }
+.ev-pill { display: inline-block; padding: 4px 16px; border-radius: 999px; font-size: 20px; font-weight: 700; background: var(--accent-soft); color: var(--accent); }
+.ev-big { font-size: 120px; line-height: 1; font-weight: 900; color: var(--accent); font-variant-numeric: tabular-nums; }
+.ev-label { font-size: 19px; font-weight: 700; color: var(--muted); }
+.ev-code { font-family: var(--mono); font-size: 21px; background: var(--code-bg); border-radius: 12px; padding: 16px 20px; white-space: pre; line-height: 1.5; }
+.ev-mark { background: var(--warn-soft); color: var(--warn); padding: 0 6px; border-radius: 6px; font-weight: 700; }
+.ev-arrow { font-size: 40px; color: var(--muted); font-weight: 700; flex: none; }
+.ev-good { color: var(--good); } .ev-bad { color: var(--bad); } .ev-warn { color: var(--warn); } .ev-accent { color: var(--accent); } .ev-muted { color: var(--muted); }
+.ev-center { align-items: center; text-align: center; }
+/* before → after swaps: children share one cell, so a data-out element leaves no gap */
+.ev-stack { display: grid; }
+.ev-stack > * { grid-area: 1 / 1; }
+
+/* built-in quiz scene */
+.ev-quiz { align-items: center; text-align: center; }
+.ev-quiz-kicker { font-size: 22px; font-weight: 900; letter-spacing: .1em; color: var(--warn); }
+.ev-quiz-q, .ev-quiz-a { word-break: keep-all; overflow-wrap: anywhere; }
+.ev-quiz-q { font-size: 46px; font-weight: 900; line-height: 1.35; max-width: 1000px; text-wrap: balance; }
+.ev-quiz-bar { width: 520px; height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.ev-quiz-bar i { display: block; height: 100%; width: calc(var(--gp, 0) * 100%); background: var(--warn); }
+.ev-quiz[data-line="1"] .ev-quiz-bar i { width: 100%; }
+.ev-quiz-a { font-size: 32px; font-weight: 700; color: var(--good); max-width: 1000px; line-height: 1.45; text-wrap: balance; }
+
+
+/* unit shell: fills its host box */
+.ev-video { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; }
+.ev-viewport { position: relative; flex: 1; min-height: 0; }
+.ev-stage { position: absolute; left: 50%; top: 50%; width: 1280px; height: 720px; background: var(--stage);
+  transform: translate(-50%, -50%) scale(var(--scale, 1)); border-radius: 14px; overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,.12); font-size: 26px; line-height: 1.55; word-break: auto-phrase; }
+
+/* captions */
+.ev-cap { position: absolute; left: 80px; right: 80px; bottom: 22px; min-height: 84px; display: flex; align-items: flex-end; justify-content: center; z-index: 4; pointer-events: none; }
+.ev-cap span { background: rgba(10, 10, 12, .78); color: #fff; font-size: 32px; font-weight: 700; line-height: 1.45; padding: 4px 18px; border-radius: 8px;
+  word-break: keep-all; overflow-wrap: anywhere; text-align: center; max-width: 900px; text-wrap: balance; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.ev-cap span:empty, .ev-video.nocap .ev-cap { display: none; }
+.ev-cap-out { display: none; }
+.ev-video.portrait .ev-cap-out { display: flex; justify-content: center; align-items: flex-start; flex: 1; padding: 8px 12px; min-height: 64px; }
+.ev-video.portrait .ev-cap-out .ev-cap { position: static; min-height: 0; }
+.ev-video.portrait .ev-cap-out .ev-cap span { font-size: 16px; padding: 3px 10px; }
+.ev-video.portrait.nocap .ev-cap-out { display: none; }
+.ev-video.portrait.nocap .ev-controls { margin-top: auto; }
+
+/* start / end overlay */
+.ev-over { position: absolute; inset: 0; z-index: 6; background: var(--stage); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center; padding: 60px; }
+.ev-over[hidden] { display: none; }
+.ev-over h1 { font-size: 54px; line-height: 1.25; font-weight: 900; margin: 0; max-width: 1050px; text-wrap: balance; }
+.ev-over p { margin: 0; font-size: 24px; color: var(--muted); }
+.ev-over .ev-goals { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; font-size: 24px; text-align: left; }
+.ev-over .ev-goals li::before { content: "✓ "; color: var(--good); font-weight: 900; }
+.ev-play-big { width: 104px; height: 104px; border-radius: 50%; border: 0; background: var(--accent); color: var(--stage); font-size: 42px; cursor: pointer; padding-left: 8px; flex: none; }
+/* end screen: the next step is the headline and the one big button; the rest are quiet links */
+.ev-end { gap: 14px; }
+.ev-end .ev-end-done { font-size: 22px; font-weight: 700; color: var(--good); }
+.ev-end h1 { font-size: 64px; }
+.ev-end .ev-end-note { font-size: 26px; color: var(--muted); }
+.ev-end-main { margin-top: 10px; }
+.ev-end-go { position: relative; overflow: hidden; border: 0; border-radius: 999px; background: var(--accent); color: var(--stage);
+  font-size: 34px; font-weight: 900; padding: 22px 64px; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+.ev-end-go:hover { filter: brightness(1.08); }
+.ev-end-go:focus-visible { outline: 4px solid var(--accent-soft); outline-offset: 4px; }
+.ev-counting .ev-end-go::after { content: ""; position: absolute; inset: auto 0 0 0; height: 6px; background: currentColor; opacity: .55;
+  transform-origin: left; animation: ev-auto var(--auto, 10s) linear forwards; }
+@keyframes ev-auto { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.ev-end .ev-end-count { font-size: 20px; min-height: 1.5em; }
+.ev-end-count button, .ev-end-links button { border: 0; background: none; color: var(--accent); font: inherit; font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 4px 6px; }
+.ev-end-links { display: flex; gap: 22px; flex-wrap: wrap; justify-content: center; font-size: 22px; }
+/* portrait phones: the end screen leaves the scaled stage and sits under it at real size */
+.ev-video.portrait > .ev-end { position: static; flex: 1; justify-content: flex-start; padding: 20px 16px; gap: 10px; background: var(--card); }
+.ev-video.portrait > .ev-end h1 { font-size: 26px; }
+.ev-video.portrait > .ev-end .ev-end-done { font-size: 14px; }
+.ev-video.portrait > .ev-end .ev-end-note { font-size: 15px; }
+.ev-video.portrait > .ev-end .ev-end-go { font-size: 19px; padding: 14px 28px; width: 100%; max-width: 360px; }
+.ev-video.portrait > .ev-end .ev-end-count, .ev-video.portrait > .ev-end .ev-end-links { font-size: 14px; }
+.ev-video.portrait:has(> .ev-end:not([hidden])) .ev-cap-out { display: none; }
+@media (prefers-reduced-motion: reduce) { .ev-counting .ev-end-go::after { animation: none; transform: none; } }
+
+/* controls */
+.ev-controls { position: relative; height: 56px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 14px calc(env(safe-area-inset-bottom, 0px)); font-size: 14px; }
+/* one button language with slides/runtime.css .ss-bar button */
+.ev-btn { appearance: none; border: 0; background: transparent; color: var(--ink); height: 36px; min-width: 36px; padding: 0 8px; border-radius: 8px;
+  cursor: pointer; font-weight: 700; white-space: nowrap; display: inline-grid; place-items: center; }
+.ev-btn:hover { background: var(--line); }
+.ev-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ev-btn:disabled { opacity: .35; cursor: default; background: transparent; }
+.ev-btn[aria-pressed="true"] { color: var(--accent); }
+.ev-btn svg { display: block; }
+.ev-speed { font-variant-numeric: tabular-nums; }
+.ev-vol { display: flex; align-items: center; flex: none; }
+.ev-vol-range { width: 72px; height: 28px; margin: 0 4px 0 0; accent-color: var(--accent); cursor: pointer; background: transparent; }
+.ev-vol-range:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.ev-video.narrow .ev-vol-range { display: none; }
+.ev-video.narrow .ev-help { display: none; }
+.ev-time { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+.ev-video.narrow .ev-time { display: none; }
+.ev-seek { flex: 1; height: 28px; position: relative; cursor: pointer; touch-action: none; min-width: 60px; }
+.ev-seek-track { position: absolute; left: 0; right: 0; top: 11px; height: 6px; border-radius: 3px; background: var(--line); }
+.ev-seek-fill { position: absolute; left: 0; top: 11px; height: 6px; border-radius: 3px; background: var(--accent); width: 0; }
+.ev-seek-tick { position: absolute; top: 7px; width: 2px; height: 14px; background: var(--muted); opacity: .6; }
+.ev-seek-knob { position: absolute; top: 6px; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--accent); }
+
+/* key help: slides/runtime.css .ss-pop and .ss-keys */
+.ev-pop { position: absolute; right: 12px; bottom: calc(100% + 6px); z-index: 11; width: min(360px, calc(100vw - 24px)); max-height: min(70vh, 560px);
+  overflow: auto; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 14px 40px rgba(0, 0, 0, .18);
+  padding: 8px; font: 14px/1.45 var(--font); }
+.ev-pop[hidden] { display: none; }
+.ev-pop h4 { margin: 6px 8px 8px; font-size: 12px; letter-spacing: .08em; color: var(--muted); }
+.ev-keys { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0 8px 8px; }
+.ev-keys kbd { font: 12px/1 var(--mono); background: var(--code-bg); border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px; white-space: nowrap; }
+
+/* maximized: the player itself in fullscreen (Fullscreen API), or without it the page's viewport. Stage, captions and
+   controls only; the stage keeps 16:9 on the page background */
+.ev-video.ev-full { background: var(--bg); }
+.ev-video.ev-pseudo { position: fixed; inset: 0; z-index: 1000; }
+.ev-video.ev-full .ev-desc { display: none; }
+.ev-video.ev-full .ev-stage { border-radius: 0; box-shadow: none; }
+.ev-video.ev-full .ev-controls { transition: opacity .3s ease; }
+.ev-video.ev-full.ev-idle .ev-controls { opacity: 0; }
+.ev-video.ev-full.ev-idle { cursor: none; }
+/* maximized landscape: the stage takes the whole screen and the bar floats over its bottom; while the bar shows,
+   the caption rises by the overlap (--ev-lift, stage px from fit()) */
+.ev-video.ev-float .ev-controls { position: absolute; left: 0; right: 0; bottom: 0;
+  background: color-mix(in srgb, var(--bg) 86%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.ev-video.ev-float .ev-stage > .ev-cap { transition: transform .3s ease; transform: translateY(calc(var(--ev-lift, 0px) * -1)); }
+.ev-video.ev-float.ev-idle .ev-stage > .ev-cap { transform: none; }
+/* a portrait phone keeps captions under the stage at readable size; the block sits mid-screen */
+.ev-video.ev-full.portrait > .ev-viewport { margin-top: auto; }
+.ev-video.ev-full.portrait .ev-cap-out { flex: none; min-height: 96px; }
+.ev-video.ev-full.portrait .ev-controls { margin-top: auto; }
+
+/* transcript drawer */
+.ev-tr { position: absolute; top: 0; right: 0; bottom: 56px; width: min(400px, 100%); background: var(--card); border-left: 1px solid var(--line);
+  overflow-y: auto; z-index: 10; padding: 18px 18px 40px; transform: translateX(100%); transition: transform .25s ease; visibility: hidden; }
+.ev-tr.open { transform: none; visibility: visible; }
+.ev-tr h2 { font-size: 15px; margin: 18px 0 6px; color: var(--accent); }
+.ev-tr button { display: block; width: 100%; text-align: left; border: 0; background: none; padding: 6px 8px; border-radius: 6px; font-size: 14px; line-height: 1.6; cursor: pointer; }
+.ev-tr button.now { background: var(--accent-soft); }
+
+.ev-tr-who { font-weight: 900; }
+
+/* 概要欄 under the controls: the summary row keeps the credits on screen even while collapsed */
+.ev-desc { flex: none; border-top: 1px solid var(--line); font-size: 14px; }
+.ev-desc summary { display: flex; align-items: center; gap: 12px; height: 36px; padding: 0 16px; cursor: pointer; list-style: none; color: var(--muted); }
+.ev-desc summary::-webkit-details-marker { display: none; }
+.ev-desc summary b { color: var(--ink); flex: none; }
+.ev-desc summary::after { content: "▾"; margin-left: auto; flex: none; }
+.ev-desc[open] summary::after { content: "▴"; }
+.ev-desc-line { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ev-desc-body { max-height: min(40vh, 340px); overflow-y: auto; padding: 0 16px 16px; }
+.ev-desc-text { margin: 4px 0 0; white-space: pre-line; line-height: 1.7; }
+.ev-desc h3 { font-size: 13px; margin: 14px 0 4px; color: var(--muted); }
+.ev-desc-ch, .ev-desc-credits, .ev-desc-sources { list-style: none; margin: 0; padding: 0; }
+.ev-desc-ch button { display: flex; gap: 12px; width: 100%; text-align: left; border: 0; background: none; padding: 4px 6px; border-radius: 6px; cursor: pointer; line-height: 1.5; }
+.ev-desc-ch button:hover { background: var(--line); }
+.ev-desc-time { color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 700; min-width: 3.2em; }
+.ev-desc-credits li { padding: 2px 6px; color: var(--muted); }
+.ev-desc-sources li { padding: 2px 6px; line-height: 1.5; overflow-wrap: anywhere; }
+.ev-desc-sources a { color: var(--accent); }
+.ev-desc-note { color: var(--muted); margin-left: 8px; }
+
+/* dialogue (data.cast): board at x 64–1216 / y 24–520, 立ち絵 in the bottom corners, speaker-colored captions */
+.ev-cast .ev-top { height: 24px; padding: 0 64px; gap: 14px; }
+.ev-cast .ev-chname { font-size: 13px; }
+.ev-cast .ev-segs i { height: 4px; }
+.ev-board { position: absolute; left: 64px; right: 64px; top: 24px; height: 496px; background: var(--card); border: 2px solid var(--line); border-radius: 22px; }
+.ev-cast .scene { top: 24px; bottom: 200px; padding: 24px 40px; }
+.ev-char { position: absolute; z-index: 2; pointer-events: none; --hop: 0; --shrink: 1;
+  transform: translateY(calc(var(--hop) * -6px)) scale(calc(var(--shrink) * (1 + var(--hop) * .02))); }
+.ev-char-art { position: absolute; left: 0; top: 0; transform-origin: 0 0; isolation: isolate; }
+.ev-char-art img { position: absolute; max-width: none; user-select: none; }
+.ev-video.portrait .ev-char { --shrink: .6; }
+/* the overlay's antialiased bottom row would otherwise let the figures tint the stage edge */
+.ev-stage:has(> .ev-over:not([hidden])) .ev-char { visibility: hidden; }
+.ev-cast .ev-cap { left: 270px; right: 270px; bottom: 16px; }
+/* Isolate thick text strokes so Chromium clears their full ink bounds on cue changes. */
+/* faded controls take no taps: the first tap only brings them back */
+.ev-full.ev-idle .ev-controls { pointer-events: none; }
+.ev-cap-in { display: grid; max-width: 740px; will-change: transform; }
+.ev-cap-in > span { grid-area: 1 / 1; }
+.ev-cast .ev-cap span { background: none; padding: 0; border-radius: 0; max-width: none; color: var(--who, #fff); font-family: var(--ev-cap-font, "M PLUS Rounded 1c"), var(--font); font-weight: 800; font-size: 34px; line-height: 1.38;
+  -webkit-text-stroke: 6px #fff; paint-order: stroke fill; }
+.ev-cast .ev-cap span.ev-cap-edge { color: #1d1d22; -webkit-text-stroke: 16px #1d1d22; }
+.ev-video.portrait.ev-cast .ev-cap-out .ev-cap span { font-size: 17px; padding: 0; -webkit-text-stroke-width: 3px; }
+.ev-video.portrait.ev-cast .ev-cap-out .ev-cap span.ev-cap-edge { -webkit-text-stroke-width: 8px; }
+
+/* screenshot mode: stage only */
+:root.ev-shot :is(.ev-controls, .ev-over, .ev-tr, .ev-desc) { display: none !important; }
+:root.ev-shot .ev-stage { border-radius: 0; box-shadow: none; }
+@media (prefers-reduced-motion: reduce) { .scene, .scene [data-at] { transition: none !important; } }

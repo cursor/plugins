@@ -1,0 +1,29 @@
+{
+  "name": "yes",
+  "displayName": "Yuya’s Explainer Skills",
+  "version": "0.8.0",
+  "description": "Portable HTML explanations, slides, quizzes, narrated videos, and courses.",
+  "author": {
+    "name": "Yuya Takeyama"
+  },
+  "homepage": "https://yuyat.jp",
+  "repository": "https://github.com/yuya-takeyama/agent-plugins",
+  "license": "MIT",
+  "logo": "assets/logo.jpg",
+  "keywords": [
+    "education",
+    "html",
+    "slides",
+    "quiz",
+    "video",
+    "voicevox",
+    "zundamon"
+  ],
+  "category": "integrations",
+  "tags": [
+    "education",
+    "slides",
+    "video"
+  ],
+  "skills": "./skills/"
+}

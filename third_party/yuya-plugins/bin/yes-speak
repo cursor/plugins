@@ -1,0 +1,3 @@
+#!/bin/sh
+# Resolve relative to this launcher; installation paths may contain spaces.
+exec python3 "$(dirname "$0")/../scripts/yes_speak.py" "$@"

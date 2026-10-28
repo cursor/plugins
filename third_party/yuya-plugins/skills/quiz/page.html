@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>__TITLE__</title>
+<!-- standalone host for one YESUnits unit — copied verbatim by build.py (same host as video/page.html) -->
+<style>
+:root {
+  --bg: #e9e7e1; --stage: #fbfaf7; --ink: #1c1c1a; --muted: #67655f; --line: #dcd9d0; --card: #ffffff;
+  --accent: #2f5d8a; --accent-soft: #e3ecf5; --code-bg: #f1efe8;
+  --good: #2e7d4f; --good-soft: #e0f1e6; --warn: #9a620b; --warn-soft: #fbeed6; --bad: #b23b3b; --bad-soft: #f7e1e1;
+  --gold: #a9780a;
+  --font: "Noto Sans JP", -apple-system, "Hiragino Sans", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --ctl: 56px; --side: 290px; --scale: 1;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e0f12; --stage: #17191e; --ink: #ebe9e4; --muted: #a09d96; --line: #2f323a; --card: #1f2228;
+  --accent: #8db8e3; --accent-soft: #1e2b39; --code-bg: #23262c;
+  --good: #6fcf97; --good-soft: #18301f; --warn: #e8b25c; --warn-soft: #33270f; --bad: #ec8080; --bad-soft: #3a1c1c;
+  --gold: #e8c15c; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e0f12; --stage: #17191e; --ink: #ebe9e4; --muted: #a09d96; --line: #2f323a; --card: #1f2228;
+  --accent: #8db8e3; --accent-soft: #1e2b39; --code-bg: #23262c;
+  --good: #6fcf97; --good-soft: #18301f; --warn: #e8b25c; --warn-soft: #33270f; --bad: #ec8080; --bad-soft: #3a1c1c;
+  --gold: #e8c15c; color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-text-size-adjust: 100%; }
+button { font: inherit; color: inherit; }
+/* a unit's own display rule must never beat [hidden] */
+.su-unit[hidden] { display: none !important; }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-text-size-adjust: 100%; }
+button { font: inherit; color: inherit; }
+.su-host { position: fixed; inset: 0; }
+/*__CSS__*/
+</style>
+<script>
+/*__JS__*/
+</script>
+</head>
+<body>
+<div class="su-host">
+<!--__UNIT__-->
+</div>
+<script>
+(() => {
+  const DATA = /*__DATA__*/null;
+  const local = { get(k) { try { return JSON.parse(localStorage.getItem('su:' + location.pathname + ':' + k)); } catch { return null; } },
+                  set(k, v) { try { localStorage.setItem('su:' + location.pathname + ':' + k, JSON.stringify(v)); } catch {} } };
+  const setRest = (r) => { const h = r ? '#' + r : ''; if (location.hash !== h) history.replaceState(null, '', h || location.pathname + location.search); };
+  const root = document.querySelector('.su-unit');
+  const unit = window.YESUnits.kinds[DATA.kind](root, DATA.data, {
+    saved: null, setRest, progress() {}, position() {}, complete() {}, result() {}, endActions: () => [],
+    prefs: { get: (k) => local.get('pref:' + k), set: (k, v) => local.set('pref:' + k, v) },
+  });
+  const route = () => unit.show(decodeURIComponent(location.hash.slice(1)));
+  addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>

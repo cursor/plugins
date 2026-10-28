@@ -1,0 +1,6 @@
+example/out/
+__pycache__/
+# character art may be used but not redistributed: only the definitions belong in git
+characters/*
+!characters/*.json
+*.psd
