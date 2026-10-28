@@ -122,6 +122,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `servicenow` | [ServiceNow](third_party/servicenow/) | Cursor | Integrations | Call the tools your admin publishes on a ServiceNow instance. |
 | `rippling` | [Rippling](third_party/rippling/) | Cursor | Integrations | Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires. |
 | `onepay` | [OnePay](third_party/onepay/) | Cursor | Integrations | Access your OnePay accounts: balances, transactions, credit, Pay Later, investments, crypto, and rewards. |
+| `synerixis` | [Synerixis](third_party/synerixis/) | Cursor | Integrations | Work a cross-border AI customer service inbox: pending AI replies, order context, drafts, confirm-to-send, assignment, and quota. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
