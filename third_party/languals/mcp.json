@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "languals": {
+      "type": "http",
+      "url": "https://languals.fr/mcp"
+    }
+  }
+}

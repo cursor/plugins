@@ -1,0 +1,33 @@
+{
+  "name": "languals",
+  "displayName": "Languals",
+  "version": "1.0.0",
+  "description": "Language tutor: estimate CEFR levels, correct sentences with explained mistakes, translate expressions, and practice with flashcards and pronunciation.",
+  "author": {
+    "name": "Languals",
+    "email": "contact@languals.fr"
+  },
+  "homepage": "https://languals.fr",
+  "repository": "https://github.com/assoujojo82-coder/languals-mcp",
+  "license": "MIT",
+  "logo": "https://languals.fr/languals-logo.png",
+  "keywords": [
+    "languals",
+    "language tutor",
+    "language learning",
+    "cefr",
+    "grammar correction",
+    "translation",
+    "flashcards",
+    "pronunciation",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "languals",
+    "education",
+    "languages",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
