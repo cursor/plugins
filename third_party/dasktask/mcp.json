@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "dasktask": {
+      "type": "http",
+      "url": "https://dashtask-mcp.stevie-c03.workers.dev/mcp"
+    }
+  }
+}

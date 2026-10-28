@@ -1,0 +1,32 @@
+{
+  "name": "dasktask",
+  "displayName": "DashTask",
+  "version": "1.0.0",
+  "description": "Create, assign, and update DashTask tasks for human approval, and manage CRM contacts, deals, and tags.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://dashtask.ai/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://dashtask.ai/logotype-512.png",
+  "keywords": [
+    "dashtask",
+    "tasks",
+    "task manager",
+    "crm",
+    "contacts",
+    "deals",
+    "approvals",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "dashtask",
+    "tasks",
+    "crm",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
