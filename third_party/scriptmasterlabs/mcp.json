@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "scriptmasterlabs": {
+      "type": "http",
+      "url": "https://mcp-x402.onrender.com/mcp"
+    }
+  }
+}

@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "scriptmasterlabs",
+      "source": "third_party/scriptmasterlabs",
+      "description": "x402 payment gateway MCP hosting ScriptMasterLabs' paid agent tools behind per-call USDC micropayments."
     }
   ]
 }

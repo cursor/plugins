@@ -1,0 +1,30 @@
+{
+  "name": "scriptmasterlabs",
+  "displayName": "ScriptMasterLabs",
+  "version": "1.0.0",
+  "description": "x402 payment gateway MCP hosting ScriptMasterLabs' paid agent tools behind per-call USDC micropayments.",
+  "author": {
+    "name": "ScriptMasterLabs",
+    "email": "tim@scriptmasterlabs.com"
+  },
+  "homepage": "https://scriptmasterlabs.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "scriptmasterlabs",
+    "x402",
+    "payments",
+    "usdc",
+    "micropayments",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "scriptmasterlabs",
+    "x402",
+    "payments",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
