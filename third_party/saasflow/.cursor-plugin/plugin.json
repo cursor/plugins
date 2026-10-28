@@ -1,0 +1,29 @@
+{
+  "name": "saasflow",
+  "displayName": "SaaSFlow",
+  "version": "1.0.0",
+  "description": "Ask about MRR, churn, cash, runway, and P&L for your SaaS company, and keep transactions, categories, and customers in SaaSFlow up to date.",
+  "author": {
+    "name": "SaaSFlow",
+    "email": "alex@saasflow.com"
+  },
+  "homepage": "https://saasflow.com",
+  "license": "MIT",
+  "logo": "https://saasflow.com/press/saasflow-icon-1024.png",
+  "keywords": [
+    "saasflow",
+    "saas metrics",
+    "mrr",
+    "churn",
+    "runway",
+    "finance",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "saasflow",
+    "finance",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
