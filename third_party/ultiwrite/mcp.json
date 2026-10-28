@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ultiwrite": {
+      "type": "http",
+      "url": "https://dwsoffshorepartners.com/api/integrations/ultiwrite/mcp"
+    }
+  }
+}
