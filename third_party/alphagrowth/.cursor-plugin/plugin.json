@@ -1,0 +1,32 @@
+{
+  "name": "alphagrowth",
+  "displayName": "AlphaGrowth",
+  "version": "1.0.0",
+  "description": "Look up crypto project metrics, community growth, funding rounds, chains, protocol fees, and corporate and DAO treasuries.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://alphagrowth.io",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "alphagrowth",
+    "crypto",
+    "defi",
+    "tvl",
+    "market data",
+    "funding rounds",
+    "treasuries",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "alphagrowth",
+    "crypto",
+    "finance",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

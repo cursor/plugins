@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "alphagrowth",
+      "source": "third_party/alphagrowth",
+      "description": "Look up crypto project metrics, community growth, funding rounds, chains, protocol fees, and corporate and DAO treasuries."
     }
   ]
 }

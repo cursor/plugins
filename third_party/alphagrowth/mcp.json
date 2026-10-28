@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "alphagrowth": {
+      "type": "http",
+      "url": "https://alphagrowth.io/mcp"
+    }
+  }
+}
