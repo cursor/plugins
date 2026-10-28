@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "podhome": {
+      "type": "http",
+      "url": "https://serve.podhome.fm/api/mcp"
+    }
+  }
+}

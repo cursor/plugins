@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "podhome",
+      "source": "third_party/podhome",
+      "description": "Manage Podhome podcasts, episodes, chapters, transcripts, clips, and download analytics."
     }
   ]
 }
