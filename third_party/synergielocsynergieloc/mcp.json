@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "synergielocsynergieloc": {
+      "type": "http",
+      "url": "https://synergieloc.fr/mcp/compte"
+    }
+  }
+}
