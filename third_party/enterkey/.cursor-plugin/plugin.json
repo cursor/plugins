@@ -1,0 +1,30 @@
+{
+  "name": "enterkey",
+  "displayName": "Enterkey",
+  "version": "1.0.0",
+  "description": "Open your apartment building's door for deliveries, guests, and cleaners, make guest codes, and see who buzzed.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://enterkey.app",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://enterkey.app/apple-icon.png",
+  "keywords": [
+    "enterkey",
+    "buzzer",
+    "intercom",
+    "apartment",
+    "door",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "enterkey",
+    "buzzer",
+    "home",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

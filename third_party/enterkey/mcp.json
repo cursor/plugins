@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "enterkey": {
+      "type": "http",
+      "url": "https://enterkey.app/mcp"
+    }
+  }
+}

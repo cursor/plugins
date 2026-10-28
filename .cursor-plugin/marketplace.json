@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "enterkey",
+      "source": "third_party/enterkey",
+      "description": "Open your apartment building's door for deliveries, guests, and cleaners, make guest codes, and see who buzzed."
     }
   ]
 }
