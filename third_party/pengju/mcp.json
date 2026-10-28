@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "pengju": {
+      "type": "http",
+      "url": "https://litfigure.com/mcp"
+    }
+  }
+}

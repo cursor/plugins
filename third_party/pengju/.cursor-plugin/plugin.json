@@ -1,0 +1,30 @@
+{
+  "name": "pengju",
+  "displayName": "LitFigure",
+  "version": "1.0.0",
+  "description": "Biomedical scientific figure drafting for AI agents. Generate and revise mechanism or workflow figures from research text; export PNG/SVG/PPTX under account credits.",
+  "author": {
+    "name": "Pengju, LLC",
+    "email": "support@litsource.net"
+  },
+  "homepage": "https://litsource.net",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "litfigure",
+    "biomedical",
+    "scientific figures",
+    "diagrams",
+    "signaling pathways",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "litfigure",
+    "research",
+    "figures",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
