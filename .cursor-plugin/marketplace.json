@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "onhand",
+      "source": "third_party/onhand",
+      "description": "Look up local business stock, open appointments, services, and contact details."
     }
   ]
 }

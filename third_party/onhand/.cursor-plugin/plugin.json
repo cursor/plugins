@@ -1,0 +1,29 @@
+{
+  "name": "onhand",
+  "displayName": "Onhand",
+  "version": "1.0.0",
+  "description": "Look up local business stock, open appointments, services, and contact details.",
+  "author": {
+    "name": "Onhand",
+    "email": "alex@askonhand.com"
+  },
+  "homepage": "https://www.askonhand.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://askonhand.com/logo.png",
+  "keywords": [
+    "onhand",
+    "local business",
+    "inventory",
+    "appointments",
+    "booking",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "onhand",
+    "local",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
