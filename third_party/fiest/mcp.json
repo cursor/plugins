@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "fiest": {
+      "type": "http",
+      "url": "https://mcp.fiest.io/mcp"
+    }
+  }
+}

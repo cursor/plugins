@@ -123,6 +123,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `servicenow` | [ServiceNow](third_party/servicenow/) | Cursor | Integrations | Call the tools your admin publishes on a ServiceNow instance. |
 | `rippling` | [Rippling](third_party/rippling/) | Cursor | Integrations | Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires. |
 | `onepay` | [OnePay](third_party/onepay/) | Cursor | Integrations | Access your OnePay accounts: balances, transactions, credit, Pay Later, investments, crypto, and rewards. |
+| `fiest` | [Fiest Business](third_party/fiest/) | Fiest Oy | Integrations | Review restaurant sales, orders, stock, menus, and opening hours in Fiest, and prepare changes through Fiest's approval workflows. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

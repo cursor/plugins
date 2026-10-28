@@ -1,0 +1,31 @@
+{
+  "name": "fiest",
+  "displayName": "Fiest Business",
+  "version": "1.0.0",
+  "description": "Review restaurant sales, orders, stock, menus, and opening hours in Fiest, and prepare changes through Fiest's approval workflows.",
+  "author": {
+    "name": "Fiest Oy",
+    "email": "info@fiest.io"
+  },
+  "homepage": "https://fiest.io",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.jpg",
+  "keywords": [
+    "fiest",
+    "restaurants",
+    "sales",
+    "orders",
+    "menus",
+    "stock",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "fiest",
+    "restaurants",
+    "hospitality",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
