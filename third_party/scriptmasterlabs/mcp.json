@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "scriptmasterlabs": {
+      "type": "http",
+      "url": "https://squeezeos-api.onrender.com/triple-trigger/mcp"
+    }
+  }
+}
