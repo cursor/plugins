@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "audacity-group-inc": {
+      "type": "http",
+      "url": "https://github.com/Audacity-Group-Inc/.github/blob/main/README.md"
+    }
+  }
+}

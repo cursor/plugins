@@ -1,0 +1,31 @@
+{
+  "name": "audacity-group-inc",
+  "displayName": "Audacity Group Inc",
+  "version": "1.0.0",
+  "description": "Connect real-time marketing signals to Salesforce leads, opportunities, and revenue attribution.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://www.audacityme.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.jpg",
+  "keywords": [
+    "audacity",
+    "jetfly",
+    "salesforce",
+    "attribution",
+    "marketing",
+    "leads",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "salesforce",
+    "marketing",
+    "attribution",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

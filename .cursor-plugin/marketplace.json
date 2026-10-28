@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "audacity-group-inc",
+      "source": "third_party/audacity-group-inc",
+      "description": "Connect real-time marketing signals to Salesforce leads, opportunities, and revenue attribution."
     }
   ]
 }
