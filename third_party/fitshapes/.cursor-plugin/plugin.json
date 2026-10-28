@@ -1,0 +1,32 @@
+{
+  "name": "fitshapes",
+  "displayName": "Fit Shapes",
+  "version": "1.0.0",
+  "description": "Read your Fit Shapes food log, calorie and macro targets, weight trend, and estimated burn, and log foods and weigh-ins.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://fitshapes.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "https://fitshapes.com/brand/fit-shapes-mark.png",
+  "keywords": [
+    "fitshapes",
+    "fit shapes",
+    "calorie counter",
+    "macro tracker",
+    "nutrition",
+    "food log",
+    "weight",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "fitshapes",
+    "health",
+    "nutrition",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

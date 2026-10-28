@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "fitshapes": {
+      "type": "http",
+      "url": "https://mcp.fitshapes.com/mcp"
+    }
+  }
+}
