@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "convai-agent-authoring",
+      "source": "third_party/convai-tech",
+      "description": "Create, edit, review, and release Convai conversational agents for games and virtual worlds."
     }
   ]
 }

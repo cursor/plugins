@@ -1,0 +1,30 @@
+{
+  "name": "convai-agent-authoring",
+  "displayName": "Convai Agent Authoring",
+  "version": "0.3.0",
+  "description": "Create, edit, review, and release Convai conversational agents for games and virtual worlds.",
+  "author": {
+    "name": "Convai Tech",
+    "email": "nilootpal@convai.com"
+  },
+  "homepage": "https://convai.com",
+  "repository": "https://github.com/Conv-AI/ConvAI-Agent-Plugin",
+  "license": "Apache-2.0",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "convai",
+    "agents",
+    "conversational-ai",
+    "agent-authoring",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "convai",
+    "agents",
+    "games",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}

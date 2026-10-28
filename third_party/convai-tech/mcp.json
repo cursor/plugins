@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "convai": {
+      "type": "http",
+      "url": "https://mcp-api.convai.com/mcp",
+      "auth": {
+        "CLIENT_ID": "grok-bot",
+        "scopes": [
+          "character:read",
+          "character:write",
+          "backstory:generate",
+          "chat-history:read",
+          "knowledge-bank:read",
+          "knowledge-bank:write"
+        ]
+      }
+    }
+  }
+}
