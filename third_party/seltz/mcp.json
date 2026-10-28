@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "seltz": {
+      "type": "http",
+      "url": "https://mcp.seltz.ai/mcp"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "seltz",
+  "displayName": "Seltz",
+  "version": "1.0.0",
+  "description": "Search the web with Seltz's own index and fetch full page content, with source URLs for every result.",
+  "author": {
+    "name": "Seltz"
+  },
+  "homepage": "https://seltz.ai/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "seltz",
+    "web search",
+    "search",
+    "fetch",
+    "news",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "seltz",
+    "search",
+    "web",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
