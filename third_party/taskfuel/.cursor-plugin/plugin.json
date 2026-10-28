@@ -1,0 +1,31 @@
+{
+  "name": "taskfuel",
+  "displayName": "TaskFuel",
+  "version": "0.2.1",
+  "description": "Find paid tools for enrichment, extraction, research, and media generation, quote the cost, and spend your TaskFuel balance with a cap.",
+  "author": {
+    "name": "TaskFuel",
+    "email": "hello@taskfuel.ai"
+  },
+  "homepage": "https://taskfuel.ai",
+  "repository": "https://github.com/taskfuel/grok-bot-plugin",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "taskfuel",
+    "paid-apis",
+    "enrichment",
+    "research",
+    "extraction",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "taskfuel",
+    "enrichment",
+    "research",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}

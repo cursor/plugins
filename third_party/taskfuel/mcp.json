@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "taskfuel": {
+      "type": "http",
+      "url": "https://app.taskfuel.ai/mcp"
+    }
+  }
+}
