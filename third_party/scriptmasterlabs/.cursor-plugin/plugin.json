@@ -1,0 +1,29 @@
+{
+  "name": "scriptmasterlabs",
+  "displayName": "Robinhood RWA Intelligence",
+  "version": "1.0.0",
+  "description": "Research tokenized real-world assets and Robinhood-chain instruments.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://scriptmasterlabs.com",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "scriptmasterlabs",
+    "rwa",
+    "tokenization",
+    "real-world-assets",
+    "robinhood",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "scriptmasterlabs",
+    "rwa",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

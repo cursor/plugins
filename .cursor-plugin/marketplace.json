@@ -657,6 +657,11 @@
       "name": "rippling",
       "source": "third_party/rippling",
       "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires."
+    },
+    {
+      "name": "scriptmasterlabs",
+      "source": "third_party/scriptmasterlabs",
+      "description": "Research tokenized real-world assets and Robinhood-chain instruments."
     }
   ]
 }
