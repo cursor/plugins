@@ -1,0 +1,31 @@
+{
+  "name": "haven",
+  "displayName": "Book With Haven",
+  "version": "1.0.0",
+  "description": "Manage Book With Haven vacation rentals: bookings, calendar, blocked dates, rates, stay rules, and guest messages.",
+  "author": {
+    "name": "Book With Haven",
+    "email": "dustin.hofer@bookwithhaven.com"
+  },
+  "homepage": "https://www.bookwithhaven.com",
+  "license": "MIT",
+  "logo": "https://www.bookwithhaven.com/favicon.svg",
+  "keywords": [
+    "haven",
+    "book with haven",
+    "vacation rentals",
+    "short-term rentals",
+    "bookings",
+    "calendar",
+    "guest messaging",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "haven",
+    "vacation rentals",
+    "hospitality",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

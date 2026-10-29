@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "haven": {
+      "type": "http",
+      "url": "https://www.bookwithhaven.com/api/public/mcp"
+    }
+  }
+}
