@@ -124,6 +124,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `rippling` | [Rippling](third_party/rippling/) | Cursor | Integrations | Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires. |
 | `onepay` | [OnePay](third_party/onepay/) | Cursor | Integrations | Access your OnePay accounts: balances, transactions, credit, Pay Later, investments, crypto, and rewards. |
 | `questrade` | [Questrade](third_party/questrade/) | Cursor | Integrations | Read your Questrade portfolio, get live market data, and discuss potential trades. |
+| `redo` | [Redo](third_party/redo/) | Cursor | Integrations | Redo is a commerce platform for returns, order management, and post-purchase. The Redo MCP server connects AI assistants to a merchant's Redo account so they can manage returns, look up order details, update return statuses, process returned items, and ask Redo's AI questions about their store's data, all from chat. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

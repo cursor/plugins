@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "redo": {
+      "type": "http",
+      "url": "https://mcp.getredo.com/mcp",
+      "placement": "server"
+    }
+  }
+}
