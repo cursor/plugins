@@ -9,20 +9,33 @@ const PSTACK = join(ROOT, "pstack");
 const SKILLS = join(PSTACK, "skills");
 // Outside pstack/ so Cursor, which copies the whole plugin folder, does not install this tree too.
 const OUT = join(ROOT, "harness", "pstack");
-const TREE = "claude-code";
-const ADAPTER = "docs/harness/claude-code.md";
+const TREES = [
+  { name: "claude-code", adapter: "docs/harness/claude-code.md" },
+  { name: "omp", adapter: "docs/harness/omp.md" },
+];
 const GUIDE = "docs/guide";
 const MANIFESTS = ["plugin.json", ".claude-plugin/plugin.json"];
 const COMMAND = "node scripts/generate-pstack-harness-trees.mjs";
 const GITHUB = "https://github.com/cursor/plugins";
 const LINK = /\]\(([^)\s]+)\)/g;
-const README = `# pstack harness tree
+const README = (tree, adapter) => `# pstack harness tree
 
-This folder is generated from \`pstack/skills\`, \`pstack/agents\`, \`pstack/${GUIDE}\`, \`pstack/${ADAPTER}\`, \`pstack/README.md\`, \`pstack/LICENSE\`, and \`pstack/plugin.json\`. Do not edit it by hand.
+This folder is generated from \`pstack/skills\`, \`pstack/agents\`, \`pstack/${GUIDE}\`, \`pstack/${adapter}\`, \`pstack/README.md\`, \`pstack/LICENSE\`${tree === "claude-code" ? ", and \`pstack/plugin.json\`" : ""}. Do not edit it by hand.
 
-Cursor uses \`pstack/\` directly, and Claude Code installs \`${TREE}/\`. The tree leaves out the rest of \`pstack/\`, such as \`pstack/automations\` and \`pstack/assets\`. A relative link to a pstack file that the tree leaves out points at that file on GitHub \`main\` instead.
+Cursor uses \`pstack/\` directly, and ${tree === "claude-code" ? `Claude Code installs \`${tree}/\`` : `OMP reads \`${tree}/skills/\``}. The tree leaves out the rest of \`pstack/\`, such as \`pstack/automations\` and \`pstack/assets\`. A relative link to a pstack file that the tree leaves out points at that file on GitHub \`main\` instead.
 
 After editing those sources, run \`${COMMAND}\` from the repository root and commit the result.
+`;
+const OMP_SETUP = `---
+name: setup-pstack
+description: Configure pstack's OMP model roles and agent overrides only after preview and approval. Use for /setup-pstack or requests to choose a pstack model budget in OMP.
+---
+
+# Setup pstack on OMP
+
+Read [the OMP adapter](../../docs/harness/omp.md), then follow its **Models and /setup-pstack** procedure. Its budget question, preview, approval, rollback, and active-profile checks are the entire OMP setup workflow.
+
+Cursor's model-rule file and per-call model slugs are not OMP configuration. A user who leaves the current model routing in place needs no setup write.
 `;
 
 const TERMS = [
@@ -96,9 +109,11 @@ for (const [skill, { usesCursorNames, wrap }] of classes) {
   if (name !== skill) problems.push(`skills/${skill}/SKILL.md has name ${JSON.stringify(name ?? "")}, not its folder name ${skill}`);
   if (!SKILL_NAME.test(skill) || skill.length > 64) problems.push(`skills/${skill} is not lowercase words joined by hyphens, at most 64 characters`);
 }
-const adapter = readFileSync(join(PSTACK, ADAPTER), "utf8");
-for (const [key, using] of users) {
-  if (!adapter.includes(key)) problems.push(`Claude Code adapter has no row for ${key}, used by ${using.join(", ")}`);
+for (const { name, adapter } of TREES) {
+  const instructions = readFileSync(join(PSTACK, adapter), "utf8");
+  for (const [key, using] of users) {
+    if (!instructions.includes(key)) problems.push(`${name} adapter has no row for ${key}, used by ${using.join(", ")}`);
+  }
 }
 for (const problem of problems) console.log(`FAIL ${problem}`);
 if (problems.length > 0) process.exit(1);
@@ -115,26 +130,34 @@ function has(files, path) {
   return files.has(path) || [...files.keys()].some((key) => key.startsWith(`${path}/`));
 }
 
-function render() {
-  // Skills read the adapter, the guide, and the README at runtime, so Claude Code never fetches them.
+function render({ name, adapter }) {
+  // Skills read the adapter, the guide, and the README at runtime.
   const copies = [
     ...walk(SKILLS),
     ...walk(join(PSTACK, "agents")),
     ...walk(join(PSTACK, GUIDE)),
-    join(PSTACK, ADAPTER),
+    join(PSTACK, adapter),
     join(PSTACK, "README.md"),
   ];
   const files = new Map(copies.map((path) => [relative(PSTACK, path), file(path)]));
-  const line =
-    `In Claude Code, read [the Claude Code adapter](../../${ADAPTER}) once per session before you follow this skill. ` +
-    "It maps the Cursor names in pstack skills to Claude Code.";
+  const line = name === "claude-code"
+    ? `In Claude Code, read [the Claude Code adapter](../../${adapter}) once per session before you follow this skill. ` +
+      "It maps the Cursor names in pstack skills to Claude Code."
+    : `In OMP, read [the OMP adapter](../../${adapter}) before following this skill. ` +
+      "It maps Cursor names and model selection to OMP tools and agents.";
   for (const [skill, { wrap }] of classes) {
     const path = `skills/${skill}/SKILL.md`;
     const text = files.get(path).bytes.toString("utf8");
+    if (name === "omp" && skill === "setup-pstack") {
+      files.get(path).bytes = Buffer.from(OMP_SETUP);
+      continue;
+    }
     if (wrap) files.get(path).bytes = Buffer.from(text.replace(/^(# .*)\n+/m, `$1\n\n${line}\n\n`));
   }
   files.set("LICENSE", file(join(PSTACK, "LICENSE")));
-  for (const manifest of MANIFESTS) files.set(manifest, file(join(PSTACK, "plugin.json")));
+  if (name === "claude-code") {
+    for (const manifest of MANIFESTS) files.set(manifest, file(join(PSTACK, "plugin.json")));
+  }
   for (const [path, entry] of files) {
     if (!path.endsWith(".md")) continue;
     const text = entry.bytes.toString("utf8").replace(LINK, (link, href) => {
@@ -148,20 +171,24 @@ function render() {
   return files;
 }
 
-// Claude Code installs only the tree, so a relative link that works from pstack/ has to work inside the tree too.
-// Links to pstack files that the tree leaves out already point at GitHub, so a failure here is a link that leaves pstack/.
-const files = render();
-const rendered = new Map([["README.md", { bytes: Buffer.from(README), executable: false }]]);
+// Relative links that work in pstack/ must still resolve inside each generated tree.
+const rendered = new Map([["README.md", { bytes: Buffer.from(`# pstack harness tree
+
+Generated distributions live in \`claude-code/\` and \`omp/\`. Run \`${COMMAND}\` from the repository root after editing pstack.
+`), executable: false }]]);
 const dangling = [];
-for (const [path, entry] of files) {
-  rendered.set(`${TREE}/${path}`, entry);
-  if (!path.endsWith(".md")) continue;
-  for (const [, href] of entry.bytes.toString("utf8").matchAll(LINK)) {
-    const target = resolve(path, href);
-    if (target && !has(files, target)) dangling.push(`harness/pstack/${TREE}/${path} links to ${href}, which is not in the tree`);
+for (const tree of TREES) {
+  const files = render(tree);
+  rendered.set(`${tree.name}/README.md`, { bytes: Buffer.from(README(tree.name, tree.adapter)), executable: false });
+  for (const [path, entry] of files) {
+    rendered.set(`${tree.name}/${path}`, entry);
+    if (!path.endsWith(".md")) continue;
+    for (const [, href] of entry.bytes.toString("utf8").matchAll(LINK)) {
+      const target = resolve(path, href);
+      if (target && !has(files, target)) dangling.push(`harness/pstack/${tree.name}/${path} links to ${href}, which is not in the tree`);
+    }
   }
 }
-for (const link of dangling) console.log(`FAIL ${link}`);
 if (dangling.length > 0) process.exit(1);
 
 if (process.argv.includes("--check")) {
@@ -184,5 +211,5 @@ if (process.argv.includes("--check")) {
     chmodSync(join(OUT, path), executable ? 0o755 : 0o644);
   }
   const wrapped = [...classes.values()].filter(({ wrap }) => wrap).length;
-  console.log(`${skills.length} skills, ${wrapped} SKILL.md files with the adapter line`);
+  console.log(`${skills.length} skills, ${wrapped} SKILL.md files with an adapter line per harness`);
 }

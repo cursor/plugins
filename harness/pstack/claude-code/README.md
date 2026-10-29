@@ -31,6 +31,18 @@ claude code prefixes plugin commands and agents, so `/poteto-mode` is `/pstack:p
 
 claude code installs a generated copy of pstack, including this readme and the guide, from [`harness/pstack/`](https://github.com/cursor/plugins/tree/main/harness/pstack) at the repository root. after you change pstack, run `node scripts/generate-pstack-harness-trees.mjs` from the repository root and commit the result. ci fails while the generated copy is out of date.
 
+in OMP, install the generated [`omp/skills/` tree](https://github.com/cursor/plugins/tree/main/harness/pstack/omp/skills) as a custom skill directory. For a local clone at `/path/to/plugins`, add this entry to the active OMP profile's `config.yml`:
+
+```yaml
+skills:
+  customDirectories:
+    - /path/to/plugins/harness/pstack/omp/skills
+```
+
+Restart OMP to load the skills; invoke one as `/skill:how` or `/skill:poteto-mode`. The [OMP adapter](https://github.com/cursor/plugins/blob/main/pstack/docs/harness/omp.md) maps Cursor-only instructions to OMP tools and agents. Its generated tree contains the same skill sources as Cursor, with adapter pointers, not a manually maintained fork. The `agents/` files in that tree are reference prompts, **not** OMP agent definitions. Model overrides are optional and affect the active OMP profile beyond pstack; `/skill:setup-pstack` must preview and ask before writing them. A default install neither changes model settings nor guarantees a multi-model panel.
+
+If another installed catalog already provides `how`, `arena`, or other pstack skill names, use an isolated OMP profile for the trial or remove the duplicate source first; do not assume which copy will win discovery.
+
 ## get started
 
 two steps:

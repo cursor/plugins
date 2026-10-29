@@ -22,7 +22,7 @@ const SMALL = "zero one two three four five six seven eight nine ten eleven twel
 const TENS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
 // "The twenty-three playbooks" claims the whole set. "Three playbooks scale it up" names a subset, so it is not checked.
 const CLAIM = /\b(?:(all|has|of|ships|the|with) )?(\d+|[a-z]+(?:-[a-z]+)?) (short )?(skills|principles|playbooks|agents)\b/gi;
-const SLASH = /(?<=^|[\s`(|"'>])\/(?:pstack:)?([a-z][a-z0-9-]*)(?![\w/<-])/gm;
+const SLASH = /(?<=^|[\s`(|"'>])\/(?:(?:pstack|skill):)?([a-z][a-z0-9-]*)(?![\w/<-])/gm;
 const LINK = /\]\(<?([^)\s>]+)>?(?:\s+"[^"]*")?\)/g;
 const AGENT = /subagent_type: "([^"]+)"/g;
 const MODEL_ID = /\b(?:claude-[a-z]+|grok|gpt)-\d(?:[\w.-]*\w)?/g;
