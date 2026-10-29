@@ -20,8 +20,10 @@ if [[ ! -f "$STATE_FILE" ]]; then
   exit 0
 fi
 
-# Extract completion promise from state file frontmatter
-FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
+# Extract completion promise from the state file frontmatter (the block
+# between the opening `---` on line 1 and the first closing `---`; a `---`
+# rule in the prompt body must not reopen the range).
+FRONTMATTER=$(awk 'NR == 1 && /^---$/ { in_fm = 1; next } in_fm && /^---$/ { exit } in_fm' "$STATE_FILE")
 COMPLETION_PROMISE=$(echo "$FRONTMATTER" | grep '^completion_promise:' | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
 
 # No promise configured, nothing to check
