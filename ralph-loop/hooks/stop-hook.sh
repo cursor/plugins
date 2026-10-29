@@ -21,8 +21,10 @@ if [[ ! -f "$STATE_FILE" ]]; then
   exit 0
 fi
 
-# Parse state file frontmatter
-FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
+# Parse state file frontmatter: the block between the opening `---` on line 1
+# and the first closing `---`. A `---` later in the prompt body is a Markdown
+# rule, not a second frontmatter block, so it must not reopen the range.
+FRONTMATTER=$(awk 'NR == 1 && /^---$/ { in_fm = 1; next } in_fm && /^---$/ { exit } in_fm' "$STATE_FILE")
 ITERATION=$(echo "$FRONTMATTER" | grep '^iteration:' | sed 's/iteration: *//')
 MAX_ITERATIONS=$(echo "$FRONTMATTER" | grep '^max_iterations:' | sed 's/max_iterations: *//')
 COMPLETION_PROMISE=$(echo "$FRONTMATTER" | grep '^completion_promise:' | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
@@ -54,8 +56,9 @@ if [[ $MAX_ITERATIONS -gt 0 ]] && [[ $ITERATION -ge $MAX_ITERATIONS ]]; then
   exit 0
 fi
 
-# Extract prompt text (everything after the closing --- in frontmatter)
-PROMPT_TEXT=$(awk '/^---$/{i++; next} i>=2' "$STATE_FILE")
+# Extract prompt text: everything after the closing --- of the frontmatter,
+# verbatim, including any --- rules the prompt itself contains.
+PROMPT_TEXT=$(awk 'in_body { print; next } NR == 1 && /^---$/ { in_fm = 1; next } in_fm && /^---$/ { in_body = 1 }' "$STATE_FILE")
 
 if [[ -z "$PROMPT_TEXT" ]]; then
   echo "Ralph loop: no prompt text found in state file. Stopping." >&2
@@ -66,7 +69,14 @@ fi
 # Increment iteration
 NEXT_ITERATION=$((ITERATION + 1))
 TEMP_FILE="${STATE_FILE}.tmp.$$"
-sed "s/^iteration: .*/iteration: $NEXT_ITERATION/" "$STATE_FILE" > "$TEMP_FILE"
+# Only the frontmatter line is rewritten; an `iteration:` line in the prompt
+# body is prose and stays as it is.
+awk -v next_iteration="$NEXT_ITERATION" '
+  NR == 1 && /^---$/ { in_fm = 1; print; next }
+  in_fm && /^---$/ { in_fm = 0 }
+  in_fm && /^iteration:/ { print "iteration: " next_iteration; next }
+  { print }
+' "$STATE_FILE" > "$TEMP_FILE"
 mv "$TEMP_FILE" "$STATE_FILE"
 
 # Build the followup message: iteration context + original prompt
