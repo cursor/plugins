@@ -5,7 +5,8 @@ description: >-
   Bot's built-in public X reads) and again on any X error. X tools are included
   in Grok Bot at no cost: never estimate costs, check credits, or tell the user
   to buy credits. tools=0 / user-X-* not found is a setup failure, not a
-  paywall. Covers Spaces, communities, and Lists (reads and list writes), X
+  paywall. No tool for an ask (like followers): say so, never use the browser.
+  Covers Spaces, communities, and Lists (reads and list writes), X
   Chat (XChat, inbox, DMs, unread, message requests, Chat PIN, juicebox,
   xchat_lite: clone xchat-grokbot-helper yourself and decrypt locally),
   scheduled X calls (schedule_call, list_scheduled_calls and the other call
@@ -126,8 +127,7 @@ Then follow error 1 or 2 if that is the real failure.
 | --- | --- | --- |
 | `@handle` posts | `get_users_by_username`, else `search_users` (one match is that `id`), then `get_users_posts` | Paste the profile. |
 | A post | Parse `/status/{id}`, then `get_posts_by_id` (`get_posts_by_ids` for several) | Paste the post link. |
-| Who liked, reposted, or quoted a post | `get_posts_liking_users`, `get_posts_reposted_by`, `get_posts_quoted_posts` | Paste the post link. |
-| Home, mentions, my posts | `get_users_timeline`, `get_users_mentions`, `get_users_posts` on `{me}` | Reconnect X. |
+| Who liked, reposted, or quoted a post | `get_posts_liking_users`, `get_posts_reposted_by`, `get_posts_quoted_posts` | Paste the post link. || Home, mentions, my posts | `get_users_timeline`, `get_users_mentions`, `get_users_posts` on `{me}` | Reconnect X. |
 | Bookmarks | `get_users_bookmarks` on `{me}` | Reconnect X. |
 | Bookmark folder | `get_users_bookmark_folders`, then `get_users_bookmarks_by_folder_id` | Which folder? |
 | News | `search_news`; `get_news` for one story by `id` | What topic? |
@@ -139,6 +139,8 @@ Then follow error 1 or 2 if that is the real failure.
 | Communities | `search_communities`, then `get_communities_by_id` for details (members, access) | What topic? |
 | A list | `get_lists_by_id`, `get_lists_posts`, `get_lists_members`, `get_lists_followers` | Paste the list link. |
 | Someone's lists | `get_users_owned_lists`, `get_users_followed_lists`, `get_users_pinned_lists`, `get_users_list_memberships` (`{me}` for your own) | Paste the profile. |
+
+If no X tool covers the ask (for example a user's followers or who they follow), say plainly that X tools can't do that yet and offer the closest tool above, like their profile's `public_metrics` counts. Never fall back to the browser, scrape x.com, or ask them to sign in, and don't call it a connection or scopes problem.
 
 If a tool takes `tweet.fields` or `post.fields`, send `created_at,public_metrics,author_id,lang,conversation_id`. Also send `user.fields=created_at,description,public_metrics,verified,location` and `expansions=author_id,referenced_tweets.id`.
 
