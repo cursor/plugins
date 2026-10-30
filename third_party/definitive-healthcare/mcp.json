@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "definitive-healthcare": {
+      "type": "http",
+      "url": "https://www.definitivehc.com/"
+    }
+  }
+}

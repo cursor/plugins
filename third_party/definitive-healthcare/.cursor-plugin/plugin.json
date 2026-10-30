@@ -1,0 +1,27 @@
+{
+  "name": "definitive-healthcare",
+  "displayName": "Definitive Healthcare",
+  "version": "1.0.0",
+  "description": "Connect agents to Definitive Healthcare's healthcare commercial intelligence.",
+  "author": {
+    "name": "Definitive Healthcare",
+    "email": "dan.mcphee@definitivehc.com"
+  },
+  "homepage": "https://www.definitivehc.com/",
+  "license": "MIT",
+  "logo": "https://www.definitivehc.com/favicon.ico",
+  "keywords": [
+    "definitive healthcare",
+    "healthcare",
+    "commercial intelligence",
+    "providers",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "definitive healthcare",
+    "healthcare",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
