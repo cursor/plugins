@@ -1,6 +1,6 @@
 ---
 name: fix-ci
-description: Find failing PR checks, inspect logs or external check links, and apply focused fixes
+description: "Find failing pull request checks, inspect logs or external check links, and apply focused fixes. When a check excerpt or shared pull request context already names the failing paths, fix from that evidence. Reserve a parallel investigator per check for ambiguous or multi-root failures."
 ---
 
 # Fix CI
@@ -21,6 +21,7 @@ Branch or PR CI is failing and needs a fast, iterative path to green checks.
 - Fix one actionable failure at a time.
 - Prefer minimal, low-risk changes before broader refactors.
 - Keep `gh pr checks` as the source of truth for overall PR CI state.
+- When the check excerpt already names the failing files, fix from that excerpt. Spawn one investigator per check only when the failure is ambiguous or has more than one root.
 
 ## Output
 
