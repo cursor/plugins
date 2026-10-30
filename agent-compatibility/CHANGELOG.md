@@ -2,7 +2,7 @@
 
 All notable changes to this plugin will be documented here.
 
-## Unreleased
+## 1.0.0
 
 - Renamed the full-pass skill to `check-agent-compatibility`.
 - Renamed `deterministic-scan-review` to `compatibility-scan-review`.
