@@ -15,7 +15,7 @@ Use when the task is specifically to run the published `agent-compatibility` sca
 
 ## Workflow
 
-1. Try the published scanner first with `npx -y agent-compatibility@latest --json "<path>"`.
+1. Try the published scanner first with `npx -y agent-compatibility@0.1.7 --json "<path>"`.
 2. If you are clearly working inside the scanner source repo and the published package path fails for an environment reason, fall back to the local scanner entrypoint.
 3. Only say the scanner is unavailable after you have actually tried the published package, and the local fallback when it is clearly available.
 4. Prefer JSON when you need structured reasoning. Prefer Markdown when the user wants a direct report.

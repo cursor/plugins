@@ -49,31 +49,31 @@ The plugin does not bundle the scanner. It runs the published npm package when n
 Default scan (compact terminal dashboard):
 
 ```bash
-npx -y agent-compatibility@latest .
+npx -y agent-compatibility@0.1.7 .
 ```
 
 JSON output:
 
 ```bash
-npx -y agent-compatibility@latest --json .
+npx -y agent-compatibility@0.1.7 --json .
 ```
 
 Markdown output:
 
 ```bash
-npx -y agent-compatibility@latest --md .
+npx -y agent-compatibility@0.1.7 --md .
 ```
 
 Plain text output:
 
 ```bash
-npx -y agent-compatibility@latest --text .
+npx -y agent-compatibility@0.1.7 --text .
 ```
 
 Config override for ignored paths or weight overrides:
 
 ```bash
-npx -y agent-compatibility@latest . --config ./agent-compatibility.config.json
+npx -y agent-compatibility@0.1.7 . --config ./agent-compatibility.config.json
 ```
 
 The scanner is heuristic. It scores repo signals and surfaces likely friction, but it is not a full quality verdict on the codebase.

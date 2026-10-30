@@ -22,7 +22,7 @@ Or run `/add-plugin xero` in chat.
       "command": "npx",
       "args": [
         "-y",
-        "@xeroapi/xero-mcp-server@latest"
+        "@xeroapi/xero-mcp-server@0.0.17"
       ],
       "env": {
         "XERO_CLIENT_ID": "${XERO_CLIENT_ID}",
