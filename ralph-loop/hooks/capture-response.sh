@@ -20,9 +20,18 @@ if [[ ! -f "$STATE_FILE" ]]; then
   exit 0
 fi
 
-# Extract completion promise from state file frontmatter
+# jq parses the hook input and perl extracts the promise. Fail loudly, not silently.
+for dep in jq perl; do
+  if ! command -v "$dep" >/dev/null 2>&1; then
+    echo "Ralph loop: $dep is required but was not found on PATH. Completion promises cannot be detected until it is installed." >&2
+    exit 0
+  fi
+done
+
+# Extract completion promise from state file frontmatter. A missing key is an
+# empty value, not a hook failure (see stop-hook.sh).
 FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
-COMPLETION_PROMISE=$(echo "$FRONTMATTER" | grep '^completion_promise:' | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
+COMPLETION_PROMISE=$(echo "$FRONTMATTER" | { grep '^completion_promise:' || true; } | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
 
 # No promise configured, nothing to check
 if [[ "$COMPLETION_PROMISE" = "null" ]] || [[ -z "$COMPLETION_PROMISE" ]]; then
@@ -36,8 +45,17 @@ if [[ -z "$RESPONSE_TEXT" ]]; then
   exit 0
 fi
 
-# Check for <promise>TEXT</promise> in the response
-PROMISE_TEXT=$(echo "$RESPONSE_TEXT" | perl -0777 -pe 's/.*?<promise>(.*?)<\/promise>.*/$1/s; s/^\s+|\s+$//g; s/\s+/ /g' 2>/dev/null || echo "")
+# Extract the promise text only when a complete <promise>TEXT</promise> tag is
+# present. `perl -ne` prints nothing when the tag is absent, so an untagged
+# response can never satisfy the completion promise below.
+PROMISE_TEXT=$(echo "$RESPONSE_TEXT" | perl -0777 -ne '
+  if (/<promise>(.*?)<\/promise>/s) {
+    my $p = $1;
+    $p =~ s/^\s+|\s+$//g;
+    $p =~ s/\s+/ /g;
+    print $p;
+  }
+' 2>/dev/null || echo "")
 
 if [[ -n "$PROMISE_TEXT" ]] && [[ "$PROMISE_TEXT" = "$COMPLETION_PROMISE" ]]; then
   touch "$DONE_FLAG"
