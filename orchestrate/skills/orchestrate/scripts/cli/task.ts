@@ -507,11 +507,19 @@ export async function findActiveRootPlanner(
   return null;
 }
 
+// Agent.create rejects names over 100 characters. Kickoff names the root
+// planner `${slug}-root`, so the slug itself has to leave room for that suffix.
+const ROOT_PLANNER_NAME_MAX = 100;
+const ROOT_PLANNER_SUFFIX = "-root";
+
 export function inferKickoffRootSlug(goal: string): string {
   const firstLine = goal.split("\n")[0]?.trim() ?? "";
   const explicit = firstLine.match(/^`?([a-z0-9][a-z0-9._-]*)`?\s*:/i);
-  const slug = explicit?.[1];
-  return slug ?? buildKickoffAgentName(goal);
+  const slug = explicit?.[1] ?? buildKickoffAgentName(goal);
+  const max = ROOT_PLANNER_NAME_MAX - ROOT_PLANNER_SUFFIX.length;
+  if (slug.length <= max) return slug;
+  const trimmed = slug.slice(0, max).trimEnd();
+  return trimmed.length > 0 ? trimmed : "root";
 }
 
 function listItems(value: unknown): Record<string, unknown>[] {
