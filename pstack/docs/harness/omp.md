@@ -20,6 +20,8 @@ The skills in `pstack/skills` are written for Cursor. In the generated OMP tree,
 
 The files under `<pstack>/agents/` are **source prompts**, not OMP agent definitions. Do not install them as OMP agents. Read one as context for a task item when its named agent is absent.
 
+The generated OMP worktree audit cannot inspect OMP sessions through Cursor's transcript directory. It reports `LAST_CHAT=?` and `review` when chat history is unavailable. Before pruning, verify usage through the OMP archive and active sessions; absence of Cursor transcripts is not evidence of inactivity.
+
 ## Subagents
 
 `Task` becomes one OMP `task` call. Put shared immutable context in `context` and independent assignments in `tasks[]`. Each item has a standalone `task`, a `solutionSpace` describing how open its problem is, and optionally a unique `name` and a discovered `agent`. Omit `agent` for OMP's default `task` worker. An ordinary task item does not accept Cursor's per-call `model`, `readonly`, `subagent_type`, `environment`, `run_in_background`, `cloud_base_branch`, or `resume` fields. Pass the intended branch/SHA and read-only or write scope in the brief. Check the live schema before using optional OMP fields such as `isolated` or `effort`.

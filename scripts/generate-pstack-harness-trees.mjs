@@ -154,6 +154,14 @@ function render({ name, adapter }) {
     }
     if (wrap) files.get(path).bytes = Buffer.from(text.replace(/^(# .*)\n+/m, `$1\n\n${line}\n\n`));
   }
+  if (name === "omp") {
+    const path = "skills/poteto-mode/scripts/worktree-audit.sh";
+    const entry = files.get(path);
+    const cursorHistory = 'transcripts="$HOME/.cursor/projects/$slug/agent-transcripts"';
+    const text = entry.bytes.toString("utf8");
+    if (!text.includes(cursorHistory)) throw new Error(`${path}: Cursor transcript assignment changed`);
+    entry.bytes = Buffer.from(text.replace(cursorHistory, 'transcripts="" # OMP history has no filesystem transcript directory'));
+  }
   files.set("LICENSE", file(join(PSTACK, "LICENSE")));
   if (name === "claude-code") {
     for (const manifest of MANIFESTS) files.set(manifest, file(join(PSTACK, "plugin.json")));
