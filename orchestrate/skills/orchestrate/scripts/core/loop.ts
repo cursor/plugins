@@ -205,20 +205,54 @@ function pendingCouldStillSpawn(mgr: AgentManager, task: TaskState): boolean {
 function flagUnreachablePending(mgr: AgentManager): void {
   for (const s of mgr.tasks) {
     if (s.status !== "pending") continue;
-    const blockers: string[] = [];
-    for (const dep of s.dependsOn) {
-      const ds = mgr.getTask(dep);
-      if (!ds) blockers.push(`${dep} (missing)`);
-      else if (isFailedTerminalStatus(ds.status)) {
-        blockers.push(`${dep} (${ds.status})`);
-      }
-    }
+    const blockers = unreachableBlockers(mgr, s, new Set([s.name]));
     if (blockers.length > 0) {
       mgr.logAttention(
         `${s.name}: unreachable — blocked on ${blockers.join(", ")}. Fix the upstream and rerun, or \`kill ${s.name}\` to abandon.`
       );
     }
   }
+}
+
+// A pending task whose only broken dependency sits behind another pending
+// task never spawns, but a direct-dep scan never names it. Walk pending
+// deps and surface the terminal blocker (or a cycle) that actually stops
+// the chain.
+function unreachableBlockers(
+  mgr: AgentManager,
+  task: TaskState,
+  trail: Set<string>
+): string[] {
+  const blockers: string[] = [];
+  for (const dep of task.dependsOn) {
+    const ds = mgr.getTask(dep);
+    if (!ds) {
+      blockers.push(`${dep} (missing)`);
+      continue;
+    }
+    if (isFailedTerminalStatus(ds.status)) {
+      blockers.push(`${dep} (${ds.status})`);
+      continue;
+    }
+    if (ds.status !== "pending") continue;
+    if (trail.has(ds.name)) {
+      blockers.push(`${dep} (cycle)`);
+      continue;
+    }
+    const nested = unreachableBlockers(
+      mgr,
+      ds,
+      new Set(trail).add(task.name).add(ds.name)
+    );
+    if (nested.length === 0) continue;
+    blockers.push(`${dep} (pending)`, ...nested);
+  }
+  const seen = new Set<string>();
+  return blockers.filter(blocker => {
+    if (seen.has(blocker)) return false;
+    seen.add(blocker);
+    return true;
+  });
 }
 
 function computeLoopExitCode(mgr: AgentManager): number {
