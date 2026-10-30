@@ -41,6 +41,8 @@ import type { CommentDestinations } from "./comment-retry-queue.ts";
 
 const SPAWN_MAX_ATTEMPTS = 3;
 const SPAWN_RETRY_BACKOFF_MS = 2_000;
+const RECOVER_MAX_ATTEMPTS = 3;
+const RECOVER_RETRY_BACKOFF_MS = 1_000;
 const WAIT_WATCHDOG_POLL_INTERVAL_MS = 60_000;
 // Internal watchdog "noticed idle" debug logs. Lower threshold = earlier
 // visibility into stalled SSE / tool-call streams without disturbing the
@@ -770,20 +772,29 @@ export class AgentManager {
       );
       return null;
     }
-    try {
-      const run = await Agent.getRun(s.runId, {
-        runtime: "cloud",
-        apiKey: this.apiKey,
-        agentId: s.agentId,
-      });
-      return { kind: "recovered", run, s };
-    } catch (err) {
-      this.recordRecoverFailure(
-        s,
-        `recover failed: ${truncate(errorMessage(err), 200)}`
-      );
-      return null;
+    // A failed lookup marks the task error while its cloud run may still be
+    // live, so ride out transient failures like spawnTask does.
+    let lastErr: unknown = null;
+    for (let attempt = 1; attempt <= RECOVER_MAX_ATTEMPTS; attempt++) {
+      try {
+        const run = await Agent.getRun(s.runId, {
+          runtime: "cloud",
+          apiKey: this.apiKey,
+          agentId: s.agentId,
+        });
+        return { kind: "recovered", run, s };
+      } catch (err) {
+        lastErr = err;
+        if (attempt < RECOVER_MAX_ATTEMPTS) {
+          await sleep(RECOVER_RETRY_BACKOFF_MS * attempt);
+        }
+      }
     }
+    this.recordRecoverFailure(
+      s,
+      `recover failed after ${RECOVER_MAX_ATTEMPTS} attempts: ${truncate(errorMessage(lastErr), 200)}`
+    );
+    return null;
   }
 
   // Every error-status transition needs a `<task>-failure.md` sidecar so the
