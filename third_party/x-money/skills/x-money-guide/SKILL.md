@@ -1,5 +1,5 @@
 ---
-name: X Money guide
+name: x-money-guide
 description: >-
   Read this before the first X Money action in a session and again on any
   X Money error, refusal, or missing capability. Covers the approval rule for
