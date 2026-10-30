@@ -1,12 +1,13 @@
 ---
 name: continual-learning
-description: Orchestrate continual learning by delegating transcript mining and AGENTS.md updates to `agents-memory-updater`.
+description: Orchestrate continual learning by delegating transcript mining and memory-file updates to `agents-memory-updater`.
 disable-model-invocation: true
 ---
 
 # Continual Learning
 
-Keep `AGENTS.md` current by delegating the memory update flow to one subagent.
+Keep the user-scoped memory file (and optionally a workspace-scoped memory
+file) current by delegating the memory update flow to one subagent.
 
 ## Trigger
 
