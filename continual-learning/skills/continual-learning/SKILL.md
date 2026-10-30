@@ -14,8 +14,11 @@ Use when the user asks to mine prior chats, maintain `AGENTS.md`, or run the con
 
 ## Workflow
 
-1. Call `agents-memory-updater`.
-2. Return the updater result.
+1. Resolve `../../hooks/workspace-exclusions.ts` relative to this `SKILL.md` directory.
+2. Call `agents-memory-updater`, passing the resolved absolute helper path and the
+   absolute workspace directory in its task. Keep the workspace as the working
+   directory when running the helper; do not switch to the plugin directory.
+3. Return the updater result.
 
 ## Guardrails
 
