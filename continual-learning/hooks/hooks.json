@@ -3,7 +3,7 @@
   "hooks": {
     "stop": [
       {
-        "command": "bun run ${CURSOR_PLUGIN_ROOT}/hooks/continual-learning-stop.ts"
+        "command": "bun run \"${CURSOR_PLUGIN_ROOT}/hooks/continual-learning-stop.ts\""
       }
     ]
   }
