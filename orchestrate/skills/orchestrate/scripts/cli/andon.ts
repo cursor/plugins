@@ -1,5 +1,6 @@
 import type { Command } from "commander";
 import { appendAgentFooter } from "../core/agent-manager.ts";
+import { PlanValidationError } from "../errors.ts";
 import {
   assertOperatorModeOrBail,
   errorMessage,
@@ -51,8 +52,14 @@ export function registerAndonCommands(program: Command): void {
         agentId?: string;
       }) => {
         try {
+          // The root reads the reason from the first line of this message
+          // and skips raises without one, surfacing an older reason instead.
+          const reason = opts.reason.trim();
+          if (!reason) {
+            throw new PlanValidationError("--reason must not be blank");
+          }
           const { slack, ref } = loadAndonTargetOrBail(opts);
-          const head = `${ANDON_RAISED_PREFIX} by ${opts.sender}: ${opts.reason}`;
+          const head = `${ANDON_RAISED_PREFIX} by ${opts.sender}: ${reason}`;
           await slack.postCommentInThread({
             threadTs: ref.ts,
             text: appendAgentFooter(head, opts.agentId),
