@@ -33,3 +33,6 @@ build/
 
 # Logs
 *.log
+
+# Local validation cache
+.cache/
