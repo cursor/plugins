@@ -214,7 +214,7 @@ export class MyAgentOrchestrator {
       mcpServers: {
         linear: {
           type: "http" as const,
-          url: "https://mcp.linear.app/sse",
+          url: "https://mcp.linear.app/mcp",
           headers: { Authorization: `Bearer ${process.env.LINEAR_API_KEY!}` },
         },
       },
