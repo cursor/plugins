@@ -11,7 +11,7 @@ A member can connect several company tailnets at once, plus one personal tailnet
 
 Grok Bot shows an Allow/Deny card before it removes a device, adds a tailnet, or changes the default. Wait for **Allow**.
 
-Reach tailnet MCP servers through this row. A Tailscale client installed on the bot's computer is wiped when that computer is replaced.
+Reach tailnet hosts only through this row. Never install, start or sign in to the Tailscale client (`tailscale`, `tailscaled`) on the bot's computer, and never ask the user to approve a device for it: that skips Grok Bot's tailnet safety checks and gives every bot on that computer the user's tailnet access. If there's no Tailscale row, tell the user Tailscale isn't available on their account yet.
 
 Use one path per tailnet.
 
