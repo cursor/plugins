@@ -1,7 +1,15 @@
 const MAX_BODY_CHARS = 2_048;
 const SENSITIVE_KEY_RE = /token|secret|password|api[_-]?key|authorization/i;
 const SENSITIVE_ASSIGNMENT_RE =
-  /\b(token|secret|password|api[_-]?key|authorization)\b\s*[:=]\s*\S+/gi;
+  /"?((?:[\w.-]+\/)?(?:token|secret|password|api[_-]?key|authorization)[\w.-]*)"?\s*[:=]\s*/gi;
+// The value is matched up to a real assignment boundary and redacted whole:
+//  - a double-quoted value runs to its closing `"` (escaped quotes allowed), so a
+//    quoted value containing an apostrophe is not truncated at it;
+//  - a single-quoted value runs to its closing `'` (escaped quotes allowed);
+//  - an unquoted value runs to `,`/`;`/`}`/end-of-line, consuming one optional
+//    terminator so the assignment ends at a real boundary (Bugbot round 1).
+const SENSITIVE_VALUE_RE =
+  /(?:"(?:\\.|[^"\\])*"?|'(?:\\.|[^'\\])*'?|[^,;}\n]*[,;}]?)/;
 const PATH_PATTERNS = [
   { re: /^\/workspace\/\S*/gm, reason: "contains /workspace path" },
   { re: /^\/Users\/\S*/gm, reason: "contains /Users path" },
@@ -33,14 +41,16 @@ function redactSensitiveAssignments(
   text: string,
   reasons: Set<string>
 ): string {
-  return text.replace(SENSITIVE_ASSIGNMENT_RE, match => {
-    const [key] = match.split(/\s*[:=]\s*/, 1);
-    if (SENSITIVE_KEY_RE.test(key ?? "")) {
-      reasons.add("contains sensitive key");
-      return `${key}=[redacted]`;
+  return text.replace(
+    new RegExp(SENSITIVE_ASSIGNMENT_RE.source + SENSITIVE_VALUE_RE.source, "gi"),
+    (match, key: string | undefined) => {
+      if (SENSITIVE_KEY_RE.test(key ?? "")) {
+        reasons.add("contains sensitive key");
+        return `${key}=[redacted]`;
+      }
+      return match;
     }
-    return match;
-  });
+  );
 }
 
 function redactPaths(text: string, reasons: Set<string>): string {
