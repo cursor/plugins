@@ -1,5 +1,11 @@
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -387,6 +393,100 @@ describe("required comment retry queue", () => {
           criticality: "best_effort",
         })
       ).rejects.toThrow(/only slack:/);
+    } finally {
+      rmSync(workspace, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("invalid persisted required comment queues", () => {
+  const valid = {
+    id: "persisted-required-comment",
+    destination: `slack:${TEST_SLACK_CHANNEL}:111.222`,
+    body: "keep this required comment",
+    sender: "agent",
+    attempts: 0,
+    createdAt: "1970-01-01T00:00:00.000Z",
+    nextAttemptAt: "1970-01-01T00:00:00.000Z",
+  };
+  for (const [name, content] of [
+    ["malformed JSON", '[{"body":"private fixture content"}'],
+    ["non-array JSON", JSON.stringify({ pending: [valid] })],
+    [
+      "invalid entry beside a valid comment",
+      JSON.stringify([valid, { id: "broken" }]),
+    ],
+  ]) {
+    for (const operation of ["enqueue", "drain"] as const) {
+      test(`${operation} preserves ${name} without posting`, async () => {
+        const workspace = mkdtempSync(
+          join(tmpdir(), "orch-comment-corruption-")
+        );
+        const posts: SlackPost[] = [];
+        const queuePath = commentRetryQueuePath(workspace);
+        try {
+          writeFileSync(queuePath, content);
+          const destinations = { slack: slackAdapter({ posts }) };
+          const run =
+            operation === "drain"
+              ? drainCommentRetryQueue({ workspace, destinations })
+              : postOrQueueComment({
+                  workspace,
+                  destinations,
+                  destination: valid.destination,
+                  body: "new required comment",
+                  sender: "agent",
+                  criticality: "required",
+                });
+          await expect(run).rejects.toThrow(/comment queue/);
+          expect(readFileSync(queuePath, "utf8")).toBe(content);
+          expect(posts).toEqual([]);
+        } finally {
+          rmSync(workspace, { recursive: true, force: true });
+        }
+      });
+    }
+  }
+
+  test("read failures preserve the queue path without posting", async () => {
+    const workspace = mkdtempSync(join(tmpdir(), "orch-comment-read-error-"));
+    const posts: SlackPost[] = [];
+    try {
+      mkdirSync(commentRetryQueuePath(workspace));
+      await expect(
+        postOrQueueComment({
+          workspace,
+          destinations: { slack: slackAdapter({ posts }) },
+          destination: valid.destination,
+          body: "new comment",
+          sender: "agent",
+          criticality: "required",
+        })
+      ).rejects.toThrow(/comment queue/);
+      expect(posts).toEqual([]);
+    } finally {
+      rmSync(workspace, { recursive: true, force: true });
+    }
+  });
+
+  test("a valid empty queue can enqueue and deliver normally", async () => {
+    const workspace = mkdtempSync(join(tmpdir(), "orch-comment-empty-"));
+    const posts: SlackPost[] = [];
+    try {
+      writeFileSync(commentRetryQueuePath(workspace), "[]");
+      const result = await postOrQueueComment({
+        workspace,
+        destinations: { slack: slackAdapter({ posts }) },
+        destination: valid.destination,
+        body: "new comment",
+        sender: "agent",
+        criticality: "required",
+      });
+      expect(result).toBe("posted");
+      expect(posts.map(post => post.text)).toEqual(["new comment"]);
+      expect(
+        JSON.parse(readFileSync(commentRetryQueuePath(workspace), "utf8"))
+      ).toEqual([]);
     } finally {
       rmSync(workspace, { recursive: true, force: true });
     }

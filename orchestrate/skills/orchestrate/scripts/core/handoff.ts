@@ -18,8 +18,9 @@ export function parseHandoffBranch(handoff: string): string | null {
   if (raw.length === 0) return null;
   if (raw.startsWith("##")) return null;
   // Worker template wraps the value in backticks (`agent/foo-abc1`); the
-  // operator-facing hint also tolerates a bare branch name.
-  const unwrapped = raw.replace(/^`([^`]+)`$/, "$1").trim();
+  // operator-facing hint also tolerates a bare branch name, and workers
+  // sometimes write the value as a one-item list or in bold.
+  const unwrapped = unwrapValue(raw);
   if (unwrapped.length === 0) return null;
   if (/^\(no branch\)$/i.test(unwrapped)) return null;
   return unwrapped;
@@ -61,7 +62,8 @@ export function resolveRunBranch(args: {
  */
 export function parseHandoffVerification(handoff: string): Verification | null {
   const fromCanonical = readSectionValue({ handoff, heading: "Verification" });
-  if (fromCanonical) {
+  if (/^##[\t ]+Verification[\t ]*\r?$/m.test(handoff)) {
+    if (!fromCanonical) return null;
     const normalized = normalizeEnumValue(fromCanonical);
     if (isVerification(normalized)) return normalized;
     return null;
@@ -82,16 +84,29 @@ export function parseHandoffFailureMode(handoff: string): FailureMode | null {
 }
 
 export function parseHandoffPrNumber(handoff: string): number | null {
-  for (const rawUrl of handoff.match(/https?:\/\/[^\s<>|)]+/g) ?? []) {
-    const number = prNumberFromUrl(rawUrl);
-    if (number !== null) return number;
-  }
+  // An explicit artifact section wins over links to dependencies or examples.
+  // If it says no PR, do not attribute an unrelated reference to this task.
+  const hasSection = /^##\s+(?:PR|Pull Request)\s*(?:\r?\n|$)/m.test(handoff);
   const fromSection =
     readSectionValue({ handoff, heading: "PR" }) ??
     readSectionValue({ handoff, heading: "Pull Request" });
-  if (!fromSection) return null;
-  const number = Number.parseInt(fromSection.replace(/^#/, ""), 10);
-  return Number.isInteger(number) && number > 0 ? number : null;
+  if (hasSection) {
+    if (!fromSection) return null;
+    const fromUrl = firstPrNumberFromUrl(fromSection);
+    if (fromUrl !== null) return fromUrl;
+    if (!/^#?\d+$/.test(fromSection)) return null;
+    const number = Number(fromSection.replace(/^#/, ""));
+    return Number.isSafeInteger(number) && number > 0 ? number : null;
+  }
+  return firstPrNumberFromUrl(handoff);
+}
+
+function firstPrNumberFromUrl(text: string): number | null {
+  for (const rawUrl of text.match(/https?:\/\/[^\s<>|)]+/g) ?? []) {
+    const number = prNumberFromUrl(rawUrl);
+    if (number !== null) return number;
+  }
+  return null;
 }
 
 function prNumberFromUrl(rawUrl: string): number | null {
@@ -125,7 +140,22 @@ function readSectionValue(args: {
   const raw = match[1].trim();
   if (raw.length === 0) return null;
   if (raw.startsWith("##")) return null;
-  return raw.replace(/^`([^`]+)`$/, "$1").trim();
+  const unwrapped = unwrapValue(raw);
+  return unwrapped.length === 0 ? null : unwrapped;
+}
+
+/**
+ * Strip the decoration a worker may put around a single-value section:
+ * a leading list marker (`- ` / `* `), bold (`**x**`), and backticks, in that
+ * order, the same tolerance `parseHandoffMeasurements` has for list markers.
+ */
+function unwrapValue(raw: string): string {
+  return raw
+    .replace(/^[-*]\s+/, "")
+    .replace(/^\*\*([^*]+)\*\*$/, "$1")
+    .trim()
+    .replace(/^`([^`]+)`$/, "$1")
+    .trim();
 }
 
 function readKeyValue(args: { handoff: string; key: string }): string | null {

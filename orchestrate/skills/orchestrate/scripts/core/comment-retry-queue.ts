@@ -1,16 +1,29 @@
 import { randomUUID } from "node:crypto";
 import {
-  existsSync,
   mkdirSync,
   readFileSync,
   renameSync,
+  rmSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import { setTimeout as sleep } from "node:timers/promises";
 
 import type { CommentCriticality, SlackAdapter } from "../adapters/types.ts";
 
 const COMMENT_RETRY_BACKOFF_MS = [1_000, 5_000, 30_000, 300_000, 1_800_000];
+// The queue file is read, changed and written back by whoever posts a
+// required comment: the orchestrator, and every local worker that runs
+// `comment --criticality required` in the same workspace. Without a lock, two
+// callers that overlap (one is still waiting on Slack while the other reads
+// the file) each write their own snapshot, the later write drops the other's
+// entry, and `postOrQueueComment` then reports "posted" for a comment that
+// is in neither the file nor Slack. `mkdir` is atomic on every platform, so a
+// directory is the lock.
+const QUEUE_LOCK_WAIT_MS = 5_000;
+const QUEUE_LOCK_POLL_MS = 10;
+const QUEUE_LOCK_STALE_MS = 30_000;
 
 interface CommentRetryEntry {
   id: string;
@@ -63,28 +76,34 @@ export async function postOrQueueComment(args: {
   if (!args.workspace) {
     throw new Error("--criticality required needs --workspace for retry state");
   }
-  const entryId = enqueueComment({
-    workspace: args.workspace,
-    destination: args.destination,
-    body: args.body,
-    sender: args.sender,
+  const workspace = args.workspace;
+  // Enqueue, drain and the "did ours land" read happen under one lock, so a
+  // caller that overlaps with another neither loses its entry nor reads a
+  // file the other caller is about to overwrite.
+  return withQueueLock(commentRetryQueuePath(workspace), async () => {
+    const entryId = enqueueComment({
+      workspace,
+      destination: args.destination,
+      body: args.body,
+      sender: args.sender,
+    });
+    await drainLocked({
+      workspace,
+      destinations: args.destinations,
+      logAttention: args.logAttention,
+      maxAttemptsThisDrain: 1,
+      allowedSlackThread: args.allowedSlackThread,
+    });
+    // Drain processes FIFO with maxAttemptsThisDrain=1, so an older queued
+    // entry can consume the single attempt and leave ours pending. A successful
+    // post removes the entry from the file, so absence means we landed.
+    // Exhausted-on-disk counts as "queued"; the comment never delivered, so
+    // claiming "posted" would be a worse lie.
+    const stillQueued = readQueue(commentRetryQueuePath(workspace)).some(
+      entry => entry.id === entryId
+    );
+    return stillQueued ? "queued" : "posted";
   });
-  await drainCommentRetryQueue({
-    workspace: args.workspace,
-    destinations: args.destinations,
-    logAttention: args.logAttention,
-    maxAttemptsThisDrain: 1,
-    allowedSlackThread: args.allowedSlackThread,
-  });
-  // Drain processes FIFO with maxAttemptsThisDrain=1, so an older queued
-  // entry can consume the single attempt and leave ours pending. A successful
-  // post removes the entry from the file, so absence means we landed.
-  // Exhausted-on-disk counts as "queued"; the comment never delivered, so
-  // claiming "posted" would be a worse lie.
-  const stillQueued = readQueue(commentRetryQueuePath(args.workspace)).some(
-    entry => entry.id === entryId
-  );
-  return stillQueued ? "queued" : "posted";
 }
 
 export async function drainCommentRetryQueue(args: {
@@ -96,6 +115,20 @@ export async function drainCommentRetryQueue(args: {
    * Same guard as `postOrQueueComment.allowedSlackThread`. Re-checking here
    * catches destinations written directly into `comment-retry-queue.json`.
    */
+  allowedSlackThread?: { channel: string; threadTs: string };
+}): Promise<{ posted: number; queued: number }> {
+  if (!args.destinations) return { posted: 0, queued: 0 };
+  return withQueueLock(commentRetryQueuePath(args.workspace), () =>
+    drainLocked(args)
+  );
+}
+
+/** `drainCommentRetryQueue` with the lock already held by the caller. */
+async function drainLocked(args: {
+  workspace: string;
+  destinations?: CommentDestinations;
+  logAttention?: (line: string) => void;
+  maxAttemptsThisDrain?: number;
   allowedSlackThread?: { channel: string; threadTs: string };
 }): Promise<{ posted: number; queued: number }> {
   if (!args.destinations) return { posted: 0, queued: 0 };
@@ -197,18 +230,81 @@ function enqueueComment(args: {
   return id;
 }
 
-function readQueue(path: string): CommentRetryEntry[] {
-  if (!existsSync(path)) return [];
-  try {
-    const raw = JSON.parse(readFileSync(path, "utf8"));
-    if (!Array.isArray(raw)) return [];
-    return raw.flatMap(entry => {
-      const parsed = parseEntry(entry);
-      return parsed ? [parsed] : [];
-    });
-  } catch {
-    return [];
+async function withQueueLock<T>(
+  queuePath: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const lockDir = `${queuePath}.lock`;
+  mkdirSync(dirname(lockDir), { recursive: true });
+  const giveUpAt = Date.now() + QUEUE_LOCK_WAIT_MS;
+  for (;;) {
+    try {
+      mkdirSync(lockDir);
+      break;
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== "EEXIST") throw err;
+      // A holder that died mid-drain leaves the directory behind; past the
+      // stale window the lock is taken over rather than waited on forever.
+      if (lockAgeMs(lockDir) > QUEUE_LOCK_STALE_MS) {
+        rmSync(lockDir, { recursive: true, force: true });
+        continue;
+      }
+      if (Date.now() >= giveUpAt) {
+        throw new Error(
+          `comment retry queue is locked by another process (${lockDir}); try again`
+        );
+      }
+      await sleep(QUEUE_LOCK_POLL_MS);
+    }
   }
+  try {
+    return await fn();
+  } finally {
+    rmSync(lockDir, { recursive: true, force: true });
+  }
+}
+
+function lockAgeMs(lockDir: string): number {
+  try {
+    return Date.now() - statSync(lockDir).mtimeMs;
+  } catch {
+    return 0;
+  }
+}
+
+function readQueue(path: string): CommentRetryEntry[] {
+  let content: string;
+  try {
+    content = readFileSync(path, "utf8");
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") return [];
+    throw new Error(
+      `Cannot read required comment queue ${path} (${code ?? "read error"}); existing queue preserved.`
+    );
+  }
+  let raw: unknown;
+  try {
+    raw = JSON.parse(content);
+  } catch {
+    throw new Error(
+      `Invalid JSON in required comment queue ${path}; restore or repair the file before retrying.`
+    );
+  }
+  if (!Array.isArray(raw)) {
+    throw new Error(
+      `Required comment queue ${path} must contain an array; restore or repair the file before retrying.`
+    );
+  }
+  return raw.map((entry, index) => {
+    const parsed = parseEntry(entry);
+    if (!parsed) {
+      throw new Error(
+        `Invalid entry ${index} in required comment queue ${path}; restore or repair the file before retrying.`
+      );
+    }
+    return parsed;
+  });
 }
 
 function writeQueue(path: string, queue: CommentRetryEntry[]): void {
