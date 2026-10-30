@@ -1,4 +1,14 @@
 import { describe, expect, it } from "bun:test";
+import { spawnSync } from "node:child_process";
+import {
+  chmodSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { type CliRuntime, main, parseArgs } from "./cli.ts";
 import { fakeReader, passingCheck } from "./fakes.test-helper.ts";
 import { renderJson, renderPretty } from "./render.ts";
@@ -150,6 +160,92 @@ describe("rendering", () => {
     expect(rendered).toContain(
       "| [#1](https://github.com/owner/repo/pull/1) | \u2014 | \u2014 | ✅ merged |"
     );
+  });
+});
+
+describe("source CLI with a controlled gh executable", () => {
+  it("waits on a queued workflow before checks appear and reports query failures", () => {
+    const directory = mkdtempSync(join(tmpdir(), "watch-pr-actions-"));
+    const script = `#!/usr/bin/env node
+const fs = require("node:fs");
+const args = process.argv.slice(2);
+fs.appendFileSync(process.env.CALLS, JSON.stringify(args) + "\\n");
+const head = "a".repeat(40);
+let value;
+if (args[0] === "pr" && args[1] === "view")
+  value = { mergeable: "MERGEABLE", mergeStateStatus: "UNSTABLE", reviewDecision: "APPROVED", headRefOid: head, headRefName: "feature", baseRefName: "main", state: "OPEN", mergedAt: null, isDraft: false };
+else if (args[0] === "pr" && args[1] === "checks")
+  value = ["Secret scan", "WIP"].map(name => ({ name, state: "SUCCESS", bucket: "pass", description: "", link: "", workflow: "" }));
+else if (args[0] === "api" && args.includes("graphql")) {
+  const query = args.find(arg => arg.startsWith("query="));
+  const pullRequest = query.includes("ReviewThreads")
+    ? { reviewThreads: { nodes: [], pageInfo: { hasNextPage: false, endCursor: null } } }
+    : { commits: { nodes: [{ commit: { oid: head, statusCheckRollup: { state: "SUCCESS" } } }] } };
+  value = { data: { repository: { pullRequest } } };
+} else if (args[0] === "api" && args.some(arg => arg.includes("/actions/runs"))) {
+  if (process.env.STATUS === "error") process.exit(1);
+  const status = process.env.STATUS || "queued";
+  const page = args.find(arg => arg.startsWith("page="));
+  const run = (id, attempt, conclusion) => ({ id, workflow_id: id, run_number: id, event: "push", head_repository: { id: 300 }, head_branch: "feature", pull_requests: [], run_attempt: attempt, name: "CI", head_sha: head, status: conclusion ? "completed" : status, conclusion, html_url: "" });
+  value = status === "paged"
+    ? { total_count: 101, workflow_runs: page === "page=2" ? [run(101, 2, "failure")] : Array.from({ length: 100 }, (_, i) => run(i + 1, 1, "success")) }
+    : { total_count: status === "none" ? 0 : 1, workflow_runs: status === "none" ? [] : [run(1, 1, status === "success" ? "success" : null)] };
+} else process.exit(2);
+console.log(JSON.stringify(value));
+`;
+    try {
+      const executable = join(directory, "gh");
+      const calls = join(directory, "calls.ndjson");
+      writeFileSync(executable, script);
+      chmodSync(executable, 0o755);
+      const invoke = (status: string) =>
+        spawnSync(
+          process.execPath,
+          [
+            join(import.meta.dir, "watch-pr"),
+            "--owner",
+            "example",
+            "--repo",
+            "fixture",
+            "--pr",
+            "1",
+            "--max-query-errors",
+            "1",
+            "--timeout",
+            ".01",
+            "--interval",
+            ".001",
+          ],
+          {
+            encoding: "utf8",
+            env: {
+              ...process.env,
+              PATH: `${directory}:${process.env.PATH}`,
+              STATUS: status,
+              CALLS: calls,
+            },
+          }
+        );
+      const queued = invoke("queued");
+      expect(queued.status).toBe(5);
+      expect(queued.stdout).toContain('"kind":"TIMEOUT"');
+      expect(queued.stdout).toContain('"reportedState":"QUEUED"');
+      expect(readFileSync(calls, "utf8")).toContain(
+        `head_sha=${"a".repeat(40)}`
+      );
+      const complete = invoke("success");
+      expect(complete.status).toBe(0);
+      expect(complete.stdout).toContain('"kind":"READY"');
+      const paged = invoke("paged");
+      expect(paged.status).toBe(4);
+      expect(paged.stdout).toContain('"kind":"ci-failing"');
+      expect(readFileSync(calls, "utf8")).toContain('"page=2"');
+      const failed = invoke("error");
+      expect(failed.status).toBe(7);
+      expect(failed.stdout).toContain('"kind":"BLOCKER"');
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
   });
 });
 

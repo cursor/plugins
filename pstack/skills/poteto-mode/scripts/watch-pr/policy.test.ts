@@ -91,6 +91,135 @@ describe("readiness truth table", () => {
   });
 });
 
+describe("workflow startup", () => {
+  it("holds a clean partial check list while a workflow is queued or running", async () => {
+    for (const state of ["queued", "in_progress"] as const) {
+      const reader = fakeReader({
+        workflowStatus: state,
+        facts: { mergeStateStatus: "UNSTABLE" },
+      });
+      const snapshot = await readSnapshot({
+        reader,
+        context: context(1),
+        pendingHistory: "omit",
+        allowDraft: false,
+      });
+      expect(snapshot.kind).toBe("open");
+      if (snapshot.kind !== "open") throw new Error("expected open snapshot");
+      expect(snapshot.ci.kind).toBe("ci-pending");
+      expect(classifyPr(snapshot).kind).toBe("waiting");
+    }
+  });
+
+  it("allows completed successful workflows, blocks failures, and preserves external CI", async () => {
+    for (const [status, expected] of [
+      ["success", "ci-clean"],
+      ["failure", "ci-failing"],
+      ["none", "ci-clean"],
+    ] as const) {
+      const snapshot = await readSnapshot({
+        reader: fakeReader({ workflowStatus: status }),
+        context: context(1),
+        pendingHistory: "omit",
+        allowDraft: false,
+      });
+      expect(snapshot.kind).toBe("open");
+      if (snapshot.kind !== "open") throw new Error("expected open snapshot");
+      expect(snapshot.ci.kind).toBe(expected);
+    }
+  });
+
+  it("does not use an old head or a changed head as clean workflow evidence", async () => {
+    const old = await readSnapshot({
+      reader: fakeReader({ workflowStatus: "queued", workflowHead: "old" }),
+      context: context(1),
+      pendingHistory: "omit",
+      allowDraft: false,
+    });
+    expect(old.kind).toBe("open");
+    if (old.kind !== "open") throw new Error("expected open snapshot");
+    expect(old.ci.kind).toBe("ci-clean");
+    await expect(
+      readSnapshot({
+        reader: fakeReader({ facts: { headRefOid: null } }),
+        context: context(1),
+        pendingHistory: "omit",
+        allowDraft: false,
+      })
+    ).rejects.toBeInstanceOf(WatcherQueryError);
+    await expect(
+      readSnapshot({
+        reader: fakeReader({ changedHead: "new" }),
+        context: context(1),
+        pendingHistory: "omit",
+        allowDraft: false,
+      })
+    ).rejects.toBeInstanceOf(WatcherQueryError);
+  });
+
+  it("does not wait on an owner-approval gate after workflows finish", async () => {
+    const gate = {
+      ...pendingCheck("Code Review Gate"),
+      kind: "code-review-gate" as const,
+      name: "Code Review Gate" as const,
+    };
+    const snapshot = await readSnapshot({
+      reader: fakeReader({
+        fastPath: { kind: "checks", checks: [passingCheck(), gate] },
+        workflowStatus: "success",
+      }),
+      context: context(1),
+      pendingHistory: "omit",
+      allowDraft: false,
+    });
+    expect(snapshot.kind).toBe("open");
+    if (snapshot.kind !== "open") throw new Error("expected open snapshot");
+    expect(snapshot.ci.kind).toBe("ci-clean");
+    expect(classifyPr(snapshot).kind).toBe("ready");
+  });
+
+  it("fails closed on a workflow query error", async () => {
+    await expect(
+      readSnapshot({
+        reader: fakeReader({ workflowError: true }),
+        context: context(1),
+        pendingHistory: "omit",
+        allowDraft: false,
+      })
+    ).rejects.toBeInstanceOf(WatcherQueryError);
+  });
+});
+
+it("retries a workflow query error in a loop, then reports status-query", async () => {
+  let now = 0;
+  const events: ProgressVerdict[] = [];
+  const verdict = await runSimple({
+    dependencies: {
+      reader: fakeReader({ workflowError: true }),
+      clock: {
+        now: () => now,
+        observedAt: () => "2026-07-26T00:00:00.000Z",
+        async sleep(seconds) {
+          now += seconds;
+        },
+      },
+      emit(event) {
+        events.push(event);
+      },
+    },
+    contexts: [context(1)],
+    mode: "single",
+    statusOnly: false,
+    options: { ...options, maxQueryErrors: 2 },
+  });
+  expect(events.map(({ kind }) => kind)).toEqual(["RETRY"]);
+  expect(verdict).toMatchObject({
+    kind: "BLOCKER",
+    exitCode: 7,
+    blocker: { kind: "status-query", failures: 2 },
+  });
+});
+
 describe("snapshot query planning", () => {
   it("does not query commit rollups while queued checks are pending", async () => {
     const reader = fakeReader({
@@ -109,6 +238,8 @@ describe("snapshot query planning", () => {
       "pullRequest",
       "reviewThreadPage:null",
       "checksFastPath",
+      "workflowRuns:head",
+      "pullRequest",
     ]);
   });
 
@@ -301,10 +432,13 @@ describe("queued-stack cadence", () => {
     expect(timeline).toEqual([
       "emit:QUEUE",
       "read:20",
+      "read:20",
       "fail:21",
       "emit:RETRY",
       "sleep",
       "read:21",
+      "read:21",
+      "read:22",
       "read:22",
       "emit:STATUS",
       "emit:WAITING",
@@ -348,7 +482,7 @@ describe("queued-stack cadence", () => {
         const facts = await base.pullRequest(pr);
         const count = (reads.get(pr.number) ?? 0) + 1;
         reads.set(pr.number, count);
-        return pr.number === one.number && count > 1
+        return pr.number === one.number && count > 2
           ? {
               ...facts,
               state: "MERGED" as const,
@@ -384,10 +518,11 @@ describe("queued-stack cadence", () => {
     await expect(running).rejects.toThrow("stop after advance proof");
     expect(emitted.some((event) => event.kind === "ADVANCE")).toBe(true);
     const firstSleep = timeline.indexOf("sleep");
-    expect(timeline.slice(firstSleep, firstSleep + 5)).toEqual([
+    expect(timeline.slice(firstSleep, firstSleep + 6)).toEqual([
       "sleep",
       "read:40",
       "emit:ADVANCE",
+      "read:41",
       "read:41",
       "emit:WAITING",
     ]);

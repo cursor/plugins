@@ -69,22 +69,29 @@ export async function readSnapshot(args: {
     return { kind: "closed", context: args.context, facts };
   const threads = await resolveReviewThreads(args.reader, args.context);
   const checks = await resolveChecks(args.reader, args.context);
+  if (facts.headRefOid === null)
+    throw new WatcherQueryError({
+      kind: "missing-key",
+      retryable: true,
+      detail: "PR head SHA unavailable",
+    });
+  const workflows = await args.reader.workflowRuns(
+    args.context,
+    facts.headRefOid
+  );
+  const all: T.NonEmpty<T.Check> = [...checks.checks, ...workflows];
   const failed = nonEmpty(
-    checks.checks.filter(
-      (check): check is T.FailedCheck => check.kind === "failed"
-    )
+    all.filter((check): check is T.FailedCheck => check.kind === "failed")
   );
   const pending = nonEmpty(
-    checks.checks.filter(
-      (check): check is T.PendingCheck => check.kind === "pending"
-    )
+    all.filter((check): check is T.PendingCheck => check.kind === "pending")
   );
   let ci: T.CiState;
   if (failed === null && pending !== null && args.pendingHistory === "omit")
     ci = {
       kind: "ci-pending",
       source: checks.source,
-      all: checks.checks,
+      all,
       failed: [],
       pending,
       hadPreviousPassingCi: false,
@@ -93,7 +100,7 @@ export async function readSnapshot(args: {
     const merge = await mergeAssessment(args.reader, facts);
     const base = {
       source: checks.source,
-      all: checks.checks,
+      all,
       hadPreviousPassingCi: merge.hadPreviousPassingCi,
     };
     if (failed !== null)
@@ -123,6 +130,13 @@ export async function readSnapshot(args: {
         github: merge.github,
       };
   }
+  const current = await args.reader.pullRequest(args.context);
+  if (current.headRefOid !== facts.headRefOid || current.state !== facts.state)
+    throw new WatcherQueryError({
+      kind: "missing-key",
+      retryable: true,
+      detail: "PR changed during snapshot",
+    });
   return {
     kind: "open",
     context: args.context,
