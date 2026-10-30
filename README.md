@@ -124,6 +124,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `rippling` | [Rippling](third_party/rippling/) | Cursor | Integrations | Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires. |
 | `onepay` | [OnePay](third_party/onepay/) | Cursor | Integrations | Access your OnePay accounts: balances, transactions, credit, Pay Later, investments, crypto, and rewards. |
 | `questrade` | [Questrade](third_party/questrade/) | Cursor | Integrations | Read your Questrade portfolio, get live market data, and discuss potential trades. |
+| `iflytek-skills` | [iFLYTEK Skills](third_party/iflytek-skills/) | iFLYTEK | Integrations | Speech, OCR, translation, proofreading, and multimodal workflows powered by iFLYTEK APIs. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
