@@ -197,7 +197,10 @@ for (const tree of TREES) {
     }
   }
 }
-if (dangling.length > 0) process.exit(1);
+if (dangling.length > 0) {
+  for (const problem of dangling) console.error(`FAIL ${problem}`);
+  process.exit(1);
+}
 
 if (process.argv.includes("--check")) {
   const onDisk = new Map(existsSync(OUT) ? walk(OUT).map((path) => [relative(OUT, path), file(path)]) : []);

@@ -66,6 +66,25 @@ test("OMP skills point at their own adapter and drift blocks the generated tree"
   }
 });
 
+test("escaping links name the source and target in both generation modes", () => {
+  const { root, save } = fixture();
+  try {
+    assert.equal(generate(root).status, 0);
+    const prior = readFileSync(join(root, "harness/pstack/omp/skills/example/SKILL.md"), "utf8");
+    save("README.md", "# Outside the plugin\n");
+    save("pstack/README.md", "# Example pstack\n\n[Outside](../README.md)\n");
+    for (const args of [[], ["--check"]]) {
+      const rejected = generate(root, ...args);
+      assert.notEqual(rejected.status, 0);
+      assert.match(rejected.stderr, /FAIL harness\/pstack\/omp\/README\.md links to \.\.\/README\.md, which is not in the tree/);
+      assert.match(rejected.stderr, /FAIL harness\/pstack\/claude-code\/README\.md links to \.\.\/README\.md, which is not in the tree/);
+      assert.equal(readFileSync(join(root, "harness/pstack/omp/skills/example/SKILL.md"), "utf8"), prior);
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("a missing OMP mapping refuses generation without replacing existing output", () => {
   const { root, save } = fixture();
   try {
