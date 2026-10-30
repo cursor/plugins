@@ -18,7 +18,7 @@ Scan for:
 
 ## Scope to skills and tools the session actually used
 
-Route findings only to skills, tools, or MCPs this transcript used. A skill counts as used when the transcript shows a `Read` of its `SKILL.md` (under `.cursor/skills/`, `~/.cursor/skills/`, or `~/.cursor/plugins/`), a `Task` prompt naming its path, or a tool call (Shell, Grep, MCP, etc.) matching its documented commands. Speculative routings to skills the parent never opened do not count.
+Route findings only to skills, tools, or MCPs this transcript used. A skill counts as used when the transcript shows a Cursor `Read` of its `SKILL.md` (under `.cursor/skills/`, `~/.cursor/skills/`, or `~/.cursor/plugins/`), an OMP `read` of `skill://<name>` (with or without `/SKILL.md`), or a `SKILL.md` under `.omp/skills/` or a known `skills.customDirectories` path. A `Task` or OMP `task` brief naming the skill, or a tool call (Shell, Grep, MCP, etc.) matching its documented commands, also counts. Speculative routings to skills the parent never opened do not count.
 
 Two finding shapes are valid:
 - The parent invoked the skill and you found a real gap in its body. Route to the skill's relevant section.
@@ -29,7 +29,7 @@ Drop any skill that was neither invoked nor a missed-trigger candidate.
 List each durable learning. For each:
 - Principle: one sentence naming the contrarian or second-order observation. Don't restate the obvious learning. Name the one beneath it.
 - Evidence: the exact moment in the transcript (turn number or short quote, including what was said AND what wasn't).
-- Routing: the most relevant existing skill (its `SKILL.md` path as the transcript shows it), OR `tune description: <skill path>` when the skill should have triggered but didn't, OR "new skill: <kebab-name>".
+- Routing: the most relevant existing skill (`skill://<name>` or its `SKILL.md` path as the transcript shows it), OR `tune description: <skill path>` when the skill should have triggered but didn't, OR "new skill: <kebab-name>".
 
 Skip trivial things and anything already obvious from the skill the parent followed. Skip implementation details that drift: specific SHAs, current file paths, version numbers, exact byte counts. Surface only principles and patterns that survive code drift.
 
