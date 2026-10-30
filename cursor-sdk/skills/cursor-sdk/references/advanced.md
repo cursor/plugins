@@ -115,11 +115,14 @@ Both list calls return `{ items, nextCursor }`. Use `nextCursor` for pagination.
 
 ```typescript
 const runs = await Agent.listRuns(agentId, { runtime: "local", cwd: process.cwd() });
-const run  = await Agent.getRun(runs.items[0].id, { runtime: "local", cwd: process.cwd() });
+const listed = runs.items[0];
+if (listed) {
+  const run = await Agent.getRun(listed.id, { runtime: "local", cwd: process.cwd() });
 
-// Replay the stream (works when the persisted events are available):
-if (run.supports("stream")) {
-  for await (const event of run.stream()) { /* ... */ }
+  // Replay the stream (works when the persisted events are available):
+  if (run.supports("stream")) {
+    for await (const event of run.stream()) { /* ... */ }
+  }
 }
 ```
 
@@ -127,7 +130,7 @@ if (run.supports("stream")) {
 
 ### Cloud run IDs vs. agent IDs
 
-Cloud agent IDs start with `bc-`. Cloud run IDs look like regular UUIDs. **Don't pass a `bc-` ID to `getRun` expecting it to work** — you need the run ID.
+Cloud agent IDs are `bc-<uuid>`. Cloud run IDs are `run-<uuid>`. `Agent.getRun` throws `ConfigurationError` for any other shape, including a bare UUID, and does not send the request. **Don't pass a `bc-` agent ID to `getRun` expecting it to work** — you need the run ID.
 
 To get a run ID from a cloud `bc-` agent:
 
