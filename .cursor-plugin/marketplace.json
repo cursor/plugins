@@ -469,6 +469,11 @@
       "description": "Inspect and manage feature gates, experiments, dynamic configs, and metrics."
     },
     {
+      "name": "swarms",
+      "source": "third_party/swarms",
+      "description": "Search, publish, and manage agents, prompts, and tools on the Swarms Marketplace."
+    },
+    {
       "name": "robinhood",
       "source": "third_party/robinhood",
       "description": "View portfolios, positions, orders, watchlists, and market data, and trade in a Robinhood Agentic account."
