@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { type CliRuntime, main, parseArgs } from "./cli.ts";
 import { fakeReader, passingCheck } from "./fakes.test-helper.ts";
+import { WatcherQueryError } from "./github.ts";
 import { renderJson, renderPretty } from "./render.ts";
 import type { GitHubReader, WatcherVerdict } from "./types.ts";
 import { parsePrNumber } from "./types.ts";
@@ -100,6 +101,80 @@ describe("parseArgs", () => {
       expect(harness.stdout).toEqual([]);
       expect(harness.stderr.join("")).toContain("error:");
     }
+  });
+});
+
+describe("heads without checks", () => {
+  const noChecks = () =>
+    fakeReader({
+      fastPath: {
+        kind: "unusable",
+        exitCode: 1,
+        stderr: "no checks reported on the 'feature' branch",
+      },
+      rollupPages: [{ checks: [], endCursor: null }],
+    });
+
+  it("--status-only reports the head once instead of retrying", async () => {
+    const harness = testRuntime(noChecks());
+    expect(await main(["--pr", "1", "--status-only"], harness.runtime)).toBe(0);
+    expect(harness.stdout).toHaveLength(1);
+    const verdict = JSON.parse(harness.stdout[0] ?? "") as WatcherVerdict;
+    expect(verdict.kind).toBe("STATUS");
+    if (verdict.kind !== "STATUS") throw new Error("expected STATUS");
+    const row = verdict.rows[0];
+    expect(row.kind).toBe("open");
+    if (row.kind !== "open") throw new Error("expected open row");
+    expect(row.ci.kind).toBe("ci-none");
+  });
+
+  it("--status-only --pretty names the missing checks", async () => {
+    const harness = testRuntime(noChecks());
+    expect(
+      await main(["--pr", "1", "--status-only", "--pretty"], harness.runtime)
+    ).toBe(0);
+    expect(harness.stdout.join("")).toContain("no checks reported");
+  });
+
+  it("--status-only ends on the first query error instead of sleeping", async () => {
+    const reader = noChecks();
+    const failing: GitHubReader = {
+      ...reader,
+      async pullRequest() {
+        throw new WatcherQueryError({
+          kind: "json-parse",
+          retryable: true,
+          detail: "simulated outage",
+        });
+      },
+    };
+    const harness = testRuntime(failing);
+    const code = await main(["--pr", "1", "--status-only"], harness.runtime);
+    expect(code).not.toBe(0);
+    expect(harness.stdout).toHaveLength(1);
+    const verdict = JSON.parse(harness.stdout[0] ?? "") as WatcherVerdict;
+    expect(verdict.kind).not.toBe("RETRY");
+  });
+
+  it("polling still treats a head without checks as a retryable error", async () => {
+    const harness = testRuntime(noChecks());
+    const slept: number[] = [];
+    const runtime: CliRuntime = {
+      ...harness.runtime,
+      clock: {
+        ...harness.runtime.clock,
+        async sleep(seconds) {
+          slept.push(seconds);
+          if (slept.length >= 2) throw new Error("stop test");
+        },
+      },
+    };
+    await expect(
+      main(["--pr", "1", "--max-query-errors", "5"], runtime)
+    ).rejects.toThrow("stop test");
+    expect(slept.length).toBe(2);
+    const first = JSON.parse(harness.stdout[0] ?? "") as WatcherVerdict;
+    expect(first.kind).toBe("RETRY");
   });
 });
 
