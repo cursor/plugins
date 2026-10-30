@@ -47,11 +47,14 @@ This path makes the plugin immediately available to Cursor without any install s
    - Skills: `skills/<skill-name>/SKILL.md` with `name`, `description`
    - Agents: `agents/*.md` with `name`, `description`
    - Commands: `commands/*.(md|txt)` with `name`, `description`
-6. If repository uses `.cursor-plugin/marketplace.json`, add plugin entry:
+6. If the component set includes `mcpServers`, create `mcp.json` at the plugin root with the server definitions.
+   - The plugins reference documents `mcp.json` as the default MCP config filename. Claude Code's default is `.mcp.json`.
+   - If the repo also ships a `.mcp.json` for Claude Code with different server config, pin `mcpServers` in `plugin.json` to the intended file (e.g. `"mcpServers": "./mcp.json"`) so the Marketplace clone uses the correct one.
+7. If repository uses `.cursor-plugin/marketplace.json`, add plugin entry:
    - `name`
    - `source`
    - optional metadata (`description`, `keywords`, `category`, `tags`)
-7. Ensure all manifest paths are relative, valid, and do not use absolute paths or parent traversal.
+8. Ensure all manifest paths are relative, valid, and do not use absolute paths or parent traversal.
 
 ## Guardrails
 
