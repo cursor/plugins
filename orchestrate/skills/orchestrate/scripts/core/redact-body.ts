@@ -1,10 +1,16 @@
 const MAX_BODY_CHARS = 2_048;
 const SENSITIVE_KEY_RE = /token|secret|password|api[_-]?key|authorization/i;
+// The key may carry a prefix or suffix (GITHUB_TOKEN, slack-bot-token,
+// api_key_prod); `\b` around the bare word missed all of those. The value
+// runs to the end of the line so "Authorization: Bearer xyz" loses xyz too,
+// not only the scheme word.
 const SENSITIVE_ASSIGNMENT_RE =
-  /\b(token|secret|password|api[_-]?key|authorization)\b\s*[:=]\s*\S+/gi;
+  /\b([\w-]*(?:token|secret|password|api[_-]?key|authorization)[\w-]*)\s*[:=][ \t]*[^\n]+/gi;
+// A path is redacted wherever it appears, not only at a line start. The
+// lookbehind keeps URL segments such as "https://host/Users/x" out.
 const PATH_PATTERNS = [
-  { re: /^\/workspace\/\S*/gm, reason: "contains /workspace path" },
-  { re: /^\/Users\/\S*/gm, reason: "contains /Users path" },
+  { re: /(?<![\w/.-])\/workspace\/\S*/g, reason: "contains /workspace path" },
+  { re: /(?<![\w/.-])\/Users\/\S*/g, reason: "contains /Users path" },
   { re: /\.pnpm\/\S*/g, reason: "contains .pnpm path" },
 ];
 const SHA_RE = /\b[0-9a-f]{40}\b/gi;
