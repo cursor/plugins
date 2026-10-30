@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "talkif": {
+      "type": "http",
+      "url": "https://api.talkif.ai/api/v1/mcp"
+    }
+  }
+}
