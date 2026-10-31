@@ -5,6 +5,7 @@ on:
     paths:
       - ".cursor-plugin/marketplace.json"
       - ".claude-plugin/marketplace.json"
+      - ".agents/plugins/marketplace.json"
       - "**/plugin.json"
       - "schemas/**"
       - "pstack/**"
@@ -20,7 +21,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ">=24.22 <25"
 
       - name: Install dependencies
         run: npm install --no-save ajv ajv-formats fast-check@4.5.3
@@ -33,3 +34,6 @@ jobs:
 
       - name: Test pstack skill scripts
         run: node --disable-warning=ExperimentalWarning --test pstack/skills/*/scripts/test/*.test.ts
+
+      - name: Test pstack harness generation and Codex history
+        run: node --test scripts/test/*.test.mjs

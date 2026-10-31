@@ -1,0 +1,32 @@
+{
+  "name": "cursor-plugins",
+  "interface": {
+    "displayName": "Cursor Plugins"
+  },
+  "plugins": [
+    {
+      "name": "origin-apps",
+      "source": {
+        "source": "local",
+        "path": "./origin-apps"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "pstack",
+      "source": {
+        "source": "local",
+        "path": "./harness/pstack/codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}
