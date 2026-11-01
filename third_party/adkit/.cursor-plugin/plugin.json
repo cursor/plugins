@@ -1,0 +1,36 @@
+{
+  "name": "adkit",
+  "displayName": "AdKit",
+  "version": "1.0.5",
+  "description": "Manage ad campaigns on Google, Meta, TikTok, LinkedIn, Microsoft, Reddit, and X, pull performance, and research competitor ads.",
+  "author": {
+    "name": "AdKit",
+    "email": "contact@adkit.so"
+  },
+  "homepage": "https://adkit.so",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "adkit",
+    "ads",
+    "advertising",
+    "google-ads",
+    "meta-ads",
+    "facebook-ads",
+    "tiktok-ads",
+    "linkedin-ads",
+    "ad-library",
+    "competitor-ads",
+    "campaigns",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "adkit",
+    "ads",
+    "advertising",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
