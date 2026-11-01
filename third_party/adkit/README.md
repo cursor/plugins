@@ -1,4 +1,4 @@
-# AdKit
+# AdKit: Meta & Google Ads
 
 Cursor plugin that connects agents to [AdKit](https://adkit.so) through its hosted [Model Context Protocol](https://modelcontextprotocol.io/) server at `https://mcp.adkit.so`.
 
@@ -7,7 +7,7 @@ AdKit links one workspace to ad accounts on Google Ads, Meta (Facebook and Insta
 ## Install
 
 1. Open **Cursor Settings → Plugins**.
-2. Search for **AdKit**.
+2. Search for **AdKit** or **Meta Ads**.
 3. Click **Install**, then complete the AdKit sign-in when prompted.
 
 Or run `/add-plugin adkit` in chat.
