@@ -55,6 +55,17 @@ Claude Code loads every `.md` file in `~/.claude/rules/` into each new session, 
 | `https://github.com/cursor/plugins/blob/main/pstack/<path>` | `<pstack>/<path>` when that file exists. The plugin ships the skills, `docs/guide/`, and `README.md`. Read the local copy and never fetch it. Give the user the URL when they need a link. |
 | Transcripts in `~/.cursor/projects/<slug>/agent-transcripts/` | `~/.claude/projects/<slug>/<session>.jsonl`. The slug is the workspace path with each `/` and `.` changed to `-`, so `/Users/you/proj` is `-Users-you-proj`. The newest `.jsonl` directly in that folder is the current session. Its `<session>/subagents/` folder holds subagent transcripts. Read only this workspace's folder. |
 
+## Skills from other plugins
+
+pstack calls four skills that it does not ship. `/no-comments` is not one of them. It ships with pstack, so read `skills/no-comments/SKILL.md` and spawn `pstack:comment-sicko` as it says.
+
+| Cursor | Claude Code |
+| --- | --- |
+| `/deslop` from `cursor-team-kit` | Run a `deslop` skill when the session lists one. This repository's Claude Code marketplace does not list `cursor-team-kit`, so a user installs the skill by copying `cursor-team-kit/skills/deslop/SKILL.md` into `~/.claude/skills/deslop/`. Without it, skip the step with the line from Cursor-only features. |
+| `control-ui` from `cursor-team-kit` | Follow its harness loop with local tools. Use the repo's Playwright or browser harness, or a Chromium debug port. A browser MCP such as Claude in Chrome also drives a web UI. |
+| `control-cli` from `cursor-team-kit` | Follow its harness loop with local tools. Run the CLI in `tmux`, send input with `tmux send-keys`, and read the screen with `tmux capture-pane -p`. |
+| `create-skill`, built into Cursor | Use a skill-creator skill when the session lists one. Otherwise write `<name>/SKILL.md` with `name` and `description` frontmatter under `.claude/skills/` or `~/.claude/skills/`. |
+
 ## Cursor-only features
 
 Claude Code has no Cursor Automations, Bugbot, Cursor cloud agents, or built-in PR tool. When a step needs one, put one line in your reply, `Skipped in Claude Code: <step>. <reason>.`, then go on to the next step. Do not stop, ask, or retry. When a later step needs what the skipped step made, such as a URL or a key, leave a placeholder and name it in the line.
