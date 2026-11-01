@@ -629,6 +629,11 @@
       "description": "Search, create, and update Lark Suite docs, and read Lark messages and groups."
     },
     {
+      "name": "lark-base",
+      "source": "third_party/lark-base",
+      "description": "Read and update tables, fields, views, and records in Lark Base."
+    },
+    {
       "name": "feishu",
       "source": "third_party/feishu",
       "description": "Search, create, and update Feishu docs, and read Feishu messages and groups."
