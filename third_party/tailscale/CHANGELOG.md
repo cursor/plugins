@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.0.5
+
+- The setup skill again tells Grok Bot never to install or run the Tailscale client on the bot's computer, and to say Tailscale isn't available when there's no Tailscale row.
+
 ## 1.0.4
 
 - The setup skill matches the current connection: one Tailscale row with a slot per tailnet, several tailnets at once, company tailnets enabled at cursor.com and limited with `custom:grokbot` postures, and personal tailnets via one-click Connect or `tag:grokbot`.
