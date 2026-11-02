@@ -16,6 +16,8 @@ Or run `/add-plugin lark` in chat.
 
 Accounts on China-region Feishu should install the separate [Feishu](../feishu/) plugin instead. This plugin talks only to `mcp.larksuite.com`.
 
+Lark Base (Bitable) is the separate [Lark Base](../lark-base/) plugin.
+
 ## MCP
 
 ```json

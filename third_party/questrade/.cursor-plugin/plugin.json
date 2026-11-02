@@ -1,0 +1,39 @@
+{
+  "name": "questrade",
+  "displayName": "Questrade",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0",
+    "grokbot": "0.49.0",
+    "sand": "0.49.0"
+  },
+  "description": "Read your Questrade portfolio, get live market data, and discuss potential trades.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://www.questrade.com/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "questrade",
+    "brokerage",
+    "trading",
+    "portfolio",
+    "positions",
+    "balances",
+    "market data",
+    "watchlists",
+    "canada",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "questrade",
+    "finance",
+    "trading",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
