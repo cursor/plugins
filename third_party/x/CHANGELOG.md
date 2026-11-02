@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.10.1 — Unsupported reads
+
+- When no X tool covers an ask, like a user's followers or following, agents say so plainly and offer the closest tool (profile `public_metrics` counts) instead of falling back to the browser and asking the user to sign in.
+
 ## 2.10.0 — Spaces, Communities, and Lists
 
 - Added Spaces (`search_spaces`, `get_spaces_by_id`, `get_spaces_by_ids`, `get_spaces_by_creator_ids`, `get_spaces_posts`), Communities (`search_communities`, `get_communities_by_id`), and Lists: eight reads plus `create_lists`, `update_lists`, member, follow, and pin writes. There's no tool to delete a list or read a community's posts. All are free.
