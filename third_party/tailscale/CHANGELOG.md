@@ -2,6 +2,11 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.0.5
+
+- Personal tailnets connect only through one-click Connect; the `tag:grokbot` sign-in path is gone.
+- The setup skill covers the bot computer reaching tailnet hosts by MagicDNS name or `100.x` address, with no Tailscale client to install.
+
 ## 1.0.4
 
 - The setup skill matches the current connection: one Tailscale row with a slot per tailnet, several tailnets at once, company tailnets enabled at cursor.com and limited with `custom:grokbot` postures, and personal tailnets via one-click Connect or `tag:grokbot`.
