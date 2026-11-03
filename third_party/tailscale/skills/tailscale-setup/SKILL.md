@@ -60,7 +60,7 @@ A personal sign-in to a tailnet the member's team lists as its company tailnet i
 
 ## Bot computer
 
-On a connected tailnet, commands on Grok Bot's computer reach tailnet hosts by their `name.tailnet.ts.net` name or `100.x` address, over HTTP(S) or TCP, through the same device. Nothing to install. This works on the member's own turns. Disconnecting the tailnet cuts open connections within seconds.
+On a connected tailnet, commands on Grok Bot's computer reach tailnet hosts by their `name.tailnet.ts.net` name, over HTTP(S) or TCP, through the same device. A `100.x` address is refused there, so use the name. Nothing to install. This works on the member's own turns. Disconnecting the tailnet cuts open connections within seconds.
 
 ## Who can use it
 
