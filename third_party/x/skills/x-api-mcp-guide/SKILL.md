@@ -121,7 +121,7 @@ SCRIPT="$XCHAT_ROOT/xchat_lite.py"
 
 Once per session:
 
-1. Confirm the Chat tools exist; if not, [missing scopes](#missing-scopes).
+1. Confirm the Chat tools exist; if not, see [Errors](#errors).
 2. `get_users_me` for `$X_USER_ID`.
 3. `get_users_public_key` for yourself with `public_key.fields` `public_key_version,public_key,signing_public_key,identity_public_key_signature,juicebox_config` (not `identity_public_key`). Save `juicebox_config`; `public_key_version` is `--key-version`.
 4. Run `unlock-check` before asking for anything. The helper checks what's already stored, in order: the saved key, `CHAT_PIN` in the env, then Grok Bot `box-secrets.json` (`card.CHAT_PIN`). If it unlocks (`"key_source": "saved"` or `"pin"`), don't ask for the PIN.
