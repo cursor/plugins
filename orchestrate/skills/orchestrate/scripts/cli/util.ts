@@ -13,7 +13,9 @@ import {
   type PlanTask,
   parsePlanJson,
   parseTreeStateJson,
+  TASK_STATUSES,
   type TaskState,
+  type TaskStatus,
   type TreeTask,
 } from "../schemas.ts";
 
@@ -320,6 +322,14 @@ export function parseCommentCriticalityOrBail(
         `--criticality must be best_effort or required (got ${value})`
       );
   }
+}
+
+export function parseTaskStatusOrBail(value: string): TaskStatus {
+  const status = TASK_STATUSES.find(candidate => candidate === value);
+  if (status) return status;
+  throw new PlanValidationError(
+    `--status must be one of ${TASK_STATUSES.join(", ")} (got ${value})`
+  );
 }
 
 export function parsePositiveIntegerOrBail(args: {
