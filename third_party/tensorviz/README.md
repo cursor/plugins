@@ -40,7 +40,7 @@ Graph display and capture are separate results.
 
 ## Runtime and data
 
-The readable launcher downloads the public **0.3.60** compiled runtime from GitHub
+The readable launcher downloads the public **0.3.61** compiled runtime from GitHub
 Releases, verifies the SHA-256 digest pinned in `runtime-lock.json`, and caches the
 archive for later connections. It checks the archive on every connection and
 extracts separate session files. A checksum mismatch stops startup. This directory

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.61
+
+- Update the submission to the compiled runtime built from current source main
+  `d4e2865a3c43149907dd06840745eb037d55dffa`.
+- Include the current 27-tool host, with `find_computation`, `query_computation`,
+  and `analyze_computation_change`, and pin its matching runtime checksum.
+
 ## 0.3.60
 
 - Submit the existing public tensorViz 0.3.60 integration to the Cursor catalog.

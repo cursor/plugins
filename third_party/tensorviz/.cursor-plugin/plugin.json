@@ -1,7 +1,7 @@
 {
   "name": "tensorviz",
   "displayName": "tensorViz",
-  "version": "0.3.60",
+  "version": "0.3.61",
   "description": "Explore local PyTorch model graphs and measured tensor shapes (Apple Silicon preview).",
   "author": {
     "name": "TensorViz",

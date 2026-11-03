@@ -1,7 +1,7 @@
 # Cursor installation and maintenance
 
 This entry packages the public
-[tensorViz 0.3.60 preview](https://github.com/tensorviz-org/tensorviz-plugins/releases/tag/v0.3.60)
+[tensorViz 0.3.61 preview](https://github.com/tensorviz-org/tensorviz-plugins/releases/tag/v0.3.61)
 for Cursor. It requires macOS Apple Silicon and CPython 3.12 CPU capture. Local
 installation, package validation, runtime checks, and marketplace approval are
 separate results. This submission does not claim completed Cursor client
@@ -49,9 +49,9 @@ if you want to revoke tensorViz permission. See [privacy](../PRIVACY.md).
 ## Provenance and review scope
 
 The launcher, runtime lock, workflow skill, logo, support, and terms were copied
-from public tag `v0.3.60`, commit
-`6d45a1245a7fd60bd87312418b30e5fbbd35d1cd` of
-[`tensorviz-org/tensorviz-plugins`](https://github.com/tensorviz-org/tensorviz-plugins/tree/v0.3.60/cursor/plugins/tensorviz).
+from public tag `v0.3.61`, commit
+`d01630d9e9d6e453b1ef6f7786b7dd77b2601bed` of
+[`tensorviz-org/tensorviz-plugins`](https://github.com/tensorviz-org/tensorviz-plugins/tree/v0.3.61/cursor/plugins/tensorviz).
 Their hashes were checked against that release's `PUBLICATION.json`. The MIT
 license is copied from the distribution repository. The privacy document changes
 only its installation link to this guide.
@@ -66,9 +66,11 @@ Local submission checks on 3 November 2026 passed the repository's
 manifest consistency, documentation links, and copied-file hash checks. An
 isolated macOS Apple Silicon profile launched the configured MCP command from a
 path containing spaces, downloaded the runtime without GitHub credentials, and
-verified its 35,330,817-byte archive against the pinned SHA-256 digest. MCP
-initialization reported tensorViz 0.3.60 and discovery returned 24 tools, including
-`open_graph`, `open_graph_view`, and `list_models`. No model ran and no tensorViz
+verified its 35,773,473-byte archive against the pinned SHA-256 digest. MCP
+initialization reported tensorViz 0.3.61 and discovery returned 27 tools, including
+`open_graph`, `open_graph_view`, `find_computation`, `query_computation`, and
+`analyze_computation_change`. All three computation queries returned `NO_MODEL`
+for an unopened model without creating user state. No model ran and no tensorViz
 permission was granted. These checks did not run the Cursor application.
 
 For client acceptance, verify skill/tool discovery, a small CPU model capture,
