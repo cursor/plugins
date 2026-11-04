@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.0.6
+
+- Describe the one-click personal tailnet and the bot computer reaching tailnet hosts by name; company tailnets are in beta.
+
 ## 1.0.5
 
 - Personal tailnets connect only through one-click Connect; the `tag:grokbot` sign-in path is gone.
