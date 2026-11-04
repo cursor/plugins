@@ -1,7 +1,7 @@
 {
   "name": "salesforce",
   "displayName": "Salesforce",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Query, create, and update records in your org.",
   "author": {
     "name": "Cursor",
@@ -37,6 +37,11 @@
         "type": "string",
         "title": "Salesforce Consumer Key",
         "description": "Consumer Key of the External Client App you created for this integration (Setup → External Client App Manager → your app → Settings → Consumer Key and Secret)."
+      },
+      "CLIENT_SECRET": {
+        "type": "string",
+        "title": "Salesforce Consumer Secret",
+        "description": "Optional. The plugin's Client Secret: only needed if your External Client App requires a secret for the Web Server or Refresh Token flow. Copy the Consumer Secret from the same Consumer Key and Secret page."
       }
     },
     "required": [
