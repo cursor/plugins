@@ -1,0 +1,31 @@
+{
+  "name": "tensorviz",
+  "displayName": "tensorViz",
+  "version": "0.3.61",
+  "description": "Explore local PyTorch model graphs and measured tensor shapes (Apple Silicon preview).",
+  "author": {
+    "name": "TensorViz",
+    "email": "tensorviz.app@gmail.com"
+  },
+  "homepage": "https://tensorviz.dev",
+  "repository": "https://github.com/tensorviz-org/tensorviz-plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "pytorch",
+    "tensorviz",
+    "model-graph",
+    "tensor-shapes",
+    "machine-learning",
+    "mcp"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "pytorch",
+    "visualization",
+    "debugging",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}

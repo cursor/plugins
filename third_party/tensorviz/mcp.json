@@ -1,0 +1,12 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "tensorviz": {
+      "type": "stdio",
+      "command": "sh",
+      "args": [
+        "${CURSOR_PLUGIN_ROOT}/scripts/launch.sh"
+      ]
+    }
+  }
+}
