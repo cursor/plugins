@@ -576,7 +576,7 @@
     {
       "name": "tailscale",
       "source": "third_party/tailscale",
-      "description": "Let Grok Bot reach MCP servers on your private Tailscale network: connect your own tailnet, or your team's company tailnets turned on by a team admin, with each member using their own device.",
+      "description": "Let Grok Bot reach your private Tailscale network. Connect your own tailnet in one click: Grok Bot's computer reaches your tailnet hosts by name, and Grok Bot can use MCP servers running on them. Company tailnets for teams are in beta, by request.",
       "minClientVersions": {
         "cursor": "never",
         "grokbot": "0.49.0",

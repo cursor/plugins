@@ -4,7 +4,7 @@ All notable changes to this plugin will be documented here.
 
 ## 1.0.6
 
-- Describe the one-click personal tailnet and the bot computer reaching tailnet hosts by name; company tailnets are in beta.
+- Describe the one-click personal tailnet and the bot computer reaching tailnet hosts by name; company tailnets are in beta, by request. The listing description matches in the marketplace and READMEs.
 
 ## 1.0.5
 

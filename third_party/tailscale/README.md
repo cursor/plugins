@@ -2,7 +2,7 @@
 
 Grok Bot plugin that lets agents reach [Model Context Protocol](https://modelcontextprotocol.io/) servers on your private [Tailscale](https://tailscale.com) network (tailnet).
 
-Let Grok Bot reach MCP servers on your private Tailscale network: connect your own tailnet, or your team's company tailnets turned on by a team admin, with each member using their own device.
+Let Grok Bot reach your private Tailscale network. Connect your own tailnet in one click: Grok Bot's computer reaches your tailnet hosts by name, and Grok Bot can use MCP servers running on them. Company tailnets for teams are in beta, by request.
 
 ## Who can use it
 
@@ -18,7 +18,7 @@ This plugin ships no `mcp.json`. Grok Bot's Tailscale connection is served by th
 
 Grok Bot desktop has one **Tailscale** row (**Connect apps → Your plugins**) with one slot per tailnet. A member can connect several. The `tailscale-setup` skill walks through both paths, including the policy snippets.
 
-- **Company tailnet.** A team admin enables it at cursor.com **Integrations → Tailscale** (Tailscale Premium or Enterprise) and limits each member's device with a `custom:grokbot` posture, not a tag. The member clicks **Authenticate** on that tailnet's slot.
+- **Company tailnet (beta, by request).** A team admin enables it at cursor.com **Integrations → Tailscale** (Tailscale Premium or Enterprise) and limits each member's device with a `custom:grokbot` posture, not a tag. The member clicks **Authenticate** on that tailnet's slot.
 - **Personal tailnet.** The member must own or administer the tailnet. **Authenticate** opens Tailscale's consent screen and the device joins untagged, with the member's own access.
 
 ## Notes
