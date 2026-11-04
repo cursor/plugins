@@ -125,6 +125,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `rippling` | [Rippling](third_party/rippling/) | Cursor | Integrations | Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires. |
 | `onepay` | [OnePay](third_party/onepay/) | Cursor | Integrations | Access your OnePay accounts: balances, transactions, credit, Pay Later, investments, crypto, and rewards. |
 | `questrade` | [Questrade](third_party/questrade/) | Cursor | Integrations | Read your Questrade portfolio, get live market data, and discuss potential trades. |
+| `fatetell` | [FateTell](third_party/fatetell/) | FateTell | Integrations | Chinese astrology computed by FateTell's own BaZi engine: cast a BaZi (八字, Four Pillars) chart from any birth date, open the charts saved in your FateTell account, and check today's fortune and the Chinese almanac. Connecting signs you in to a FateTell account. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
