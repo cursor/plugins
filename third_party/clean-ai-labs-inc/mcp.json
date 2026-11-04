@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "clean-ai-labs-inc": {
+      "type": "http",
+      "url": "https://app.tryclean.ai/v1/mcp"
+    }
+  }
+}
