@@ -692,6 +692,11 @@
       "name": "tesla",
       "source": "third_party/tesla",
       "description": "Read your Tesla cars and energy sites, and send commands you confirm."
+    },
+    {
+      "name": "directmailamerica",
+      "source": "third_party/directmailamerica",
+      "description": "Print and mail USPS letters, Certified Mail and postcards, run Email to Letter and Email to Postcard, and track orders."
     }
   ]
 }
