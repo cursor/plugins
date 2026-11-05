@@ -125,6 +125,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `rippling` | [Rippling](third_party/rippling/) | Cursor | Integrations | Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires. |
 | `onepay` | [OnePay](third_party/onepay/) | Cursor | Integrations | Access your OnePay accounts: balances, transactions, credit, Pay Later, investments, crypto, and rewards. |
 | `questrade` | [Questrade](third_party/questrade/) | Cursor | Integrations | Read your Questrade portfolio, get live market data, and discuss potential trades. |
+| `tesla` | [Tesla](third_party/tesla/) | Cursor | Integrations | Read your Tesla cars and energy sites, and send commands you confirm. |
 | `directmailamerica` | [DirectMailAmerica](third_party/directmailamerica/) | Rainmaker LLC d/b/a DirectMailAmerica.com | Integrations | Print and mail USPS letters, Certified Mail and postcards, run Email to Letter and Email to Postcard, and track orders. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 

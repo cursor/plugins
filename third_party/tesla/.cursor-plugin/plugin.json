@@ -1,0 +1,35 @@
+{
+  "name": "tesla",
+  "displayName": "Tesla",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "never",
+    "grokbot": "0.30.0",
+    "sand": "0.30.0"
+  },
+  "description": "Read your Tesla cars and energy sites, and send commands you confirm.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins/tree/main/third_party/tesla",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "tesla",
+    "vehicle",
+    "car",
+    "energy",
+    "powerwall",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "tesla",
+    "vehicle",
+    "energy",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
