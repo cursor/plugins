@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "pitchbook": {
+      "type": "http",
+      "url": "https://premium.mcp.pitchbook.com/mcp"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "vanta",
   "displayName": "Vanta",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "minClientVersions": {
     "cursor": "3.13.0"
   },
@@ -30,5 +30,20 @@
     "security",
     "mcp"
   ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "VANTA_MCP_HOST": {
+        "type": "string",
+        "title": "Vanta region",
+        "description": "The MCP host for your Vanta region: mcp.vanta.com (United States), mcp.eu.vanta.com (Europe), or mcp.aus.vanta.com (Australia).",
+        "enum": [
+          "mcp.vanta.com",
+          "mcp.eu.vanta.com",
+          "mcp.aus.vanta.com"
+        ]
+      }
+    }
+  },
   "mcpServers": "./mcp.json"
 }

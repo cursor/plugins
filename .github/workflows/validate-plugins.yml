@@ -20,10 +20,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install dependencies
-        run: npm install --no-save ajv ajv-formats
+        run: npm install --no-save ajv ajv-formats fast-check@4.5.3
 
       - name: Validate plugin definitions
         run: node scripts/validate-plugins.mjs
@@ -32,4 +32,4 @@ jobs:
         run: node scripts/generate-pstack-harness-trees.mjs --check
 
       - name: Test pstack skill scripts
-        run: node --test pstack/skills/*/scripts/test/*.test.mjs
+        run: node --disable-warning=ExperimentalWarning --test pstack/skills/*/scripts/test/*.test.ts

@@ -1,18 +1,8 @@
 {
   "mcpServers": {
-    "vanta-us": {
+    "vanta": {
       "type": "http",
-      "url": "https://mcp.vanta.com/mcp",
-      "placement": "server"
-    },
-    "vanta-eu": {
-      "type": "http",
-      "url": "https://mcp.eu.vanta.com/mcp",
-      "placement": "server"
-    },
-    "vanta-aus": {
-      "type": "http",
-      "url": "https://mcp.aus.vanta.com/mcp",
+      "url": "https://${VANTA_MCP_HOST}/mcp",
       "placement": "server"
     }
   }

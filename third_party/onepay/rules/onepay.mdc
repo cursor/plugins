@@ -1,0 +1,55 @@
+---
+description: Route OnePay account questions to the right onepay MCP tools, with question-to-tool examples and common mix-ups.
+alwaysApply: true
+---
+
+# OnePay: the user's own accounts
+
+Use the `onepay` MCP tools for anything about the user's OnePay accounts: balances, transactions, spending and budgets, credit card, credit score, Pay Later, savings goals, paycheck autosave, OnePay @ Work earnings and InstaPay, investments, crypto, and rewards.
+
+The tool list is decided per account by OnePay, so discover what is available from the server's tool list instead of assuming a tool exists because it is named here.
+
+## Read freely
+
+- Start with `get_user_accounts` to see which products the user has, then drill in.
+- Banking: `get_banking_transactions`, `get_account_features`, `get_savings_goals`, `get_pay_autosave_enrollment`.
+- Credit card: `get_credit_card_summary`, `get_credit_card_transactions`.
+- Credit score: `get_credit_score`, `get_credit_score_history`, `get_credit_score_factors`.
+- Pay Later: `get_pay_later_summary`, `get_pay_later_transactions`.
+- OnePay @ Work: `get_atwork_earnings`, `get_atwork_instapay_availability`.
+- Invest and crypto: `get_invest_summary`, `get_invest_transactions`, `get_crypto_summary`, `get_crypto_transactions`.
+- Rewards: `get_rewards_summary`, `get_rewards_conversion_rates`.
+
+For spending and budget questions, filter transactions by date range, merchant, or category rather than pulling full history. Present amounts in the account's currency and say which account each figure comes from.
+
+## Which tools answer which question
+
+| The user asks | Call |
+| --- | --- |
+| "How much money do I have?" / "What's my balance?" | `get_user_accounts`. Cash is the `checking` account; `details` splits it into checking and savings. |
+| "What did I spend last month?" / "Build me a budget" | `get_user_accounts`, then `get_banking_transactions` **and** `get_credit_card_transactions` for the date range. Most users spend from both. |
+| "How much did I spend at Walmart?" | `get_banking_transactions` and `get_credit_card_transactions`, filtered by merchant. |
+| "What do I owe on my card?" / "When is my payment due?" | `get_credit_card_summary`. |
+| "What do I owe in total?" | `get_credit_card_summary` and `get_pay_later_summary`. |
+| "How can I raise my credit score?" | `get_credit_score`, `get_credit_score_factors`, and `get_credit_card_summary` (utilization and autopay). Add `get_credit_score_history` for "why did it drop?". |
+| "How are my investments doing?" / "stocks and crypto" | `get_invest_summary` and `get_crypto_summary`. Use the `_transactions` tools only for trades, dividends, or fees. |
+| "Why did I buy bitcoin?" / small recurring crypto buys | `get_crypto_transactions` (round-up orders show up here), then `get_account_features` for round-up settings. |
+| "How many points do I have?" / "What are my rewards worth?" | `get_rewards_summary` (includes the dollar value). For redemption options, `get_rewards_conversion_rates`. |
+| "Am I on Cash+?" / "Are round-ups on?" / "Do I have Walmart+?" | `get_account_features`. |
+| "How are my savings goals doing?" | `get_savings_goals`. |
+| "Am I saving from my paycheck?" / "What APY do I get?" | `get_pay_autosave_enrollment`. |
+| "When do I get paid?" | `get_atwork_earnings`. |
+| "Can I get paid early?" / "Is InstaPay available?" | `get_atwork_instapay_availability`. |
+| "What are my Pay Later payments?" | `get_pay_later_summary`, then `get_pay_later_transactions` for history. |
+
+## Common mix-ups
+
+- **Builder Card is checking, not a card account.** Builder Card is an optional feature on the user's OnePay Cash checking account that also builds credit. When it's on, `get_user_accounts` reports the checking account as `type: "builder_card"` (with `builds_credit: true`) instead of `banking`, so match "my checking" or "my balance" on `account_category: "checking"`. Use the banking tools for its balance, spending, and savings; use the credit card tools only for the separate `credit_card` account.
+- **Transfers and income are not spending.** In banking results, skip `is_debit: false` rows (deposits, dividends) and the `Transfer` category, such as moves to savings, when you total spending.
+- **Savings pockets need their own call.** `get_banking_transactions` returns the default spending pocket. For a goal or autosave pocket, pass the `pocket_id` from `get_savings_goals` or `get_pay_autosave_enrollment`.
+- **An empty filtered result may be a casing miss.** Merchant and category filters match exactly as the data shows them (`Walmart`, `Mobile Phone`). If a filtered call comes back empty or errors, read an unfiltered page to get the exact value, then retry before telling the user there is nothing.
+- **"Not available for this user" is an answer.** Tools such as `get_pay_later_summary` return `available: false` when the user doesn't have that product. Treat that product as not applicable and move on; there's no need to retry or call the matching `_transactions` tool. Only mention it if the user asked about that product.
+
+## When the tools are missing
+
+If the tools are absent or report that the user is not signed in, tell the user to connect OnePay from the OnePay connector in Grok Bot. Do not fall back to web search or guesses for their account data. OnePay gives information, not financial advice; do not present answers as investment, tax, or credit advice.
