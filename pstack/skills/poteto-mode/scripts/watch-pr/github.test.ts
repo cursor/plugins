@@ -15,6 +15,7 @@ import {
   resolveChecks,
   resolveContext,
   resolveReviewThreads,
+  parseWorkflowRunPage,
 } from "./github.ts";
 import {
   fakeReader,
@@ -29,6 +30,86 @@ const context = {
   repo: "repo",
   number: parsePrNumber(42),
 };
+
+describe("Actions workflow runs", () => {
+  it("maps the matching head and does not borrow an old head's queued run", () => {
+    const page = parseWorkflowRunPage(
+      {
+        total_count: 2,
+        workflow_runs: [
+          {
+            id: 1,
+            workflow_id: 200,
+            run_number: 1,
+            event: "pull_request",
+            head_repository: { id: 300 },
+            head_branch: "feature",
+            pull_requests: [],
+            run_attempt: 1,
+            name: "CI",
+            head_sha: "head",
+            status: "queued",
+            conclusion: null,
+            html_url: "",
+          },
+          {
+            id: 2,
+            workflow_id: 200,
+            run_number: 2,
+            event: "pull_request",
+            head_repository: { id: 300 },
+            head_branch: "feature",
+            pull_requests: [],
+            run_attempt: 1,
+            name: "CI",
+            head_sha: "old",
+            status: "in_progress",
+            conclusion: null,
+            html_url: "",
+          },
+        ],
+      },
+      "head"
+    );
+    expect(page.checks.map(({ kind }) => kind)).toEqual(["pending"]);
+  });
+
+  it("keeps Code Review Gate owner approval out of pending and failed workflows", () => {
+    for (const [status, conclusion] of [
+      ["queued", null],
+      ["completed", "action_required"],
+    ] as const) {
+      const page = parseWorkflowRunPage(
+        {
+          total_count: 1,
+          workflow_runs: [{
+            id: 1,
+            workflow_id: 200,
+            run_number: 1,
+            event: "pull_request",
+            head_repository: { id: 300 },
+            head_branch: "feature",
+            pull_requests: [],
+            run_attempt: 1,
+            name: "Code Review Gate",
+            head_sha: "head",
+            status,
+            conclusion,
+            html_url: "",
+          }],
+        },
+        "head"
+      );
+      expect(page.checks[0].kind).toBe("code-review-gate");
+    }
+  });
+
+  it("rejects missing workflow-run fields rather than interpreting them as no Actions", () => {
+    expect(() =>
+      parseWorkflowRunPage({ total_count: 1, workflow_runs: [{}] }, "head")
+    ).toThrow(WatcherQueryError);
+  });
+});
 
 describe("checks fallback chain", () => {
   it("uses a non-empty fast-path result without a rollup query", async () => {
