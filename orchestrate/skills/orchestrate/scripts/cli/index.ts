@@ -1,6 +1,8 @@
 #!/usr/bin/env bun
 import { Command } from "commander";
 
+import { PlanValidationError } from "../errors.ts";
+import { assertModelEnvConfig } from "../models.ts";
 import { registerAndonCommands } from "./andon.ts";
 import { registerCommentCommands } from "./comments.ts";
 import { registerForensicsCommands } from "./forensics.ts";
@@ -8,6 +10,16 @@ import { registerInspectCommands } from "./inspect.ts";
 import { registerTaskCommands } from "./task.ts";
 
 export async function main(argv: string[] = process.argv): Promise<void> {
+  try {
+    assertModelEnvConfig();
+  } catch (err) {
+    if (err instanceof PlanValidationError) {
+      console.error(err.message);
+      process.exit(2);
+    }
+    throw err;
+  }
+
   const program = new Command();
 
   program

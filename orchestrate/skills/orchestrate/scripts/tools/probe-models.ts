@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { Agent } from "@cursor/sdk";
-import { MODEL_CATALOG, type ModelProfile } from "../models.ts";
+import { effectiveModelCatalog, type ModelProfile } from "../models.ts";
 
 const PROBE_REPO = "https://github.com/example-org/example-repo";
 
@@ -33,7 +33,7 @@ export async function probeModelCatalog(
     agentApi?: ProbeAgentApi;
   } = {}
 ): Promise<ProbeResult[]> {
-  const catalog = opts.catalog ?? MODEL_CATALOG;
+  const catalog = opts.catalog ?? effectiveModelCatalog();
   const agentApi = opts.agentApi ?? Agent;
   const results: ProbeResult[] = [];
   for (const profile of catalog) {

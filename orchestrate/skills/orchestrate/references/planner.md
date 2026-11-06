@@ -14,7 +14,7 @@ Scripts expect `bun` on PATH. Install dependencies with `bun install` inside thi
 
 Regenerate `schemas/*.json` from `scripts/schemas.ts` with `bun run generate-schemas` in `scripts/` after plan or state shape changes.
 
-Slack visibility uses `SLACK_BOT_TOKEN`. Required scopes:
+Slack visibility uses `ORCHESTRATE_SLACK_BOT_TOKEN`. Required scopes:
 
 - `chat:write` — post and edit messages.
 - `chat:write.customize` — set custom username and icon on bot messages.
@@ -69,7 +69,7 @@ Write `plan.json` at `<workspace>`; the default workspace is `.orchestrate/<root
 
 `summary` is for the human in the Slack thread; `goal` is the agent's full context. Kickoff falls back to a truncated `goal` when `summary` is unset.
 
-On the first `run --root`, the script uses `plan.slackChannel` for the Slack kickoff and writes `plan.slackKickoffRef`. The root plan gets `slackChannel` from `kickoff --slack-channel`, `run --root --slack-channel`, or `SLACK_CHANNEL_ID`. Subplanners inherit both fields so the whole tree mirrors into one thread.
+On the first `run --root`, the script uses `plan.slackChannel` for the Slack kickoff and writes `plan.slackKickoffRef`. The root plan gets `slackChannel` from `kickoff --slack-channel`, `run --root --slack-channel`, or `ORCHESTRATE_SLACK_CHANNEL_ID`. Subplanners inherit both fields so the whole tree mirrors into one thread.
 
 Planning rules:
 
