@@ -692,6 +692,11 @@
       "name": "tesla",
       "source": "third_party/tesla",
       "description": "Read your Tesla cars and energy sites, and send commands you confirm."
+    },
+    {
+      "name": "adkit",
+      "source": "third_party/adkit",
+      "description": "Google Ads, Meta Ads, Facebook Ads, TikTok Ads, LinkedIn Ads, Microsoft Ads, Reddit Ads, and X Ads from Cursor: launch campaigns, pull performance, spy on competitor ads in a 1M+ ad library, generate ad creatives."
     }
   ]
 }

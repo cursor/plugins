@@ -1,0 +1,43 @@
+{
+  "name": "adkit",
+  "displayName": "AdKit: Meta & Google Ads",
+  "version": "1.0.5",
+  "description": "Google Ads, Meta Ads, Facebook Ads, TikTok Ads, LinkedIn Ads, Microsoft Ads, Reddit Ads, and X Ads from Cursor: launch campaigns, pull performance, spy on competitor ads in a 1M+ ad library, generate ad creatives.",
+  "author": {
+    "name": "AdKit",
+    "email": "contact@adkit.so"
+  },
+  "homepage": "https://adkit.so",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "adkit",
+    "ads",
+    "advertising",
+    "ppc",
+    "paid media",
+    "google ads",
+    "meta ads",
+    "facebook ads",
+    "instagram ads",
+    "tiktok ads",
+    "linkedin ads",
+    "microsoft ads",
+    "reddit ads",
+    "x ads",
+    "ad library",
+    "competitor ads",
+    "ad creatives",
+    "campaigns",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "adkit",
+    "ads",
+    "advertising",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

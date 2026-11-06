@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "adkit": {
+      "type": "http",
+      "url": "https://mcp.adkit.so"
+    }
+  }
+}
