@@ -21,8 +21,10 @@ Reviewing changes before shipping. Close key issues, verify behavior, and open o
 ## Suggested Checks
 
 ```bash
-git fetch origin main
-git diff origin/main...HEAD
+# The PR's base when one exists, otherwise the repo's default branch (not always main)
+BASE=$(gh pr view --json baseRefName -q .baseRefName 2>/dev/null || gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
+git fetch origin "$BASE"
+git diff "origin/$BASE...HEAD"
 git status
 gh pr checks --json name,bucket,state,workflow,link
 ```
