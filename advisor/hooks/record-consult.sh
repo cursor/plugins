@@ -24,11 +24,11 @@ if [[ "$SUBAGENT_TYPE" != "advisor-subagent" || "$STATUS" != "completed" ]]; the
 fi
 
 NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-advisor_state_update '.consults = ((.consults // 0) + 1) | .last_consult_at = $now' --arg now "$NOW"
-rm -f "$PENDING_FILE"
-
 DESCRIPTION=$(jq -r '.description // "Advisor consult"' <<< "$HOOK_INPUT")
-SUMMARY=$(jq -r '.summary // empty' <<< "$HOOK_INPUT" | head -c 6000)
+# Consume jq fully before bounding the text. With pipefail, piping a long
+# summary to head can terminate jq with SIGPIPE and lose the consult record.
+SUMMARY=$(jq -r '.summary // empty' <<< "$HOOK_INPUT")
+SUMMARY=$(head -c 6000 <<< "$SUMMARY")
 {
   printf '## %s — %s\n\n' "$NOW" "$DESCRIPTION"
   if [[ -n "$SUMMARY" ]]; then
@@ -36,6 +36,10 @@ SUMMARY=$(jq -r '.summary // empty' <<< "$HOOK_INPUT" | head -c 6000)
   else
     printf '_No summary captured._\n\n'
   fi
-} >> "$LOG_FILE"
+} >> "$LOG_FILE" || exit 1
+
+# Mark the consult complete only after its advice was persisted successfully.
+advisor_state_update '.consults = ((.consults // 0) + 1) | .last_consult_at = $now' --arg now "$NOW"
+rm -f "$PENDING_FILE"
 
 exit 0
