@@ -180,6 +180,8 @@ function gateBlocker(
     ? null
     : { kind: "merge-gate", pr: row.context, reason };
 }
+const mergeabilityUnknown = (row: T.PrSnapshot): boolean =>
+  row.kind === "open" && row.facts.mergeable === "UNKNOWN";
 function readyContribution(
   row: T.PrSnapshot,
   allowDraft: boolean
@@ -228,6 +230,8 @@ export function classifyPr(
     if (blocker !== null) return { kind: "blocker", blocker };
   if (row.kind === "open" && row.ci.kind === "ci-pending")
     return { kind: "waiting", frontier: row.context, pending: row.ci.pending };
+  if (mergeabilityUnknown(row))
+    return { kind: "computing-mergeability", frontier: row.context };
   const ready = readyContribution(row, allowDraft);
   if (ready === null) throw new Error("snapshot has no classified decision");
   return ready.kind === "merged-pr"
@@ -254,6 +258,9 @@ export function selectTierMajorStackDecision(
         frontier: row.context,
         pending: row.ci.pending,
       };
+  for (const row of rows)
+    if (mergeabilityUnknown(row))
+      return { kind: "computing-mergeability", frontier: row.context };
   const prs = nonEmpty(
     rows
       .map((row) => readyContribution(row, allowDraft))
@@ -496,6 +503,28 @@ export async function runSimple(args: {
           args.mode
         ),
       };
+    if (decision.kind === "computing-mergeability") {
+      const frontier = decision.frontier;
+      args.dependencies.emit(
+        stamp({
+          kind: "WAITING",
+          terminal: false,
+          frontier,
+          reason: { kind: "mergeability-unknown" },
+        })
+      );
+      return {
+        kind: "sleep",
+        seconds: args.options.interval,
+        onDeadline: () =>
+          stamp({
+            kind: "TIMEOUT",
+            terminal: true,
+            exitCode: 5,
+            reason: { kind: "mergeability-unknown", frontier },
+          }),
+      };
+    }
     args.dependencies.emit(
       stamp({
         kind: "WAITING",
@@ -644,6 +673,7 @@ export type QueueEvaluation =
             readonly kind: "pending-checks";
             readonly pending: T.NonEmpty<T.PendingCheck>;
           }
+        | { readonly kind: "mergeability-unknown" }
         | { readonly kind: "merge-queue"; readonly unmergedCount: number };
       readonly emit: boolean;
     };
@@ -695,13 +725,17 @@ export function evaluateQueue(
   const pending =
     row.kind === "open" && row.ci.kind === "ci-pending" ? row.ci.pending : null;
   const reason =
-    pending === null
-      ? ({ kind: "merge-queue", unmergedCount: active.length } as const)
-      : ({ kind: "pending-checks", pending } as const);
+    pending !== null
+      ? ({ kind: "pending-checks", pending } as const)
+      : mergeabilityUnknown(row)
+        ? ({ kind: "mergeability-unknown" } as const)
+        : ({ kind: "merge-queue", unmergedCount: active.length } as const);
   const key =
     reason.kind === "pending-checks"
       ? `pending:${frontier.number}:${reason.pending.length}`
-      : `queue:${frontier.number}:${reason.unmergedCount}`;
+      : reason.kind === "mergeability-unknown"
+        ? `mergeability:${frontier.number}`
+        : `queue:${frontier.number}:${reason.unmergedCount}`;
   return {
     kind: "waiting",
     state: { ...state, frontier, lastWaitKey: key },
