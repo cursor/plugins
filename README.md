@@ -133,6 +133,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `hq` | [HQ](third_party/hq/) | Cursor | Integrations | Search your company's knowledge, projects, and skills, and act through connected systems. |
 | `aisa` | [AIsa](third_party/aisa/) | Cursor | Integrations | Query SEO, finance, social, search, and sales data APIs, paid per call. |
 | `agent-relay` | [Agent Relay](third_party/agent-relay/) | Cursor | Integrations | Message agents in your Agent Relay workspace and follow their activity. |
+| `crimson-health` | [Crimson Health](third_party/crimson-health/) | Cursor | Integrations | Read your Crimson Health medications, labs, wearable trends, and goals, and add journal notes. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

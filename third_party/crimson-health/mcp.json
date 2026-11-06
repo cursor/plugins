@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "crimson-health": {
+      "type": "http",
+      "url": "https://mcp.crimson.healthcare/mcp"
+    }
+  }
+}
