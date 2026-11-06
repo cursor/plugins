@@ -1,0 +1,35 @@
+{
+  "name": "vibes-plug",
+  "displayName": "Vibes-Plug",
+  "version": "4.4.1",
+  "description": "Universal AI agent swarm architecture with 159 specialized skills, subagents, and anti-slop quality gates for fullstack, mobile, cloud, and agentic workflows.",
+  "author": {
+    "name": "Roedy Rustam",
+    "email": "roedyrustam.id@gmail.com"
+  },
+  "homepage": "https://github.com/roedyrustam/vibes-plug",
+  "repository": "https://github.com/roedyrustam/vibes-plug",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "ai",
+    "agent",
+    "mcp",
+    "skills",
+    "fullstack",
+    "fintech",
+    "zero-to-prod",
+    "anti-slop",
+    "swarm"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "ai",
+    "swarm",
+    "skills",
+    "developer-tools"
+  ],
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "agents": "./agents/"
+}
