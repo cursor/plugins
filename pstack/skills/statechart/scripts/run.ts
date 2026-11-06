@@ -10,7 +10,7 @@ import { plainText } from "./backends/plain-text.ts";
 import { readConfig } from "./frontends/config.ts";
 import { parseDot } from "./frontends/dot.ts";
 import { readCounterexample, readMarks } from "./frontends/marks.ts";
-import { readMessages } from "./frontends/messages.ts";
+import { readMessages, textOf } from "./frontends/messages.ts";
 import { initialOnlyProperties, readChecks, readSany, readSpec } from "./frontends/spec.ts";
 import { readTrace } from "./frontends/trace.ts";
 import { type Break, readVerdict } from "./frontends/verdict.ts";
@@ -68,6 +68,16 @@ const TLC_TOOL =
   "http:tla2tools[url=https://github.com/tlaplus/tlaplus/releases/download/v1.7.4/tla2tools.jar,checksum=sha256:936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88]@1.7.4";
 const JAVA_TOOL = "java@temurin-25";
 export const PINNED_FLAGS = ["-workers", "1", "-fp", "0", "-lncheck", "final"];
+const TLC_HEAP = ["-XX:MaxRAMPercentage=50"];
+
+const workerCount = () => {
+  const raw = process.env.STATECHART_WORKERS;
+  if (raw && /^[1-9]\d*$/.test(raw)) return Number(raw);
+  return os.availableParallelism();
+};
+
+const tlcFlags = (n: number) =>
+  n === 1 ? PINNED_FLAGS : ["-workers", String(n), "-fp", "0", "-lncheck", "final"];
 
 type ChildResult = {
   status: number | null;
@@ -215,6 +225,15 @@ async function findTlc(cwd: string) {
 const exitClass = (status: number | null) =>
   status === 0 ? 0 : status === 11 || status === 12 || status === 13 ? 1 : 2;
 
+const workersReported = (r: FileResult) => {
+  for (const m of messagesOf(r.output)) {
+    if (typeof m === "string") continue;
+    const found = /with (\d+) workers?/.exec(textOf(m));
+    if (found) return Number(found[1]);
+  }
+  return undefined;
+};
+
 const tail = (r: FileResult) => {
   if (r.error) return r.error.message;
   const kept: string[] = [];
@@ -274,6 +293,7 @@ export async function check(specFile: string, configFile: string): Promise<Check
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "statechart-"));
   try {
     const tlc = await findTlc(dir);
+    const workers = workerCount();
     const config = (name: string, sections: ConfigSection[], extra: string[]) => {
       fs.writeFileSync(path.join(dir, `${name}.cfg`), configText(sections, extra));
       return [`-metadir`, path.join(dir, `meta-${name}`), "-config", path.join(dir, `${name}.cfg`)];
@@ -336,13 +356,26 @@ export async function check(specFile: string, configFile: string): Promise<Check
         if (properties.length) extra.push(`PROPERTY ${properties.join(" ")}`);
         const bounded = first !== undefined && !states.complete;
         if (bounded) extra.push("CONSTRAINT ChartBound");
-        const r = await runJava(name, "tlc2.TLC", [
-          "-tool",
-          ...PINNED_FLAGS,
-          ...(names(group, "deadlock").length ? [] : ["-deadlock"]),
-          ...config(name, spec.written, extra),
-          bounded ? "ChartBound" : spec.module,
-        ]);
+        const entry = bounded ? "ChartBound" : spec.module;
+        const tlcRun = (runName: string, n: number) =>
+          runJava(
+            runName,
+            "tlc2.TLC",
+            [
+              "-tool",
+              ...tlcFlags(n),
+              ...(names(group, "deadlock").length ? [] : ["-deadlock"]),
+              ...config(runName, spec.written, extra),
+              entry,
+            ],
+            TLC_HEAP,
+          );
+        let r = await tlcRun(name, bounded ? 1 : workers);
+        if (!bounded && workers > 1 && exitClass(r.status) !== 2 && workersReported(r) !== 1) {
+          const seen = readVerdict(messagesOf(r.output));
+          if (seen.distinct <= RERUN_STATES || (seen.broke && seen.broke.kind !== "temporal"))
+            r = await tlcRun(`${name}-w1`, 1);
+        }
         first ??= r;
         const { broke, distinct, initial } = readVerdict(messagesOf(r.output));
         states.distinct = Math.max(states.distinct, distinct);
@@ -412,16 +445,21 @@ export async function check(specFile: string, configFile: string): Promise<Check
     if (judged.states.distinct <= CHART_STATES) {
       const tag = `chart-${randomBytes(16).toString("hex")}`;
       fs.writeFileSync(path.join(dir, "ChartRun.tla"), chartRun(spec, tag));
-      const drawn = await runJava("ChartRun", "tlc2.TLC", [
-        "-tool",
-        ...PINNED_FLAGS,
-        "-deadlock",
-        ...config("ChartRun", spec.written, ["INVARIANT ChartMark", "CONSTRAINT ChartBudget"]),
-        "-dump",
-        "dot,actionlabels",
-        path.join(dir, "graph"),
+      const drawn = await runJava(
         "ChartRun",
-      ]);
+        "tlc2.TLC",
+        [
+          "-tool",
+          ...PINNED_FLAGS,
+          "-deadlock",
+          ...config("ChartRun", spec.written, ["INVARIANT ChartMark", "CONSTRAINT ChartBudget"]),
+          "-dump",
+          "dot,actionlabels",
+          path.join(dir, "graph"),
+          "ChartRun",
+        ],
+        TLC_HEAP,
+      );
       const file = path.join(dir, "graph.dot");
       if (!fs.existsSync(file)) throw failed(drawn);
       if (readVerdict(messagesOf(drawn.output)).distinct <= CHART_STATES) {
