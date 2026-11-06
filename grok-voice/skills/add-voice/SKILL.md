@@ -71,6 +71,7 @@ ws.addEventListener("open", () => {
       voice: "eve",
       instructions: "You are a helpful voice agent.",
       turn_detection: { type: "server_vad" },
+      audio: { input: { transcription: { model: "grok-transcribe" } } },
     },
   }));
 });
