@@ -138,6 +138,14 @@ export async function readSnapshot(args: {
     ),
   };
 }
+// BEHIND means GitHub will refuse the merge until the head is updated with
+// the base. UNSTABLE and UNKNOWN are left to the CI and mergeability paths.
+const branchBehindBlocker = (row: T.PrSnapshot): T.MergeBlocker | null =>
+  row.kind === "open" &&
+  row.ci.kind !== "ci-pending" &&
+  row.facts.mergeStateStatus === "BEHIND"
+    ? { kind: "branch-behind", pr: row.context }
+    : null;
 const conflictBlocker = (row: T.PrSnapshot): T.MergeBlocker | null =>
   row.kind === "open" &&
   (row.facts.mergeable === "CONFLICTING" ||
@@ -194,6 +202,7 @@ function readyContribution(
     row.kind !== "open" ||
     row.ci.kind !== "ci-clean" ||
     row.threads.length !== 0 ||
+    row.facts.mergeStateStatus === "BEHIND" ||
     conflictBlocker(row) !== null ||
     gateReason(row, allowDraft) !== null
   )
@@ -224,6 +233,7 @@ export function classifyPr(
     threadBlocker(row),
     ciBlocker(row),
     gateBlocker(row, allowDraft),
+    branchBehindBlocker(row),
   ])
     if (blocker !== null) return { kind: "blocker", blocker };
   if (row.kind === "open" && row.ci.kind === "ci-pending")
@@ -245,6 +255,10 @@ export function selectTierMajorStackDecision(
     }
   for (const row of rows) {
     const blocker = gateBlocker(row, allowDraft);
+    if (blocker !== null) return { kind: "blocker", blocker };
+  }
+  for (const row of rows) {
+    const blocker = branchBehindBlocker(row);
     if (blocker !== null) return { kind: "blocker", blocker };
   }
   for (const row of rows)
@@ -321,6 +335,8 @@ function blockerVerdict(
       return stamp({ kind: "BLOCKER", terminal: true, exitCode: 4, blocker });
     case "merge-gate":
       return stamp({ kind: "BLOCKER", terminal: true, exitCode: 6, blocker });
+    case "branch-behind":
+      throw new Error("a behind branch waits until timeout");
     default: {
       const exhaustive: never = blocker;
       return exhaustive;
@@ -465,11 +481,37 @@ export async function runSimple(args: {
       args.mode === "single"
         ? classifyPr(complete[0], args.options.allowDraft)
         : selectTierMajorStackDecision(complete, args.options.allowDraft);
-    if (decision.kind === "blocker")
+    if (decision.kind === "blocker") {
+      if (decision.blocker.kind === "branch-behind") {
+        const frontier = decision.blocker.pr;
+        const unmergedCount = complete.filter(
+          (row) => branchBehindBlocker(row) !== null
+        ).length;
+        args.dependencies.emit(
+          stamp({
+            kind: "WAITING",
+            terminal: false,
+            frontier,
+            reason: { kind: "branch-behind", unmergedCount },
+          })
+        );
+        return {
+          kind: "sleep",
+          seconds: args.options.interval,
+          onDeadline: () =>
+            stamp({
+              kind: "TIMEOUT",
+              terminal: true,
+              exitCode: 5,
+              reason: { kind: "branch-behind", frontier, unmergedCount },
+            }),
+        };
+      }
       return {
         kind: "terminal",
         verdict: blockerVerdict(stamp, decision.blocker),
       };
+    }
     if (decision.kind === "ready" || decision.kind === "merged")
       return {
         kind: "terminal",
@@ -640,6 +682,7 @@ export type QueueEvaluation =
       readonly state: QueueState;
       readonly frontier: T.PrContext;
       readonly reason:
+        | { readonly kind: "branch-behind"; readonly unmergedCount: number }
         | {
             readonly kind: "pending-checks";
             readonly pending: T.NonEmpty<T.PendingCheck>;
@@ -673,9 +716,13 @@ export function evaluateQueue(
   const rows = nonEmpty(active);
   if (rows === null) throw new Error("active queue cannot be empty");
   const decision = selectTierMajorStackDecision(rows, options.allowDraft);
-  if (decision.kind === "blocker")
-    return { kind: "blocker", state, blocker: decision.blocker };
   const frontier = rows[0].context;
+  const frontierIsBehind =
+    decision.kind === "blocker" &&
+    decision.blocker.kind === "branch-behind" &&
+    decision.blocker.pr.number === frontier.number;
+  if (decision.kind === "blocker" && decision.blocker.kind !== "branch-behind")
+    return { kind: "blocker", state, blocker: decision.blocker };
   if (state.frontier !== null && state.frontier.number !== frontier.number)
     return {
       kind: "advance",
@@ -691,6 +738,16 @@ export function evaluateQueue(
       frontier,
       unmergedCount: active.length,
     };
+  if (frontierIsBehind) {
+    const key = `behind:${frontier.number}`;
+    return {
+      kind: "waiting",
+      state: { ...state, frontier, lastWaitKey: key },
+      frontier,
+      reason: { kind: "branch-behind", unmergedCount: active.length },
+      emit: state.lastWaitKey !== key,
+    };
+  }
   const row = rows[0];
   const pending =
     row.kind === "open" && row.ci.kind === "ci-pending" ? row.ci.pending : null;
@@ -802,20 +859,29 @@ export async function runQueued(args: {
           })
         );
         return { kind: "continue" };
-      case "timeout":
+      case "timeout": {
+        const row = state.snapshots.get(evaluation.frontier.number);
+        const behind = row !== undefined && branchBehindBlocker(row) !== null;
         return {
           kind: "terminal",
           verdict: stamp({
             kind: "TIMEOUT",
             terminal: true,
             exitCode: 5,
-            reason: {
-              kind: "queued-stack",
-              frontier: evaluation.frontier,
-              unmergedCount: evaluation.unmergedCount,
-            },
+            reason: behind
+              ? {
+                  kind: "branch-behind",
+                  frontier: evaluation.frontier,
+                  unmergedCount: evaluation.unmergedCount,
+                }
+              : {
+                  kind: "queued-stack",
+                  frontier: evaluation.frontier,
+                  unmergedCount: evaluation.unmergedCount,
+                },
           }),
         };
+      }
       case "waiting":
         if (evaluation.emit)
           args.dependencies.emit(

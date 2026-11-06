@@ -36,6 +36,7 @@ function mergeCell(row: T.PrSnapshot): string {
   if (row.facts.isDraft) return "⏸ draft";
   if (row.facts.reviewDecision === "CHANGES_REQUESTED")
     return "⚠️ changes requested";
+  if (row.facts.mergeStateStatus === "BEHIND") return "⏸ behind";
   return row.facts.mergeable === "CONFLICTING" ||
     row.facts.mergeStateStatus === "DIRTY" ||
     row.facts.mergeStateStatus === "CONFLICTING"
@@ -124,6 +125,12 @@ function renderBlocker(blocker: T.MergeBlocker | StatusQueryBlocker): string {
         `detail=${blocker.failure.detail}`,
         "action=verify current PR context, GitHub authentication, and API availability, then rearm",
       ].join("\n");
+    case "branch-behind":
+      return [
+        "BLOCKER: branch-behind",
+        `pr=${blocker.pr.number}`,
+        "action=update the branch with the base before merging",
+      ].join("\n");
     default: {
       const exhaustive: never = blocker;
       return exhaustive;
@@ -131,6 +138,10 @@ function renderBlocker(blocker: T.MergeBlocker | StatusQueryBlocker): string {
   }
 }
 export function renderPretty(verdict: T.WatcherVerdict): string {
+  if (verdict.kind === "WAITING" && verdict.reason.kind === "branch-behind")
+    return `WAITING: frontier=#${verdict.frontier.number}; head is behind the base branch\n`;
+  if (verdict.kind === "TIMEOUT" && verdict.reason.kind === "branch-behind")
+    return `TIMEOUT: head is behind the base branch; frontier=#${verdict.reason.frontier.number}\n`;
   switch (verdict.kind) {
     case "QUEUE":
       return `QUEUE: captured ${verdict.queue.length} PR${verdict.queue.length === 1 ? "" : "s"} bottom-to-top: ${verdict.queue.map((pr) => `#${pr.number}`).join(",")}\n`;
