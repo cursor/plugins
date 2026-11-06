@@ -91,7 +91,18 @@ Apps change, and feature maps go out of date. Run this at least once a day, idea
 /maintain-verification-skill
 ```
 
-[`/maintain-verification-skill`](../../skills/maintain-verification-skill/SKILL.md) audits the generated skill: one read-only source reader per feature in parallel, then one live pass that drives every mapped feature. It ends in exactly one of three outcomes. `clean` means full coverage and nothing to ship. `changed` means one PR of proven corrections, confined to the verification skill's own directory. `blocked` names the blocker. It never edits product code. If the live pass catches a product regression, it reports the regression instead of hiding it with a doc edit.
+[`/maintain-verification-skill`](../../skills/maintain-verification-skill/SKILL.md) audits the generated skill: one read-only source reader per feature in parallel, then one live pass that drives every mapped feature. It ends in exactly one of three outcomes. `clean` means full coverage and nothing to ship. `changed` means proven corrections, confined to the verification skill's own directory. Standalone runs ship those corrections in one PR. `blocked` names the blocker. It never edits product code. If the live pass catches a product regression, it reports the regression instead of hiding it with a doc edit.
+
+If another workflow already owns delivery, keep maintenance inside that task. For example, with [Shaka](https://github.com/shakacode/shaka):
+
+```text
+Use /maintain-verification-skill for this repository's verification harness.
+Shaka retains delivery ownership. Return the corrections, coverage, commands,
+results, and evidence to the Shaka task for review and publication.
+Leave the PR unmerged for me.
+```
+
+Maintenance still completes its source and live checks and preserves evidence after cleanup. The owning workflow handles commits and publication under its own verification and merge rules. Merely installing Shaka does not change a standalone maintenance run.
 
 ## Prove a property with a formal verification skill
 
