@@ -84,6 +84,11 @@
       "description": "Dylan's agent style on top of pstack: root causes over symptom patches, The Algorithm before design, terse verified delivery, a PR review that fits in a paste, and Figma-to-UI with a visual judge."
     },
     {
+      "name": "team-builder-stack",
+      "source": "team-builder-stack",
+      "description": "Build, check, and coach your team of Grok Bots: one bot for each unit of your work, skills built from your real systems and examples, and one team spec as the source of truth. The skills plugin Team Builder uses."
+    },
+    {
       "name": "grok-voice",
       "source": "grok-voice",
       "description": "Add Grok voice to an app: realtime speech-to-speech, speech-to-text dictation, text-to-speech read-aloud, and a log-driven fix loop for voice sessions."
