@@ -2,7 +2,7 @@
 
 Cursor plugin that connects agents to [Microsoft Outlook](https://outlook.com) through Cursor's remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
 
-Search mail folders, read messages, send email, and look up contacts in the signed-in Microsoft account.
+Search mail folders, read messages, send email, create and update drafts, and look up contacts in the signed-in Microsoft account.
 
 ## Install
 
