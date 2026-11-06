@@ -126,7 +126,6 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `onepay` | [OnePay](third_party/onepay/) | Cursor | Integrations | Access your OnePay accounts: balances, transactions, credit, Pay Later, investments, crypto, and rewards. |
 | `questrade` | [Questrade](third_party/questrade/) | Cursor | Integrations | Read your Questrade portfolio, get live market data, and discuss potential trades. |
 | `tesla` | [Tesla](third_party/tesla/) | Cursor | Integrations | Read your Tesla cars and energy sites, and send commands you confirm. |
-| `fitmetrics` | [FitMetrics](third_party/fitmetrics/) | Cursor | Integrations | Review Trainerize clients and check-ins, and update macros, messages, and programs. |
 | `jerry` | [Jerry](third_party/jerry/) | Cursor | Integrations | Get car, home, and renters insurance quotes and final prices from 100+ insurers. |
 | `redo` | [Redo](third_party/redo/) | Cursor | Integrations | Look up orders, create returns, and report on returns and campaigns. |
 | `createos` | [CreateOS](third_party/createos/) | Cursor | Integrations | Create projects, deploy apps, and manage environments, domains, and logs. |

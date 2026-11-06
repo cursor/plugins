@@ -694,11 +694,6 @@
       "description": "Read your Tesla cars and energy sites, and send commands you confirm."
     },
     {
-      "name": "fitmetrics",
-      "source": "third_party/fitmetrics",
-      "description": "Review Trainerize clients and check-ins, and update macros, messages, and programs."
-    },
-    {
       "name": "jerry",
       "source": "third_party/jerry",
       "description": "Get car, home, and renters insurance quotes and final prices from 100+ insurers."
