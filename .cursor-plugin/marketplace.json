@@ -294,6 +294,11 @@
       "description": "Check availability and book, cancel, or reschedule."
     },
     {
+      "name": "cal-com",
+      "source": "third_party/cal-com",
+      "description": "Manage bookings, event types, availability, schedules, and teams."
+    },
+    {
       "name": "smartsheet",
       "source": "third_party/smartsheet",
       "description": "Query and update sheets, rows, and workspaces."
