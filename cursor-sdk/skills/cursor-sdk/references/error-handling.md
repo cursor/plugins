@@ -18,7 +18,7 @@ Always handle both. A try/catch alone won't catch a failed run; checking `result
 import { Agent, CursorAgentError } from "@cursor/sdk";
 
 async function runOnce(): Promise<void> {
-  await using agent = Agent.create({ /* ... */ });
+  await using agent = await Agent.create({ /* ... */ });
   try {
     const run = await agent.send(prompt);
     const result = await run.wait();
@@ -103,20 +103,25 @@ if (run.supports("cancel")) {
 Keep retries small (≤3) for agent startup; agents are expensive to re-launch. If the first attempt fails `RateLimitError` with `isRetryable === true`, back off at least 30 seconds.
 
 ```typescript
-import { Agent, CursorAgentError, RateLimitError, NetworkError } from "@cursor/sdk";
+import { CursorAgentError, RateLimitError, NetworkError, type SDKAgent } from "@cursor/sdk";
 
-async function createWithRetry(options: Parameters<typeof Agent.create>[0]) {
+async function sendWithRetry(
+  agent: SDKAgent,
+  message: Parameters<SDKAgent["send"]>[0],
+  options?: Parameters<SDKAgent["send"]>[1],
+) {
   const maxAttempts = 3;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-      return Agent.create(options);
+      return await agent.send(message, options);
     } catch (err) {
       const retryable =
         err instanceof CursorAgentError &&
         err.isRetryable &&
         (err instanceof NetworkError || err instanceof RateLimitError);
       if (!retryable || attempt === maxAttempts) throw err;
-      const backoffMs = 2 ** attempt * 1000 + Math.random() * 500;
+      const minimumMs = err instanceof RateLimitError ? 30_000 : 2 ** attempt * 1000;
+      const backoffMs = minimumMs + Math.random() * 500;
       await new Promise(r => setTimeout(r, backoffMs));
     }
   }
@@ -124,7 +129,7 @@ async function createWithRetry(options: Parameters<typeof Agent.create>[0]) {
 }
 ```
 
-`Agent.create` is lazy — it doesn't hit the backend until `send()`. Most "startup" errors surface there. Wrap `agent.send(...)` with retries, not just `Agent.create(...)`.
+Pass an already-created agent to `sendWithRetry`. The helper awaits each `send()` inside the `try` block so rejected startup promises reach the retry policy. Handle agent creation errors separately; call `run.wait()` outside this helper so a run that already executed is not automatically repeated.
 
 ## `RunResult.status === "error"` — What To Do
 

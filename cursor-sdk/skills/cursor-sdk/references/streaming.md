@@ -156,12 +156,26 @@ Prefer `run.stream()` for most consumers. Reach for `onDelta` / `onStep` only wh
 ## Cancellation
 
 ```typescript
+let cancelTimer: ReturnType<typeof setTimeout> | undefined;
 if (run.supports("cancel")) {
-  setTimeout(() => run.cancel(), 30_000);
+  cancelTimer = setTimeout(() => {
+    void run.cancel().catch(err => console.error("Cancellation failed:", err));
+  }, 30_000);
+}
+
+try {
+  for await (const event of run.stream()) {
+    // Handle each event as in the canonical consumer above, including after cancel.
+  }
+  const result = await run.wait();
+} finally {
+  if (cancelTimer !== undefined) clearTimeout(cancelTimer);
 }
 ```
 
 `run.cancel()` is supported on both local and cloud runs. For cloud it POSTs to the server's cancel endpoint and reconciles local status from the server's authoritative response. Guard with `run.supports("cancel")` anyway — detached/replayed run handles (`Agent.getRun(...)`) may not have a live cancellation channel, and the guard is the right defensive posture.
+
+Clear the deadline when consumption finishes or fails, so a completed run does not keep the process alive or receive a late cancel. Handle the cancellation promise inside the timer callback so cancellation failures do not become unhandled rejections.
 
 After cancel, continue consuming the stream until it ends; you'll see a terminal `status` event and `run.wait()` will resolve with `status: "cancelled"`.
 
