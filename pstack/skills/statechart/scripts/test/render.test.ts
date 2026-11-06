@@ -36,7 +36,7 @@ let render: Render;
 let mermaid: Mermaid;
 let html: Html;
 before(async () => {
-  const pele = install("test-pele-1.9.0", "pele@1.9.0");
+  const pele = install("test-pele-1.13.0", "pele@1.13.0");
   ({ render } = await import(pathToFileURL(pele.resolve("pele")).href));
 
   const parser = install("test-mermaid-11.16.0", "mermaid@11.16.0", "jsdom@26.1.0");
@@ -57,7 +57,7 @@ for (const chart of charts) {
   const marks = [...text.matchAll(/^ {2}class (\w+) (\w+)$/gm)];
   for (const [, , mark] of marks) classes.add(mark);
 
-  test(`${name} renders in Pele 1.9.0 with each class on its node`, () => {
+  test(`${name} renders in Pele 1.13.0 with each class on its node`, () => {
     const { svg } = render(text);
     assert.match(svg, /^<svg /);
     for (const [, id, mark] of marks)
