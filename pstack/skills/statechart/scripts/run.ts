@@ -192,7 +192,11 @@ const runToFiles = (
 
 async function findTlc(cwd: string) {
   const { TLA2TOOLS, JAVA } = process.env;
-  if (TLA2TOOLS) return { jar: TLA2TOOLS, java: JAVA || "java" };
+  const fromCaller = (value: string) =>
+    path.isAbsolute(value) ? value : path.resolve(process.cwd(), value);
+  const explicitJava =
+    JAVA && (path.isAbsolute(JAVA) || /[/\\]/.test(JAVA)) ? fromCaller(JAVA) : JAVA;
+  if (TLA2TOOLS) return { jar: fromCaller(TLA2TOOLS), java: explicitJava || "java" };
   const mise = (...args: string[]) =>
     runChild("mise", args, { cwd, env: { ...process.env, MISE_CEILING_PATHS: cwd } });
   const where = () =>
@@ -208,7 +212,7 @@ async function findTlc(cwd: string) {
   }
   return {
     jar: path.join(found[0].stdout.trim(), "tla2tools.jar"),
-    java: JAVA || found[1].stdout.trim(),
+    java: explicitJava || found[1].stdout.trim(),
   };
 }
 
