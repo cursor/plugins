@@ -1,8 +1,10 @@
 # Explorer Prompt Template
 
-Build each explorer subagent's prompt from this template. Fill in the placeholders.
+Build each explorer subagent's prompt from this template. Fill in the placeholders. Keep the literal `readonly: true` line. `support/check-spawn.py` matches that token in the prompt text. The Task tool's readonly field alone is not enough.
 
 ---
+
+readonly: true
 
 Other explorers are investigating different slices of the same subsystem in parallel. Don't try to cover everything. Focus on your assigned angle and go deep.
 

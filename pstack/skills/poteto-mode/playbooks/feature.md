@@ -2,7 +2,7 @@
 
 **You own the design. Plan, review, verify.** Delegate implementation. Stay in the lead.
 
-1. `how` over the affected subsystem.
+1. Choose the next unit before `how`. When the request is "continue to the next milestone" (or equivalent) and a plan file names numbered sections, take the first section body that still says it is not started, confirmed against the tree. A status paragraph above those sections can lag. Do not ask for the number when the plan already has it. Then `how` over the affected subsystem.
 2. `architect` for parallel design exploration.
 3. Write the throughput checkpoint as four todo items. A dimension that genuinely does not apply (single file, no fan-out) keeps its item with `n/a: <reason>` rather than being dropped:
    - **Blocking first steps.** Gates run before fan-out.
@@ -16,6 +16,6 @@
 7. If the design is contested, `interrogate` before shipping.
 8. Run **Opening a PR**.
 
-Code-coupled work (one feature, one migration) goes to a single owner with the checkpoint inline. That owner fans out internally after the blocking phase. Parent-level fan-out is for slices that produce independent artifacts (audits, cross-subsystem investigations, competing experiments). Rewrite the checkpoint at phase boundaries. Spawn a fresh owner rather than chaining interrupts.
+Code-coupled work (one feature, one migration) goes to a single owner with the checkpoint inline. That owner fans out internally after the blocking phase. Parent-level fan-out is for slices that produce independent artifacts (audits, cross-subsystem investigations, competing experiments). Rewrite the checkpoint at phase boundaries. Spawn a fresh owner rather than chaining interrupts. When the owner dies on a weekly-usage or capacity refusal for its model family, do not spawn another owner on that same capped family. Switch family once, or have the parent verify the commits already pushed.
 
 **Reply:** what you built, what you chose and why, the throughput checkpoint, open decisions. Tables for design alternatives.
