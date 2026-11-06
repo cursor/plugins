@@ -46,6 +46,8 @@ Ask for a breakdown if you want the component scores or the weighting.
 
 The plugin does not bundle the scanner. It runs the published npm package when needed.
 
+The scanner version is pinned on purpose. Bump it in the commands below when a new release matters.
+
 Default scan (compact terminal dashboard):
 
 ```bash
