@@ -51,6 +51,20 @@ describe("worker branch discipline", () => {
     ]);
   });
 
+  test("merge workers include completed merge dependencies as sources", () => {
+    const plan = planFixture();
+    plan.tasks?.push({
+      name: "merge-release",
+      type: "worker",
+      scopedGoal: "Combine the prepared slice with the release work.",
+      dependsOn: ["merge-slice-a", "worker-two"],
+    });
+
+    expect(
+      mergeWorkerSourceBranches(plan, requireTask(plan, "merge-release"))
+    ).toEqual(["orch/refactor-ui/slice-a", "orch/refactor-ui/worker-two"]);
+  });
+
   test("worker prompt names the only branch a normal worker may push", () => {
     const plan = planFixture();
     const task = requireTask(plan, "worker-one");
