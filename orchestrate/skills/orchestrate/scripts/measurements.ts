@@ -163,7 +163,10 @@ export function compareMeasurement(
         detail,
       };
     }
-    const denom = Math.max(Math.abs(claimParsed.numeric), 1);
+    // Keep relative tolerance independent of the unit scale. Flooring at 1
+    // accepts large errors for fractional measurements (e.g. seconds).
+    // A zero claim retains the existing absolute-tolerance fallback.
+    const denom = Math.abs(claimParsed.numeric) || 1;
     const drift =
       Math.abs(measuredParsed.numeric - claimParsed.numeric) / denom;
     const outcome: MeasurementCheck["outcome"] =
@@ -204,7 +207,9 @@ interface NumericWithUnit {
  * fall through to string comparison instead of pretending it's numeric.
  */
 function parseNumericWithUnit(value: string): NumericWithUnit | null {
-  const match = /^([-+]?\d+(?:\.\d+)?)\s*([a-zA-Z%]+)?$/.exec(value.trim());
+  const match = /^([-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)\s*([a-zA-Z%]+)?$/.exec(
+    value.trim()
+  );
   if (!match) return null;
   const numeric = Number.parseFloat(match[1]);
   if (!Number.isFinite(numeric)) return null;
@@ -214,7 +219,7 @@ function parseNumericWithUnit(value: string): NumericWithUnit | null {
 function parseFiniteNumber(value: string): number | null {
   // Used for the `measuredNumeric` display field: lenient leading-numeric
   // strip, separate from the end-anchored unit-aware comparison.
-  const match = /^[-+]?\d+(?:\.\d+)?/.exec(value.trim());
+  const match = /^[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?/.exec(value.trim());
   if (!match) return null;
   const parsed = Number.parseFloat(match[0]);
   return Number.isFinite(parsed) ? parsed : null;
@@ -365,14 +370,19 @@ export function applyMeasurementParser(
       }
       let re: RegExp;
       try {
-        re = new RegExp(parser.pattern, parser.flags ?? "");
+        // The schema accepts `g`, but a global regex changes what
+        // `String.prototype.match` returns: every whole match and no
+        // groups, so "capture group 1" would silently become the second
+        // match. One value is extracted here, so drop `g` and use `exec`,
+        // which returns the first match with its groups under any flags.
+        re = new RegExp(parser.pattern, (parser.flags ?? "").replace(/g/g, ""));
       } catch (err) {
         return {
           ok: false,
           reason: `invalid regex: ${errorMessage(err)}`,
         };
       }
-      const match = stdout.match(re);
+      const match = re.exec(stdout);
       if (!match) {
         return { ok: false, reason: "regex did not match command stdout" };
       }

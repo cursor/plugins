@@ -14,6 +14,37 @@ describe("redactBody", () => {
     expect(result.text).toContain("[redacted-path]");
   });
 
+  test("refuses local paths in the middle of a line", () => {
+    const result = redactBody(
+      "tests failed in /Users/example/repo/src/foo.test.ts:12, see /workspace/app/out.log"
+    );
+
+    expect(result.reasons).toContain("contains /Users path");
+    expect(result.reasons).toContain("contains /workspace path");
+    expect(result.text).toBe(
+      "tests failed in [redacted-path] see [redacted-path]"
+    );
+  });
+
+  test("leaves URL segments that happen to contain /Users alone", () => {
+    expect(redactBody("see https://example.com/Users/profile").reasons).toEqual(
+      []
+    );
+  });
+
+  test("refuses env-style secret assignments and whole header values", () => {
+    const envStyle = redactBody(
+      "export SLACK_BOT_TOKEN=xoxb-1-abc GITHUB_TOKEN=ghp_def"
+    );
+    expect(envStyle.reasons).toContain("contains sensitive key");
+    expect(envStyle.text).not.toContain("xoxb-1-abc");
+    expect(envStyle.text).not.toContain("ghp_def");
+
+    const header = redactBody("Authorization: Bearer eyJhbGciOi");
+    expect(header.reasons).toContain("contains sensitive key");
+    expect(header.text).toBe("Authorization=[redacted]");
+  });
+
   test("refuses log dumps", () => {
     const result = redactBody(
       [

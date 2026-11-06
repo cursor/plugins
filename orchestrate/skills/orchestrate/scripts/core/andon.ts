@@ -185,15 +185,24 @@ export class SlackReactionAndonSource implements AndonSource {
   }
 
   private async latestRaisedReason(): Promise<string | undefined> {
-    const page = await this.slack.getThreadReplies({
-      ...this.ref,
-      limit: ANDON_REASON_REPLY_SCAN_LIMIT,
-      latest: String(Date.now() / 1000),
-    });
-    const recentReplies = page.messages
-      .filter(message => message.ts !== this.ref.ts)
-      .sort((a, b) => compareSlackTsDesc(a.ts, b.ts))
-      .slice(0, ANDON_REASON_REPLY_SCAN_LIMIT);
+    // Slack returns the earliest replies first, even with `latest`. Follow
+    // cursors before selecting the recent window; keep at most 20 candidates.
+    const latest = String(Date.now() / 1000);
+    let cursor: string | undefined;
+    let recentReplies: { ts: string; text: string }[] = [];
+    do {
+      const page = await this.slack.getThreadReplies({
+        ...this.ref,
+        limit: ANDON_REASON_REPLY_SCAN_LIMIT,
+        latest,
+        ...(cursor ? { cursor } : {}),
+      });
+      recentReplies = [...recentReplies, ...page.messages]
+        .filter(message => message.ts !== this.ref.ts)
+        .sort((a, b) => compareSlackTsDesc(a.ts, b.ts))
+        .slice(0, ANDON_REASON_REPLY_SCAN_LIMIT);
+      cursor = page.nextCursor;
+    } while (cursor);
     for (const message of recentReplies) {
       const reason = parseRaisedReason(message.text);
       if (reason !== undefined) return reason;
