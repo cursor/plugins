@@ -41,18 +41,21 @@
     "properties": {
       "DATABRICKS_HOST": {
         "type": "string",
-        "title": "Workspace hostname",
-        "description": "For example, dbc-a1b2c3d4-e5f6.cloud.databricks.com"
+        "title": "Workspace URL",
+        "description": "Your workspace URL or Genie MCP URL. Only the hostname is kept.",
+        "placeholder": "https://dbc-a1b2c3d4-e5f6.cloud.databricks.com"
       },
       "CLIENT_ID": {
         "type": "string",
-        "title": "Client ID"
+        "title": "Client ID",
+        "placeholder": "Paste from your Databricks OAuth app"
       },
       "CLIENT_SECRET": {
         "type": "string",
         "title": "Client secret",
         "writeOnly": true,
-        "format": "password"
+        "format": "password",
+        "placeholder": "Leave blank for a public client"
       }
     }
   },
