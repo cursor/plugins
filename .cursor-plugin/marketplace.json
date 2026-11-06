@@ -692,6 +692,41 @@
       "name": "tesla",
       "source": "third_party/tesla",
       "description": "Read your Tesla cars and energy sites, and send commands you confirm."
+    },
+    {
+      "name": "fitmetrics",
+      "source": "third_party/fitmetrics",
+      "description": "Review Trainerize clients and check-ins, and update macros, messages, and programs."
+    },
+    {
+      "name": "jerry",
+      "source": "third_party/jerry",
+      "description": "Get car, home, and renters insurance quotes and final prices from 100+ insurers."
+    },
+    {
+      "name": "redo",
+      "source": "third_party/redo",
+      "description": "Look up orders, create returns, and report on returns and campaigns."
+    },
+    {
+      "name": "createos",
+      "source": "third_party/createos",
+      "description": "Create projects, deploy apps, and manage environments, domains, and logs."
+    },
+    {
+      "name": "hq",
+      "source": "third_party/hq",
+      "description": "Search your company's knowledge, projects, and skills, and act through connected systems."
+    },
+    {
+      "name": "aisa",
+      "source": "third_party/aisa",
+      "description": "Query SEO, finance, social, search, and sales data APIs, paid per call."
+    },
+    {
+      "name": "agent-relay",
+      "source": "third_party/agent-relay",
+      "description": "Message agents in your Agent Relay workspace and follow their activity."
     }
   ]
 }
