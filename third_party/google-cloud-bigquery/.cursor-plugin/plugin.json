@@ -1,9 +1,9 @@
 {
   "name": "google-cloud-bigquery",
   "displayName": "Google Cloud BigQuery",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "minClientVersions": {
-    "cursor": "3.13.0"
+    "cursor": "3.19.0"
   },
   "description": "Explore datasets and tables and run SQL queries.",
   "author": {
@@ -32,5 +32,26 @@
     "sql",
     "mcp"
   ],
+  "variables": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "CLIENT_ID",
+      "CLIENT_SECRET"
+    ],
+    "properties": {
+      "CLIENT_ID": {
+        "type": "string",
+        "title": "Client ID",
+        "description": "A Google OAuth client your team created. Every team member signs in under it."
+      },
+      "CLIENT_SECRET": {
+        "type": "string",
+        "title": "Client secret",
+        "writeOnly": true,
+        "format": "password"
+      }
+    }
+  },
   "mcpServers": "./mcp.json"
 }

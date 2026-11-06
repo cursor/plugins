@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "framer": {
+      "type": "http",
+      "url": "https://mcp.framer.com/mcp",
+      "placement": "server"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "rippling",
+  "displayName": "Rippling",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.19.0"
+  },
+  "description": "Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://developer.rippling.com/documentation/rippling-platform/rippling-mcp/setup",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "rippling",
+    "hr",
+    "hris",
+    "people",
+    "employees",
+    "time off",
+    "payroll",
+    "policy",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "rippling",
+    "hr",
+    "mcp"
+  ],
+  "variables": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "RIPPLING_MCP_URL"
+    ],
+    "properties": {
+      "RIPPLING_MCP_URL": {
+        "type": "string",
+        "title": "Remote MCP server URL",
+        "description": "Remote MCP server URL copied from Rippling → My IT → MCP connectors. This is the Rippling MCP URL from the setup page, not a company-wide API token and not an MCP Gateway URL for a different product."
+      }
+    }
+  },
+  "mcpServers": "./mcp.json"
+}

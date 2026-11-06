@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "meta-ads": {
+      "type": "http",
+      "url": "https://mcp.facebook.com/ads",
+      "auth": {
+        "CLIENT_ID": "1854843612533787"
+      }
+    }
+  }
+}

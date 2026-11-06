@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "power-bi": {
+      "type": "http",
+      "url": "https://api.cursor.com/rest-mcp/power-bi/mcp"
+    }
+  }
+}

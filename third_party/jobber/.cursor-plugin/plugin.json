@@ -1,0 +1,56 @@
+{
+  "name": "jobber",
+  "displayName": "Jobber",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Work with clients, requests, quotes, jobs, visits, and invoices.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://www.getjobber.com/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "jobber",
+    "field service",
+    "home service",
+    "clients",
+    "requests",
+    "quotes",
+    "jobs",
+    "visits",
+    "invoices",
+    "scheduling",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "jobber",
+    "field service",
+    "mcp"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "CLIENT_ID": {
+        "type": "string",
+        "title": "Jobber Client ID",
+        "description": "Client ID from your app in the Jobber Developer Center."
+      },
+      "CLIENT_SECRET": {
+        "type": "string",
+        "title": "Jobber Client Secret",
+        "description": "Client Secret from the same Jobber Developer Center app."
+      }
+    },
+    "required": [
+      "CLIENT_ID",
+      "CLIENT_SECRET"
+    ]
+  },
+  "mcpServers": "./mcp.json"
+}
