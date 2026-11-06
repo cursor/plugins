@@ -71,15 +71,18 @@ export async function transcribe(blob: Blob, filename: string) {
 ```
 
 ```ts
-// client
+// client (stream is a dedicated microphone stream owned by this recording)
 const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : "audio/mp4";
 const rec = new MediaRecorder(stream, { mimeType: mime });
 const parts: BlobPart[] = [];
 rec.ondataavailable = (e) => parts.push(e.data);
 rec.onstop = async () => {
+  stream.getTracks().forEach((track) => track.stop()); // MediaRecorder.stop() does not release the microphone
   const fd = new FormData();
   fd.append("file", new Blob(parts, { type: mime }), "dictation");
-  const { text } = await (await fetch("/api/dictation", { method: "POST", body: fd })).json();
+  const res = await fetch("/api/dictation", { method: "POST", body: fd });
+  if (!res.ok) throw new Error(`Dictation ${res.status}`); // surface through the app's existing error UI
+  const { text } = await res.json();
   insertAtCursor(text);
 };
 rec.start(); // second tap: rec.stop()
@@ -95,9 +98,28 @@ new WebSocketServer({ port: 8788 }).on("connection", (client) => {
   const q = new URLSearchParams({ model: "grok-voice-transcribe-2.0", sample_rate: "16000", encoding: "pcm", interim_results: "true", language: "en" });
   const up = new WebSocket(`wss://api.x.ai/v1/stt?${q}`, { headers: { Authorization: `Bearer ${process.env.XAI_API_KEY}` } });
   up.on("message", (d) => client.send(d.toString()));                       // transcript.* and error events
-  client.on("message", (d, isBinary) => up.readyState === WebSocket.OPEN && up.send(d, { binary: isBinary })); // audio + finalize/audio.done
-  const end = () => { client.close(); up.close(); };
+  let pending: { data: Buffer; isBinary: boolean }[] = [], pendingBytes = 0;
+  const end = () => { pending = []; pendingBytes = 0; client.close(); up.close(); };
+  up.on("open", () => {
+    if (client.readyState !== WebSocket.OPEN) return;
+    pending.forEach(({ data, isBinary }) => up.send(data, { binary: isBinary }));
+    pending = []; pendingBytes = 0;
+  });
+  client.on("message", (d, isBinary) => {
+    // ws RawData is Buffer, ArrayBuffer, or Buffer[]; preserve bytes and frame kind.
+    const data = Array.isArray(d) ? Buffer.concat(d) : Buffer.from(d);
+    if (up.readyState === WebSocket.OPEN) up.send(data, { binary: isBinary });
+    else if (up.readyState === WebSocket.CONNECTING) {
+      pendingBytes += data.byteLength;
+      if (pendingBytes > 64 * 1024) {
+        pending = []; pendingBytes = 0;
+        client.close(1009, "Upstream not ready; pending audio limit exceeded");
+        up.close();
+      } else pending.push({ data, isBinary });
+    }
+  }); // audio + finalize/audio.done
   up.on("close", end); up.on("error", end); client.on("close", end);
+  client.on("error", end); // contain browser transport failures
 });
 ```
 
