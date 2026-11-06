@@ -481,6 +481,12 @@ const CancelledStopResultSchema = z
     action: z.literal("cancelled"),
   })
   .strict();
+const CancelFailedStopResultSchema = z
+  .object({
+    name: taskNameSchema,
+    action: z.literal("cancel-failed"),
+  })
+  .strict();
 const PrunedStopResultSchema = z
   .object({
     name: taskNameSchema,
@@ -496,6 +502,7 @@ const NoopStopResultSchema = z
   .strict();
 export const StopResultSchema = z.discriminatedUnion("action", [
   CancelledStopResultSchema,
+  CancelFailedStopResultSchema,
   PrunedStopResultSchema,
   NoopStopResultSchema,
 ]);
