@@ -1,7 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const SCRIPTS_DIR = new URL("..", import.meta.url).pathname;
+const SCRIPTS_DIR = dirname(
+  fileURLToPath(new URL("../cli.ts", import.meta.url))
+);
 
 import {
   findActiveRootPlanner,
