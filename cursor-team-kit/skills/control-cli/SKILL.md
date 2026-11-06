@@ -48,8 +48,10 @@ tmux kill-session -t "$SESSION"
 For Node CLIs:
 
 ```bash
-NODE_OPTIONS="--inspect=127.0.0.1:0" tmux new-session -d -s "$SESSION" -- <node-cli-command>
+tmux new-session -d -s "$SESSION" -- env NODE_OPTIONS="--inspect=127.0.0.1:0" <node-cli-command>
 ```
+
+Set the variable inside the session command. A `NODE_OPTIONS=... tmux new-session` prefix only reaches the CLI when no tmux server is running yet, and then it leaks into every later session on that server.
 
 Read the terminal output to find the inspector URL, then use Chrome DevTools-compatible tooling if profiling is needed.
 
