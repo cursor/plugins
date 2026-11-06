@@ -18,8 +18,9 @@ export function parseHandoffBranch(handoff: string): string | null {
   if (raw.length === 0) return null;
   if (raw.startsWith("##")) return null;
   // Worker template wraps the value in backticks (`agent/foo-abc1`); the
-  // operator-facing hint also tolerates a bare branch name.
-  const unwrapped = raw.replace(/^`([^`]+)`$/, "$1").trim();
+  // operator-facing hint also tolerates a bare branch name, and workers
+  // sometimes write the value as a one-item list or in bold.
+  const unwrapped = unwrapValue(raw);
   if (unwrapped.length === 0) return null;
   if (/^\(no branch\)$/i.test(unwrapped)) return null;
   return unwrapped;
@@ -125,7 +126,22 @@ function readSectionValue(args: {
   const raw = match[1].trim();
   if (raw.length === 0) return null;
   if (raw.startsWith("##")) return null;
-  return raw.replace(/^`([^`]+)`$/, "$1").trim();
+  const unwrapped = unwrapValue(raw);
+  return unwrapped.length === 0 ? null : unwrapped;
+}
+
+/**
+ * Strip the decoration a worker may put around a single-value section:
+ * a leading list marker (`- ` / `* `), bold (`**x**`), and backticks, in that
+ * order, the same tolerance `parseHandoffMeasurements` has for list markers.
+ */
+function unwrapValue(raw: string): string {
+  return raw
+    .replace(/^[-*]\s+/, "")
+    .replace(/^\*\*([^*]+)\*\*$/, "$1")
+    .trim()
+    .replace(/^`([^`]+)`$/, "$1")
+    .trim();
 }
 
 function readKeyValue(args: { handoff: string; key: string }): string | null {
