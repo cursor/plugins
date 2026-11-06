@@ -8,7 +8,7 @@ Read and write a Xero organisation's accounting and payroll data — invoices, c
 
 1. Open **Cursor Settings → Plugins**.
 2. Search for **Xero**.
-3. Click **Install**, then set the Xero client ID and client secret (below).
+3. Click **Install**, then set the Xero client ID, client secret and, for newer Custom Connections, scopes (below).
 
 Or run `/add-plugin xero` in chat.
 
@@ -26,7 +26,8 @@ Or run `/add-plugin xero` in chat.
       ],
       "env": {
         "XERO_CLIENT_ID": "${XERO_CLIENT_ID}",
-        "XERO_CLIENT_SECRET": "${XERO_CLIENT_SECRET}"
+        "XERO_CLIENT_SECRET": "${XERO_CLIENT_SECRET}",
+        "XERO_SCOPES": "${XERO_SCOPES:-}"
       }
     }
   }
@@ -38,9 +39,10 @@ Xero does not publish a hosted MCP endpoint. Its official server runs locally ov
 ## Before you connect
 
 1. Sign in at [developer.xero.com](https://developer.xero.com) and create an app with the **Custom Connection** option.
-2. Select the scopes up front. Connections created before 2026-04-29 use the bundled scope list; newer ones use the granular list. The server tries the bundled set first and falls back, so you usually do not need to set `XERO_SCOPES`.
+2. Select the scopes up front. Connections created before 2026-04-29 use the bundled scope list; newer ones use the granular list.
 3. Authorize the connection from the email Xero sends, and pick the organisation to connect.
 4. Copy the **Client ID**, generate a **Client Secret**, and set both in **Dashboard → Plugins → Configure**.
+5. For a connection created on or after 2026-04-29, also set **Xero scopes** to the space-separated granular scopes you selected, for example `accounting.invoices accounting.contacts accounting.settings`. Without it the server requests the bundled scopes, which Xero rejects for these connections with `invalid_client`. Leave it blank for older connections.
 
 A Custom Connection is bound to a single Xero organisation and is a paid add-on per organisation. Payroll tools require an NZ or UK organisation.
 
@@ -62,7 +64,7 @@ The server is the source of truth for tool names and schemas.
 - This is a local stdio server, so `npx` has to be available on the machine running Cursor. It downloads `@xeroapi/xero-mcp-server` on first run.
 - Xero's own FAQ says the server works with any client supporting local stdio servers, and that its testing was done with Claude Desktop and Cursor.
 - Tool calls run with the scopes granted to the Custom Connection, against the one organisation it is bound to. To work with several organisations, create a connection per organisation.
-- To narrow the surface further, add a space-separated `XERO_SCOPES` value to the server's `env` — for example `accounting.invoices accounting.contacts accounting.settings`.
+- To narrow the surface on any connection, set **Xero scopes** to a subset of the connection's scopes.
 - `xero-mcp` by john-zhang-dev is a community package, and JAX is Xero's in-product assistant. Neither is this server.
 
 ## Docs
