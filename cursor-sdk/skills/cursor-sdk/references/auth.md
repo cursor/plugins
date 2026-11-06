@@ -35,7 +35,7 @@ export CURSOR_API_KEY="cursor_..."
 ```typescript
 import { Agent } from "@cursor/sdk";
 
-const agent = Agent.create({
+const agent = await Agent.create({
   apiKey: process.env.CURSOR_API_KEY!,
   model: { id: "composer-2" },
   local: { cwd: process.cwd() },
@@ -84,8 +84,8 @@ For service-account keys, the service account needs GitHub access configured jus
 Totally supported — each `Agent.create` / `Agent.prompt` call is independent. Pass `apiKey` explicitly so you don't accidentally fall back to an env var the caller wasn't thinking about:
 
 ```typescript
-const userAgent  = Agent.create({ apiKey: userKey,  /* ... */ });
-const botAgent   = Agent.create({ apiKey: botKey,   /* ... */ });
+const userAgent  = await Agent.create({ apiKey: userKey,  /* ... */ });
+const botAgent   = await Agent.create({ apiKey: botKey,   /* ... */ });
 ```
 
 ## Local development

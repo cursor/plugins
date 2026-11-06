@@ -28,7 +28,7 @@ async function main() {
     process.exit(1);
   }
 
-  await using agent = Agent.create({
+  await using agent = await Agent.create({
     apiKey: CURSOR_API_KEY,
     model: { id: "composer-2" },
     cloud: {
@@ -111,13 +111,13 @@ async function main() {
   const state = await readState();
 
   await using agent = state.agentId
-    ? Agent.resume(state.agentId, {
+    ? await Agent.resume(state.agentId, {
         apiKey: process.env.CURSOR_API_KEY!,
         model: { id: "composer-2" },
         cloud: { repos: [{ url: process.env.REPO_URL!, startingRef: "main" }] },
         mcpServers, // must re-pass on resume
       })
-    : Agent.create({
+    : await Agent.create({
         apiKey: process.env.CURSOR_API_KEY!,
         model: { id: "composer-2" },
         cloud: { repos: [{ url: process.env.REPO_URL!, startingRef: "main" }] },
@@ -223,8 +223,8 @@ app.post("/agents/:userId/send", async (req, res) => {
 
   try {
     await using agent = existing
-      ? Agent.resume(existing, options)
-      : Agent.create(options);
+      ? await Agent.resume(existing, options)
+      : await Agent.create(options);
 
     const run = await agent.send(prompt);
     const result = await run.wait();
@@ -271,7 +271,7 @@ Goal: spin off a cloud agent per repo in a list, collect results.
 import { Agent, CursorAgentError } from "@cursor/sdk";
 
 async function dispatchOne(repoUrl: string, apiKey: string, prompt: string) {
-  await using agent = Agent.create({
+  await using agent = await Agent.create({
     apiKey,
     model: { id: "composer-2" },
     cloud: {
