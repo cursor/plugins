@@ -1,0 +1,42 @@
+name: Script packages
+
+# The two skills that ship TypeScript scripts carry their own tests and
+# typecheck configs. Run them on every PR that touches those packages so a
+# change to a script cannot land with a failing test. Each package is checked
+# on its own; a failure in one does not hide the other.
+
+on:
+  pull_request:
+    paths:
+      - "orchestrate/skills/orchestrate/scripts/**"
+      - "pstack/skills/poteto-mode/scripts/**"
+      - ".github/workflows/script-packages.yml"
+
+jobs:
+  check:
+    name: ${{ matrix.package }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - orchestrate/skills/orchestrate/scripts
+          - pstack/skills/poteto-mode/scripts
+    defaults:
+      run:
+        working-directory: ${{ matrix.package }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.3
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Test
+        run: bun run test
