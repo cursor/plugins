@@ -692,6 +692,11 @@
       "name": "tesla",
       "source": "third_party/tesla",
       "description": "Read your Tesla cars and energy sites, and send commands you confirm."
+    },
+    {
+      "name": "fitmetrics",
+      "source": "third_party/fitmetrics",
+      "description": "Review Trainerize clients and check-ins, and update macros, messages, and programs."
     }
   ]
 }
