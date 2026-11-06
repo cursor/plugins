@@ -217,6 +217,24 @@ test("the order of TLC's dump and its state IDs do not change the chart or the r
   }
 });
 
+test("TLC's output with CRLF line ends, as Java prints it on Windows, does not change the chart or the report", () => {
+  for (const name of ["DieHard", "MediaPlayer", "MediaPlayerProps"]) {
+    const dir = copyCase(name, (d) => {
+      for (const f of fs.readdirSync(d))
+        if (/\.(out|dot)$/.test(f))
+          fs.writeFileSync(path.join(d, f), read(path.join(d, f)).replace(/\r?\n/g, "\r\n"));
+    });
+    const r = run(dir);
+    assert.equal(r.stderr, "", name);
+    assert.equal(r.report, read(path.join(corpus, name, "report.md")), name);
+    assert.equal(
+      read(path.join(r.out, "chart.mmd")),
+      read(path.join(corpus, name, "chart.mmd")),
+      name,
+    );
+  }
+});
+
 function startCommand(
   dir: string,
   parent: string,
