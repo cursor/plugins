@@ -1,0 +1,117 @@
+{
+  "name": "anti-ui-slop",
+  "version": "uizze-design-v13",
+  "designStack": {
+    "version": "4.4.0",
+    "commit": "9d715cc4f5564a990ca8345abfdd5df6dc9b41c8",
+    "license": "Apache-2.0"
+  },
+  "designAuthority": "uizze",
+  "evidenceMode": "concrete-need-only",
+  "included": [
+    "reference/new-work.md",
+    "reference/operate.md",
+    "reference/polish.md",
+    "reference/distill.md",
+    "reference/audit.md",
+    "reference/ios.md",
+    "reference/craft.md",
+    "reference/overdrive.md"
+  ],
+  "origins": [
+    {
+      "path": "reference/new-work.md",
+      "relationship": "adapted",
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "9d715cc4f5564a990ca8345abfdd5df6dc9b41c8",
+      "sourcePath": ".agent/skills/impeccable/reference/new-work.md",
+      "sourceBlob": "6a5dba5b58508949d025f542bef636a10d052c27",
+      "licenseEvidenceURL": "https://github.com/pbakaus/impeccable/blob/9d715cc4f5564a990ca8345abfdd5df6dc9b41c8/LICENSE",
+      "sourceURL": "https://github.com/pbakaus/impeccable/blob/9d715cc4f5564a990ca8345abfdd5df6dc9b41c8/.agent/skills/impeccable/reference/new-work.md",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "reference/operate.md",
+      "relationship": "adapted",
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "5a149f3fdb1b5793f10567233b1dcab98fc305fd",
+      "sourcePath": ".agent/skills/impeccable/reference/operate.md",
+      "sourceBlob": "524f2c3ae9fa497284e9699f3ca5320cce5d05cf",
+      "licenseEvidenceURL": "https://github.com/pbakaus/impeccable/blob/5a149f3fdb1b5793f10567233b1dcab98fc305fd/LICENSE",
+      "sourceURL": "https://github.com/pbakaus/impeccable/blob/5a149f3fdb1b5793f10567233b1dcab98fc305fd/.agent/skills/impeccable/reference/operate.md",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "reference/polish.md",
+      "relationship": "adapted",
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "5a149f3fdb1b5793f10567233b1dcab98fc305fd",
+      "sourcePath": ".agent/skills/impeccable/reference/polish.md",
+      "sourceBlob": "e08f0753e0805203c6da45e65909ba18fe22165b",
+      "licenseEvidenceURL": "https://github.com/pbakaus/impeccable/blob/5a149f3fdb1b5793f10567233b1dcab98fc305fd/LICENSE",
+      "sourceURL": "https://github.com/pbakaus/impeccable/blob/5a149f3fdb1b5793f10567233b1dcab98fc305fd/.agent/skills/impeccable/reference/polish.md",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "reference/distill.md",
+      "relationship": "adapted",
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "5a149f3fdb1b5793f10567233b1dcab98fc305fd",
+      "sourcePath": ".agent/skills/impeccable/reference/distill.md",
+      "sourceBlob": "6eb4f19b31060949d04882a0c514ac592d8a42cf",
+      "licenseEvidenceURL": "https://github.com/pbakaus/impeccable/blob/5a149f3fdb1b5793f10567233b1dcab98fc305fd/LICENSE",
+      "sourceURL": "https://github.com/pbakaus/impeccable/blob/5a149f3fdb1b5793f10567233b1dcab98fc305fd/.agent/skills/impeccable/reference/distill.md",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "reference/audit.md",
+      "relationship": "adapted",
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "5a149f3fdb1b5793f10567233b1dcab98fc305fd",
+      "sourcePath": ".agent/skills/impeccable/reference/audit.md",
+      "sourceBlob": "474af415497e17312e611182ce22773670dc0f91",
+      "licenseEvidenceURL": "https://github.com/pbakaus/impeccable/blob/5a149f3fdb1b5793f10567233b1dcab98fc305fd/LICENSE",
+      "sourceURL": "https://github.com/pbakaus/impeccable/blob/5a149f3fdb1b5793f10567233b1dcab98fc305fd/.agent/skills/impeccable/reference/audit.md",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "reference/ios.md",
+      "relationship": "adapted",
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "5a149f3fdb1b5793f10567233b1dcab98fc305fd",
+      "sourcePath": ".agent/skills/impeccable/reference/ios.md",
+      "sourceBlob": "c6244dfe32176e5718d86211b7d1eb5601eb0860",
+      "licenseEvidenceURL": "https://github.com/pbakaus/impeccable/blob/5a149f3fdb1b5793f10567233b1dcab98fc305fd/LICENSE",
+      "sourceURL": "https://github.com/pbakaus/impeccable/blob/5a149f3fdb1b5793f10567233b1dcab98fc305fd/.agent/skills/impeccable/reference/ios.md",
+      "license": "Apache-2.0 AND MIT",
+      "attribution": "Platform Design Skills by ehmo, via Impeccable; see NOTICE",
+      "attributionEvidenceURL": "https://github.com/pbakaus/impeccable/blob/5a149f3fdb1b5793f10567233b1dcab98fc305fd/NOTICE.md",
+      "originalRepository": "https://github.com/ehmo/platform-design-skills",
+      "originalRevision": null,
+      "originalRevisionStatus": "not-recorded-by-intermediary",
+      "originalLicenseEvidenceURL": "https://github.com/ehmo/platform-design-skills/blob/dc2be825d8b439caea78e9eaa8fb3ac23b0ff3e9/LICENSE"
+    },
+    {
+      "path": "reference/craft.md",
+      "relationship": "adapted",
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "9d715cc4f5564a990ca8345abfdd5df6dc9b41c8",
+      "sourcePath": ".agent/skills/impeccable/reference/craft.md",
+      "sourceBlob": "dbbc9402c07cdab21f2b6eb69279b8435fecfd7f",
+      "licenseEvidenceURL": "https://github.com/pbakaus/impeccable/blob/9d715cc4f5564a990ca8345abfdd5df6dc9b41c8/LICENSE",
+      "sourceURL": "https://github.com/pbakaus/impeccable/blob/9d715cc4f5564a990ca8345abfdd5df6dc9b41c8/.agent/skills/impeccable/reference/craft.md",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "reference/overdrive.md",
+      "relationship": "adapted",
+      "repository": "https://github.com/pbakaus/impeccable",
+      "commit": "9d715cc4f5564a990ca8345abfdd5df6dc9b41c8",
+      "sourcePath": ".agent/skills/impeccable/reference/overdrive.md",
+      "sourceBlob": "76953e24e6dd06b62415fdfe71c7caa9756bd981",
+      "licenseEvidenceURL": "https://github.com/pbakaus/impeccable/blob/9d715cc4f5564a990ca8345abfdd5df6dc9b41c8/LICENSE",
+      "sourceURL": "https://github.com/pbakaus/impeccable/blob/9d715cc4f5564a990ca8345abfdd5df6dc9b41c8/.agent/skills/impeccable/reference/overdrive.md",
+      "license": "Apache-2.0"
+    }
+  ]
+}
