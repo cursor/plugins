@@ -59,11 +59,20 @@ function threadLine(thread: T.ReviewThread): string {
     comment?.path ?? "None",
     comment?.line ?? "None",
     comment?.authorLogin ?? "None",
-    `isBugBot=${thread.isBugbot}`,
-    `bugbotReviewPasses=${thread.bugbotReviewPasses}`,
-    (comment?.body ?? "").split(/\r?\n/, 1)[0]?.slice(0, 180) ?? "",
+    `reviewBot=${thread.reviewBot ?? "None"}`,
+    `reviewBotPasses=${thread.reviewBotPasses}`,
+    excerpt(comment?.body ?? ""),
   ].join(" ");
 }
+// First line of prose: review bots open some findings with HTML-comment
+// markers (Cubic's run ID), which say nothing to the reader.
+const excerpt = (body: string): string =>
+  (
+    body
+      .split(/\r?\n/)
+      .find((line) => line.trim() !== "" && !/^\s*<!--.*-->\s*$/.test(line)) ??
+    ""
+  ).slice(0, 180);
 type StatusQueryBlocker = {
   readonly kind: "status-query";
   readonly failures: number;
