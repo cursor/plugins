@@ -71,12 +71,13 @@ export async function transcribe(blob: Blob, filename: string) {
 ```
 
 ```ts
-// client
+// client (stream is a dedicated microphone stream owned by this recording)
 const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : "audio/mp4";
 const rec = new MediaRecorder(stream, { mimeType: mime });
 const parts: BlobPart[] = [];
 rec.ondataavailable = (e) => parts.push(e.data);
 rec.onstop = async () => {
+  stream.getTracks().forEach((track) => track.stop()); // MediaRecorder.stop() does not release the microphone
   const fd = new FormData();
   fd.append("file", new Blob(parts, { type: mime }), "dictation");
   const { text } = await (await fetch("/api/dictation", { method: "POST", body: fd })).json();
