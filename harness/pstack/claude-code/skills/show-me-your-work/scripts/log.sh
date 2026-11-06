@@ -11,7 +11,7 @@ fi
 logfile="$1"
 shift
 
-logdir="$(dirname "$logfile")"
+logdir="$(dirname -- "$logfile")"
 if [ -n "$logdir" ] && [ "$logdir" != "." ] && [ ! -d "$logdir" ]; then
 	mkdir -p "$logdir"
 fi
