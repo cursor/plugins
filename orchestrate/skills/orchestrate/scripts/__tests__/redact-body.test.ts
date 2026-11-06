@@ -41,6 +41,45 @@ describe("redactBody", () => {
     expect(redactBody(`\`${sha}\``).reasons).toEqual([]);
   });
 
+  test("redacts quoted JSON keys and values containing spaces", () => {
+    // The old pattern used \b around the key, so a quote-adjacent key like
+    // "api_key" in a pasted JSON body never matched and the secret went out
+    // unredacted. It also stopped the value at the first space, leaking
+    // `Bearer <jwt>` tails.
+    expect(
+      redactBody('{"Authorization": "Bearer eyJhbG.sig"}').text
+    ).toContain("Authorization=[redacted]");
+    expect(
+      redactBody('{"api_key": "sk-123", "name": "x"}').text
+    ).not.toContain("sk-123");
+    expect(redactBody('api_key = "super secret value"').text).toBe(
+      'api_key=[redacted]'
+    );
+  });
+
+  test("redacts unquoted values up to a separator, consuming it", () => {
+    // Cursor Bugbot flagged the first cut: the value pattern stopped at
+    // `,`/`;`/`}` without consuming them, so an unquoted assignment failed to
+    // match entirely and the raw secret passed through.
+    const result = redactBody("password: hunter2, keep");
+    expect(result.text).toBe("password=[redacted] keep");
+    expect(redactBody("token = abc123; next=1").text).toBe(
+      "token=[redacted] next=1"
+    );
+  });
+
+  test("does not truncate a quoted value at an inner apostrophe", () => {
+    // Bugbot round 2: the first fix merged `"` and `'` into one character
+    // class, so a double-quoted value containing an apostrophe ended at it and
+    // leaked the secret tail. The opening quote must decide the closing quote.
+    expect(
+      redactBody(`{"password": "it's a secret123"}`).text
+    ).toBe("{password=[redacted]}");
+    expect(redactBody(`{"token": "don't-panic"}`).text).toBe(
+      "{token=[redacted]}"
+    );
+  });
+
   test("allows concise operational context", () => {
     const result = redactBody("blocked: docker rate-limit on redis:7");
 
