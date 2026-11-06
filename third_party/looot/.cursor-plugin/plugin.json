@@ -1,0 +1,50 @@
+{
+  "name": "looot",
+  "displayName": "looot",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Find work emails, phones, companies and web data from one API key and prepaid balance.",
+  "author": {
+    "name": "looot",
+    "email": "hello@looot.ai"
+  },
+  "homepage": "https://looot.ai",
+  "repository": "https://github.com/loootai/looot-mcp",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "looot",
+    "data api",
+    "email finder",
+    "enrichment",
+    "serp",
+    "web search",
+    "prospecting",
+    "gtm",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "looot",
+    "sales",
+    "enrichment",
+    "search",
+    "mcp"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "LOOOT_API_KEY": {
+        "type": "string",
+        "title": "looot API key",
+        "description": "API key from https://looot.ai. Calls draw from a prepaid balance (top up from $5)."
+      }
+    },
+    "required": [
+      "LOOOT_API_KEY"
+    ]
+  },
+  "mcpServers": "./mcp.json"
+}
