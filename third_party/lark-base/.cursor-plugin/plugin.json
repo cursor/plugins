@@ -1,0 +1,57 @@
+{
+  "name": "lark-base",
+  "displayName": "Lark Base",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.19.0"
+  },
+  "description": "Read and update tables, fields, views, and records in Lark Base.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://www.larksuite.com/product/base",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "lark",
+    "lark base",
+    "lark suite",
+    "bitable",
+    "base",
+    "tables",
+    "records",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "lark",
+    "base",
+    "bitable",
+    "mcp"
+  ],
+  "variables": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "CLIENT_ID",
+      "CLIENT_SECRET"
+    ],
+    "properties": {
+      "CLIENT_ID": {
+        "type": "string",
+        "title": "App ID",
+        "description": "App ID of the Lark custom app your team created. Every member signs in under it."
+      },
+      "CLIENT_SECRET": {
+        "type": "string",
+        "title": "App Secret",
+        "description": "App Secret of that Lark app. Stored encrypted and never sent to members' machines.",
+        "writeOnly": true,
+        "format": "password"
+      }
+    }
+  },
+  "mcpServers": "./mcp.json"
+}
