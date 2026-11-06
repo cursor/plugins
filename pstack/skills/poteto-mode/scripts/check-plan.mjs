@@ -26,7 +26,7 @@ const HOW_TO_READ_MARKERS = [
 	RULE,
 ];
 const PERF_ITEMS = ["Metric.", "Probe.", "Baseline.", "Rule."];
-const BOX = /^\s*- \[[ x]\] (.*)$/;
+const BOX = /^\s*- \[[ xX]\] (.*)$/;
 
 const file = process.argv[2];
 if (!file) {

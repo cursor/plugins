@@ -63,6 +63,20 @@ const runPlan = (example: string, expectedExit: number) => {
 	}
 };
 
+test("counts boxes checked with an uppercase X", () => {
+	const directory = mkdtempSync(join(tmpdir(), "check-plan-test-"));
+	const file = join(directory, "plan.md");
+	writeFileSync(file, validPlan.replaceAll("- [ ]", "- [X]"));
+	try {
+		const result = spawnSync("node", [checker, file], { encoding: "utf8" });
+		expect(result.stderr).toBe("");
+		expect(result.status).toBe(0);
+		expect(result.stdout).toContain("PR 1  boxes=19");
+	} finally {
+		rmSync(directory, { recursive: true, force: true });
+	}
+});
+
 test("accepts ordinary, indented, and longer closing fences", () => {
 	for (const indent of ["", " ", "  ", "   "])
 		runPlan(`${indent}\`\`\`markdown\n## Example only\n${indent}\`\`\`\n`, 0);
