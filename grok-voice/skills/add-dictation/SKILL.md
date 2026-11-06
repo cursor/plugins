@@ -72,13 +72,13 @@ export async function transcribe(blob: Blob, filename: string) {
 
 ```ts
 // client
-const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : "audio/mp4";
-const rec = new MediaRecorder(stream, { mimeType: mime });
+const mime = ["audio/webm;codecs=opus", "audio/mp4"].find(MediaRecorder.isTypeSupported);
+const rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
 const parts: BlobPart[] = [];
 rec.ondataavailable = (e) => parts.push(e.data);
 rec.onstop = async () => {
   const fd = new FormData();
-  fd.append("file", new Blob(parts, { type: mime }), "dictation");
+  fd.append("file", new Blob(parts, { type: rec.mimeType || "audio/webm" }), "dictation");
   const { text } = await (await fetch("/api/dictation", { method: "POST", body: fd })).json();
   insertAtCursor(text);
 };
