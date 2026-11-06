@@ -1,6 +1,6 @@
 ---
 name: deslop
-description: Remove AI-generated code slop and clean up code style
+description: "Remove AI-generated code slop and clean up code style. Before commit, align the pull request title and scope with the falsifiable done predicate, so a harness-only change is not described as the finished migration."
 ---
 
 # Remove AI code slop
@@ -14,6 +14,7 @@ Check the diff against main and remove AI-generated slop introduced in the branc
 - Casts to `any` used only to bypass type issues
 - Deeply nested code that should be simplified with early returns
 - Other patterns inconsistent with the file and surrounding codebase
+- A pull request title or scope that claims the finished migration while the falsifiable predicate is still a harness, an allowlist, or an unwired library
 
 ## Guardrails
 

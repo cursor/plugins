@@ -33,6 +33,8 @@ Read every candidate end to end before picking. Score each against the rubric cr
 
 Pick the base a future maintainer can extend most easily without breaking invariants. When two feel tied, prefer the cleaner boundary or smaller API, per the Laziness Protocol.
 
+When a rubric criterion depends on compiler or lint behavior, run a minimal compile repro before you let the cross-judge decide that criterion. A prose claim about where a macro's `unsafe` text lands is one of those criteria.
+
 ## Phase E: Graft
 
 Walk each losing candidate once more for what is worth porting into the base, usually one or two things per candidate, not most of it. Fold each graft in by hand, per the **redesign-from-first-principles** principle skill, so the result stays coherent under one mental model. Don't paste mechanically.
@@ -42,6 +44,8 @@ If the candidates converge on one shape, that is strong agreement. Note it and s
 ## Phase F: Verify
 
 Verify the synthesized artifact like any other output, per the **prove-it-works** principle skill. If verification finds a problem the arena missed, either Phase A was wrong (re-frame and re-run) or a candidate caught it and you missed the graft (go back to Phase E). Don't paper over it.
+
+A compile that stays quiet under `forbid(unsafe_code)` shows the call site is lint-quiet. It does not show a maintainer should extend that shape. Say which of the two you measured.
 
 ## Outputs
 

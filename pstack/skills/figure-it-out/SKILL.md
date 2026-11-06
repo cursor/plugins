@@ -19,6 +19,9 @@ Ground first, then commit. Don't start the run until you can state:
 - The definition of done as a falsifiable predicate (the **prove-it-works** principle skill).
 - Scope, quantified: rough units and effort, plus the blockers grounding surfaced.
 - The rigor level, biased high. One-way doors and high blast radius get more. Reversible low-stakes steps get less. Rigor is gates and artifacts, not "try harder".
+- When done is a mechanical gate, the predicate is that gate's pass or fail on the tree the check scans. A clean compile is not that predicate.
+- An allowlist that freezes today's offenders is interim anti-growth. Say so in the predicate unless it also requires the count to fall, or names the wave that moves callers.
+- A repo-wide sweep of `unsafe` leaves pinned git dependencies and vendor driver crates out of scope. First-party code owns construction, claims, and queue edges.
 
 Present the framing and tradeoffs before committing to a long run. Reversible work proceeds (the **never-block-on-the-human** principle skill), but a multi-hour run earns one checkpoint.
 
@@ -29,6 +32,7 @@ Decompose into atomic, independently-landable units. Sequence riskiest-unknown-f
 - Build the verification harness before the work, with the baseline captured from the pre-change state, so the check reads as "old value vs new value".
 - For one-way-door design decisions, run the **architect** skill (it runs **arena**). Skip it for mechanical work whose shape is already concrete. A second arena over a settled design is over-engineering (the **laziness-protocol** principle skill).
 - Decide what fans out. Parallelize only across seams, and give each worker its own worktree or branch (the **separate-before-serializing-shared-state** principle skill). Don't over-fan. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **poteto-mode** skill.
+- When poteto mode is in play, ad-hoc playbook workers are `poteto-agent`. A routed skill that names another `subagent_type`, such as the how skill's explorers, keeps that type.
 - Write the designed phase list down. That list is what the human reviews.
 
 Then execute the design. Add its steps to the todolist as concrete items between the Phase C and Phase D entries. Run each under the Phase C loop discipline, and weave the Phase D log through them, a row as each step lands, rather than saving the whole trail for the end.
@@ -49,4 +53,4 @@ Log the run via the **show-me-your-work** skill. figure-it-out's work is usually
 
 Check the whole against the Phase A predicate on the real product, not just the harness. Encode any recurring correction as a gate, a lint rule, a check, or a script (the **encode-lessons-in-structure** principle skill).
 
-**Reply:** the playbook you designed, the rigor level and why, the decision-trail path, what's verified against the predicate, and what's still open.
+**Reply:** the playbook you designed, the rigor level and why, the decision-trail path, what's verified against the predicate, and what's still open. An opened pull request is not this handback while a predicate is still open, unless the reply defers that predicate in plain words.

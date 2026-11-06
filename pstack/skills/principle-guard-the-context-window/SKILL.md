@@ -10,3 +10,4 @@ disable-model-invocation: true
 
 **Pattern:**
 - **Size phases and cap scope.** Limit files per phase, set turn budgets, account for mechanism costs.
+- **Read a subagent report from its transcript.** Concatenate the assistant text parts under `agent-transcripts/<parent>/subagents/<child>.jsonl`. The last line may be a tool call, not the report.

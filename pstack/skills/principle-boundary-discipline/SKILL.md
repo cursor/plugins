@@ -23,6 +23,10 @@ Validation and error handling:
 - Do not re-export transport, storage, framework, or wire types through the public surface
 - No redundant nil checks deep in call chains if the boundary already validated
 
+Unsafe surfaces:
+- A public function that accepts an arbitrary raw pointer fails this boundary even when the `unsafe` block sits in the callee. Name a linker symbol, a claimed window, or a macro whose text lives in the audited file.
+- When the goal is one audited home, compare the reviewer's walk through the macro with the walk through that raw-pointer function. File count alone is the wrong comparison.
+
 Code organization:
 - Business logic in pure functions with no framework dependencies
 - Parse functions: pure transforms from raw bytes to typed state
