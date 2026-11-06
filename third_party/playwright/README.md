@@ -16,6 +16,8 @@ Or run `/add-plugin playwright` in chat.
 
 This is a **local stdio** MCP server. Cursor launches it with `npx -y @playwright/mcp@0.0.83`, so the machine running Cursor needs **Node.js** installed and on `PATH`. The `-y` flag skips `npx`'s install confirmation so the first launch cannot hang waiting for interactive input over stdio.
 
+The server version is pinned on purpose. Bump it here and in the MCP config below when a new release matters.
+
 The first run downloads Playwright's browser binaries. That can take a minute and needs network access; later runs reuse the cached browsers.
 
 ## MCP
