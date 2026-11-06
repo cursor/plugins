@@ -52,6 +52,23 @@ In **Dashboard → Plugins → Configure**, set **GitHub personal access token**
 
 Tool calls run with that token's permissions. Rotate or revoke the token from GitHub Settings if it is ever exposed.
 
+
+## Troubleshooting empty Bearer / streaming 400
+
+If the host starts the MCP with an empty or unsubstituted token, GitHub returns:
+
+```text
+bad request: Authorization header is badly formatted
+```
+
+and clients may fall back to SSE / a streaming error. That usually means:
+
+1. `GITHUB_PERSONAL_ACCESS_TOKEN` was never written into **this plugin's setup field** (Dashboard → Plugins → Configure), or
+2. A messaging-channel / chat secret was set instead of the plugin variable (those stores are not the same), or
+3. The host tried OAuth / Authenticate against `api.githubcopilot.com`, which does not support dynamic client registration for this PAT-header plugin (see cursor/plugins#251).
+
+`plugin.json` now requires a non-empty PAT (`minLength: 1`) so an empty value is not treated as configured. Hosts should still avoid sending `Authorization: Bearer ` until the variable is set, and should route Authenticate to the PAT field rather than OAuth for this plugin.
+
 ## Docs
 
 - Use the GitHub MCP server: https://docs.github.com/en/copilot/how-tos/context/use-mcp/use-the-github-mcp-server
