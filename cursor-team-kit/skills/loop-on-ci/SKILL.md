@@ -31,9 +31,14 @@ gh pr checks --json name,bucket,state,workflow,link
 # Watch pending checks and fail fast
 gh pr checks --watch --fail-fast
 
-# GitHub Actions logs, when the failing check links to a GHA run
+# GitHub Actions log for one failed job; the check link ends in /actions/runs/<run-id>/job/<job-id>
+gh api "repos/{owner}/{repo}/actions/jobs/<job-id>/logs"
+
+# Failed-step logs for a whole GitHub Actions run, once every job in it has finished
 gh run view <run-id> --log-failed
 ```
+
+`gh run view --log-failed` exits with "run ... is still in progress" while any job in the run is still going, even with `--job`. That is the usual state right after `--fail-fast` returns, so read the failed job's log through `gh api` first.
 
 ## Guardrails
 
