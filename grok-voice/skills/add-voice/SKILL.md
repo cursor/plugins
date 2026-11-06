@@ -61,8 +61,10 @@ Language-agnostic event loop. **TypeScript samples default.** Short Python twins
 
 ```ts
 const url = "wss://api.x.ai/v1/realtime?model=grok-voice-latest";
-// Node: pass Authorization header. Browser: use xai-client-secret.<token> protocol.
-const ws = new WebSocket(url /* , { headers: { Authorization: `Bearer ${token}` } } */);
+// Browser: obtain this short-lived token from your backend first.
+const ephemeralToken = "<xAI client secret>";
+const ws = new WebSocket(url, `xai-client-secret.${ephemeralToken}`);
+// Node `ws`: new WebSocket(url, { headers: { Authorization: `Bearer ${process.env.XAI_API_KEY}` } });
 
 ws.addEventListener("open", () => {
   ws.send(JSON.stringify({
