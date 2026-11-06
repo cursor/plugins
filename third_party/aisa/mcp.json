@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "aisa": {
+      "type": "http",
+      "url": "https://mcp.aisa.one/mcp"
+    }
+  }
+}

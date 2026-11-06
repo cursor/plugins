@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "agent-relay": {
+      "type": "http",
+      "url": "https://agentrelay.com/cloud/api/v1/mcp/relay-events"
+    }
+  }
+}

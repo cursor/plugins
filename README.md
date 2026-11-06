@@ -126,6 +126,13 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `onepay` | [OnePay](third_party/onepay/) | Cursor | Integrations | Access your OnePay accounts: balances, transactions, credit, Pay Later, investments, crypto, and rewards. |
 | `questrade` | [Questrade](third_party/questrade/) | Cursor | Integrations | Read your Questrade portfolio, get live market data, and discuss potential trades. |
 | `tesla` | [Tesla](third_party/tesla/) | Cursor | Integrations | Read your Tesla cars and energy sites, and send commands you confirm. |
+| `jerry` | [Jerry](third_party/jerry/) | Cursor | Integrations | Get car, home, and renters insurance quotes and final prices from 100+ insurers. |
+| `redo` | [Redo](third_party/redo/) | Cursor | Integrations | Look up orders, create returns, and report on returns and campaigns. |
+| `createos` | [CreateOS](third_party/createos/) | Cursor | Integrations | Create projects, deploy apps, and manage environments, domains, and logs. |
+| `hq` | [HQ](third_party/hq/) | Cursor | Integrations | Search your company's knowledge, projects, and skills, and act through connected systems. |
+| `aisa` | [AIsa](third_party/aisa/) | Cursor | Integrations | Query SEO, finance, social, search, and sales data APIs, paid per call. |
+| `agent-relay` | [Agent Relay](third_party/agent-relay/) | Cursor | Integrations | Message agents in your Agent Relay workspace and follow their activity. |
+| `crimson-health` | [Crimson Health](third_party/crimson-health/) | Cursor | Integrations | Read your Crimson Health medications, labs, wearable trends, and goals, and add journal notes. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
