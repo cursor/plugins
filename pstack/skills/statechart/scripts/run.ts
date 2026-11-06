@@ -212,7 +212,7 @@ async function findTlc(cwd: string) {
   };
 }
 
-const exitClass = (status: number | null) =>
+const exitClass = (status: number | null): CheckResult["exit"] =>
   status === 0 ? 0 : status === 11 || status === 12 || status === 13 ? 1 : 2;
 
 const tail = (r: FileResult) => {
