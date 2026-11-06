@@ -98,6 +98,7 @@ new WebSocketServer({ port: 8788 }).on("connection", (client) => {
   client.on("message", (d, isBinary) => up.readyState === WebSocket.OPEN && up.send(d, { binary: isBinary })); // audio + finalize/audio.done
   const end = () => { client.close(); up.close(); };
   up.on("close", end); up.on("error", end); client.on("close", end);
+  client.on("error", end); // contain browser transport failures
 });
 ```
 
