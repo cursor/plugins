@@ -244,6 +244,11 @@
       "description": "Manage contacts, email and SMS campaigns, and CRM deals."
     },
     {
+      "name": "famulor",
+      "source": "third_party/famulor",
+      "description": "Build and run AI phone assistants, calls, campaigns, and WhatsApp agents."
+    },
+    {
       "name": "typeform",
       "source": "third_party/typeform",
       "description": "Build forms, analyze responses, and manage contacts."
