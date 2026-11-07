@@ -697,6 +697,11 @@
       "name": "fitmetrics",
       "source": "third_party/fitmetrics",
       "description": "Review Trainerize clients and check-ins, and update macros, messages, and programs."
+    },
+    {
+      "name": "notfair",
+      "source": "third_party/notfair",
+      "description": "Operate Google, Meta, X, LinkedIn, Reddit, and TikTok Ads plus GA4, Search Console, GoHighLevel, and WordPress through one OAuth MCP."
     }
   ]
 }
