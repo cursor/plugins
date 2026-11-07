@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "rippling": {
-      "type": "http",
-      "url": "${RIPPLING_MCP_URL}"
-    }
-  }
-}

@@ -14,10 +14,10 @@ Thumbs.db
 .env.local
 .env.*.local
 
-# Node modules (for plugins with JS/TS)
+# Node modules
 node_modules/
 
-# Python (for plugins with Python)
+# Python
 __pycache__/
 *.py[cod]
 .venv/
@@ -28,8 +28,9 @@ venv/
 *.local.json
 
 # Build outputs
-dist/
 build/
 
 # Logs
 *.log
+.pstack/catalog.json
+.pstack/state/

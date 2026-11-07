@@ -1,0 +1,24 @@
+{
+  "name": "pstack",
+  "version": "0.16.0",
+  "description": "Portable, evidence-based engineering workflows with configurable host-provided models and bounded independent review.",
+  "author": {
+    "name": "Lauren Tan"
+  },
+  "homepage": "https://github.com/erikschlegel/fde-skill-stack",
+  "repository": "https://github.com/erikschlegel/fde-skill-stack",
+  "license": "MIT",
+  "keywords": [
+    "pstack",
+    "poteto-mode",
+    "workflow",
+    "principles",
+    "agent-style",
+    "subagents",
+    "unslop"
+  ],
+  "displayName": "pstack",
+  "logo": "assets/logo.png",
+  "skills": "./skills/",
+  "agents": "./agents/"
+}

@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "x-money": {
-      "type": "http",
-      "url": "https://mcp.money.x.com/mcp",
-      "placement": "server"
-    }
-  }
-}

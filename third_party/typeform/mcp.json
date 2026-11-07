@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "typeform": {
-      "type": "http",
-      "url": "https://api.typeform.com/mcp"
-    }
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "ashby": {
-      "type": "http",
-      "url": "https://mcp.ashbyhq.com/mcp/v1"
-    }
-  }
-}

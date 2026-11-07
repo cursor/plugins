@@ -1,154 +1,58 @@
 #!/usr/bin/env node
 
-import { readFileSync, existsSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
+import { validateConfig } from "./lib/pstack-config.mjs";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const root = resolve(__dirname, "..");
-
-function loadJSON(path) {
-  return JSON.parse(readFileSync(path, "utf-8"));
-}
-
-const marketplaceSchema = loadJSON(
-  resolve(root, "schemas/marketplace.schema.json")
-);
-const pluginSchema = loadJSON(resolve(root, "schemas/plugin.schema.json"));
-
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const read = path => JSON.parse(readFileSync(join(ROOT, path), "utf8"));
 const ajv = new Ajv({ allErrors: true });
 addFormats(ajv);
-
-const validateMarketplace = ajv.compile(marketplaceSchema);
-const validatePlugin = ajv.compile(pluginSchema);
-
-let errors = 0;
-
-function fail(message) {
-  console.error(`ERROR: ${message}`);
-  errors++;
+const rootSchema = {
+  type: "object", additionalProperties: false, required: ["$schema", "name"],
+  properties: {
+    $schema: { const: "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json" },
+    name: { type: "string", minLength: 1, maxLength: 64, pattern: "^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$", not: { pattern: "--|\\.\\." } },
+    version: { type: "string" }, description: { type: "string" },
+    author: { type: "object", additionalProperties: false, properties: { name: { type: "string" }, url: { type: "string" }, email: { type: "string" } } },
+    homepage: { type: "string" }, repository: { type: "string" }, license: { type: "string" },
+    keywords: { type: "array", items: { type: "string" } },
+    extensions: { type: "object" },
+  },
+};
+function validate(schema, value, label) {
+  const check = ajv.compile(schema);
+  if (!check(value)) throw new Error(`${label}: ${ajv.errorsText(check.errors)}`);
 }
-
-// 1. Validate marketplace.json
-const marketplacePath = resolve(root, ".cursor-plugin/marketplace.json");
-
-if (!existsSync(marketplacePath)) {
-  fail(".cursor-plugin/marketplace.json not found");
-  process.exit(1);
+const manifest = read("plugin.json");
+validate(rootSchema, manifest, "portable manifest");
+if (manifest.name !== "pstack") throw new Error("Package name must remain pstack");
+if (manifest.repository !== "https://github.com/erikschlegel/fde-skill-stack") throw new Error("Repository identity is incorrect");
+validate(read("schemas/plugin.schema.json"), read(".cursor-plugin/plugin.json"), "Cursor manifest");
+for (const path of [".cursor-plugin/plugin.json", ".claude-plugin/plugin.json", "dist/cursor/.cursor-plugin/plugin.json", "dist/claude-code/.claude-plugin/plugin.json"]) {
+  const value = read(path);
+  if (value.name !== manifest.name || value.version !== manifest.version || value.license !== "MIT") throw new Error(`Manifest mismatch: ${path}`);
 }
-
-const marketplace = loadJSON(marketplacePath);
-
-if (!validateMarketplace(marketplace)) {
-  fail("marketplace.json schema validation failed:");
-  for (const err of validateMarketplace.errors) {
-    console.error(`  ${err.instancePath || "/"}: ${err.message}`);
-  }
-}
-
-// 2. Validate each plugin
-for (const entry of marketplace.plugins ?? []) {
-  const pluginDir = resolve(root, entry.source);
-  const pluginJsonPath = resolve(pluginDir, ".cursor-plugin/plugin.json");
-
-  // Check source directory exists
-  if (!existsSync(pluginDir)) {
-    fail(
-      `Plugin "${entry.name}": source directory "${entry.source}" does not exist`
-    );
-    continue;
-  }
-
-  // Check plugin.json exists
-  if (!existsSync(pluginJsonPath)) {
-    fail(
-      `Plugin "${entry.name}": missing .cursor-plugin/plugin.json in "${entry.source}"`
-    );
-    continue;
-  }
-
-  const pluginJson = loadJSON(pluginJsonPath);
-
-  if (!validatePlugin(pluginJson)) {
-    fail(
-      `Plugin "${entry.name}": plugin.json schema validation failed (${entry.source}/.cursor-plugin/plugin.json):`
-    );
-    for (const err of validatePlugin.errors) {
-      const detail =
-        err.keyword === "additionalProperties"
-          ? `${err.message}: "${err.params.additionalProperty}"`
-          : err.message;
-      console.error(`  ${err.instancePath || "/"}: ${detail}`);
-    }
-  }
-
-  // Check that marketplace name matches plugin name
-  if (pluginJson.name && pluginJson.name !== entry.name) {
-    fail(
-      `Plugin "${entry.name}": marketplace name does not match plugin.json name "${pluginJson.name}"`
-    );
-  }
-}
-
-const claudeMarketplacePath = resolve(root, ".claude-plugin/marketplace.json");
-const claudeMarketplace = existsSync(claudeMarketplacePath)
-  ? loadJSON(claudeMarketplacePath)
-  : { plugins: [] };
-
-for (const entry of claudeMarketplace.plugins ?? []) {
-  const pluginDir = resolve(root, entry.source);
-  const pluginJsonPath = resolve(pluginDir, ".claude-plugin/plugin.json");
-
-  if (!existsSync(pluginJsonPath)) {
-    fail(
-      `Plugin "${entry.name}": missing .claude-plugin/plugin.json in "${entry.source}"`
-    );
-    continue;
-  }
-
-  const pluginJson = loadJSON(pluginJsonPath);
-  if (pluginJson.name && pluginJson.name !== entry.name) {
-    fail(
-      `Plugin "${entry.name}": Claude marketplace name does not match .claude-plugin/plugin.json name "${pluginJson.name}"`
-    );
-  }
-}
-
-const manifestPaths = [
-  ".cursor-plugin/plugin.json",
-  ".claude-plugin/plugin.json",
-  "plugin.json",
+const market = read(".claude-plugin/marketplace.json");
+if (market.plugins.length !== 1 || market.plugins[0].name !== "pstack" || market.plugins[0].source !== "./") throw new Error("Marketplace must install only the root plugin");
+validateConfig(read("config/defaults.json"));
+const removed = [
+  "pstack", "third_party", "advisor", "agent-compatibility", "cli-for-agent",
+  "continual-learning", "create-plugin", "cursor-sdk", "cursor-team-kit",
+  "docs-canvas", "dyl-stack", "grok-voice", "orchestrate", "origin-apps",
+  "pr-review-canvas", "ralph-loop", "teaching", "thermos", "harness",
+  ".cursor-plugin/marketplace.json",
 ];
-const sources = new Map();
-for (const entry of [
-  ...(marketplace.plugins ?? []),
-  ...(claudeMarketplace.plugins ?? []),
-]) {
-  sources.set(resolve(root, entry.source), entry.name);
+for (const path of removed) if (existsSync(join(ROOT, path))) throw new Error(`Obsolete monorepo resource remains: ${path}`);
+for (const name of readdirSync(join(ROOT, "com.github.copilot/agents"))) {
+  const text = readFileSync(join(ROOT, "com.github.copilot/agents", name), "utf8");
+  if (!name.endsWith(".agent.md") || !text.includes("description:") || !text.includes("tools:") || !text.includes("../../docs/core.md")) throw new Error(`Incomplete Copilot agent ${name}`);
+  if (name !== "poteto-agent.agent.md" && !text.includes('tools: ["read","search"]')) throw new Error(`Reader has write-capable tools: ${name}`);
 }
-
-for (const [pluginDir, name] of sources) {
-  const versions = manifestPaths
-    .map((path) => resolve(pluginDir, path))
-    .filter((path) => existsSync(path))
-    .map((path) => ({ path, version: loadJSON(path).version }))
-    .filter(({ version }) => version !== undefined);
-
-  if (new Set(versions.map(({ version }) => version)).size > 1) {
-    fail(`Plugin "${name}": manifest versions differ:`);
-    for (const { path, version } of versions) {
-      console.error(`  ${path.slice(root.length + 1)}: ${version}`);
-    }
-  }
-}
-
-// 3. Report results
-if (errors > 0) {
-  console.error(`\nValidation failed with ${errors} error(s).`);
-  process.exit(1);
-} else {
-  console.log("All plugins validated successfully.");
-  process.exit(0);
-}
+const docs = spawnSync(process.execPath, [join(ROOT, "scripts/check-pstack-docs.mjs")], { stdio: "inherit" });
+if (docs.status !== 0) process.exit(docs.status ?? 1);
+console.log("Standalone plugin manifests, configuration, agents, and root installation paths are valid.");

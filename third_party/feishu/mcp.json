@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "feishu": {
-      "type": "http",
-      "url": "https://mcp.feishu.cn/mcp"
-    }
-  }
-}

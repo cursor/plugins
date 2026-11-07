@@ -1,1 +1,5 @@
-harness/pstack/** linguist-generated=true
+dist/** linguist-generated=true
+com.github.copilot/agents/** linguist-generated=true
+agents/** linguist-generated=true
+.claude-plugin/plugin.json linguist-generated=true
+.cursor-plugin/plugin.json linguist-generated=true

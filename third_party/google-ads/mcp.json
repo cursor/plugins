@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "google-ads": {
-      "type": "http",
-      "url": "https://api.cursor.com/rest-mcp/google-ads/mcp"
-    }
-  }
-}

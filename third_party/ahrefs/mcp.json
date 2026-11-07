@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "ahrefs": {
-      "type": "http",
-      "url": "https://api.ahrefs.com/mcp/mcp"
-    }
-  }
-}

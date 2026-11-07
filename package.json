@@ -1,0 +1,20 @@
+{
+  "name": "pstack",
+  "version": "0.16.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.18.0" },
+  "scripts": {
+    "generate": "node scripts/generate-pstack-harness-trees.mjs",
+    "validate": "node scripts/validate-plugins.mjs",
+    "test": "node --test scripts/test/*.test.mjs",
+    "test:statechart": "node --disable-warning=ExperimentalWarning --test skills/statechart/scripts/test/*.test.ts",
+    "test:watch-pr": "bun test ./skills/poteto-mode/scripts/watch-pr ./skills/poteto-mode/scripts/check-plan.test.ts",
+    "check": "npm run validate && node scripts/generate-pstack-harness-trees.mjs --check && npm test && npm run test:statechart"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "fast-check": "4.5.3"
+  }
+}

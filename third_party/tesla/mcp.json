@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "tesla": {
-      "type": "http",
-      "url": "https://api.cursor.com/rest-mcp/tesla/mcp"
-    }
-  }
-}

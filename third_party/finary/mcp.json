@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "finary": {
-      "type": "http",
-      "url": "https://public-api.finary.com/mcp"
-    }
-  }
-}

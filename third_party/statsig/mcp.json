@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "statsig": {
-      "type": "http",
-      "url": "https://api.statsig.com/v3/mcp"
-    }
-  }
-}

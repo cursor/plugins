@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "readwise": {
-      "type": "http",
-      "url": "https://mcp2.readwise.io/mcp"
-    }
-  }
-}

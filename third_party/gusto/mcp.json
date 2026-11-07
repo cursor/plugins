@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "gusto": {
-      "type": "http",
-      "url": "https://mcp.api.gusto.com/"
-    }
-  }
-}

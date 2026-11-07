@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "sp-global": {
-      "type": "http",
-      "url": "https://kfinance.kensho.com/integrations/mcp"
-    }
-  }
-}

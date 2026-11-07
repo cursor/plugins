@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "semrush": {
-      "type": "http",
-      "url": "https://mcp.semrush.com/v2/mcp"
-    }
-  }
-}

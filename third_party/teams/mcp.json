@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "teams": {
-      "type": "http",
-      "url": "https://api.cursor.com/rest-mcp/teams/mcp"
-    }
-  }
-}

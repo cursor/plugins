@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "profile": "general-purpose",
+  "limits": {
+    "maxConcurrent": 2,
+    "maxWorkers": 2
+  },
+  "integrations": {
+    "cursorTeamKit": false,
+    "bugbot": false,
+    "automations": false,
+    "transcriptMining": false,
+    "uiControl": false
+  },
+  "roles": {
+    "implementation": { "family": "gpt", "fallback": "inherit" },
+    "exploration": { "family": "gpt", "speed": "fast", "fallback": "inherit" },
+    "architecture": { "family": "claude", "tier": "opus", "fallback": "inherit" },
+    "explanation": { "family": "claude", "fallback": "inherit" },
+    "verification": { "family": "gpt", "fallback": "inherit" },
+    "review": [
+      { "family": "gpt", "fallback": "stop" },
+      { "family": "claude", "fallback": "stop" }
+    ]
+  }
+}
