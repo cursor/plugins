@@ -244,6 +244,11 @@
       "description": "Manage contacts, email and SMS campaigns, and CRM deals."
     },
     {
+      "name": "famulor",
+      "source": "third_party/famulor",
+      "description": "Build and run AI phone assistants, calls, campaigns, and WhatsApp agents."
+    },
+    {
       "name": "typeform",
       "source": "third_party/typeform",
       "description": "Build forms, analyze responses, and manage contacts."
@@ -694,9 +699,9 @@
       "description": "Read your Tesla cars and energy sites, and send commands you confirm."
     },
     {
-      "name": "famulor",
-      "source": "third_party/famulor",
-      "description": "Build and run AI phone assistants, calls, campaigns, and WhatsApp agents."
+      "name": "fitmetrics",
+      "source": "third_party/fitmetrics",
+      "description": "Review Trainerize clients and check-ins, and update macros, messages, and programs."
     }
   ]
 }

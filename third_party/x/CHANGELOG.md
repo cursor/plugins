@@ -2,6 +2,11 @@
 
 All notable changes to this plugin will be documented here.
 
+## 2.11.1 — Find a contact's chat, X DMs only via send_chat_message
+
+- A new "Find or message a contact" section in the guide: find someone's thread with `get_chat_conversations` `participant_query` (their @username, `type` `direct`, `expansions` `participant_ids` to confirm it's them), keep paging while `has_more` is true, and retry with their @username, instead of scanning the inbox or looking the person up first.
+- X DMs go out only through `send_chat_message`, never an email or Slack draft tool. When the host holds a send for approval, as Grok Bot's X Chat draft card does, the send repeats it with exactly the same arguments, without re-encrypting.
+
 ## 2.11.0 — Posting
 
 - Requested `tweet.write` so agents can publish posts and replies with `create_posts` on `https://api.x.com/mcp`.
