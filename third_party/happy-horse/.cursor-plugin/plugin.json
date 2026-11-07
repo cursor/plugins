@@ -1,0 +1,47 @@
+{
+  "name": "happy-horse",
+  "displayName": "Happy Horse by Ace Data Cloud",
+  "version": "1.0.1",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Generate or edit Happy Horse videos with Ace Data Cloud; retrieve the completed result using the same task ID.",
+  "author": {
+    "name": "Ace Data Cloud Dev",
+    "email": "dev@acedata.cloud"
+  },
+  "homepage": "https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=happy_horse_cursor_shared_manifest_pricing",
+  "repository": "https://github.com/AceDataCloud/HappyHorseCursor",
+  "license": "MIT",
+  "logo": "assets/logo.jpg",
+  "keywords": [
+    "happy horse",
+    "happyhorse",
+    "happy-horse",
+    "video generation",
+    "video editing",
+    "ace data cloud",
+    "acedatacloud",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "happy-horse",
+    "video",
+    "acedatacloud"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "ACEDATACLOUD_API_TOKEN": {
+        "type": "string",
+        "title": "Ace Data Cloud API token",
+        "description": "Service API key from https://platform.acedata.cloud/console/applications with Happy Horse access."
+      }
+    },
+    "required": [
+      "ACEDATACLOUD_API_TOKEN"
+    ]
+  },
+  "mcpServers": "./mcp.json"
+}
