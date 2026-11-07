@@ -697,6 +697,11 @@
       "name": "fitmetrics",
       "source": "third_party/fitmetrics",
       "description": "Review Trainerize clients and check-ins, and update macros, messages, and programs."
+    },
+    {
+      "name": "iflytek-skills",
+      "source": "third_party/iflytek-skills",
+      "description": "Speech, OCR, translation, proofreading, and multimodal workflows powered by iFLYTEK APIs."
     }
   ]
 }

@@ -127,6 +127,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `questrade` | [Questrade](third_party/questrade/) | Cursor | Integrations | Read your Questrade portfolio, get live market data, and discuss potential trades. |
 | `tesla` | [Tesla](third_party/tesla/) | Cursor | Integrations | Read your Tesla cars and energy sites, and send commands you confirm. |
 | `fitmetrics` | [FitMetrics](third_party/fitmetrics/) | Cursor | Integrations | Review Trainerize clients and check-ins, and update macros, messages, and programs. |
+| `iflytek-skills` | [iFLYTEK Skills](third_party/iflytek-skills/) | iFLYTEK | Integrations | Speech, OCR, translation, proofreading, and multimodal workflows powered by iFLYTEK APIs. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
