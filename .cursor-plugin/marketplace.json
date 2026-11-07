@@ -574,6 +574,11 @@
       "description": "Work with payments, orders, catalog, customers, and invoices."
     },
     {
+      "name": "fish-audio",
+      "source": "third_party/fish-audio",
+      "description": "Generate Fish Audio speech and retrieve the finished audio."
+    },
+    {
       "name": "tailscale",
       "source": "third_party/tailscale",
       "description": "Let Grok Bot reach MCP servers on your private Tailscale network: connect your own tailnet, or your team's company tailnets turned on by a team admin, with each member using their own device.",
