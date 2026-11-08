@@ -115,6 +115,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `jobber` | [Jobber](third_party/jobber/) | Cursor | Integrations | Work with clients, requests, quotes, jobs, visits, and invoices. |
 | `databricks-genie-one` | [Databricks Genie One](third_party/databricks-genie-one/) | Cursor | Integrations | Ask Databricks Genie questions about your workspace's data in plain language. |
 | `lark` | [Lark](third_party/lark/) | Cursor | Integrations | Search, create, and update Lark Suite docs, and read Lark messages and groups. |
+| `lark-base` | [Lark Base](third_party/lark-base/) | Cursor | Integrations | Read and update tables, fields, views, and records in Lark Base. |
 | `feishu` | [Feishu](third_party/feishu/) | Cursor | Integrations | Search, create, and update Feishu docs, and read Feishu messages and groups. |
 | `framer` | [Framer](third_party/framer/) | Cursor | Integrations | Design, build, and edit your Framer sites, pages, and CMS content. |
 | `vanta` | [Vanta](third_party/vanta/) | Cursor | Integrations | Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta. |
@@ -124,6 +125,8 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `rippling` | [Rippling](third_party/rippling/) | Cursor | Integrations | Look up people, time off, and company policy in Rippling, and file time-off requests and draft hires. |
 | `onepay` | [OnePay](third_party/onepay/) | Cursor | Integrations | Access your OnePay accounts: balances, transactions, credit, Pay Later, investments, crypto, and rewards. |
 | `questrade` | [Questrade](third_party/questrade/) | Cursor | Integrations | Read your Questrade portfolio, get live market data, and discuss potential trades. |
+| `tesla` | [Tesla](third_party/tesla/) | Cursor | Integrations | Read your Tesla cars and energy sites, and send commands you confirm. |
+| `fitmetrics` | [FitMetrics](third_party/fitmetrics/) | Cursor | Integrations | Review Trainerize clients and check-ins, and update macros, messages, and programs. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
