@@ -139,7 +139,7 @@ Before writing a property-by-property type guard for external data, look for the
 import { z } from "zod";
 
 const UserSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   role: z.enum(["admin", "member"]),
 });
 
