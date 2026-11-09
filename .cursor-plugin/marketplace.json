@@ -414,6 +414,11 @@
       "description": "Search and update CRM records, lists, notes, and tasks."
     },
     {
+      "name": "mixpanel",
+      "source": "third_party/mixpanel",
+      "description": "Query events, funnels, retention, and dashboards in Mixpanel."
+    },
+    {
       "name": "hunter",
       "source": "third_party/hunter",
       "description": "Find and verify emails, discover companies, and save leads."
