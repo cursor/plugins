@@ -702,6 +702,11 @@
       "name": "fitmetrics",
       "source": "third_party/fitmetrics",
       "description": "Review Trainerize clients and check-ins, and update macros, messages, and programs."
+    },
+    {
+      "name": "mixpanel",
+      "source": "third_party/mixpanel",
+      "description": "Query events, funnels, flows, and retention in Mixpanel, and manage dashboards, cohorts, experiments, and feature flags."
     }
   ]
 }
