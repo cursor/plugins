@@ -129,6 +129,11 @@
       "description": "Report on campaigns, research keywords, and make previewed changes."
     },
     {
+      "name": "google-analytics",
+      "source": "third_party/google-analytics",
+      "description": "Run GA4 reports and manage property configuration."
+    },
+    {
       "name": "gong",
       "source": "third_party/gong",
       "description": "Pull account summaries, deal insights, and call briefs."
