@@ -32,11 +32,11 @@ Each reviewer and the synthesizer name a role line in the `pstack-models.mdc` ru
 | Tooling | `reflect tooling` | `grok-4.7-xhigh-fast` | `references/tooling-reviewer.md` |
 | Divergent | `reflect judgment, divergent, synthesizer` | `claude-opus-5-5-xhigh` | `references/divergent-reviewer.md` |
 
-Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Task` response body.
+Create a fresh scratch directory for this invocation under the scratch area provided by the harness. Give each reviewer its own subdirectory (`judgment/`, `tooling/`, `divergent/`) and reserve `synthesizer/` for step 3. Pass each template verbatim, substituting the transcript path or digest and the reviewer's absolute scratch path at `<SCRATCH_DIR>`. Never reuse a directory still owned by another invocation or delegate. Reviewers return findings in the `Task` response body.
 
 ## 3. Synthesize
 
-One `Task` call, `subagent_type: generalPurpose`, `model` from the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-xhigh`), agent mode (`readonly: false`). It spot-verifies citations through MCP, and readonly strips MCPs. Pass `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. It returns an Accepted / Rejected / Backlog list.
+One `Task` call, `subagent_type: generalPurpose`, `model` from the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-xhigh`), agent mode (`readonly: false`). It spot-verifies citations through MCP, and readonly strips MCPs. Pass `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked and `<SCRATCH_DIR>` set to the synthesizer's private directory. It returns an Accepted / Rejected / Backlog list.
 
 ## 4. Structural enforcement check
 
