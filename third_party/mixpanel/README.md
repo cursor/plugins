@@ -71,6 +71,16 @@ The hosted runtime is the source of truth for tool names and schemas. See the [M
 - Mixpanel also offers service-account authentication (beta) for headless clients. This plugin packages only the OAuth endpoint and does not send a service-account header.
 - Revoke access from the Mixpanel account's authorized applications, or disconnect the plugin.
 
+## Troubleshooting
+
+**The Mixpanel card shows a server named `Mixpanel` (capital M) that fails, and its log shows `mcp-remote` output.** That server is not this plugin. This plugin's server is named `mixpanel` and connects over HTTP without `mcp-remote`. The failing entry comes from your own MCP settings, usually a manually added server such as `npx mcp-remote https://mcp.mixpanel.com/...`. To fix it:
+
+1. Delete the `Mixpanel` server from your MCP settings, in **Cursor Settings → Tools & MCP** or `~/.cursor/mcp.json`.
+2. Reopen the Mixpanel card. It should show this plugin's connector with **Sign in**. Complete the Mixpanel sign-in.
+3. If the card still shows the old server, uninstall and reinstall the plugin.
+
+**Sign-in succeeds but tools fail or are missing.** Check that an organization admin has enabled MCP under **Settings → Org → AI Settings**, and that Cursor is version 3.13.0 or newer.
+
 ## Docs
 
 - Mixpanel MCP server: https://docs.mixpanel.com/docs/mcp

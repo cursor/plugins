@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.0.1
+
+- README: added a Troubleshooting section for a conflicting user-configured `Mixpanel` server that runs `mcp-remote`, plus the MCP-enablement and client-version checks.
+
 ## 1.0.0 — initial release
 
 - Added the `mixpanel` MCP server pointing at Mixpanel's hosted Streamable HTTP endpoint (`https://mcp.mixpanel.com/mcp`, US).
