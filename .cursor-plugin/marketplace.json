@@ -619,11 +619,6 @@
       }
     },
     {
-      "name": "jobber",
-      "source": "third_party/jobber",
-      "description": "Work with clients, requests, quotes, jobs, visits, and invoices."
-    },
-    {
       "name": "databricks-genie",
       "source": "third_party/databricks-genie",
       "description": "Ask Databricks Genie questions about your workspace's data in plain language."
