@@ -1,7 +1,7 @@
 {
   "name": "mixpanel",
   "displayName": "Mixpanel",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "minClientVersions": {
     "cursor": "3.13.0"
   },
@@ -31,5 +31,20 @@
     "analytics",
     "mcp"
   ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "MIXPANEL_MCP_HOST": {
+        "type": "string",
+        "title": "Mixpanel region",
+        "description": "The MCP host for your Mixpanel data region: mcp.mixpanel.com (United States), mcp-eu.mixpanel.com (Europe), or mcp-in.mixpanel.com (India).",
+        "enum": [
+          "mcp.mixpanel.com",
+          "mcp-eu.mixpanel.com",
+          "mcp-in.mixpanel.com"
+        ]
+      }
+    }
+  },
   "mcpServers": "./mcp.json"
 }

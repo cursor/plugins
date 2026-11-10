@@ -8,37 +8,41 @@ Query events, funnels, flows, retention, and session replays, and manage dashboa
 
 1. Open **Cursor Settings → Plugins**.
 2. Search for **Mixpanel**.
-3. Click **Install**, then complete the Mixpanel sign-in prompt.
+3. Click **Install**, choose your Mixpanel region, then complete the Mixpanel sign-in prompt.
 
 Or run `/add-plugin mixpanel` in chat.
 
-In Grok Bot, open **Settings → Plugins**, install **Mixpanel**, and complete the same Mixpanel sign-in.
+In Grok Bot, the region is asked when you sign in, the same way Zoho asks for its data center. In Cursor, the region is the plugin's **Mixpanel region** setup value.
 
 ## MCP
+
+Mixpanel hosts a separate MCP server per data region. The plugin ships one server whose host is the region you choose:
 
 ```json
 {
   "mcpServers": {
     "mixpanel": {
       "type": "http",
-      "url": "https://mcp.mixpanel.com/mcp",
+      "url": "https://${MIXPANEL_MCP_HOST}/mcp",
       "placement": "server"
     }
   }
 }
 ```
 
-Auth is OAuth. Mixpanel uses the authorization code flow with PKCE (S256) and dynamic client registration, so there is no API key or client ID to configure. Cursor or Grok Bot prompts for Mixpanel sign-in when the plugin connects. Each user signs in with their own Mixpanel account, and tool calls cannot exceed that user's project permissions.
+| Mixpanel region | `MIXPANEL_MCP_HOST` | URL |
+| --- | --- | --- |
+| United States | `mcp.mixpanel.com` | `https://mcp.mixpanel.com/mcp` |
+| Europe | `mcp-eu.mixpanel.com` | `https://mcp-eu.mixpanel.com/mcp` |
+| India | `mcp-in.mixpanel.com` | `https://mcp-in.mixpanel.com/mcp` |
+
+`MIXPANEL_MCP_HOST` is declared in `plugin.json` as an enum of those three hosts, so no other host can be stored. Grok Bot's region picker lists the same three regions; keep the two in sync if Mixpanel adds one.
+
+Auth is OAuth. Mixpanel uses the authorization code flow with PKCE (S256) and dynamic client registration, so there is no API key or client ID to configure. Each regional server publishes its own authorization server. Cursor or Grok Bot prompts for Mixpanel sign-in when the plugin connects. Each user signs in with their own Mixpanel account, and tool calls cannot exceed that user's project permissions.
 
 `"placement": "server"` makes Grok Bot dial the server through the hosted MCP path.
 
-This plugin connects to Mixpanel's **US** server. EU and India organizations use different hosts:
-
-| Region | URL |
-| --- | --- |
-| US | `https://mcp.mixpanel.com/mcp` |
-| EU | `https://mcp-eu.mixpanel.com/mcp` |
-| IN | `https://mcp-in.mixpanel.com/mcp` |
+Pick the region your Mixpanel organization lives in. A project in Europe is not on the US server. Switching regions needs a new sign-in, because each region keeps its own.
 
 ## Before you connect
 
@@ -66,6 +70,7 @@ The hosted runtime is the source of truth for tool names and schemas. See the [M
 
 ## Notes
 
+- Version 1.0.0 always used the US server. After updating, choose your region and sign in again. Pick **United States** to keep a US organization.
 - Many tools write to the project: dashboards, Lexicon entries, cohorts, metrics, experiments, and feature flags. Confirm the project and the change before letting the agent write.
 - If Verified Mode is on, query results still include unverified entities. They are flagged, and results prefer a verified equivalent when one exists.
 - Mixpanel also offers service-account authentication (beta) for headless clients. This plugin packages only the OAuth endpoint and does not send a service-account header.
@@ -74,7 +79,7 @@ The hosted runtime is the source of truth for tool names and schemas. See the [M
 ## Docs
 
 - Mixpanel MCP server: https://docs.mixpanel.com/docs/mcp
-- Server URL (US): https://mcp.mixpanel.com/mcp
+- Server URLs: `https://mcp.mixpanel.com/mcp` (United States), `https://mcp-eu.mixpanel.com/mcp` (Europe), `https://mcp-in.mixpanel.com/mcp` (India)
 
 Logo is Mixpanel's official mark, from the favicon published on mixpanel.com, placed on the dark tile used by mixpanel.com's apple-touch icon.
 

@@ -2,7 +2,7 @@
   "mcpServers": {
     "mixpanel": {
       "type": "http",
-      "url": "https://mcp.mixpanel.com/mcp",
+      "url": "https://${MIXPANEL_MCP_HOST}/mcp",
       "placement": "server"
     }
   }
