@@ -130,6 +130,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `fitmetrics` | [FitMetrics](third_party/fitmetrics/) | Cursor | Integrations | Review Trainerize clients and check-ins, and update macros, messages, and programs. |
 | `mixpanel` | [Mixpanel](third_party/mixpanel/) | Cursor | Integrations | Query events, funnels, flows, and retention in Mixpanel, and manage dashboards, cohorts, experiments, and feature flags. |
 | `metricool` | [Metricool](third_party/metricool/) | Cursor | Integrations | Plan and publish social posts, pull metrics and reports, and manage inbox, reviews, and ads across your Metricool brands. |
+| `menta` | [Menta](third_party/menta/) | Cursor | Integrations | Buy from online stores worldwide, paid with your saved card within spending limits you approve. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
