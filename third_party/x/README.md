@@ -2,7 +2,7 @@
 
 Cursor plugin that connects agents to the [X API](https://docs.x.com) through X's official hosted [Model Context Protocol](https://modelcontextprotocol.io/) server at `https://api.x.com/mcp`.
 
-This plugin signs you in with OAuth as your own X account. It is no longer read-only: alongside searching and reading public X data, agents can manage your lists, bookmarks, blocks, and mutes, call X Chat endpoints, and schedule X calls.
+This plugin signs you in with OAuth as your own X account. It is no longer read-only: alongside searching and reading public X data, agents can publish posts you approve, manage your lists, bookmarks, blocks, and mutes, call X Chat endpoints, and schedule X calls.
 
 ## Install
 
@@ -24,6 +24,7 @@ Or run `/add-plugin x` in chat.
         "CLIENT_ID": "NGdZYmo4VVp2T1BnRG55NlExOGQ6MTpjaQ",
         "scopes": [
           "tweet.read",
+          "tweet.write",
           "users.read",
           "follows.read",
           "space.read",
@@ -39,6 +40,8 @@ Or run `/add-plugin x` in chat.
           "dm.write",
           "calls.read",
           "calls.write",
+          "broadcast.read",
+          "broadcast.write",
           "media.write",
           "developer.billing.write",
           "developer.write",
@@ -54,7 +57,7 @@ Or run `/add-plugin x` in chat.
 
 | Category | Capabilities |
 | --- | --- |
-| Posts | Fetch posts, see likers / reposters / quoters, recent counts |
+| Posts | Publish posts and replies you approve; fetch posts, see likers / reposters / quoters, recent counts |
 | Search | Full-archive post search, user search, news search |
 | Users | Look up users by id or handle; read a user's posts, timeline, and mentions |
 | News & trends | Get news stories, get trends for a location (WOEID) |
@@ -68,7 +71,7 @@ Or run `/add-plugin x` in chat.
 | Calls | List and open scheduled X calls; schedule, update, or cancel one; RSVP to an invitation |
 | Developer account | Read your X developer account settings and credit balance |
 
-Posting is not included: the plugin does not request the `tweet.write` scope, so agents cannot publish posts as you.
+Posting uses the `tweet.write` scope. Agents show you the exact text of each post and publish it only after you approve it; a post is public as soon as it goes out.
 
 ## Setup
 
@@ -80,7 +83,7 @@ Requests run in your user context, so they count against your account's rate lim
 
 ## Scopes requested
 
-`tweet.read`, `users.read`, `follows.read`, `space.read`, `mute.read`, `like.read`, `list.read`, `list.write`, `block.read`, `block.write`, `bookmark.read`, `bookmark.write`, `dm.read`, `dm.write`, `calls.read`, `calls.write`, `media.write`, `developer.billing.write`, `developer.write`, `offline.access`
+`tweet.read`, `tweet.write`, `users.read`, `follows.read`, `space.read`, `mute.read`, `like.read`, `list.read`, `list.write`, `block.read`, `block.write`, `bookmark.read`, `bookmark.write`, `dm.read`, `dm.write`, `calls.read`, `calls.write`, `broadcast.read`, `broadcast.write`, `media.write`, `developer.billing.write`, `developer.write`, `offline.access`
 
 ## X documentation search
 
