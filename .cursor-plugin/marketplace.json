@@ -707,6 +707,11 @@
       "name": "mixpanel",
       "source": "third_party/mixpanel",
       "description": "Query events, funnels, flows, and retention in Mixpanel, and manage dashboards, cohorts, experiments, and feature flags."
+    },
+    {
+      "name": "metricool",
+      "source": "third_party/metricool",
+      "description": "Plan and publish social posts, pull metrics and reports, and manage inbox, reviews, and ads across your Metricool brands."
     }
   ]
 }
