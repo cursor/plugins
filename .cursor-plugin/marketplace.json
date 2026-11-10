@@ -714,8 +714,8 @@
       "description": "Plan and publish social posts, pull metrics and reports, and manage inbox, reviews, and ads across your Metricool brands."
     },
     {
-      "name": "menta",
-      "source": "third_party/menta",
+      "name": "crossmint",
+      "source": "third_party/crossmint",
       "description": "Buy from online stores worldwide, paid with your saved card within spending limits you approve.",
       "minClientVersions": {
         "cursor": "never",

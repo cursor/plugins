@@ -1,6 +1,6 @@
 {
-  "name": "menta",
-  "displayName": "Menta",
+  "name": "crossmint",
+  "displayName": "Crossmint",
   "version": "1.0.0",
   "minClientVersions": {
     "cursor": "never",
@@ -15,10 +15,10 @@
   "homepage": "https://menta.crossmint.com",
   "repository": "https://github.com/cursor/plugins",
   "license": "MIT",
-  "logo": "assets/logo.png",
+  "logo": "assets/logo.svg",
   "keywords": [
-    "menta",
     "crossmint",
+    "menta",
     "shopping",
     "checkout",
     "agentic commerce",
@@ -30,7 +30,7 @@
   ],
   "category": "integrations",
   "tags": [
-    "menta",
+    "crossmint",
     "shopping",
     "checkout",
     "grok",

@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "menta": {
+    "crossmint": {
       "type": "http",
       "url": "https://menta.crossmint.com/mcp"
     }

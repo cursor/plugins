@@ -1,6 +1,6 @@
-# Menta
+# Crossmint
 
-Grok Bot plugin that connects agents to [Menta](https://menta.crossmint.com) by Crossmint through Menta's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Grok Bot plugin that connects agents to [Crossmint](https://www.crossmint.com)'s Menta agent checkout through Crossmint's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
 
 Tell Grok what to buy and where. Menta checks out for you at online stores worldwide and pays with a card you saved, within a spending limit you approved.
 
@@ -15,7 +15,7 @@ Tell Grok what to buy and where. Menta checks out for you at online stores world
 ```json
 {
   "mcpServers": {
-    "menta": {
+    "crossmint": {
       "type": "http",
       "url": "https://menta.crossmint.com/mcp"
     }
@@ -23,7 +23,7 @@ Tell Grok what to buy and where. Menta checks out for you at online stores world
 }
 ```
 
-Auth is OAuth 2.1 with PKCE. An unauthenticated request returns `401` with `resource_metadata` pointing at `https://menta.crossmint.com/.well-known/oauth-protected-resource/mcp` and the `commerce:invoke` scope. The authorization server is `https://login.menta.crossmint.com`. It supports dynamic client registration and Client ID Metadata Documents, so there is no client ID or key to configure.
+Auth is OAuth 2.1 with PKCE. An unauthenticated request returns `401` with `resource_metadata` pointing at `https://menta.crossmint.com/.well-known/oauth-protected-resource/mcp` and the `commerce:invoke` scope. The authorization server is `https://login.menta.crossmint.com`. It supports dynamic client registration and Client ID Metadata Documents, so there is no client ID or key to configure. The sign-in and consent pages are branded Menta.
 
 ## Before you connect
 
@@ -54,7 +54,7 @@ These capabilities come from Menta's help page. The hosted runtime is the source
 - Server URL: https://menta.crossmint.com/mcp
 - Support: agents@crossmint.com
 
-Logo is Menta's official mark, the `brand/icon.png` from menta.crossmint.com.
+Logo is Crossmint's official mark, `crossmint-mark-gradient.svg` from https://www.crossmint.com/brand, centered on a square canvas.
 
 ## License
 
