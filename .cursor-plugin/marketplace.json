@@ -639,11 +639,6 @@
       "description": "Search, create, and update Feishu docs, and read Feishu messages and groups."
     },
     {
-      "name": "framer",
-      "source": "third_party/framer",
-      "description": "Design, build, and edit your Framer sites, pages, and CMS content."
-    },
-    {
       "name": "vanta",
       "source": "third_party/vanta",
       "description": "Query and remediate compliance tests, controls, frameworks, risks, and vulnerabilities in Vanta."
