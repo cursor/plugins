@@ -1,25 +1,25 @@
-# Databricks Genie One
+# Databricks Genie
 
-Cursor plugin that connects agents to [Databricks Genie](https://www.databricks.com/product/business-intelligence/genie) through the Genie One [Model Context Protocol](https://modelcontextprotocol.io/) server on your Databricks workspace.
+Cursor plugin that connects agents to [Databricks Genie](https://www.databricks.com/product/business-intelligence/genie) through the Genie [Model Context Protocol](https://modelcontextprotocol.io/) server on your Databricks workspace.
 
 Agents ask Genie questions about your workspace's data in plain language, and Genie answers from the data the signed-in user can read.
 
 ## Install
 
 1. A Databricks account admin creates an OAuth app connection (see [Team setup](#team-setup)).
-2. A Cursor team admin opens **Cursor Settings → Plugins**, searches for **Databricks Genie One**, installs it for the team, and enters the workspace hostname and client.
+2. A Cursor team admin opens **Cursor Settings → Plugins**, searches for **Databricks Genie**, installs it for the team, and enters the workspace hostname and client.
 3. Each member signs in to Databricks when Cursor prompts them.
 
-Or run `/add-plugin databricks-genie-one` in chat.
+Or run `/add-plugin databricks-genie` in chat.
 
 ## MCP
 
-The plugin points at your workspace's Genie One endpoint:
+The plugin points at your workspace's Genie endpoint:
 
 ```json
 {
   "mcpServers": {
-    "databricks-genie-one": {
+    "databricks-genie": {
       "type": "http",
       "url": "https://${DATABRICKS_HOST}/ai-gateway/mcp-services/system.ai.genie_one_mcp",
       "auth": {

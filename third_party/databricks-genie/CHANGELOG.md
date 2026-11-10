@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.1.0 — Databricks Genie
+
+- Renamed the plugin from Databricks Genie One to Databricks Genie. The plugin id and MCP server key are now `databricks-genie`.
+
 ## 1.0.1 — Genie icon
 
 - Logo: replaced the Databricks mark with Databricks' official Genie icon from https://www.databricks.com/sites/default/files/2026-05/icon-genie.svg, rendered at 192×192 on a transparent background. No server or client-version changes.

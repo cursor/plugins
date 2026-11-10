@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "databricks-genie-one": {
+    "databricks-genie": {
       "type": "http",
       "url": "https://${DATABRICKS_HOST}/ai-gateway/mcp-services/system.ai.genie_one_mcp",
       "auth": {

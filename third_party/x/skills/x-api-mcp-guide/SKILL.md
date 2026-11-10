@@ -138,7 +138,7 @@ Once per session:
 
 | Tool | Use |
 | --- | --- |
-| `get_chat_conversations` | The inbox, `max_results` 1000 |
+| `get_chat_conversations` | The inbox, `max_results` 1000. `participant_query` finds one person's thread ([Find or message a contact](#find-or-message-a-contact)) |
 | `get_chat_conversation` | One thread, including `participant_ids` / `member_ids` |
 | `get_chat_conversation_events` | `data[].encoded_event` plus `meta.conversation_key_events`, newest first, `max_results` 100 |
 | `get_users_public_keys` | Signing keys for senders, all versions, up to 100 `ids` per call |
@@ -163,6 +163,16 @@ For any set of events:
 
 Each message's `status` is `verified`, `unencrypted`, or `unverified` (an unverified message still has its text). Focus on the content. Don't comment on encryption unprompted or call plain messages odd. Answer plainly from `status` when asked about security, and mention `unverified` briefly before acting on that message.
 
+### Find or message a contact
+
+To find the thread with someone the owner already chats with, or to message them:
+
+1. `get_chat_conversations` with `participant_query` set to their @username (or a word of their name if you don't know it), `type` `direct`, `max_results` 1000, and `expansions` `participant_ids`. Don't list the whole inbox, and don't look the person up to get their id first.
+2. Confirm it's them from the expanded participant's `username` and `name`. The match's `id` is the conversation id the other Chat tools take.
+3. A page can be empty while `meta.has_more` is true: keep paging with `meta.next_token` and the same query until a match or `has_more` is false.
+4. No match: retry with their @username if you searched by name, then check message requests by `sender_id`. Still nothing means they have no thread with the owner yet.
+5. To message them, follow [Send or reply](#send-or-reply) with that `id`.
+
 ### Unread
 
 For "what's unread" or "anything new", don't scan every conversation.
@@ -175,7 +185,7 @@ For "what's unread" or "anything new", don't scan every conversation.
 
 ### Read or summarize
 
-Read every inbox conversation, not only the ones that look relevant: list with `get_chat_conversations` (`max_results` 1000, all pages), then decrypt each. Skip message requests unless asked; if `meta.has_message_requests` is true, end with one line offering them. To find a named person's thread, resolve their handle to an id and match participants, then fall back to message requests by `sender_id`. Never claim you checked everything unless you read every thread (and both request inboxes, if asked) to the end; otherwise say how many you read. Optionally `mark_chat_conversation_read` afterwards.
+Read every inbox conversation, not only the ones that look relevant: list with `get_chat_conversations` (`max_results` 1000, all pages), then decrypt each. Skip message requests unless asked; if `meta.has_message_requests` is true, end with one line offering them. To find a named person's thread, see [Find or message a contact](#find-or-message-a-contact). Never claim you checked everything unless you read every thread (and both request inboxes, if asked) to the end; otherwise say how many you read. Optionally `mark_chat_conversation_read` afterwards.
 
 ### Message requests
 
@@ -187,7 +197,9 @@ Pending 1:1 requests aren't in `get_chat_conversations`. List, open, and accept 
 
 ### Send or reply
 
-The owner must approve the text unless they already told you to send or reply ("reply that I'll be there"). "Check my inbox" is not approval.
+The owner must approve the text unless they already told you to send or reply ("reply that I'll be there"). "Check my inbox" is not approval. To message someone they already chat with, find the thread first ([Find or message a contact](#find-or-message-a-contact)).
+
+X DMs go out only through `send_chat_message`; an email or Slack draft tool can't send them, so never route a DM there or tell the owner it needs one. If the host holds a `send_chat_message` call for the owner to approve (Grok Bot shows an X Chat draft card), call it again with exactly the same arguments, the same encrypted payload included (don't re-encrypt), once they press Send or tell you to send it.
 
 - **Thread with a conversation key:** fetch events and `conversation_key_events`, `session-encrypt` with the approved text, then `send_chat_message` with `id`, `message_id`, `encoded_message_create_event`, and `encoded_message_event_signature`. Confirm without dumping ciphertext.
 - **No conversation key yet** (first message, or only plain messages): get both users' public keys (`public_key` and `public_key_version`), `session-encrypt` with `prepare` set (same shape as `prepare-keys` input), call `add_conversation_keys` with its output **before** `send_chat_message`, and strip any `_local_*` fields. `add_conversation_keys` returning `UNAUTHORIZED_REQUESTING_USER` means you can't set keys there or the peer isn't on X Chat: stop and report.
