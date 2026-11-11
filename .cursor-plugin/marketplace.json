@@ -707,6 +707,11 @@
       "name": "eight-sleep",
       "source": "third_party/eight-sleep",
       "description": "Connect your Eight Sleep account to see your sleep scores, stages and heart metrics, check your Pod's status and temperature settings, and manage your alarms and your side of the Pod, with your approval for each change."
+    },
+    {
+      "name": "mailtea",
+      "source": "third_party/mailtea",
+      "description": "Send email and newsletters from chat: transactional email, scheduled newsletters, contacts, segments, senders, domains and delivery status, plus three skills for email, email design and website design."
     }
   ]
 }
