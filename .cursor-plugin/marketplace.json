@@ -619,11 +619,6 @@
       }
     },
     {
-      "name": "jobber",
-      "source": "third_party/jobber",
-      "description": "Work with clients, requests, quotes, jobs, visits, and invoices."
-    },
-    {
       "name": "databricks-genie",
       "source": "third_party/databricks-genie",
       "description": "Ask Databricks Genie questions about your workspace's data in plain language."
@@ -642,11 +637,6 @@
       "name": "feishu",
       "source": "third_party/feishu",
       "description": "Search, create, and update Feishu docs, and read Feishu messages and groups."
-    },
-    {
-      "name": "framer",
-      "source": "third_party/framer",
-      "description": "Design, build, and edit your Framer sites, pages, and CMS content."
     },
     {
       "name": "vanta",
@@ -712,6 +702,11 @@
       "name": "metricool",
       "source": "third_party/metricool",
       "description": "Plan and publish social posts, pull metrics and reports, and manage inbox, reviews, and ads across your Metricool brands."
+    },
+    {
+      "name": "eight-sleep",
+      "source": "third_party/eight-sleep",
+      "description": "Connect your Eight Sleep account to see your sleep scores, stages and heart metrics, check your Pod's status and temperature settings, and manage your alarms and your side of the Pod, with your approval for each change."
     },
     {
       "name": "notfair",

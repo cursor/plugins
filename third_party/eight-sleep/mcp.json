@@ -1,8 +1,8 @@
 {
   "mcpServers": {
-    "framer": {
+    "eight-sleep": {
       "type": "http",
-      "url": "https://mcp.framer.com/mcp",
+      "url": "https://public-api.8slp.net/mcp",
       "placement": "server"
     }
   }
