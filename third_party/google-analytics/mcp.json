@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "google-analytics": {
+      "type": "http",
+      "url": "https://api.cursor.com/rest-mcp/google-analytics/mcp"
+    }
+  }
+}

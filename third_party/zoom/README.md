@@ -8,7 +8,7 @@ Search meetings and recordings, pull summaries and transcripts, and work with Zo
 
 1. Open **Cursor Settings → Plugins**.
 2. Search for **Zoom**.
-3. Click **Install**, then set the client ID (below) and complete the Zoom sign-in prompt.
+3. Click **Install**, then set the Client ID and the Client Secret it requires, or a Public Client ID (below), and complete the Zoom sign-in prompt.
 
 Or run `/add-plugin zoom` in chat.
 
@@ -38,13 +38,13 @@ Zoom's MCP servers only support manual client registration — Dynamic Client Re
 3. Under **Basic Information → OAuth Information**, register both redirect URIs:
    - Desktop: `http://127.0.0.1:8787/callback`
    - Web and Cloud Agents: `https://www.cursor.com/agents/mcp/oauth/callback`
-4. Under **Basic Information → App Credentials**, turn on **Use Public Client OAuth** and copy the **Public Client ID**.
-5. In **Dashboard → Plugins → Configure**, set **Zoom Client ID** to that Public Client ID and leave **Zoom Client Secret** blank.
+4. Under **Basic Information → App Credentials**, copy the **Client ID** and **Client Secret**. A Client Secret is required along with the Client ID. To sign in without a secret instead, turn on **Use Public Client OAuth** and copy the **Public Client ID**.
+5. In **Dashboard → Plugins → Configure**, set **Zoom Client ID or Public Client ID** and **Zoom Client Secret** to the values you copied. Leave the secret blank only with the Public Client ID.
 6. Complete the Zoom OAuth login when Cursor prompts.
 
-Zoom only accepts a loopback redirect such as `http://127.0.0.1:8787/callback` for a public client, and rejects `localhost` outright. A public client proves each sign-in with PKCE instead of a shared secret, so there is no secret to store or leak. The confidential Client ID and Client Secret pair still works for Web and Cloud Agents, but Zoom refuses its desktop loopback redirect.
+If you regenerate the Client Secret in Zoom, enter the new one in Cursor too. Desktop sign-ins through the loopback redirect need the Public Client ID: Zoom accepts `http://127.0.0.1:8787/callback` only for a public client, and rejects `localhost` outright.
 
-Each member needs a license for the Zoom products they want to reach. On a team marketplace an admin sets the client ID once for everyone; each member still completes their own Zoom OAuth login, so tool calls run with that member's Zoom permissions.
+Each member needs a license for the Zoom products they want to reach. On a team marketplace an admin sets the credentials once for everyone; each member still completes their own Zoom OAuth login, so tool calls run with that member's Zoom permissions.
 
 ## Other Zoom MCP servers
 

@@ -1,0 +1,35 @@
+{
+  "name": "mixpanel",
+  "displayName": "Mixpanel",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Query events, funnels, flows, and retention in Mixpanel, and manage dashboards, cohorts, experiments, and feature flags.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://docs.mixpanel.com/docs/mcp",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "mixpanel",
+    "product analytics",
+    "funnels",
+    "retention",
+    "dashboards",
+    "cohorts",
+    "experiments",
+    "feature flags",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "mixpanel",
+    "analytics",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

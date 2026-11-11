@@ -2,7 +2,11 @@
   "mcpServers": {
     "google-cloud-bigquery": {
       "type": "http",
-      "url": "https://bigquery.googleapis.com/mcp"
+      "url": "https://bigquery.googleapis.com/mcp",
+      "auth": {
+        "CLIENT_ID": "${CLIENT_ID}",
+        "CLIENT_SECRET": "${CLIENT_SECRET}"
+      }
     }
   }
 }

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "onepay": {
+      "type": "http",
+      "url": "https://mcp.onepay.com"
+    }
+  }
+}

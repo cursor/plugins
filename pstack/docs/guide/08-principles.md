@@ -24,7 +24,7 @@ Say two parallel attempts are about to write to the same branch:
 separate before serializing shared state. give each attempt its own worktree, no locks.
 ```
 
-Each phrase lands because the rule behind it is specific. The agent still has to say, in its reply, which decision the rule changed. A principle citation with no decision behind it is the tell that it name-dropped instead of applying.
+Each phrase lands because the rule behind it is specific. The agent still has to say, in its reply, which decision the rule changed. A principle citation with no decision behind it means the agent named the rule without applying it.
 
 ## The 24, briefly
 
