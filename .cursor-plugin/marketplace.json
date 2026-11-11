@@ -707,6 +707,11 @@
       "name": "eight-sleep",
       "source": "third_party/eight-sleep",
       "description": "Connect your Eight Sleep account to see your sleep scores, stages and heart metrics, check your Pod's status and temperature settings, and manage your alarms and your side of the Pod, with your approval for each change."
+    },
+    {
+      "name": "netsuite",
+      "source": "third_party/netsuite",
+      "description": "Work with records, reports, saved searches, and SuiteQL queries in NetSuite."
     }
   ]
 }
