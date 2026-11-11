@@ -702,11 +702,6 @@
       "name": "metricool",
       "source": "third_party/metricool",
       "description": "Plan and publish social posts, pull metrics and reports, and manage inbox, reviews, and ads across your Metricool brands."
-    },
-    {
-      "name": "canva",
-      "source": "third_party/canva",
-      "description": "Generate, edit, resize, and export Canva designs, and manage assets, folders, brand templates, and comments."
     }
   ]
 }
