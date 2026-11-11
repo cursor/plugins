@@ -128,6 +128,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `fitmetrics` | [FitMetrics](third_party/fitmetrics/) | Cursor | Integrations | Review Trainerize clients and check-ins, and update macros, messages, and programs. |
 | `mixpanel` | [Mixpanel](third_party/mixpanel/) | Cursor | Integrations | Query events, funnels, flows, and retention in Mixpanel, and manage dashboards, cohorts, experiments, and feature flags. |
 | `metricool` | [Metricool](third_party/metricool/) | Cursor | Integrations | Plan and publish social posts, pull metrics and reports, and manage inbox, reviews, and ads across your Metricool brands. |
+| `eight-sleep` | [Eight Sleep](third_party/eight-sleep/) | Cursor | Integrations | Connect your Eight Sleep account to see your sleep scores, stages and heart metrics, check your Pod's status and temperature settings, and manage your alarms and your side of the Pod, with your approval for each change. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

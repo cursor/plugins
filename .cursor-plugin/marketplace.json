@@ -702,6 +702,11 @@
       "name": "metricool",
       "source": "third_party/metricool",
       "description": "Plan and publish social posts, pull metrics and reports, and manage inbox, reviews, and ads across your Metricool brands."
+    },
+    {
+      "name": "eight-sleep",
+      "source": "third_party/eight-sleep",
+      "description": "Connect your Eight Sleep account to see your sleep scores, stages and heart metrics, check your Pod's status and temperature settings, and manage your alarms and your side of the Pod, with your approval for each change."
     }
   ]
 }
