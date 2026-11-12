@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "cursor-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "luktra/pstack_fork"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "pstack@cursor-plugins": true
+  }
+}
