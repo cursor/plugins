@@ -712,6 +712,11 @@
       "name": "netsuite",
       "source": "third_party/netsuite",
       "description": "Work with records, reports, saved searches, and SuiteQL queries in NetSuite."
+    },
+    {
+      "name": "front",
+      "source": "third_party/front",
+      "description": "Search conversations, draft and send replies, and manage tags, tasks, and inboxes."
     }
   ]
 }
