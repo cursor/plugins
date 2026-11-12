@@ -722,6 +722,11 @@
       "name": "paypal",
       "source": "third_party/paypal",
       "description": "Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal."
+    },
+    {
+      "name": "keenable",
+      "source": "third_party/keenable",
+      "description": "Search the web and fetch pages as clean markdown."
     }
   ]
 }
