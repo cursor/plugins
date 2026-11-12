@@ -709,6 +709,16 @@
       "description": "Connect your Eight Sleep account to see your sleep scores, stages and heart metrics, check your Pod's status and temperature settings, and manage your alarms and your side of the Pod, with your approval for each change."
     },
     {
+      "name": "netsuite",
+      "source": "third_party/netsuite",
+      "description": "Work with records, reports, saved searches, and SuiteQL queries in NetSuite."
+    },
+    {
+      "name": "front",
+      "source": "third_party/front",
+      "description": "Search conversations, draft and send replies, and manage tags, tasks, and inboxes."
+    },
+    {
       "name": "notfair",
       "source": "third_party/notfair",
       "description": "Operate Google, Meta, X, LinkedIn, Reddit, and TikTok Ads plus GA4, Search Console, GoHighLevel, and WordPress through one OAuth MCP."

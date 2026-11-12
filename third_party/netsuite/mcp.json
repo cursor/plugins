@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "netsuite": {
+      "type": "http",
+      "url": "${NETSUITE_MCP_URL}"
+    }
+  }
+}
