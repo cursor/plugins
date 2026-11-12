@@ -129,6 +129,11 @@
       "description": "Report on campaigns, research keywords, and make previewed changes."
     },
     {
+      "name": "google-analytics",
+      "source": "third_party/google-analytics",
+      "description": "Run GA4 reports and manage property configuration."
+    },
+    {
       "name": "gong",
       "source": "third_party/gong",
       "description": "Pull account summaries, deal insights, and call briefs."
@@ -614,13 +619,8 @@
       }
     },
     {
-      "name": "jobber",
-      "source": "third_party/jobber",
-      "description": "Work with clients, requests, quotes, jobs, visits, and invoices."
-    },
-    {
-      "name": "databricks-genie-one",
-      "source": "third_party/databricks-genie-one",
+      "name": "databricks-genie",
+      "source": "third_party/databricks-genie",
       "description": "Ask Databricks Genie questions about your workspace's data in plain language."
     },
     {
@@ -629,14 +629,14 @@
       "description": "Search, create, and update Lark Suite docs, and read Lark messages and groups."
     },
     {
+      "name": "lark-base",
+      "source": "third_party/lark-base",
+      "description": "Read and update tables, fields, views, and records in Lark Base."
+    },
+    {
       "name": "feishu",
       "source": "third_party/feishu",
       "description": "Search, create, and update Feishu docs, and read Feishu messages and groups."
-    },
-    {
-      "name": "framer",
-      "source": "third_party/framer",
-      "description": "Design, build, and edit your Framer sites, pages, and CMS content."
     },
     {
       "name": "vanta",
@@ -682,6 +682,46 @@
         "grokbot": "0.49.0",
         "sand": "0.49.0"
       }
+    },
+    {
+      "name": "tesla",
+      "source": "third_party/tesla",
+      "description": "Read your Tesla cars and energy sites, and send commands you confirm."
+    },
+    {
+      "name": "fitmetrics",
+      "source": "third_party/fitmetrics",
+      "description": "Review Trainerize clients and check-ins, and update macros, messages, and programs."
+    },
+    {
+      "name": "mixpanel",
+      "source": "third_party/mixpanel",
+      "description": "Query events, funnels, flows, and retention in Mixpanel, and manage dashboards, cohorts, experiments, and feature flags."
+    },
+    {
+      "name": "metricool",
+      "source": "third_party/metricool",
+      "description": "Plan and publish social posts, pull metrics and reports, and manage inbox, reviews, and ads across your Metricool brands."
+    },
+    {
+      "name": "eight-sleep",
+      "source": "third_party/eight-sleep",
+      "description": "Connect your Eight Sleep account to see your sleep scores, stages and heart metrics, check your Pod's status and temperature settings, and manage your alarms and your side of the Pod, with your approval for each change."
+    },
+    {
+      "name": "netsuite",
+      "source": "third_party/netsuite",
+      "description": "Work with records, reports, saved searches, and SuiteQL queries in NetSuite."
+    },
+    {
+      "name": "front",
+      "source": "third_party/front",
+      "description": "Search conversations, draft and send replies, and manage tags, tasks, and inboxes."
+    },
+    {
+      "name": "paypal",
+      "source": "third_party/paypal",
+      "description": "Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal."
     },
     {
       "name": "keenable",
