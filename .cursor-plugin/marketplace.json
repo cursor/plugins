@@ -717,6 +717,11 @@
       "name": "front",
       "source": "third_party/front",
       "description": "Search conversations, draft and send replies, and manage tags, tasks, and inboxes."
+    },
+    {
+      "name": "paypal",
+      "source": "third_party/paypal",
+      "description": "Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal."
     }
   ]
 }
