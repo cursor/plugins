@@ -722,6 +722,11 @@
       "name": "paypal",
       "source": "third_party/paypal",
       "description": "Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal."
+    },
+    {
+      "name": "resumenext",
+      "source": "third_party/resumenext",
+      "description": "Check your resume's ATS score, match it to a job post, score cover letters and LinkedIn profiles, and open the result in the ResumeNext editor. No sign-in needed."
     }
   ]
 }
