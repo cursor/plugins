@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Mine the current conversation for durable learnings, then route them into skill edits.
 
-Invoke when the user says "reflect" or "/reflect". Skip when the conversation is trivial, off-topic, or already covered by an existing skill the parent followed correctly. One-offs are not learnings.
+Invoke when the user says "reflect" or "/reflect". Skip when the conversation is trivial, off-topic, or already covered by an existing skill the parent followed correctly. One-offs are not learnings. Before rejecting a candidate as a one-off, check the whole selected transcript for recurrence, including the parts before compaction; a summary is not evidence that it happened only once.
 
 ## 1. Locate the active transcript
 
@@ -37,6 +37,8 @@ Pass each template verbatim, substituting the transcript path or digest where ma
 ## 3. Synthesize
 
 One `Task` call, `subagent_type: generalPurpose`, `model` from the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-xhigh`), agent mode (`readonly: false`). It spot-verifies citations through MCP, and readonly strips MCPs. Pass `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. It returns an Accepted / Rejected / Backlog list.
+
+Pass the same transcript path or digest from step 1 to the synthesizer: substitute it for `<ABSOLUTE_PATH>` or `<DIGEST IF FILE PATH UNAVAILABLE>`.
 
 ## 4. Structural enforcement check
 

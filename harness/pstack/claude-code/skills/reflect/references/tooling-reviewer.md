@@ -16,7 +16,7 @@ Examples of the pattern:
 - User describes a flaky test the agent could have queried via an observability MCP. Routing: the debugging skill should mention the observability MCP.
 - User links a chat thread the agent could have fetched via a chat MCP. Routing: the relevant skill should mention the chat MCP.
 
-Read the active transcript at <ABSOLUTE_PATH> (or use the digest below if no path is given).
+Read the active transcript at <ABSOLUTE_PATH> (or use the digest below if no path is given). Before discarding a candidate as a one-off, search this selected transcript for the same symptom, including the parts before compaction, and inspect matching passages. Count distinct incidents, not a summary or quotation of the same incident. Stay within this transcript; do not search other sessions or workspaces. If only a digest or partial transcript is available, state that recurrence coverage is incomplete rather than inferring a single occurrence.
 
 Scan for:
 - Tool invocations and command flags the agent had to discover
@@ -39,6 +39,7 @@ Drop any skill that was neither invoked nor a missed-trigger candidate.
 List each durable learning. For each:
 - Principle: one sentence naming the convention or technical fact. Concrete enough that a future agent recognizes when it applies.
 - Evidence: the exact moment in the transcript (turn number or short quote, including the command or flag).
+- Recurrence: cite each distinct occurrence (turn or line and short quote), or state that the whole selected transcript has only one occurrence; if coverage is incomplete, name the missing portion.
 - Routing: the most relevant existing skill (its `SKILL.md` path as the transcript shows it), OR `tune description: <skill path>` when the skill should have triggered but didn't, OR "new skill: <kebab-name>".
 
 Skip trivial things (typos, retries) and anything already obvious from the skill the parent followed. Skip implementation details that drift: specific SHAs, current file paths, version numbers, exact byte counts. Convention generalizes. Pinned details don't.
