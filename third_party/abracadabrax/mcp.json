@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "abracadabrax-video-image-generation": {
+      "type": "http",
+      "url": "https://abracadabrax.app/api/grok/media/mcp"
+    },
+    "abracadabrax-song-generation": {
+      "type": "http",
+      "url": "https://abracadabrax.app/api/grok/song/mcp"
+    }
+  }
+}
