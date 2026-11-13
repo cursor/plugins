@@ -291,8 +291,11 @@ it("annotates Bugbot threads with distinct review-pass counts", () => {
   };
   const threads = buildReviewThreads(parseReviewThreadPage(response).threads);
   expect(threads).toHaveLength(2);
-  expect(threads.map((thread) => thread.isBugbot)).toEqual([true, true]);
-  expect(threads.map((thread) => thread.bugbotReviewPasses)).toEqual([3, 3]);
+  expect(threads.map((thread) => thread.reviewBot)).toEqual([
+    "bugbot",
+    "bugbot",
+  ]);
+  expect(threads.map((thread) => thread.reviewBotPasses)).toEqual([3, 3]);
 });
 
 describe("review thread pagination", () => {
@@ -304,6 +307,7 @@ describe("review thread pagination", () => {
       path: "a.ts",
       line: 1,
       createdAt: "now",
+      reviewedCommit: null,
     },
     resolved,
   });
@@ -353,6 +357,7 @@ describe("review thread pagination", () => {
         path: "a.ts",
         line: 1,
         createdAt: "now",
+        reviewedCommit: null,
       },
       resolved: false,
     });
@@ -363,7 +368,7 @@ describe("review thread pagination", () => {
       ],
     });
     const threads = await resolveReviewThreads(reader, context);
-    expect(threads.map((item) => item.bugbotReviewPasses)).toEqual([2, 2]);
+    expect(threads.map((item) => item.reviewBotPasses)).toEqual([2, 2]);
   });
 
   it("drops resolved threads from later pages too", async () => {
