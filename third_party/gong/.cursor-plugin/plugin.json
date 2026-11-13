@@ -1,7 +1,7 @@
 {
   "name": "gong",
   "displayName": "Gong",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Pull account summaries, deal insights, and call briefs.",
   "author": {
     "name": "Cursor",
@@ -31,18 +31,14 @@
       "CLIENT_ID": {
         "type": "string",
         "title": "Gong Client ID",
-        "description": "OAuth Client ID from Gong Admin → Company Settings → Ecosystem → API → Integrations (MCP integration)."
+        "description": "Optional. OAuth Client ID from Gong Admin → Company Settings → Ecosystem → API → Integrations (MCP integration). Leave empty in Grok Bot, which registers its own Gong client."
       },
       "CLIENT_SECRET": {
         "type": "string",
         "title": "Gong Client Secret",
-        "description": "OAuth Client Secret from the same Gong MCP integration."
+        "description": "Optional. OAuth Client Secret from the same Gong MCP integration, needed with the Client ID."
       }
-    },
-    "required": [
-      "CLIENT_ID",
-      "CLIENT_SECRET"
-    ]
+    }
   },
   "mcpServers": "./mcp.json"
 }

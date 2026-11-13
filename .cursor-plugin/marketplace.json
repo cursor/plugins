@@ -709,6 +709,21 @@
       "description": "Connect your Eight Sleep account to see your sleep scores, stages and heart metrics, check your Pod's status and temperature settings, and manage your alarms and your side of the Pod, with your approval for each change."
     },
     {
+      "name": "netsuite",
+      "source": "third_party/netsuite",
+      "description": "Work with records, reports, saved searches, and SuiteQL queries in NetSuite."
+    },
+    {
+      "name": "front",
+      "source": "third_party/front",
+      "description": "Search conversations, draft and send replies, and manage tags, tasks, and inboxes."
+    },
+    {
+      "name": "paypal",
+      "source": "third_party/paypal",
+      "description": "Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal."
+    },
+    {
       "name": "iflytek-skills",
       "source": "third_party/iflytek-skills",
       "description": "Speech, OCR, translation, proofreading, and multimodal workflows powered by iFLYTEK APIs."
