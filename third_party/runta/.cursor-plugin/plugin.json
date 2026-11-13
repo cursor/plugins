@@ -1,0 +1,37 @@
+{
+  "name": "runta",
+  "displayName": "Runta",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Create and run persistent agent runtimes, publish ports, and manage egress, checkpoints, and images in Runta.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://runta.com/docs/integrations/mcp/",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "runta",
+    "agent runtime",
+    "persistent runtime",
+    "sandbox",
+    "cloud computer",
+    "checkpoints",
+    "egress",
+    "ssh",
+    "vnc",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "runta",
+    "runtime",
+    "infrastructure",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

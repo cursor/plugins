@@ -734,6 +734,11 @@
       "description": "Brainstorm business names and check domain availability, pricing, and checkout links on Squarespace."
     },
     {
+      "name": "runta",
+      "source": "third_party/runta",
+      "description": "Create and run persistent agent runtimes, publish ports, and manage egress, checkpoints, and images in Runta."
+    },
+    {
       "name": "notfair",
       "source": "third_party/notfair",
       "description": "Operate Google, Meta, X, LinkedIn, Reddit, and TikTok Ads plus GA4, Search Console, GoHighLevel, and WordPress through one OAuth MCP."
