@@ -1,7 +1,7 @@
 ---
 name: compatibility-scan-review
 description: Run the agent-compatibility CLI and return the raw repository score with its main problems
-model: fast
+model: inherit
 readonly: true
 ---
 
