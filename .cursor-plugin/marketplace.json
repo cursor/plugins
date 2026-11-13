@@ -722,6 +722,11 @@
       "name": "paypal",
       "source": "third_party/paypal",
       "description": "Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal."
+    },
+    {
+      "name": "manymotions",
+      "source": "third_party/manymotions",
+      "description": "Generate AI videos, images, logo concepts and UGC-style video ads from a text prompt, and see the credit cost before anything is generated."
     }
   ]
 }

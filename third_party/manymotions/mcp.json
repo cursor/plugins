@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "manymotions-video-image-generation": {
+      "type": "http",
+      "url": "https://manymotions.com/api/grok/mcp"
+    },
+    "manymotions-logo-maker": {
+      "type": "http",
+      "url": "https://manymotions.com/api/grok/logomaker/mcp"
+    },
+    "manymotions-ugc-video-ads": {
+      "type": "http",
+      "url": "https://manymotions.com/api/grok/ugc/mcp"
+    }
+  }
+}
