@@ -1,6 +1,6 @@
 ---
 name: verify-this
-description: "Verify a claim with fresh local evidence: restate it falsifiably, capture baseline and treatment, compare artifacts, and return VERIFIED, NOT VERIFIED, or INCONCLUSIVE."
+description: "Verify a claim with fresh local evidence: restate it falsifiably, capture baseline and treatment, compare artifacts, and return VERIFIED, NOT VERIFIED, or INCONCLUSIVE. Use when sizing or gating on the unsafe keyword, and count with a comment- and string-aware scan that treats lifetimes apart from character literals."
 ---
 
 # Verify This
@@ -13,6 +13,7 @@ Verification is not a recap. It proves or disproves a specific claim with repeat
 - A bug fix needs a before/after repro.
 - A UI, CLI, API, performance, or memory claim needs measurement.
 - A test passes but the user-visible behavior still needs confirmation.
+- The claim is a count or a gate on the `unsafe` keyword. Use a comment- and string-aware scan. A lifetime like `'static` is not a character literal, and `UnsafeCell` is not the keyword.
 
 Do not use this for vague claims like "the code is cleaner". Ask for a measurable claim first.
 

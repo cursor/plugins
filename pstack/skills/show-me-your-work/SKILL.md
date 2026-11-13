@@ -19,7 +19,7 @@ Copy `references/decision-log-template.tsv` (the header row) to start a clean lo
 - **decision.** What was chosen or done, one line.
 - **why.** The reason in plain words. If a principle drove it, say it plainly, not as a jargon tag.
 - **evidence.** A link or path that proves it: commit SHA, PR number, `file:line`, or an artifact, trace, or screenshot path. Never a paragraph.
-- **result.** The outcome or predicate state: `tests green`, `reverted`, `pixel-diff 0`, `INCONCLUSIVE`, `open`.
+- **result.** The outcome or predicate state: `tests green`, `reverted`, `pixel-diff 0`, `INCONCLUSIVE`, `open`. A result cell that cites a count uses the same counting rule as the framing predicate. Do not mix a substring count with a later file count.
 
 An example, plain-spoken so a reviewer reads it at a glance.
 
