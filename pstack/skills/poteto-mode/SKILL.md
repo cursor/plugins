@@ -59,6 +59,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 - **Boundary Discipline.** Wiring validation, error handling, or framework adapters. Guards at system boundaries, trust internal types, keep business logic pure.
 - **Type System Discipline.** Designing types or a signature in any typed language. Make illegal states unrepresentable, brand primitives, parse external data at boundaries.
 - **Make Operations Idempotent.** Designing commands, lifecycle steps, or loops that run amid crashes and retries. Converge to the same end state.
+- **Bound Every External Call.** Calling a service, database, queue, third-party API, or subprocess you do not control. Set a deadline, retry only safe and transient failures with backoff, dead-letter poison messages, and break the circuit on a failing dependency.
 - **Migrate Callers Then Delete Legacy APIs.** Introducing a new internal API while old callers exist. Migrate and delete in one wave.
 - **Separate Before Serializing Shared State.** Concurrent actors might write the same file, branch, key, or object. Eliminate the sharing first.
 
