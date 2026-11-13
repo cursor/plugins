@@ -722,6 +722,11 @@
       "name": "paypal",
       "source": "third_party/paypal",
       "description": "Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal."
+    },
+    {
+      "name": "abracadabrax",
+      "source": "third_party/abracadabrax",
+      "description": "Create AI images, short videos and songs from a text prompt, and see the credit cost before anything is rendered."
     }
   ]
 }

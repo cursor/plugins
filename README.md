@@ -132,6 +132,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `netsuite` | [NetSuite](third_party/netsuite/) | Cursor | Integrations | Work with records, reports, saved searches, and SuiteQL queries in NetSuite. |
 | `front` | [Front](third_party/front/) | Cursor | Integrations | Search conversations, draft and send replies, and manage tags, tasks, and inboxes. |
 | `paypal` | [PayPal](third_party/paypal/) | Cursor | Integrations | Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal. |
+| `abracadabrax` | [Abracadabrax](third_party/abracadabrax/) | Abracadabrax | Integrations | Create AI images, short videos and songs from a text prompt, and see the credit cost before anything is rendered. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
