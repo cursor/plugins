@@ -724,6 +724,11 @@
       "description": "Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal."
     },
     {
+      "name": "engine",
+      "source": "third_party/engine",
+      "description": "Search and book hotels, shorten or cancel stays, and check support cases in Engine."
+    },
+    {
       "name": "iflytek-skills",
       "source": "third_party/iflytek-skills",
       "description": "Speech, OCR, translation, proofreading, and multimodal workflows powered by iFLYTEK APIs."
