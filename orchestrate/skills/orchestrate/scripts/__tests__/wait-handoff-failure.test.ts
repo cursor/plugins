@@ -40,6 +40,7 @@ interface FakeRunOpts {
 }
 
 let currentRun: FakeRunOpts | null = null;
+let createdStartingRef: string | undefined;
 
 function setFakeRun(opts: FakeRunOpts): void {
   currentRun = opts;
@@ -59,7 +60,10 @@ function makeFakeRun(opts: FakeRunOpts) {
 
 mock.module(SDK_MOCK, () => ({
   Agent: {
-    create: async () => {
+    create: async (options: {
+      cloud: { repos: Array<{ startingRef: string }> };
+    }) => {
+      createdStartingRef = options.cloud.repos[0]?.startingRef;
       if (!currentRun) throw new Error("SDK mock: setFakeRun() first");
       return {
         agentId: currentRun.agentId,
@@ -118,6 +122,56 @@ function writePlan(workspace: string) {
 }
 
 describe("waitAndHandoff post-mortem paths", () => {
+  test("Repeated subplanner respawns clone the saved cloud branch", async () => {
+    const workspace = mkdtempSync(join(tmpdir(), "orch-resume-branch-"));
+    writeFileSync(
+      join(workspace, "plan.json"),
+      JSON.stringify({
+        goal: "resume a subplanner",
+        rootSlug: "resume-test",
+        baseBranch: "main",
+        repoUrl: "https://github.com/example-org/example-repo",
+        syncStateToGit: false,
+        tasks: [
+          { name: "slice-planner", type: "subplanner", scopedGoal: "Resume." },
+        ],
+      })
+    );
+    setFakeRun({
+      id: "run-resume",
+      agentId: "bc-resume",
+      runResult: {
+        id: "run-resume",
+        status: "error",
+        error: "failed before a new branch",
+        git: { branches: [] },
+      },
+    });
+    try {
+      const mgr = await AgentManager.load(workspace);
+      const task = mgr.getTask("slice-planner");
+      const def = mgr.plan.tasks?.find(t => t.name === "slice-planner");
+      if (!task || !def) throw new Error("missing subplanner");
+      mgr.touch(task, {
+        status: "error",
+        branch: "cursor/committed-child-state",
+        attempts: 1,
+      });
+      mgr.respawnTask(task.name);
+      mgr.respawnTask(task.name);
+      const first = await mgr.spawnTask(def);
+      if (!first) throw new Error("fake spawn failed");
+      expect(createdStartingRef).toBe("cursor/committed-child-state");
+      await mgr.waitAndHandoff(first);
+      mgr.respawnTask(task.name);
+      const second = await mgr.spawnTask(def);
+      if (!second) throw new Error("second fake spawn failed");
+      expect(createdStartingRef).toBe("cursor/committed-child-state");
+    } finally {
+      rmSync(workspace, { recursive: true, force: true });
+    }
+  });
+
   test("Error run writes <task>-failure.md and marks task error", async () => {
     const workspace = mkdtempSync(join(tmpdir(), "orch-fail-error-"));
     writePlan(workspace);
