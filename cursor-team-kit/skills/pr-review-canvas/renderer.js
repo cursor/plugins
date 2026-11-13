@@ -13,7 +13,7 @@ function isImport(line) {
 }
 
 function isWhitespaceOnly(del, add) {
-  return del.replace(/^-/, '').replace(/\s/g, '') === add.replace(/^\+/, '').replace(/\s/g, '');
+  return normWs(del.replace(/^-/, '')) === normWs(add.replace(/^\+/, ''));
 }
 
 function esc(s) {
