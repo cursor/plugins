@@ -1,4 +1,10 @@
 import { spawn } from "node:child_process";
+import {
+  DEFAULT_REVIEW_BOTS,
+  countReviewPasses,
+  reviewBotFor,
+  type ReviewBots,
+} from "./review-bots.ts";
 import type * as T from "./types.ts";
 import { nonEmpty, parsePrNumber } from "./types.ts";
 export const REVIEW_THREADS_QUERY =
@@ -326,33 +332,6 @@ function parseComment(value: unknown): T.ReviewComment {
     createdAt: string(object.createdAt, "review comment.createdAt"),
   };
 }
-function isBugbot(comment: T.ReviewComment | null): boolean {
-  if (comment === null) return false;
-  const author = (comment.authorLogin ?? "").toLowerCase();
-  const body = comment.body.toLowerCase();
-  return (
-    author.includes("bugbot") ||
-    (author === "cursor" &&
-      [
-        "bugbot",
-        "cursor_automation_id",
-        "agentic security review",
-        "description start",
-        "severity",
-      ].some((token) => body.includes(token)))
-  );
-}
-function passKey(comment: T.ReviewComment | null): string | null {
-  if (comment === null) return null;
-  for (const pattern of [
-    /RUN_ID:\s*([a-zA-Z0-9_.:-]+)/,
-    /CURSOR_AUTOMATION_ID:\s*([a-zA-Z0-9_.:-]+)/,
-  ]) {
-    const match = pattern.exec(comment.body);
-    if (match?.[1]) return match[1];
-  }
-  return null;
-}
 export function parseReviewThreadPage(value: unknown): T.ReviewThreadPage {
   const reviewThreads = record(
     at(value, ["data", "repository", "pullRequest", "reviewThreads"]),
@@ -384,25 +363,24 @@ export function parseReviewThreadPage(value: unknown): T.ReviewThreadPage {
   return { threads, endCursor: page.hasNextPage && cursor ? cursor : null };
 }
 export function buildReviewThreads(
-  threads: readonly T.RawReviewThread[]
+  threads: readonly T.RawReviewThread[],
+  bots: ReviewBots = DEFAULT_REVIEW_BOTS
 ): readonly T.ReviewThread[] {
-  const keys = new Set<string>();
-  let keyless = false;
-  for (const thread of threads) {
-    if (!isBugbot(thread.firstComment)) continue;
-    const key = passKey(thread.firstComment);
-    if (key === null) keyless = true;
-    else keys.add(key);
-  }
-  const passes = keys.size > 0 ? keys.size : keyless ? 1 : 0;
+  const passes = countReviewPasses(
+    threads.map((thread) => thread.firstComment),
+    bots
+  );
   return threads
     .filter((thread) => !thread.resolved)
-    .map(({ id, firstComment }) => ({
-      id,
-      firstComment,
-      isBugbot: isBugbot(firstComment),
-      bugbotReviewPasses: passes,
-    }));
+    .map(({ id, firstComment }) => {
+      const reviewBot = reviewBotFor(firstComment, bots)?.id ?? null;
+      return {
+        id,
+        firstComment,
+        reviewBot,
+        reviewBotPasses: reviewBot === null ? 0 : (passes.get(reviewBot) ?? 0),
+      };
+    });
 }
 export function parsePullRequest(
   value: unknown,
@@ -634,7 +612,8 @@ export async function resolveChecks(
 }
 export async function resolveReviewThreads(
   reader: T.GitHubReader,
-  context: T.PrContext
+  context: T.PrContext,
+  bots: ReviewBots = DEFAULT_REVIEW_BOTS
 ): Promise<readonly T.ReviewThread[]> {
   const threads: T.RawReviewThread[] = [];
   let after: string | null = null;
@@ -643,7 +622,7 @@ export async function resolveReviewThreads(
     threads.push(...page.threads);
     after = page.endCursor;
   } while (after !== null);
-  return buildReviewThreads(threads);
+  return buildReviewThreads(threads, bots);
 }
 export async function resolveContext(args: {
   readonly reader: T.GitHubReader;
