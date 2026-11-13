@@ -46,6 +46,13 @@ export interface TreeVictim {
   runId: string;
   branch: string;
   parentAgentId: string | null;
+  /** Resolved from parentAgentId links in the traversed tree. */
+  ancestorAgentIds?: string[];
+}
+
+interface TreeTraversal {
+  victims: TreeVictim[];
+  parentLinks: Map<string, string | null>;
 }
 
 export function crawlBranch(
@@ -119,22 +126,17 @@ export function indent(depth: number): string {
   return "  ".repeat(depth);
 }
 
-/**
- * Walk the tree the same way `crawl` does and collect every `running` task's
- * (agentId, runId). Reads only the fields needed for containment so unrelated
- * child state errors do not hide deeper agents from `kill-tree`.
- */
-export function collectRunningAgentsInTree(
+function walkTreeForVictims(
   {
     repoPath,
     branch,
     slug,
   }: { repoPath: string; branch: string; slug: string },
-  collected: TreeVictim[] = [],
-  visited: Set<string> = new Set()
-): TreeVictim[] {
+  traversal: TreeTraversal,
+  visited: Set<string>
+): void {
   const key = `${branch}:${slug}`;
-  if (visited.has(key)) return collected;
+  if (visited.has(key)) return;
   visited.add(key);
   let raw: string;
   try {
@@ -149,7 +151,7 @@ export function collectRunningAgentsInTree(
       { stdio: ["ignore", "pipe", "pipe"] }
     ).toString();
   } catch {
-    return collected;
+    return;
   }
   let parsed: ReturnType<typeof parseTreeStateJson>;
   try {
@@ -158,12 +160,17 @@ export function collectRunningAgentsInTree(
       `origin/${branch}:.orchestrate/${slug}/state.json`
     );
   } catch {
-    return collected;
+    return;
   }
   const ownSlug = parsed.rootSlug ?? slug;
   for (const t of parsed.tasks) {
+    if (t.agentId) {
+      traversal.parentLinks.set(t.agentId, t.parentAgentId ?? null);
+    }
+  }
+  for (const t of parsed.tasks) {
     if (t.status === "running" && t.agentId && t.runId) {
-      collected.push({
+      traversal.victims.push({
         taskName: t.name,
         agentId: t.agentId,
         runId: t.runId,
@@ -171,12 +178,61 @@ export function collectRunningAgentsInTree(
         parentAgentId: t.parentAgentId ?? null,
       });
     }
-    if (t.type === "subplanner" && t.status === "running") {
-      collectRunningAgentsInTree(
+    if (
+      t.type === "subplanner" &&
+      (t.status === "running" || t.status === "handed-off")
+    ) {
+      walkTreeForVictims(
         { repoPath, branch: `orch/${ownSlug}/${t.name}`, slug: t.name },
-        collected,
+        traversal,
         visited
       );
+    }
+  }
+}
+
+function resolveAncestorAgentIds(
+  agentId: string,
+  parentLinks: Map<string, string | null>
+): string[] {
+  const ancestors: string[] = [];
+  const seen = new Set<string>([agentId]);
+  let parent = parentLinks.get(agentId) ?? null;
+  while (parent) {
+    if (seen.has(parent)) break;
+    seen.add(parent);
+    ancestors.push(parent);
+    parent = parentLinks.get(parent) ?? null;
+  }
+  return ancestors;
+}
+
+/**
+ * Walk the tree the same way `crawl` does and collect every `running` task's
+ * (agentId, runId). Reads only the fields needed for containment so unrelated
+ * child state errors do not hide deeper agents from `kill-tree`.
+ */
+export function collectRunningAgentsInTree(
+  {
+    repoPath,
+    branch,
+    slug,
+  }: { repoPath: string; branch: string; slug: string },
+  collected: TreeVictim[] = [],
+  visited: Set<string> = new Set()
+): TreeVictim[] {
+  const traversal: TreeTraversal = {
+    victims: collected,
+    parentLinks: new Map(),
+  };
+  walkTreeForVictims({ repoPath, branch, slug }, traversal, visited);
+  for (let index = 0; index < collected.length; index++) {
+    const ancestorAgentIds = resolveAncestorAgentIds(
+      collected[index].agentId,
+      traversal.parentLinks
+    );
+    if (ancestorAgentIds.length > 0) {
+      collected[index] = { ...collected[index], ancestorAgentIds };
     }
   }
   return collected;
@@ -195,17 +251,29 @@ export function filterVictimsToSubtree(
     childrenByParent.set(v.parentAgentId, list);
   }
   const out: TreeVictim[] = [];
-  const seen = new Set<string>();
+  const seenAgents = new Set<string>();
+  const selected = new Set<TreeVictim>();
   const visit = (agentId: string): void => {
-    if (seen.has(agentId)) return;
-    seen.add(agentId);
+    if (seenAgents.has(agentId)) return;
+    seenAgents.add(agentId);
     const directHit = victims.find(v => v.agentId === agentId);
-    if (directHit) out.push(directHit);
+    if (directHit) {
+      selected.add(directHit);
+      out.push(directHit);
+    }
     for (const child of childrenByParent.get(agentId) ?? []) {
       visit(child.agentId);
     }
   };
   visit(rootAgentId);
+  for (const victim of victims) {
+    if (
+      victim.ancestorAgentIds?.includes(rootAgentId) &&
+      !selected.has(victim)
+    ) {
+      out.push(victim);
+    }
+  }
   return out;
 }
 
