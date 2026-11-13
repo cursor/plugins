@@ -365,14 +365,19 @@ export function applyMeasurementParser(
       }
       let re: RegExp;
       try {
-        re = new RegExp(parser.pattern, parser.flags ?? "");
+        // The schema accepts `g`, but a global regex changes what
+        // `String.prototype.match` returns: every whole match and no
+        // groups, so "capture group 1" would silently become the second
+        // match. One value is extracted here, so drop `g` and use `exec`,
+        // which returns the first match with its groups under any flags.
+        re = new RegExp(parser.pattern, (parser.flags ?? "").replace(/g/g, ""));
       } catch (err) {
         return {
           ok: false,
           reason: `invalid regex: ${errorMessage(err)}`,
         };
       }
-      const match = stdout.match(re);
+      const match = re.exec(stdout);
       if (!match) {
         return { ok: false, reason: "regex did not match command stdout" };
       }
