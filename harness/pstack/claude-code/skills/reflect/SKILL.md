@@ -17,10 +17,10 @@ Invoke when the user says "reflect" or "/reflect". Skip when the conversation is
 Before fanning out, find this conversation's transcript in the `agent-transcripts/` directory the system prompt names. Do not glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
 
 ```bash
-ls -t <agent-transcripts>/*.jsonl <agent-transcripts>/*/*.jsonl <agent-transcripts>/*/subagents/*.jsonl 2>/dev/null | head -10
+bash -c 'shopt -s nullglob; files=("$1"/*.jsonl "$1"/*/*.jsonl "$1"/*/subagents/*.jsonl); if ((${#files[@]})); then ls -t "${files[@]}" | head -10; fi' bash "<agent-transcripts>"
 ```
 
-That covers the legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), and subagent (`<parent>/subagents/<child>.jsonl`) layouts. For each candidate, read the first JSONL line. Take the file whose `message.content[0].text` contains the conversation's opening user prompt. If none matches, pass a tight digest of the session instead.
+`nullglob` drops a layout that is not on disk. Without it, zsh aborts on the first missing pattern, the pipe to `head` still exits 0, and a transcript that exists is left out. That covers the legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), and subagent (`<parent>/subagents/<child>.jsonl`) layouts. For each candidate, read the first JSONL line. Take the file whose `message.content[0].text` contains the conversation's opening user prompt. If none matches, pass a tight digest of the session instead.
 
 ## 2. Spawn three reviewers in parallel
 
