@@ -7,13 +7,30 @@ function toggleBP(hdr) {
   b.classList.toggle('open'); c.classList.toggle('open');
 }
 
+/* Expand/collapse the "N import lines hidden" summary row (#472). */
+function toggleHidden(row) {
+  var open = row.classList.toggle('open');
+  var c = row.querySelector('.chev');
+  if (c) c.classList.toggle('open');
+  var t = row.nextElementSibling;
+  while (t && t.classList && t.classList.contains('diff-hidden-import')) {
+    t.style.display = open ? '' : 'none';
+    t = t.nextElementSibling;
+  }
+}
+
 function isImport(line) {
   var s = line.replace(/^[+ -]/, '').trim();
   return s.startsWith('import ') || s.startsWith('import{') || s.startsWith('} from ');
 }
 
 function isWhitespaceOnly(del, add) {
-  return del.replace(/^-/, '').replace(/\s/g, '') === add.replace(/^\+/, '').replace(/\s/g, '');
+  // Compare after trimming leading/trailing whitespace only. Internal
+  // whitespace (string literals, significant indentation) is meaningful
+  // and must never be collapsed away (#472).
+  var d = del.replace(/^-/, '').replace(/^\s+|\s+$/g, '');
+  var a = add.replace(/^\+/, '').replace(/^\s+|\s+$/g, '');
+  return d === a;
 }
 
 function esc(s) {
@@ -92,31 +109,13 @@ function renderDiff(target, diffInput) {
   var lines = toLines(diffInput);
   if (!lines.length) { el.innerHTML = '<div style="padding:12px;color:#777;font-size:12px;">No diff data</div>'; return; }
 
-  var filtered = lines.filter(function(l) {
-    if (l.startsWith('--- ') || l.startsWith('+++ ') || l.startsWith('@@') || l.startsWith('diff ')) return true;
-    return !isImport(l);
-  });
-
-  var wsOut = [];
-  for (var wi = 0; wi < filtered.length; wi++) {
-    if (filtered[wi].startsWith('-')) {
-      var dr = [filtered[wi]], wj = wi+1;
-      while (wj < filtered.length && filtered[wj].startsWith('-')) { dr.push(filtered[wj]); wj++; }
-      var ar = [], wk = wj;
-      while (wk < filtered.length && filtered[wk].startsWith('+')) { ar.push(filtered[wk]); wk++; }
-      if (dr.length === ar.length && dr.length > 0) {
-        var allWs = true;
-        for (var wc = 0; wc < dr.length; wc++) { if (!isWhitespaceOnly(dr[wc], ar[wc])) { allWs = false; break; } }
-        if (allWs) { for (var wx = 0; wx < ar.length; wx++) wsOut.push(' ' + ar[wx].slice(1)); wi = wk-1; continue; }
-      }
-    }
-    wsOut.push(filtered[wi]);
-  }
-
-  var dels = [], adds = [], parsed = [];
+  // Parse and number the FULL raw diff first. Import lines are tagged `hidden`
+  // instead of deleted, so line numbers always come from the original hunk
+  // headers and filtering can never shift them (#472).
+  var parsed = [];
   var oL = 0, nL = 0, pD = false, pA = false;
-  for (var pi = 0; pi < wsOut.length; pi++) {
-    var line = wsOut[pi];
+  for (var pi = 0; pi < lines.length; pi++) {
+    var line = lines[pi];
     if (line.startsWith('--- ') || line.startsWith('+++ ') || line.startsWith('diff ')) continue;
     if (line.startsWith('@@')) {
       var hm = line.match(/@@ -(\d+)(?:,\d+)? \+(\d+)/);
@@ -124,15 +123,50 @@ function renderDiff(target, diffInput) {
       parsed.push({ type: 'hunk', text: line }); pD = false; pA = false; continue;
     }
     if (line.startsWith('+')) {
-      var ae = { type:'add', code:line.slice(1), newLine:nL, consecutive:pA, idx:parsed.length };
-      adds.push(ae); parsed.push(ae); nL++; pA = true; pD = false;
+      parsed.push({ type:'add', code:line.slice(1), newLine:nL, consecutive:pA, hidden:isImport(line) });
+      nL++; pA = true; pD = false;
     } else if (line.startsWith('-')) {
-      var de = { type:'del', code:line.slice(1), oldLine:oL, consecutive:pD, idx:parsed.length };
-      dels.push(de); parsed.push(de); oL++; pD = true; pA = false;
+      parsed.push({ type:'del', code:line.slice(1), oldLine:oL, consecutive:pD, hidden:isImport(line) });
+      oL++; pD = true; pA = false;
     } else {
       var c = line.startsWith(' ') ? line.slice(1) : line;
-      parsed.push({ type:'ctx', code:c, oldLine:oL, newLine:nL }); oL++; nL++; pD = false; pA = false;
+      parsed.push({ type:'ctx', code:c, oldLine:oL, newLine:nL, hidden:isImport(line) });
+      oL++; nL++; pD = false; pA = false;
     }
+  }
+
+  // Collapse whitespace-only del/add pairs into context lines. Line numbers
+  // were already assigned above, so the rewritten rows keep the del's old
+  // line and the add's new line.
+  var collapsed = [];
+  for (var ci = 0; ci < parsed.length; ci++) {
+    if (parsed[ci].type === 'del') {
+      var dj = ci;
+      while (dj < parsed.length && parsed[dj].type === 'del') dj++;
+      var ak = dj;
+      while (ak < parsed.length && parsed[ak].type === 'add') ak++;
+      if (dj > ci && ak === dj + (dj - ci)) {
+        var allWs = true;
+        for (var wc = 0; wc < dj - ci; wc++) {
+          if (!isWhitespaceOnly('-' + parsed[ci + wc].code, '+' + parsed[dj + wc].code)) { allWs = false; break; }
+        }
+        if (allWs) {
+          for (var wx = 0; wx < dj - ci; wx++) {
+            collapsed.push({ type:'ctx', code:parsed[dj + wx].code,
+              oldLine:parsed[ci + wx].oldLine, newLine:parsed[dj + wx].newLine });
+          }
+          ci = ak - 1; continue;
+        }
+      }
+    }
+    collapsed.push(parsed[ci]);
+  }
+  parsed = collapsed;
+
+  var dels = [], adds = [];
+  for (var bi = 0; bi < parsed.length; bi++) {
+    if (parsed[bi].type === 'del') { parsed[bi].idx = dels.length; dels.push(parsed[bi]); }
+    else if (parsed[bi].type === 'add') { parsed[bi].idx = adds.length; adds.push(parsed[bi]); }
   }
 
   var mv = detectMoves(dels, adds);
@@ -141,13 +175,25 @@ function renderDiff(target, diffInput) {
     var p = parsed[ri];
     if (p.type === 'hunk') {
       rows.push('<tr class="diff-hunk"><td class="diff-ln"></td><td class="diff-ln"></td><td class="diff-code">' + esc(p.text) + '</td></tr>');
+    } else if (p.hidden) {
+      // Group consecutive hidden import lines into one visibly-marked,
+      // expandable row instead of silently deleting them (#472).
+      var grp = [];
+      while (ri < parsed.length && parsed[ri].hidden) grp.push(parsed[ri++]);
+      ri--;
+      var label = grp.length + (grp.length === 1 ? ' import line' : ' import lines') + ' hidden';
+      rows.push('<tr class="diff-hidden" onclick="toggleHidden(this)"><td class="diff-ln"></td><td class="diff-ln"></td><td class="diff-code"><span class="chev">&#9654;</span> ' + esc(label) + '</td></tr>');
+      for (var gi = 0; gi < grp.length; gi++) {
+        var g = grp[gi];
+        rows.push('<tr class="diff-hidden-import" style="display:none"><td class="diff-ln">' + (g.oldLine != null ? g.oldLine : '') + '</td><td class="diff-ln">' + (g.newLine != null ? g.newLine : '') + '</td><td class="diff-code">' + esc(g.code) + '</td></tr>');
+      }
     } else if (p.type === 'add') {
-      var ai2 = -1; for (var fa=0;fa<adds.length;fa++) if(adds[fa].idx===p.idx){ai2=fa;break;}
-      var cls = (mv.movedAdds[ai2]) ? (mv.movedAdds[ai2].exact ? 'diff-moved-add' : 'diff-moved-add-edited') : 'diff-add';
+      var ma2 = mv.movedAdds[p.idx];
+      var cls = ma2 ? (ma2.exact ? 'diff-moved-add' : 'diff-moved-add-edited') : 'diff-add';
       rows.push('<tr class="'+cls+'"><td class="diff-ln"></td><td class="diff-ln">'+p.newLine+'</td><td class="diff-code">'+esc(p.code)+'</td></tr>');
     } else if (p.type === 'del') {
-      var di2 = -1; for(var fd=0;fd<dels.length;fd++) if(dels[fd].idx===p.idx){di2=fd;break;}
-      var cls2 = (mv.movedDels[di2]) ? (mv.movedDels[di2].exact ? 'diff-moved-del' : 'diff-moved-del-edited') : 'diff-del';
+      var md2 = mv.movedDels[p.idx];
+      var cls2 = md2 ? (md2.exact ? 'diff-moved-del' : 'diff-moved-del-edited') : 'diff-del';
       rows.push('<tr class="'+cls2+'"><td class="diff-ln">'+p.oldLine+'</td><td class="diff-ln"></td><td class="diff-code">'+esc(p.code)+'</td></tr>');
     } else {
       rows.push('<tr class="diff-ctx"><td class="diff-ln">'+p.oldLine+'</td><td class="diff-ln">'+p.newLine+'</td><td class="diff-code">'+esc(p.code)+'</td></tr>');

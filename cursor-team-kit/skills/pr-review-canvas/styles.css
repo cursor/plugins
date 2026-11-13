@@ -94,3 +94,8 @@ tr.diff-moved-add-edited .diff-code { background: #221a2a; color: #c0a8d0; }
 .verdict ul { padding-left: 18px; }
 .verdict li { font-size: 13px; margin-bottom: 6px; line-height: 1.5; }
 .verdict li strong { color: var(--text-bright); }
+tr.diff-hidden { cursor: pointer; }
+tr.diff-hidden .diff-code { background: var(--surface-raised); color: var(--text-muted); font-size: 11px; }
+tr.diff-hidden .chev { color: var(--text-muted); transition: transform 0.15s; font-size: 10px; margin-right: 6px; display: inline-block; }
+tr.diff-hidden.open .chev { transform: rotate(90deg); }
+tr.diff-hidden-import .diff-code { color: var(--text-muted); opacity: 0.75; }
