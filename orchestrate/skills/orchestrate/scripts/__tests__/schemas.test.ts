@@ -11,6 +11,34 @@ import {
 } from "../schemas.ts";
 
 describe("schemas", () => {
+  test("PlanSchema rejects two tasks that would push the same branch", () => {
+    const plan = PlanSchema.safeParse({
+      goal: "merge into a worker branch",
+      rootSlug: "ship-refactor",
+      baseBranch: "main",
+      repoUrl: "https://github.com/example-org/example-repo",
+      tasks: [
+        {
+          name: "slice-a",
+          type: "worker",
+          scopedGoal: "Own slice-a.",
+        },
+        {
+          name: "merge-slice-a",
+          type: "worker",
+          scopedGoal: "Merge into slice-a.",
+          dependsOn: ["slice-a"],
+        },
+      ],
+    });
+    expect(plan.success).toBe(false);
+    if (!plan.success) {
+      expect(formatZodIssues(plan.error.issues)).toMatch(
+        /orch\/ship-refactor\/slice-a/
+      );
+    }
+  });
+
   test("PlanSchema accepts verifier that targets known task", () => {
     const plan = PlanSchema.safeParse({
       goal: "ship a refactor",
