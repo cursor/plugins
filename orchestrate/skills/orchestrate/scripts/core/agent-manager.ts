@@ -1177,7 +1177,7 @@ export class AgentManager {
         this.logAttention(
           `${s.name}: cancel failed (${msg}); marked error. Cloud agent may still be running — check via Agent.list.`
         );
-        return { name: taskName, action: "cancelled" };
+        return { name: taskName, action: "cancel-failed" };
       }
     }
     if (s.status === "pending") {
