@@ -456,6 +456,14 @@ describe("context and stack discovery", () => {
     expect(ordered.map((item) => Number(item.number))).toEqual([42]);
   });
 
+  it("does not attach a fork PR as a child of a stack branch", () => {
+    const ordered = orderStack(context, [
+      { number: context.number, headRefName: "feature", baseRefName: "main", isCrossRepository: false },
+      { number: parsePrNumber(43), headRefName: "patch", baseRefName: "feature", isCrossRepository: true },
+    ]);
+    expect(ordered.map((item) => Number(item.number))).toEqual([42]);
+  });
+
   it("terminates when an unrelated fork opens main against main", () => {
     // Bound the subprocess so this regression reports a failure instead of hanging the suite.
     const program = `import { orderStack } from ${JSON.stringify(import.meta.dir + "/github.ts")};
