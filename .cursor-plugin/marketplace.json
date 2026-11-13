@@ -737,6 +737,11 @@
       "name": "runta",
       "source": "third_party/runta",
       "description": "Create and run persistent agent runtimes, publish ports, and manage egress, checkpoints, and images in Runta."
+    },
+    {
+      "name": "rillet",
+      "source": "third_party/rillet",
+      "description": "Query financial reports and manage customers, invoices, bills, contracts, and vendors in Rillet."
     }
   ]
 }
