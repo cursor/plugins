@@ -5,7 +5,7 @@
   "minClientVersions": {
     "cursor": "3.13.0"
   },
-  "description": "Find and verify emails, discover companies, and save leads.",
+  "description": "Find and verify email addresses, discover companies and people, and manage your leads.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

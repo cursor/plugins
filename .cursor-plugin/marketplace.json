@@ -416,7 +416,7 @@
     {
       "name": "hunter",
       "source": "third_party/hunter",
-      "description": "Find and verify emails, discover companies, and save leads."
+      "description": "Find and verify email addresses, discover companies and people, and manage your leads."
     },
     {
       "name": "stable",

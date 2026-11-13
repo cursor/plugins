@@ -46,7 +46,7 @@ You need a Hunter account and an API key. The MCP server is available on all Hun
 | Email Verifier | Check whether an email address is deliverable and see its confidence score and sources |
 | Enrichment | Pull person and company data from an email address or domain |
 | Leads | Create, update, and organize leads and lead lists; push leads to a connected CRM |
-| Campaigns | Add recipients to campaigns and start outreach sequences |
+| Sequences | Create cold email sequences with follow-ups, add recipients, and start sending |
 
 The hosted runtime is the source of truth for tool names and schemas.
 
