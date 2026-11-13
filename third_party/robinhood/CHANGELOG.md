@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.0.1
+
+- Added `minClientVersions.sandMobile: "never"`. Robinhood refuses sign-in from phone browsers (its page says to use a desktop browser), so Grok Bot's mobile app no longer lists the plugin. Desktop is unchanged.
+
 ## 1.0.0 — initial release
 
 - Added the `robinhood` MCP server pointing at Robinhood's hosted Streamable HTTP endpoint (`https://agent.robinhood.com/mcp/trading`).
