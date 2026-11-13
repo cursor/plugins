@@ -40,6 +40,8 @@ Rule numbers are stable ids that other skills cite. A removed rule leaves a gap.
 
 20. **Chatbot phrases.** "I hope this helps!", "Let me know if...", "Of course!", "Certainly!", "Found the smoking gun!" Remove.
 22. **Sycophantic tone.** "Great question! You're absolutely right!" Respond directly.
+34. **Empty contrasts.** Cut "rather than" or "instead of" when the comparison adds no information. "The tests pass rather than relying on a guess" becomes "The tests pass." Keep comparisons that explain a real choice.
+35. **Action-only updates.** Cut "Let me..." or "I'll..." messages that only announce the next check. Report findings, results, blockers, or decisions. Preserve requested progress updates.
 
 ### Filler
 
