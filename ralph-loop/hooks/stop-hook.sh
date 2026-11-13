@@ -21,11 +21,20 @@ if [[ ! -f "$STATE_FILE" ]]; then
   exit 0
 fi
 
-# Parse state file frontmatter
-FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
-ITERATION=$(echo "$FRONTMATTER" | grep '^iteration:' | sed 's/iteration: *//')
-MAX_ITERATIONS=$(echo "$FRONTMATTER" | grep '^max_iterations:' | sed 's/max_iterations: *//')
-COMPLETION_PROMISE=$(echo "$FRONTMATTER" | grep '^completion_promise:' | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
+# jq is required to emit the followup_message. Check before touching the state
+# file so a missing dependency never advances the iteration counter.
+if ! command -v jq >/dev/null 2>&1; then
+  echo "Ralph loop: jq is required but was not found on PATH (brew install jq / apt install jq). Loop paused; the state file is untouched." >&2
+  exit 0
+fi
+
+# Parse state file frontmatter. `grep` exits 1 when a key is absent, which
+# under `set -e` would end this hook silently before the checks below can
+# report the corrupted file; `|| true` keeps a missing key as an empty value.
+FRONTMATTER=$(awk 'NR == 1 && /^---$/ { next } /^---$/ { exit } { print }' "$STATE_FILE")
+ITERATION=$(echo "$FRONTMATTER" | { grep '^iteration:' || true; } | sed 's/iteration: *//')
+MAX_ITERATIONS=$(echo "$FRONTMATTER" | { grep '^max_iterations:' || true; } | sed 's/max_iterations: *//')
+COMPLETION_PROMISE=$(echo "$FRONTMATTER" | { grep '^completion_promise:' || true; } | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
 
 # Validate iteration is numeric
 if [[ ! "$ITERATION" =~ ^[0-9]+$ ]]; then
@@ -55,7 +64,7 @@ if [[ $MAX_ITERATIONS -gt 0 ]] && [[ $ITERATION -ge $MAX_ITERATIONS ]]; then
 fi
 
 # Extract prompt text (everything after the closing --- in frontmatter)
-PROMPT_TEXT=$(awk '/^---$/{i++; next} i>=2' "$STATE_FILE")
+PROMPT_TEXT=$(awk 'i >= 2 { print; next } /^---$/ { i++ }' "$STATE_FILE")
 
 if [[ -z "$PROMPT_TEXT" ]]; then
   echo "Ralph loop: no prompt text found in state file. Stopping." >&2
@@ -66,7 +75,11 @@ fi
 # Increment iteration
 NEXT_ITERATION=$((ITERATION + 1))
 TEMP_FILE="${STATE_FILE}.tmp.$$"
-sed "s/^iteration: .*/iteration: $NEXT_ITERATION/" "$STATE_FILE" > "$TEMP_FILE"
+awk -v iteration="$NEXT_ITERATION" '
+  /^---$/ && boundaries < 2 { boundaries++ }
+  boundaries == 1 && /^iteration: / { print "iteration: " iteration; next }
+  { print }
+' "$STATE_FILE" > "$TEMP_FILE"
 mv "$TEMP_FILE" "$STATE_FILE"
 
 # Build the followup message: iteration context + original prompt
