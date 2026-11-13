@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "squarespace": {
+      "type": "http",
+      "url": "https://mcp.squarespace.com/mcp"
+    }
+  }
+}

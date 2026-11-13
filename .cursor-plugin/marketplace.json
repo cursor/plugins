@@ -727,6 +727,11 @@
       "name": "engine",
       "source": "third_party/engine",
       "description": "Search and book hotels, shorten or cancel stays, and check support cases in Engine."
+    },
+    {
+      "name": "squarespace",
+      "source": "third_party/squarespace",
+      "description": "Brainstorm business names and check domain availability, pricing, and checkout links on Squarespace."
     }
   ]
 }
