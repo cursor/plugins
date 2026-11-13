@@ -82,7 +82,7 @@ The plugin and its tools are free and need no account or sign-in. Building and e
 
 ## Data and privacy
 
-Read-only tools process the text the agent sends and store nothing. A tool that creates a link stores the document you asked to open, for 7 days; opening the link saves it in your ResumeNext account or in a temporary account created for it. The plugin has no hooks or local scripts, calls no AI model, and receives only the text passed to a tool.
+A tool that creates a link stores the document you asked to open, for 7 days; opening the link saves it in your ResumeNext account or in a temporary account created for it.
 
 ## Docs and support
 
