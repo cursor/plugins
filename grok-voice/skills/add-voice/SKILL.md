@@ -81,6 +81,8 @@ ws.addEventListener("message", (ev) => {
     // decode base64 PCM and play
   }
 });
+// Node's `ws` emits an unhandled `error` without a listener; close the session.
+ws.addEventListener("error", () => ws.close());
 ```
 
 7. **Python twin (only if the app is Python)**
