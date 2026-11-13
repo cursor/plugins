@@ -134,6 +134,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `paypal` | [PayPal](third_party/paypal/) | Cursor | Integrations | Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal. |
 | `engine` | [Engine](third_party/engine/) | Cursor | Integrations | Search and book hotels, shorten or cancel stays, and check support cases in Engine. |
 | `squarespace` | [Squarespace](third_party/squarespace/) | Cursor | Integrations | Brainstorm business names and check domain availability, pricing, and checkout links on Squarespace. |
+| `runta` | [Runta](third_party/runta/) | Cursor | Integrations | Create and run persistent agent runtimes, publish ports, and manage egress, checkpoints, and images in Runta. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
