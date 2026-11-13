@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "resumenext-ats-resume-checker": {
+      "type": "http",
+      "url": "https://resumenext.io/api/grok/resume/mcp"
+    },
+    "resumenext-job-match": {
+      "type": "http",
+      "url": "https://resumenext.io/api/grok/job-match/mcp"
+    },
+    "resumenext-cover-letter": {
+      "type": "http",
+      "url": "https://resumenext.io/api/grok/cover-letter/mcp"
+    },
+    "resumenext-resignation-letter": {
+      "type": "http",
+      "url": "https://resumenext.io/api/grok/resignation-letter/mcp"
+    },
+    "resumenext-linkedin-resume": {
+      "type": "http",
+      "url": "https://resumenext.io/api/grok/linkedin/mcp"
+    },
+    "resumenext-resume-examples": {
+      "type": "http",
+      "url": "https://resumenext.io/api/grok/resume-examples/mcp"
+    },
+    "resumenext-resume-bullet-points": {
+      "type": "http",
+      "url": "https://resumenext.io/api/grok/bullet-points/mcp"
+    },
+    "resumenext-resume-skills": {
+      "type": "http",
+      "url": "https://resumenext.io/api/grok/resume-skills/mcp"
+    }
+  }
+}
