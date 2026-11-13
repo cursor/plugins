@@ -20,6 +20,14 @@ if [[ ! -f "$STATE_FILE" ]]; then
   exit 0
 fi
 
+# jq parses the hook input and perl extracts the promise. Fail loudly, not silently.
+for dep in jq perl; do
+  if ! command -v "$dep" >/dev/null 2>&1; then
+    echo "Ralph loop: $dep is required but was not found on PATH. Completion promises cannot be detected until it is installed." >&2
+    exit 0
+  fi
+done
+
 # Extract completion promise from state file frontmatter
 FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
 COMPLETION_PROMISE=$(echo "$FRONTMATTER" | grep '^completion_promise:' | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
