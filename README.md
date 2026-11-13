@@ -107,6 +107,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `zoho-books` | [Zoho Books](third_party/zoho-books/) | Cursor | Integrations | Work with contacts, invoices, estimates, and items in Zoho Books. |
 | `business-central` | [Microsoft Dynamics 365 Business Central](third_party/business-central/) | Cursor | Integrations | Work with customers, vendors, items, sales and purchase documents, and the general ledger in Business Central. |
 | `square` | [Square](third_party/square/) | Cursor | Integrations | Work with payments, orders, catalog, customers, and invoices. |
+| `seedance` | [Seedance by Ace Data Cloud](third_party/seedance/) | Ace Data Cloud Dev | Integrations | Generate Seedance text-to-video or image-to-video with Ace Data Cloud and retrieve completed videos by task ID. |
 | `tailscale` | [Tailscale](third_party/tailscale/) | Cursor | Integrations | Let Grok Bot reach MCP servers on your private Tailscale network: connect your own tailnet, or your team's company tailnets turned on by a team admin, with each member using their own device. |
 | `highlevel` | [HighLevel](third_party/highlevel/) | Cursor | Integrations | Work with contacts, conversations, opportunities, calendars, and payments. |
 | `finary` | [Finary](third_party/finary/) | Cursor | Integrations | Read your net worth, accounts, holdings, spending, and budgets. |
