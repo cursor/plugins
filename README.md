@@ -131,6 +131,8 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `eight-sleep` | [Eight Sleep](third_party/eight-sleep/) | Cursor | Integrations | Connect your Eight Sleep account to see your sleep scores, stages and heart metrics, check your Pod's status and temperature settings, and manage your alarms and your side of the Pod, with your approval for each change. |
 | `netsuite` | [NetSuite](third_party/netsuite/) | Cursor | Integrations | Work with records, reports, saved searches, and SuiteQL queries in NetSuite. |
 | `front` | [Front](third_party/front/) | Cursor | Integrations | Search conversations, draft and send replies, and manage tags, tasks, and inboxes. |
+| `paypal` | [PayPal](third_party/paypal/) | Cursor | Integrations | Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal. |
+| `engine` | [Engine](third_party/engine/) | Cursor | Integrations | Search and book hotels, shorten or cancel stays, and check support cases in Engine. |
 | `notfair` | [NotFair](third_party/notfair/) | Notfair | Integrations | Operate Google, Meta, X, LinkedIn, Reddit, and TikTok Ads plus GA4, Search Console, GoHighLevel, and WordPress through one OAuth MCP. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 

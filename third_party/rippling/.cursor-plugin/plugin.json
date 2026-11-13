@@ -41,7 +41,7 @@
       "RIPPLING_MCP_URL": {
         "type": "string",
         "title": "Remote MCP server URL",
-        "description": "Remote MCP server URL copied from Rippling → My IT → MCP connectors. This is the Rippling MCP URL from the setup page, not a company-wide API token and not an MCP Gateway URL for a different product."
+        "description": "Remote MCP server URL copied from Rippling → My IT → MCP connectors. Setup guide: https://developer.rippling.com/documentation/rippling-platform/rippling-mcp/setup. This is the Rippling MCP URL from the setup page, not a company-wide API token and not an MCP Gateway URL for a different product."
       }
     }
   },

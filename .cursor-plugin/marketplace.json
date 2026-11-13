@@ -719,6 +719,16 @@
       "description": "Search conversations, draft and send replies, and manage tags, tasks, and inboxes."
     },
     {
+      "name": "paypal",
+      "source": "third_party/paypal",
+      "description": "Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal."
+    },
+    {
+      "name": "engine",
+      "source": "third_party/engine",
+      "description": "Search and book hotels, shorten or cancel stays, and check support cases in Engine."
+    },
+    {
       "name": "notfair",
       "source": "third_party/notfair",
       "description": "Operate Google, Meta, X, LinkedIn, Reddit, and TikTok Ads plus GA4, Search Console, GoHighLevel, and WordPress through one OAuth MCP."
