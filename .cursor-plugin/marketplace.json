@@ -579,6 +579,11 @@
       "description": "Work with payments, orders, catalog, customers, and invoices."
     },
     {
+      "name": "gpt-image",
+      "source": "third_party/gpt-image",
+      "description": "Generate or edit GPT Image pictures with Ace Data Cloud; retrieve completed images using the original task ID."
+    },
+    {
       "name": "tailscale",
       "source": "third_party/tailscale",
       "description": "Let Grok Bot reach MCP servers on your private Tailscale network: connect your own tailnet, or your team's company tailnets turned on by a team admin, with each member using their own device.",
