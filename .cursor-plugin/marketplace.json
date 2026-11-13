@@ -579,6 +579,11 @@
       "description": "Work with payments, orders, catalog, customers, and invoices."
     },
     {
+      "name": "veo",
+      "source": "third_party/veo",
+      "description": "Generate Veo videos and retrieve the finished clip."
+    },
+    {
       "name": "tailscale",
       "source": "third_party/tailscale",
       "description": "Let Grok Bot reach MCP servers on your private Tailscale network: connect your own tailnet, or your team's company tailnets turned on by a team admin, with each member using their own device.",
