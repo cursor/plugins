@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.1.1
+
+- Require `VANTA_MCP_HOST` so the server URL cannot be saved with the region left unsubstituted.
+
 ## 1.1.0
 
 - Replaced the three regional servers with one `vanta` server at `https://${VANTA_MCP_HOST}/mcp`, so a user sees one Vanta connection instead of three.

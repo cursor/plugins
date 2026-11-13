@@ -1,7 +1,7 @@
 {
   "name": "vanta",
   "displayName": "Vanta",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "minClientVersions": {
     "cursor": "3.13.0"
   },
@@ -32,6 +32,7 @@
   ],
   "variables": {
     "type": "object",
+    "required": ["VANTA_MCP_HOST"],
     "properties": {
       "VANTA_MCP_HOST": {
         "type": "string",
