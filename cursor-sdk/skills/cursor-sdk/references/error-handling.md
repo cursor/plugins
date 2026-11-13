@@ -18,7 +18,7 @@ Always handle both. A try/catch alone won't catch a failed run; checking `result
 import { Agent, CursorAgentError } from "@cursor/sdk";
 
 async function runOnce(): Promise<void> {
-  await using agent = Agent.create({ /* ... */ });
+  await using agent = await Agent.create({ /* ... */ });
   try {
     const run = await agent.send(prompt);
     const result = await run.wait();

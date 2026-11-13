@@ -21,7 +21,7 @@ The shape looks similar in both runtimes; what changes is the execution location
 ## Local Runtime — MCP Config
 
 ```typescript
-const agent = Agent.create({
+const agent = await Agent.create({
   apiKey: process.env.CURSOR_API_KEY!,
   model: { id: "composer-2" },
   local: { cwd: process.cwd() },
@@ -49,7 +49,7 @@ const agent = Agent.create({
 ## Cloud Runtime — MCP Config
 
 ```typescript
-const agent = Agent.create({
+const agent = await Agent.create({
   apiKey: process.env.CURSOR_API_KEY!,
   model: { id: "composer-2" },
   cloud: {
@@ -85,7 +85,7 @@ Dashboard-configured MCP servers are also respected on cloud. Users configure th
 
 ```typescript
 const baseMcp = { /* ... */ };
-const agent = Agent.resume(agentId, {
+const agent = await Agent.resume(agentId, {
   apiKey: process.env.CURSOR_API_KEY!,
   model: { id: "composer-2" },
   local: { cwd: process.cwd() },
@@ -100,7 +100,7 @@ Dashboard-configured servers do persist (they're keyed to the user, not the agen
 By default, local SDK agents do **not** load ambient user/team/project MCP config. Opt in via `settingSources`:
 
 ```typescript
-const agent = Agent.create({
+const agent = await Agent.create({
   apiKey,
   model: { id: "composer-2" },
   local: {
