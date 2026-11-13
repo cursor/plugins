@@ -56,8 +56,12 @@ flowchart TB
 **Double review (thermos):**
 
 1. Gather `git diff main...HEAD` and full contents of changed files.
-2. Invoke both subagents in one message with `run_in_background: true`.
-3. Synthesize prioritized, deduped findings.
+2. Resolve absolute paths to `skills/thermo-nuclear-review/SKILL.md` and
+   `skills/thermo-nuclear-code-quality-review/SKILL.md` (or inline those
+   bodies). Task subagents cannot invoke slash skills — pass the rubric path
+   or inlined content in each prompt.
+3. Invoke both subagents in one message with `run_in_background: true`.
+4. Synthesize prioritized, deduped findings.
 
 **Single skill:** invoke `thermo-nuclear-review` or `thermo-nuclear-code-quality-review` in the main agent, or the matching subagent after gathering diff context.
 
