@@ -100,10 +100,7 @@ export function crawlBranch(
     out.push(
       `${indent(depth + 1)}${t.name.padEnd(28)} ${t.type.padEnd(11)} ${t.status.padEnd(11)} ${t.agentId ?? ""}${lineage}`
     );
-    if (
-      t.type === "subplanner" &&
-      (t.status === "running" || t.status === "handed-off")
-    ) {
+    if (descendsIntoSubplanner(t)) {
       // `ownSlug` (from loaded state.json) is authoritative over the param.
       crawlBranch(
         { repoPath, branch: `orch/${ownSlug}/${t.name}`, slug: t.name },
@@ -117,6 +114,20 @@ export function crawlBranch(
 
 export function indent(depth: number): string {
   return "  ".repeat(depth);
+}
+
+/**
+ * Shared by `crawl` and `kill-tree` so the two walkers cannot disagree about
+ * which subplanner branches to descend into. A `handed-off` subplanner has
+ * finished its own run, but the state.json on its branch can still hold
+ * `running` children (a verifier or respawn it started, workers in flight),
+ * so both walkers must follow it.
+ */
+export function descendsIntoSubplanner(t: TreeTask): boolean {
+  return (
+    t.type === "subplanner" &&
+    (t.status === "running" || t.status === "handed-off")
+  );
 }
 
 /**
@@ -171,7 +182,7 @@ export function collectRunningAgentsInTree(
         parentAgentId: t.parentAgentId ?? null,
       });
     }
-    if (t.type === "subplanner" && t.status === "running") {
+    if (descendsIntoSubplanner(t)) {
       collectRunningAgentsInTree(
         { repoPath, branch: `orch/${ownSlug}/${t.name}`, slug: t.name },
         collected,
