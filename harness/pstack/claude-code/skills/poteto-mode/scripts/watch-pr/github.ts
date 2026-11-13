@@ -489,20 +489,29 @@ export class GhGitHubReader implements T.GitHubReader {
   async openPullRequests(
     repository: T.Repository
   ): Promise<readonly T.OpenPullRequest[]> {
-    const value = await runJson([
-      "gh",
-      "pr",
-      "list",
-      "--repo",
-      `${repository.owner}/${repository.repo}`,
-      "--state",
-      "open",
-      "--limit",
-      "300",
-      "--json",
-      "number,headRefName,baseRefName,isCrossRepository",
-    ]);
-    return list(value, "open PRs").map((item, index) => {
+    // gh lists the newest PRs first and stops at --limit, so a full page may
+    // have cut off an older stack parent. Ask again until the list is short.
+    let value: readonly unknown[];
+    for (let limit = 300; ; limit *= 2) {
+      value = list(
+        await runJson([
+          "gh",
+          "pr",
+          "list",
+          "--repo",
+          `${repository.owner}/${repository.repo}`,
+          "--state",
+          "open",
+          "--limit",
+          String(limit),
+          "--json",
+          "number,headRefName,baseRefName,isCrossRepository",
+        ]),
+        "open PRs"
+      );
+      if (value.length < limit) break;
+    }
+    return value.map((item, index) => {
       const object = record(item, `open PRs[${index}]`);
       if (typeof object.isCrossRepository !== "boolean")
         missing(`open PRs[${index}].isCrossRepository`, object.isCrossRepository);
