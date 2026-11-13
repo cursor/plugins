@@ -722,6 +722,11 @@
       "name": "paypal",
       "source": "third_party/paypal",
       "description": "Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal."
+    },
+    {
+      "name": "engine",
+      "source": "third_party/engine",
+      "description": "Search and book hotels, shorten or cancel stays, and check support cases in Engine."
     }
   ]
 }
