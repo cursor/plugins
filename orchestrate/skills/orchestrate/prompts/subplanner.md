@@ -30,7 +30,7 @@ Paths you must NOT modify (owned by siblings):
 
 Acceptance criteria for your subtree:
 {{accept}}{{verifyPlan}}{{upstream}}
-Model selection: pick `tasks[].model` per task by capability. Available models:
+Model selection: pick `tasks[].model` per task by capability, choosing only from the list below. That list is this repo's effective catalog, not a generic menu. Omit `tasks[].model` to accept the marked default for that task type; set it explicitly when the task needs a different capability.
 
 {{modelCatalog}}
 

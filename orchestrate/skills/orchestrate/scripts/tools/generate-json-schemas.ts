@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import type { z } from "zod/v3";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-import { PlanSchema, StateSchema } from "../schemas.ts";
+import { ModelCatalogSchema, PlanSchema, StateSchema } from "../schemas.ts";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const SCHEMA_DIR = resolve(SCRIPT_DIR, "../../schemas");
@@ -27,6 +27,15 @@ writeSchema({
   title: "orchestrate state.json",
   description:
     "Written by scripts/orchestrate.ts. Live task rows; read-only unless you must edit by hand to unstick state.",
+});
+
+writeSchema({
+  path: "model-catalog.schema.json",
+  schema: ModelCatalogSchema,
+  id: "https://cursor/orchestrate/model-catalog.schema.json",
+  title: "orchestrate ORCHESTRATE_MODEL_CATALOG",
+  description:
+    "Optional operator-authored model catalog. When ORCHESTRATE_MODEL_CATALOG is set, it replaces the built-in catalog planners choose `tasks[].model` from.",
 });
 
 function writeSchema(args: {
