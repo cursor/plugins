@@ -12,6 +12,12 @@ set -euo pipefail
 
 HOOK_INPUT=$(cat)
 
+# A user cancellation or failed turn must not launch another iteration.
+STATUS=$(jq -r '.status // empty' <<< "$HOOK_INPUT")
+if [[ "$STATUS" != "completed" ]]; then
+  exit 0
+fi
+
 PROJECT_DIR="${CURSOR_PROJECT_DIR:-.}"
 STATE_FILE="$PROJECT_DIR/.cursor/ralph/scratchpad.md"
 DONE_FLAG="$PROJECT_DIR/.cursor/ralph/done"
