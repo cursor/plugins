@@ -31,10 +31,17 @@ const decode = (text: string) =>
       : ENTITIES[name],
   );
 
+const CDATA = /<!\[CDATA\[([\s\S]*?)\]\]>/g;
+const escapeText = (text: string) =>
+  text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
 function parseXml(xml: string) {
   const document: XmlNode = { tag: "", text: "", children: [] };
   const open = [document];
-  for (const [, close, tag, empty, text] of xml.matchAll(
+  // SANY's XMLExporter wraps comments in CDATA. Raw <, > and <<...>> inside a comment
+  // are text, not markup; without this the tag scanner desyncs on the first << sequence.
+  const source = xml.replace(CDATA, (_, body: string) => escapeText(body));
+  for (const [, close, tag, empty, text] of source.matchAll(
     /<(\/?)([^\s/>?!]+)[^>]*?(\/?)>|<[?!][^>]*>|([^<]+)/g,
   )) {
     const parent = open[open.length - 1];
