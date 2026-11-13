@@ -14,7 +14,7 @@ Use `gh pr checks` as the source of truth. It includes all PR-attached checks, w
 ## Workflow
 
 1. Resolve the PR for the current branch.
-2. Inspect current PR checks before waiting.
+2. Inspect current PR checks before waiting. If `gh pr checks` exits 1 with `no checks reported on the '<branch>' branch`, nothing is attached to the head commit yet. That happens right after a push and in repos with no CI, and it is not a failure: `--watch` exits the same way. Wait briefly and re-check, and report that the PR has no checks if none appear.
 3. If checks already failed, diagnose those failures first.
 4. If checks are pending, watch with `gh pr checks --watch --fail-fast`.
 5. After each push, re-check the full PR check set and repeat until green.
