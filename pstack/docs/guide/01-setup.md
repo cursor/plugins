@@ -14,6 +14,17 @@ Cursor confirms the plugin is installed.
 
 In Claude Code, run `/plugin marketplace add cursor/plugins`, then `/plugin install pstack@cursor-plugins`. Claude Code prefixes plugin commands, so each command in this guide takes a `pstack:` prefix there, such as `/pstack:setup-pstack`, which writes its model rule to `~/.claude/rules/pstack-models.md`. The [Claude Code adapter](../harness/claude-code.md) covers the other differences.
 
+For Codex, run these commands in a terminal:
+
+```sh
+codex plugin marketplace add cursor/plugins
+codex plugin add pstack@cursor-plugins
+```
+
+Start a new Codex chat and run `$pstack:setup-pstack`. Then start a task with `$pstack:poteto-mode` and your goal. Codex reads model choices from `$CODEX_HOME/pstack-models.md`, which defaults to `~/.codex/pstack-models.md`.
+
+The rest of this guide uses Cursor command names and paths. In Codex, use `$pstack:name` and the paths in the [Codex adapter](../harness/codex.md). Unconfigured roles inherit the chat's model and effort. A budget change does not override inherited choices. Setup offers only models and effort levels the host supports.
+
 ## Pick your models
 
 Run:

@@ -2,7 +2,7 @@
 
 i'm [poteto](https://x.com/poteto). i'm not a president or ceo, but i've worked with millions of lines of code at Meta, Netflix, and Cursor. i'm also on the react core team where i help build and maintain react compiler.
 
-there's a growing sense that ai writes too much slop code. i agree. i don't want to ship like a team of twenty slop artists. throughput without quality is not a goal i aspire to. if you want to go fast, go deep first. 
+there's a growing sense that ai writes too much slop code. i agree. i don't want to ship like a team of twenty slop artists. throughput without quality is not a goal i aspire to. if you want to go fast, go deep first.
 
 **pstack is my answer.** these are the same skills i use every day to ship high quality code at Cursor. this turns cursor into a real engineering team. the goal is not to maximize loc, in fact it's the opposite. pstack helps you write less, but higher quality code.
 
@@ -10,7 +10,7 @@ there's a growing sense that ai writes too much slop code. i agree. i don't want
 
 **cursor gives you the best of all worlds.** every frontier model has its strengths and weaknesses. use any model with pstack. in fact, many of my skills use multi-model workflows to take advantage of each model's unique strengths.
 
-fork it. improve it. make it yours. PRs are welcome! 
+fork it. improve it. make it yours. PRs are welcome!
 
 ## install
 
@@ -29,7 +29,18 @@ claude code leaves auto-update off for third-party marketplaces, so pstack stays
 
 claude code prefixes plugin commands and agents, so `/poteto-mode` is `/pstack:poteto-mode`. the [claude code adapter](./docs/harness/claude-code.md) maps every other cursor name. in claude code, `/pstack:setup-pstack` writes your model choices to `~/.claude/rules/pstack-models.md`, and a step that needs a cursor-only feature, such as bugbot or automations, is skipped with a one-line note.
 
-claude code installs a generated copy of pstack, including this readme and the guide, from [`harness/pstack/`](https://github.com/cursor/plugins/tree/main/harness/pstack) at the repository root. after you change pstack, run `node scripts/generate-pstack-harness-trees.mjs` from the repository root and commit the result. ci fails while the generated copy is out of date.
+in codex:
+
+```bash
+codex plugin marketplace add cursor/plugins
+codex plugin add pstack@cursor-plugins
+```
+
+start a new chat and select pstack's `setup-pstack` skill, then `poteto-mode`, from the skill picker. in the cli, use `$pstack:setup-pstack` and `$pstack:poteto-mode`. the [codex adapter](./docs/harness/codex.md) maps tools, subagents, model choices, project skills, and session history. model preferences live in `$CODEX_HOME/pstack-models.md` (default `~/.codex/pstack-models.md`) and are read when a workflow selects models. unconfigured roles inherit the session's model. most skills remain explicit-only; `poteto-mode` reads the sibling skills it needs by their installed paths.
+
+codex uses independent subagents when available. a required review stays unverified when delegation is unavailable, and model diversity is reported separately from independence. cursor automations and cloud-agent dashboards are cursor-only. the plugin installs no lifecycle hooks or persistent mode. invoke `poteto-mode` for each new task. compressed history requires node 24.22 or a later 24.x release, or node 26.10 or newer.
+
+claude code and codex install generated copies of pstack, including this readme and the guide, from [`harness/pstack/`](https://github.com/cursor/plugins/tree/main/harness/pstack) at the repository root. after you change pstack, run `node scripts/generate-pstack-harness-trees.mjs` from the repository root and commit the result. ci fails while a generated copy is out of date. codex invocation metadata is generated from the existing skill flags, so new skills keep their intended invocation policy.
 
 ## get started
 
@@ -268,7 +279,7 @@ install `cursor-team-kit` alongside pstack if you want the full set.
 
 ## why are there no planning skills?
 
-cursor already has a great plan mode which works great with pstack. but personally, i don't believe in planning. the best spec is code. if you do want to make a plan, [`/poteto-mode`](./skills/poteto-mode/SKILL.md) covers it, but it's not a default. 
+cursor already has a great plan mode which works great with pstack. but personally, i don't believe in planning. the best spec is code. if you do want to make a plan, [`/poteto-mode`](./skills/poteto-mode/SKILL.md) covers it, but it's not a default.
 
 ## make it yours
 
