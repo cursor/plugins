@@ -158,7 +158,7 @@ Collect:
 
 Inspect screenshots and video. Use read-only parallel workers for code history, test ideas, blast-radius mapping, and media review when useful. Each worker gets a narrow question and the Slack-write prohibition.
 
-Use pstack's `how` skill to trace the action through the repository. Use `why` for regression history and defensive code. Form competing cause hypotheses and identify evidence that would separate them.
+Trace the action through the repository. Use pstack's `why` skill for regression history and defensive code. Form competing cause hypotheses and identify evidence that would separate them.
 
 ## 7. Reproduce
 
