@@ -17,7 +17,7 @@ Enumerate the model slugs you can pass to a `Task` subagent in this session. Tha
 
 ### 2. Load current state
 
-The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.cursor/rules/pstack-models.mdc` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it.
+The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.cursor/rules/pstack-models.mdc` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics` or `why investigators`, is from a retired role. Drop it.
 
 ### 3. Budget, map, and confirm
 
@@ -56,8 +56,6 @@ judgment and prose: claude-opus-5-5-xhigh
 hardest tasks: claude-opus-5-5-xhigh
 how explorer: grok-4.7-xhigh-fast
 how explainer: claude-opus-5-5-xhigh
-why investigators: grok-4.7-xhigh-fast
-why synthesizer: claude-opus-5-5-xhigh
 reflect tooling: grok-4.7-xhigh-fast
 reflect judgment, divergent, synthesizer: claude-opus-5-5-xhigh
 arena runners: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
