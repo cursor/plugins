@@ -36,6 +36,10 @@ Only edit the verification skill's own directory (its SKILL.md, features/, and a
 
 5. **Triage.** Wrong or missing user-POV description → doc drift, fix it. Working behavior the harness can't drive → harness gap, fix it; a harness fix follows the same helpers rule as generation (scripts executable, invocation documented in the skill body). App behavior that's actually broken → product gap; record it for the user, keep it out of this PR.
 
-6. **Ship or hand back.** Re-read every changed file first. If the user or calling workflow explicitly retains delivery ownership, return the outcome, changed files, coverage and gaps, exact commands with observed results, and retained evidence paths to that owner, and leave commits, PRs, and merging to it. A clean or blocked run still returns its report and evidence; say that no publication is needed, not that no handoff is needed. Otherwise, for changed, open one PR of proven corrections and report its link; for clean or blocked, open no PR and report the outcome and coverage honestly. Until a PR exists the corrections are ready, not shipped. An installed workflow alone does not assign delivery ownership.
+6. **Ship or hand back.** Re-read every changed file first. Then check the request for a named delivery owner: a statement from the user or the calling workflow that someone else owns delivery, commits, or publication for this task, such as "X owns delivery" or "don't open a PR".
+   - **Owner named: hand back.** Return the outcome, changed files, coverage and gaps, exact commands with observed results, and retained evidence paths to that owner. Make no commit, branch, or PR; the owner does that. A clean or blocked run still returns its report and evidence; say that no publication is needed, not that no handoff is needed.
+   - **No owner named: ship.** This is the normal case, including unattended runs; do not ask or wait for an owner. For changed, open one PR of proven corrections and report its link. For clean or blocked, open no PR and report the outcome and coverage honestly.
+
+   An installed workflow alone names no owner. Until a PR exists the corrections are ready, not shipped.
 
 Keep concise run notes (features covered, unreachable prerequisites, confirmed drift, outcome) in a scratch location; don't commit them.
