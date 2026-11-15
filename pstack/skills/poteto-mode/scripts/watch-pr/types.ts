@@ -66,8 +66,8 @@ export interface ReviewComment {
 export interface ReviewThread {
   readonly id: string;
   readonly firstComment: ReviewComment | null;
-  readonly isBugbot: boolean;
-  readonly bugbotReviewPasses: number;
+  readonly reviewBot: string | null;
+  readonly reviewBotPasses: number;
 }
 interface CheckDetails {
   readonly name: string;
