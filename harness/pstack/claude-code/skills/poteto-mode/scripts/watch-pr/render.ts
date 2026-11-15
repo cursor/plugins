@@ -13,6 +13,8 @@ function ciCell(row: T.PrSnapshot): string {
       return `❌ ${row.ci.failed.length} failed${row.ci.pending.length ? `, ${row.ci.pending.length} pending` : ""}${was}`;
     case "ci-github-rejected":
       return `❌ GitHub reports failing checks${was}`;
+    case "ci-none":
+      return `no checks reported${was}`;
     default: {
       const exhaustive: never = row.ci;
       return exhaustive;
