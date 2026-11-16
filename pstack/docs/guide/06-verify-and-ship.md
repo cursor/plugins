@@ -131,7 +131,7 @@ A counterexample in model terms convinces you. The PM or designer who owns the b
 /poteto-mode open the pr. small ordered commits, evidence in the description.
 ```
 
-The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) works from a worktree, rebases the work into small ordered commits, cleans the diff, unslops the prose, and returns the PR link. Five narrow PRs beat one fat one, and stacked follow-ups beat a growing branch.
+The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) works from a worktree, rebases the work into small landable commits, cleans the diff, writes a one-minute briefing as the body, and opens the PR ready. Stacked follow-ups beat a growing branch.
 
 ## Drive the PR to merge-ready with Babysit
 
