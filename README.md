@@ -132,6 +132,9 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `netsuite` | [NetSuite](third_party/netsuite/) | Cursor | Integrations | Work with records, reports, saved searches, and SuiteQL queries in NetSuite. |
 | `front` | [Front](third_party/front/) | Cursor | Integrations | Search conversations, draft and send replies, and manage tags, tasks, and inboxes. |
 | `paypal` | [PayPal](third_party/paypal/) | Cursor | Integrations | Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal. |
+| `engine` | [Engine](third_party/engine/) | Cursor | Integrations | Search and book hotels, shorten or cancel stays, and check support cases in Engine. |
+| `squarespace` | [Squarespace](third_party/squarespace/) | Cursor | Integrations | Brainstorm business names and check domain availability, pricing, and checkout links on Squarespace. |
+| `runta` | [Runta](third_party/runta/) | Cursor | Integrations | Create and run persistent agent runtimes, publish ports, and manage egress, checkpoints, and images in Runta. |
 | `keenable` | [Keenable](third_party/keenable/) | Cursor | Integrations | Search the web and fetch pages as clean markdown. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
