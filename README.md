@@ -106,6 +106,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `zoho-desk` | [Zoho Desk](third_party/zoho-desk/) | Cursor | Integrations | Work with tickets, contacts, tasks, and knowledge base articles in Zoho Desk. |
 | `zoho-books` | [Zoho Books](third_party/zoho-books/) | Cursor | Integrations | Work with contacts, invoices, estimates, and items in Zoho Books. |
 | `business-central` | [Microsoft Dynamics 365 Business Central](third_party/business-central/) | Cursor | Integrations | Work with customers, vendors, items, sales and purchase documents, and the general ledger in Business Central. |
+| `sap-s4hana-cloud` | [SAP S/4HANA Cloud](third_party/sap-s4hana-cloud/) | Cursor | Integrations | Work with business partners, products, sales and purchase orders, supplier invoices, and journal entry items in SAP S/4HANA Cloud. |
 | `square` | [Square](third_party/square/) | Cursor | Integrations | Work with payments, orders, catalog, customers, and invoices. |
 | `tailscale` | [Tailscale](third_party/tailscale/) | Cursor | Integrations | Let Grok Bot reach MCP servers on your private Tailscale network: connect your own tailnet, or your team's company tailnets turned on by a team admin, with each member using their own device. |
 | `highlevel` | [HighLevel](third_party/highlevel/) | Cursor | Integrations | Work with contacts, conversations, opportunities, calendars, and payments. |
