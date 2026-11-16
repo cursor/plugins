@@ -28,13 +28,14 @@ Rule numbers are stable ids that other skills cite. A removed rule leaves a gap.
 
 ### Style
 
-13. **Em dash overuse.** Avoid em dashes entirely. Use periods or commas only (no parentheses, no en dashes, no hyphen-as-dash substitutes). If a thought needs separation, end the sentence or use a comma.
+13. **Dash overuse.** Avoid em dashes (—), en dashes (–), and hyphens used as thought connectors or dividers entirely. Use periods or commas only (no parentheses, no hyphen-as-dash substitutes). If a thought needs separation, end the sentence or use a comma.
 14. **Colon overuse.** Colons are fine before a list or example, not as mid-sentence connectors. "If you're coming from traditional automation: instead of registering event handlers, you describe conditions" adds nothing with the colon. Rewrite to let the point stand on its own without comparison framing. "Describing when the scheduler should fire works best as plain English." Same meaning, no crutch punctuation.
 15. **Boldface overuse.** Don't bold every proper noun or acronym.
 16. **Inline-header lists.** The tell is a bold label and colon that restates the line: "**Performance:** Performance improved...". Convert those to prose. A bold lead-in that ends in a period, names the item, and is followed by genuinely new detail ("**Schema in TypeScript.** Tables live in one file.") is fine, not a tell.
 17. **Title case headings.** Use sentence case.
 18. **Decorative emojis.** Remove from headings and bullets.
 19. **Curly quotes.** Use straight quotes.
+34. **Underlines and underscores.** Do not use underlines (`<u>`), markdown underscores (`_text_`), or underline dividers (`---`). Use bold (`**`) or plain text for emphasis, and blank lines instead of horizontal rules.
 
 ### Communication artifacts
 
