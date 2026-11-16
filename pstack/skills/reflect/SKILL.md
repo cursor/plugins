@@ -15,7 +15,8 @@ Invoke when the user says "reflect" or "/reflect". Skip when the conversation is
 Before fanning out, find this conversation's transcript in the `agent-transcripts/` directory the system prompt names. Do not glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
 
 ```bash
-ls -t <agent-transcripts>/*.jsonl <agent-transcripts>/*/*.jsonl <agent-transcripts>/*/subagents/*.jsonl 2>/dev/null | head -10
+# Prefer find: in zsh, unmatched globs in `ls -t a/*.jsonl b/*.jsonl` abort the whole command.
+find <agent-transcripts> -type f -name '*.jsonl' -print0 2>/dev/null | xargs -0 ls -t 2>/dev/null | head -10
 ```
 
 That covers the legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), and subagent (`<parent>/subagents/<child>.jsonl`) layouts. For each candidate, read the first JSONL line. Take the file whose `message.content[0].text` contains the conversation's opening user prompt. If none matches, pass a tight digest of the session instead.
