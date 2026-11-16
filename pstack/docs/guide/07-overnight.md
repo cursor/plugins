@@ -93,7 +93,7 @@ A whole program, such as a migration across many packages, has no playbook of it
 
 ## Run many projects in parallel
 
-A [Cursor Project](https://cursor.com/blog/projects) gives one coordinator agent a persistent thread. The coordinator doesn't write code. It directs subagents, which run in the cloud by default, so the work continues when your laptop is closed. Start your prompts to the coordinator with `/poteto-mode`, and the subagents it spawns follow the playbooks.
+A [Cursor Project](https://cursor.com/blog/projects) gives one coordinator agent a persistent thread. The coordinator doesn't write code. It directs subagents, which run in the cloud by default, so the work continues when your laptop is closed. Start your prompts to the coordinator with `/poteto-mode`, and the subagents it spawns follow the playbooks. Each agent it starts reads [`worker.md`](../../skills/poteto-mode/worker.md) first, so workers hold to the kickoff's bar, decide reversible calls instead of asking you, and open PRs ready for review.
 
 A few habits help:
 
