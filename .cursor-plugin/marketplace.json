@@ -752,6 +752,11 @@
       "name": "close",
       "source": "third_party/close",
       "description": "Search and update leads, contacts, opportunities, tasks, and conversations in Close."
+    },
+    {
+      "name": "factset",
+      "source": "third_party/factset",
+      "description": "Query FactSet fundamentals, prices, estimates, ownership, and company data."
     }
   ]
 }
