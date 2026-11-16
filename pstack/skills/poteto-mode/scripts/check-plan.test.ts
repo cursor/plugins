@@ -69,6 +69,19 @@ test("accepts ordinary, indented, and longer closing fences", () => {
 	runPlan("```markdown\n## Example only\n````\n", 0);
 });
 
+test("treats fences inside nested list items as code", () => {
+	const body = "## Example only\nThis prose has a mid-sentence colon: inside code\n- [ ] Not a box.\n";
+	for (const indent of ["    ", "      ", "\t"]) {
+		const indented = body.replace(/^/gm, indent);
+		runPlan(`- [ ] Outer.\n  - [ ] Inner.\n\n${indent}\`\`\`yaml\n${indented}${indent}\`\`\`\n`, 0);
+	}
+});
+
+test("checks prose after a fence inside a nested list item", () => {
+	const result = runPlan("- [ ] Outer.\n  - [ ] Inner.\n\n    ```yaml\n    retry: 3\n    ```\nThis prose has a mid-sentence colon: bad.\n", 1);
+	expect(result.stderr).toContain("mid-sentence colon");
+});
+
 test("accepts nested backticks and tilde info strings", () => {
 	runPlan("````markdown\n```markdown\n## Example only\n```\n````\n", 0);
 	runPlan("~~~markdown `info`\n## Example only\n ~~~\n", 0);
