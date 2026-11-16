@@ -1,0 +1,7 @@
+stateDiagram-v2
+  s0: sent=0 paid=FALSE
+  s1: sent=1 paid=FALSE
+  s2: sent=2 paid=FALSE
+  [*] --> s0
+  s0 --> s1: YouPressPay
+  s1 --> s2: YouPressPay

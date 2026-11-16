@@ -522,6 +522,36 @@ test("a broken property is named in the report, and its TLC trace is in tlc-NAME
   assert.match(r.report, /^## Rules that hold\n.*\bEventuallyStops\b.*\bStaysTyped\b/m);
 });
 
+test("a TLC warning about the spec is in the report above the rules that hold, and the JVM advice is not", () => {
+  const r = run(path.join(corpus, "UnchangedWarning"));
+  assert.equal(r.stderr, "");
+  assert.equal(r.status, 0);
+  const warning = [
+    "The variable paid was changed while it is specified as UNCHANGED at",
+    "line 9, col 62 to line 9, col 65 of module UnchangedWarning",
+  ].join("\n");
+  const at = r.report.indexOf(warning);
+  assert.notEqual(at, -1, r.report);
+  assert.equal(r.report.indexOf(warning, at + 1), -1, r.report);
+  assert.ok(at < r.report.indexOf("\n## Rules that hold\nNeverPaidTwice, NoDeadlock"), r.report);
+  assert.doesNotMatch(r.report, /UseParallelGC/);
+});
+
+test("a TLC warning that only a later verdict run prints is in the report too", () => {
+  const r = run(path.join(corpus, "UnchangedAfterDeadlock"));
+  assert.equal(r.stderr, "");
+  assert.equal(r.status, 1);
+  assert.match(r.report, /^## NoDeadlock breaks$/m);
+  const warning = [
+    "The variable paid was changed while it is specified as UNCHANGED at",
+    "line 11, col 61 to line 11, col 64 of module UnchangedAfterDeadlock",
+  ].join("\n");
+  const at = r.report.indexOf(warning);
+  assert.notEqual(at, -1, r.report);
+  assert.equal(r.report.indexOf(warning, at + 1), -1, r.report);
+  assert.ok(at < r.report.indexOf("\n## Rules that hold\nNeverPaidLate"), r.report);
+});
+
 test("TLC checks the rules and draws the chart with VIEW and SYMMETRY, and the report says an arrow can lead to a representative", () => {
   const dir = copyCase("MediaPlayer", (d) =>
     fs.appendFileSync(path.join(d, "MediaPlayer.cfg"), "\nVIEW vars\nSYMMETRY Perms\n"),
