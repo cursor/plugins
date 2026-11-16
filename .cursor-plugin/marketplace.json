@@ -742,6 +742,11 @@
       "name": "hospitable",
       "source": "third_party/hospitable",
       "description": "Manage short-term rental properties, reservations, calendars, guest messages, tasks, payouts, and owner statements in Hospitable."
+    },
+    {
+      "name": "close",
+      "source": "third_party/close",
+      "description": "Search and update leads, contacts, opportunities, tasks, and conversations in Close."
     }
   ]
 }
