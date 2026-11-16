@@ -19,7 +19,7 @@ The default role-to-model mapping is the rule shape shown in step 5 below. If `~
 
 A rule without the `# defaults: 2` line comes from an older setup. That setup wrote a line for every role, so some of its values are old defaults, not choices. An old slug is one that matches `grok-*`. Before step 3, replace these values:
 
-- An old slug in `feature, refactoring`, `bug-fix`, `perf-issue`, `hillclimb`, `reflect tooling`, or `swarm workers` takes the role's step 5 default.
+- An old slug in `feature, refactoring`, `bug-fix`, `perf-issue`, `hillclimb`, or `swarm workers` takes the role's step 5 default.
 - A `claude-opus-*` value in `hardest tasks` takes the role's step 5 default.
 - In a panel role (`arena runners`, `arena cross-judge pool`, `architect runners`, `interrogate reviewers`), a list of exactly one `claude-opus-*` entry and one old slug, in either order, takes the role's step 5 list. In any other list, each old slug becomes `claude-opus-5-5-high-fast`.
 
@@ -61,8 +61,6 @@ perf-issue: claude-opus-5-5-xhigh
 hillclimb: claude-opus-5-5-xhigh
 judgment and prose: claude-opus-5-5-xhigh
 hardest tasks: claude-fable-5-2-max
-reflect tooling: claude-opus-5-5-high-fast
-reflect judgment, divergent, synthesizer: claude-opus-5-5-xhigh
 arena runners: claude-fable-5-2-high, claude-opus-5-5-high-fast, gemini-4-carbon-high
 arena cross-judge pool: claude-fable-5-2-high, claude-opus-5-5-high-fast, gemini-4-carbon-high
 swarm workers: claude-opus-5-5-high-fast
