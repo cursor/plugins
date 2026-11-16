@@ -136,6 +136,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `squarespace` | [Squarespace](third_party/squarespace/) | Cursor | Integrations | Brainstorm business names and check domain availability, pricing, and checkout links on Squarespace. |
 | `runta` | [Runta](third_party/runta/) | Cursor | Integrations | Create and run persistent agent runtimes, publish ports, and manage egress, checkpoints, and images in Runta. |
 | `hospitable` | [Hospitable](third_party/hospitable/) | Cursor | Integrations | Manage short-term rental properties, reservations, calendars, guest messages, tasks, payouts, and owner statements in Hospitable. |
+| `factset` | [FactSet](third_party/factset/) | Cursor | Integrations | Query FactSet fundamentals, prices, estimates, ownership, and company data. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

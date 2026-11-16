@@ -742,6 +742,11 @@
       "name": "hospitable",
       "source": "third_party/hospitable",
       "description": "Manage short-term rental properties, reservations, calendars, guest messages, tasks, payouts, and owner statements in Hospitable."
+    },
+    {
+      "name": "factset",
+      "source": "third_party/factset",
+      "description": "Query FactSet fundamentals, prices, estimates, ownership, and company data."
     }
   ]
 }
