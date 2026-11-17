@@ -134,6 +134,11 @@
       "description": "Run GA4 reports and manage property configuration."
     },
     {
+      "name": "google-search-console",
+      "source": "third_party/google-search-console",
+      "description": "Query search performance, inspect URLs, and manage sitemaps."
+    },
+    {
       "name": "gong",
       "source": "third_party/gong",
       "description": "Pull account summaries, deal insights, and call briefs."
@@ -574,6 +579,11 @@
       "description": "Work with customers, vendors, items, sales and purchase documents, and the general ledger in Business Central."
     },
     {
+      "name": "sap-s4hana-cloud",
+      "source": "third_party/sap-s4hana-cloud",
+      "description": "Work with business partners, products, sales and purchase orders, supplier invoices, and journal entry items in SAP S/4HANA Cloud."
+    },
+    {
       "name": "square",
       "source": "third_party/square",
       "description": "Work with payments, orders, catalog, customers, and invoices."
@@ -689,6 +699,11 @@
       "description": "Read your Tesla cars and energy sites, and send commands you confirm."
     },
     {
+      "name": "uber-courier",
+      "source": "third_party/uber-courier",
+      "description": "Get a price, book, track, and cancel a package delivery on your Uber account."
+    },
+    {
       "name": "fitmetrics",
       "source": "third_party/fitmetrics",
       "description": "Review Trainerize clients and check-ins, and update macros, messages, and programs."
@@ -737,6 +752,36 @@
       "name": "runta",
       "source": "third_party/runta",
       "description": "Create and run persistent agent runtimes, publish ports, and manage egress, checkpoints, and images in Runta."
+    },
+    {
+      "name": "hospitable",
+      "source": "third_party/hospitable",
+      "description": "Manage short-term rental properties, reservations, calendars, guest messages, tasks, payouts, and owner statements in Hospitable."
+    },
+    {
+      "name": "close",
+      "source": "third_party/close",
+      "description": "Search and update leads, contacts, opportunities, tasks, and conversations in Close."
+    },
+    {
+      "name": "factset",
+      "source": "third_party/factset",
+      "description": "Query FactSet fundamentals, prices, estimates, ownership, and company data."
+    },
+    {
+      "name": "redo",
+      "source": "third_party/redo",
+      "description": "Look up orders and customers, create and process returns, work support tickets, review marketing campaigns and automations, manage fulfillment and inventory, and build analytics reports in Redo."
+    },
+    {
+      "name": "strava",
+      "source": "third_party/strava",
+      "description": "Connect your Strava account so Grok can read your activities, stats, and athlete profile to answer questions about your training. You'll share your profile and activity data, including private activities. Access is read-only, and you can disconnect anytime from Strava's My Apps settings."
+    },
+    {
+      "name": "expensify",
+      "source": "third_party/expensify",
+      "description": "Connect your Expensify account so Grok can search your expenses, reports, receipts, and invoices to answer questions about your spending. You'll share the Expensify data your account can already see. Access is read-only, and you can revoke it anytime."
     },
     {
       "name": "rillet",
