@@ -28,6 +28,12 @@ pstack skills use Cursor names. In Claude Code, read this file once per session,
 | `resume` | Spawn a new agent and paste the earlier result into its brief. |
 | `file_attachments` | List the paths in the brief. |
 
+## Shipping verification
+
+For the shipping playbook’s “one verifier per PR, each a Cursor cloud agent”, spawn a fresh `Agent` with `isolation: "worktree"` that did not write the change. Give it the PR head SHA to check out, the parent/base to compare against, and the user-facing verification steps. It returns `PASS`, `PASS+NOTES`, or `FAIL` with evidence for that PR; use the forge CLI to post the verdict if the subagent cannot. Do not skip independent verification merely because Cursor cloud agents are unavailable.
+
+A worktree shares the host’s package store or cache. For a dependency manifest or lockfile change, tell the verifier to make a fresh clone at the supplied head and install with a newly created empty store, for example `pnpm install --frozen-lockfile --store-dir <empty-store>`, before running checks. Worktree isolation alone is not clean-install evidence. Include the install command, package-manager version, and resolved producer revision for cross-repository dependencies in the verdict.
+
 ## Models
 
 | Cursor | Claude Code |
