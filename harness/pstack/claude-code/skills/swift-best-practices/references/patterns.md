@@ -132,7 +132,7 @@ final class Session {
 
 // Do. Data is a value. The editor is a class because the view observes that instance.
 struct Session: Sendable {
-  var id: SessionId
+  let id: SessionId
   var title: String
 }
 
@@ -144,6 +144,8 @@ final class SessionEditor {
 ```
 
 UIKit subclasses stay classes. That is identity the framework owns.
+
+`let` unless the stored value changes after init. `Session.id` is `let`. `title` is `var` because the editor renames it.
 
 ## `Any` at the boundary
 
@@ -241,6 +243,27 @@ func area(_ shape: Shape) -> Double {
   case .rect(let width, let height):
     return width * height
   }
+}
+```
+
+`guard` and `guard let` for preconditions. Nested `if let` buries the work.
+
+```swift
+// Don't
+func load(_ url: URL?) async throws -> Data {
+  if let url {
+    if url.scheme == "https" {
+      return try await client.fetch(url)
+    }
+  }
+  throw LoadError.badURL
+}
+
+// Do
+func load(_ url: URL?) async throws -> Data {
+  guard let url else { throw LoadError.badURL }
+  guard url.scheme == "https" else { throw LoadError.badURL }
+  return try await client.fetch(url)
 }
 ```
 
@@ -361,11 +384,99 @@ final class Counter: Sendable {
 }
 ```
 
-Prefer an actor over `@unchecked Sendable`. Use `Mutex` (or another lock) only when a class is required. `nonisolated(unsafe)` is the same lie as `@unchecked Sendable`.
+Use `Mutex` from Synchronization when the type must stay a class. `nonisolated(unsafe)` is the same lie as `@unchecked Sendable`.
 
-Prefer structured concurrency (`async let`, task groups, `Task { }` that inherits the current actor) to `Task.detached`. Detach only when the work must leave the caller's isolation, and then pass only `Sendable` values.
+Each `await` in an actor is a reentrancy point. Other work on that actor can run and mutate state before you resume.
 
-Re-validate actor state after every `await`. Each `await` is a reentrancy point.
+```swift
+// Don't. After the wait, another task may have spent the balance.
+actor Account {
+  var balance: Int = 0
+  let ledger: Ledger
+
+  func withdraw(_ amount: Int) async throws {
+    guard balance >= amount else { throw AccountError.insufficientFunds }
+    await ledger.record(amount)
+    balance -= amount
+  }
+}
+
+// Do. Mutate before the wait.
+actor Account {
+  var balance: Int = 0
+  let ledger: Ledger
+
+  func withdraw(_ amount: Int) async throws {
+    guard balance >= amount else { throw AccountError.insufficientFunds }
+    balance -= amount
+    await ledger.record(amount)
+  }
+}
+```
+
+If the mutation has to wait, re-check the invariant after the wait. Capture values you still need in locals before you suspend.
+
+## Structured concurrency
+
+Use `async let` and task groups so child work cancels with the caller.
+
+```swift
+// Don't. Unstructured tasks keep running after loadBoth is cancelled.
+func loadBoth() async throws -> (Profile, [Post]) {
+  let profile = Task { try await loadProfile() }
+  let posts = Task { try await loadPosts() }
+  return try await (profile.value, posts.value)
+}
+
+// Do
+func loadBoth() async throws -> (Profile, [Post]) {
+  async let profile = loadProfile()
+  async let posts = loadPosts()
+  return try await (profile, posts)
+}
+```
+
+`Task { }` is for a non-async boundary that has to start work.
+
+```swift
+func handleRefresh() {
+  Task { await model.refresh() }
+}
+```
+
+`Task.detached` leaves the caller's isolation. Use it only when the work must leave that isolation, and then pass only `Sendable` values.
+
+```swift
+// Don't. Detaches from the caller's actor and from cancellation.
+Task.detached {
+  await cache.warm()
+}
+```
+
+Do not treat `CancellationError` as a failure. Rethrow it. Call `Task.checkCancellation()` in long loops.
+
+```swift
+// Don't. Cancellation looks like a refresh failure.
+func refresh(_ id: SessionId) async {
+  do {
+    try await client.refresh(id)
+  } catch {
+    logger.error("refresh failed \(id.rawValue, privacy: .public)")
+  }
+}
+
+// Do
+func refresh(_ id: SessionId) async throws {
+  do {
+    try await client.refresh(id)
+  } catch let error as CancellationError {
+    throw error
+  } catch {
+    logger.error("refresh failed \(id.rawValue, privacy: .public)")
+    throw error
+  }
+}
+```
 
 ## `throws`, then typed throws
 
@@ -435,13 +546,9 @@ import os
 
 let logger = Logger(subsystem: "com.example.app", category: "Session")
 
-func refresh(_ id: SessionId) async {
+func refresh(_ id: SessionId) async throws {
   logger.info("refresh started \(id.rawValue, privacy: .public)")
-  do {
-    try await client.refresh(id)
-  } catch {
-    logger.error("refresh failed \(id.rawValue, privacy: .public) \(error.localizedDescription, privacy: .public)")
-  }
+  try await client.refresh(id)
 }
 ```
 
