@@ -812,6 +812,11 @@
       "name": "lmty",
       "source": "third_party/lmty",
       "description": "Read tracked competitors, competitive intelligence reports, change logs, evidence, social mentions, and market feeds for your products, and browse LMTY's public Markets, event timelines, and company, product, and person profiles."
+    },
+    {
+      "name": "readshore",
+      "source": "third_party/readshore",
+      "description": "Find the articles, videos and posts you saved in ReadShore, read their text and summaries, and save new links to read later."
     }
   ]
 }
