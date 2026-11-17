@@ -146,6 +146,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `expensify` | [Expensify](third_party/expensify/) | Cursor | Integrations | Connect your Expensify account so Grok can search your expenses, reports, receipts, and invoices to answer questions about your spending. You'll share the Expensify data your account can already see. Access is read-only, and you can revoke it anytime. |
 | `rillet` | [Rillet](third_party/rillet/) | Cursor | Integrations | Query financial reports and manage customers, invoices, bills, contracts, and vendors in Rillet. |
 | `item` | [Item](third_party/item/) | Cursor | Integrations | Search, create, and update CRM contacts, companies, and custom objects, run saved views, manage lists, notes, and tasks, and ask the Item assistant about your customer data. |
+| `hq` | [HQ](third_party/hq/) | Cursor | Integrations | Read and capture company knowledge, projects, policies, files, and skills, message teammates and bots, and call governed integrations in HQ by Indigo. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
