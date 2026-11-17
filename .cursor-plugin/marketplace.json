@@ -782,6 +782,11 @@
       "name": "expensify",
       "source": "third_party/expensify",
       "description": "Connect your Expensify account so Grok can search your expenses, reports, receipts, and invoices to answer questions about your spending. You'll share the Expensify data your account can already see. Access is read-only, and you can revoke it anytime."
+    },
+    {
+      "name": "rillet",
+      "source": "third_party/rillet",
+      "description": "Query financial reports and manage customers, invoices, bills, contracts, and vendors in Rillet."
     }
   ]
 }
