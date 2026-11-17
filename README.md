@@ -126,6 +126,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `onepay` | [OnePay](third_party/onepay/) | Cursor | Integrations | Access your OnePay accounts: balances, transactions, credit, Pay Later, investments, crypto, and rewards. |
 | `questrade` | [Questrade](third_party/questrade/) | Cursor | Integrations | Read your Questrade portfolio, get live market data, and discuss potential trades. |
 | `tesla` | [Tesla](third_party/tesla/) | Cursor | Integrations | Read your Tesla cars and energy sites, and send commands you confirm. |
+| `uber-courier` | [Uber Courier](third_party/uber-courier/) | Cursor | Integrations | Get a price, book, track, and cancel a package delivery on your Uber account. |
 | `fitmetrics` | [FitMetrics](third_party/fitmetrics/) | Cursor | Integrations | Review Trainerize clients and check-ins, and update macros, messages, and programs. |
 | `mixpanel` | [Mixpanel](third_party/mixpanel/) | Cursor | Integrations | Query events, funnels, flows, and retention in Mixpanel, and manage dashboards, cohorts, experiments, and feature flags. |
 | `metricool` | [Metricool](third_party/metricool/) | Cursor | Integrations | Plan and publish social posts, pull metrics and reports, and manage inbox, reviews, and ads across your Metricool brands. |
