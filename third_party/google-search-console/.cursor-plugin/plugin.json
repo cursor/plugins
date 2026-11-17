@@ -1,0 +1,35 @@
+{
+  "name": "google-search-console",
+  "displayName": "Google Search Console",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "never",
+    "grokbot": "0.30.0",
+    "sand": "0.30.0"
+  },
+  "description": "Query search performance, inspect URLs, and manage sitemaps.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins/tree/main/third_party/google-search-console",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "google-search-console",
+    "search-console",
+    "seo",
+    "google",
+    "sitemaps",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "google-search-console",
+    "search-console",
+    "seo",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

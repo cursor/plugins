@@ -7,7 +7,7 @@ Let Grok Bot reach MCP servers on your private Tailscale network: connect your o
 ## Who can use it
 
 - Grok Bot **0.49** or newer.
-- A company tailnet needs a team admin and Tailscale Premium or Enterprise. A personal tailnet needs the member to own or administer it, or to be able to add `tag:grokbot` to the policy.
+- A company tailnet needs a team admin and Tailscale Premium or Enterprise. A personal tailnet needs the member to own or administer it.
 - Not available in Cursor. Cursor must not list or install this plugin.
 
 ## MCP
@@ -19,7 +19,7 @@ This plugin ships no `mcp.json`. Grok Bot's Tailscale connection is served by th
 Grok Bot desktop has one **Tailscale** row (**Connect apps → Your plugins**) with one slot per tailnet. A member can connect several. The `tailscale-setup` skill walks through both paths, including the policy snippets.
 
 - **Company tailnet.** A team admin enables it at cursor.com **Integrations → Tailscale** (Tailscale Premium or Enterprise) and limits each member's device with a `custom:grokbot` posture, not a tag. The member clicks **Authenticate** on that tailnet's slot.
-- **Personal tailnet.** When the member owns or administers the tailnet and one-click Connect is available, **Authenticate** opens Tailscale's consent screen and the device joins untagged, with the owner's access. Otherwise define `tag:grokbot`, grant it only the MCP servers, and sign in with the tag.
+- **Personal tailnet.** The member must own or administer the tailnet. **Authenticate** opens Tailscale's consent screen and the device joins untagged, with the member's own access.
 
 ## Notes
 
