@@ -141,6 +141,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `hospitable` | [Hospitable](third_party/hospitable/) | Cursor | Integrations | Manage short-term rental properties, reservations, calendars, guest messages, tasks, payouts, and owner statements in Hospitable. |
 | `close` | [Close](third_party/close/) | Cursor | Integrations | Search and update leads, contacts, opportunities, tasks, and conversations in Close. |
 | `factset` | [FactSet](third_party/factset/) | Cursor | Integrations | Query FactSet fundamentals, prices, estimates, ownership, and company data. |
+| `redo` | [Redo](third_party/redo/) | Cursor | Integrations | Look up orders and customers, create and process returns, work support tickets, review marketing campaigns and automations, manage fulfillment and inventory, and build analytics reports in Redo. |
 | `fatetell` | [FateTell](third_party/fatetell/) | FateTell | Integrations | Chinese astrology computed by FateTell's own BaZi engine: cast a BaZi (八字, Four Pillars) chart from any birth date, open the charts saved in your FateTell account, and check today's fortune and the Chinese almanac. Connecting signs you in to a FateTell account. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 

@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 0.1.1
+
+- Version aligned with the FateTell MCP 0.1.1 release. The MCP server entry, the skill and the logo are unchanged.
+
 ## 0.1.0 — initial release
 
 - Added the `fatetell` MCP server pointing at FateTell's hosted Streamable HTTP endpoint for clients that sign in while connecting (`https://mcp.fatetell.com/login/mcp`).

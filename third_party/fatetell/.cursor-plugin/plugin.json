@@ -1,7 +1,7 @@
 {
   "name": "fatetell",
   "displayName": "FateTell",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Chinese astrology computed by FateTell's own BaZi engine: cast a BaZi (八字, Four Pillars) chart from any birth date, open the charts saved in your FateTell account, and check today's fortune and the Chinese almanac. Connecting signs you in to a FateTell account.",
   "author": {
     "name": "FateTell",

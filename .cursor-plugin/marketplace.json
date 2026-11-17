@@ -769,6 +769,11 @@
       "description": "Query FactSet fundamentals, prices, estimates, ownership, and company data."
     },
     {
+      "name": "redo",
+      "source": "third_party/redo",
+      "description": "Look up orders and customers, create and process returns, work support tickets, review marketing campaigns and automations, manage fulfillment and inventory, and build analytics reports in Redo."
+    },
+    {
       "name": "fatetell",
       "source": "third_party/fatetell",
       "description": "Chinese astrology computed by FateTell's own BaZi engine: cast a BaZi (八字, Four Pillars) chart from any birth date, open the charts saved in your FateTell account, and check today's fortune and the Chinese almanac. Connecting signs you in to a FateTell account."
