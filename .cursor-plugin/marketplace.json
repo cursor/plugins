@@ -767,6 +767,11 @@
       "name": "factset",
       "source": "third_party/factset",
       "description": "Query FactSet fundamentals, prices, estimates, ownership, and company data."
+    },
+    {
+      "name": "redo",
+      "source": "third_party/redo",
+      "description": "Look up orders and customers, create and process returns, work support tickets, review marketing campaigns and automations, manage fulfillment and inventory, and build analytics reports in Redo."
     }
   ]
 }
