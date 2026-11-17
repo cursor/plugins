@@ -142,6 +142,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `close` | [Close](third_party/close/) | Cursor | Integrations | Search and update leads, contacts, opportunities, tasks, and conversations in Close. |
 | `factset` | [FactSet](third_party/factset/) | Cursor | Integrations | Query FactSet fundamentals, prices, estimates, ownership, and company data. |
 | `redo` | [Redo](third_party/redo/) | Cursor | Integrations | Look up orders and customers, create and process returns, work support tickets, review marketing campaigns and automations, manage fulfillment and inventory, and build analytics reports in Redo. |
+| `strava` | [Strava](third_party/strava/) | Cursor | Integrations | Connect your Strava account so Grok can read your activities, stats, and athlete profile to answer questions about your training. You'll share your profile and activity data, including private activities. Access is read-only, and you can disconnect anytime from Strava's My Apps settings. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
