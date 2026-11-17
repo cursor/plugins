@@ -134,6 +134,11 @@
       "description": "Run GA4 reports and manage property configuration."
     },
     {
+      "name": "google-search-console",
+      "source": "third_party/google-search-console",
+      "description": "Query search performance, inspect URLs, and manage sitemaps."
+    },
+    {
       "name": "gong",
       "source": "third_party/gong",
       "description": "Pull account summaries, deal insights, and call briefs."
