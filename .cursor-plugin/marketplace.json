@@ -807,6 +807,11 @@
       "name": "fiscal-ai",
       "source": "third_party/fiscal-ai",
       "description": "Pull source-linked financials, filings, ratios, prices, segments, KPIs, ownership, fund letters, and news from Fiscal.ai."
+    },
+    {
+      "name": "lmty",
+      "source": "third_party/lmty",
+      "description": "Read tracked competitors, competitive intelligence reports, change logs, evidence, social mentions, and market feeds for your products, and browse LMTY's public Markets, event timelines, and company, product, and person profiles."
     }
   ]
 }
