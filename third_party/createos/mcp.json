@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "createos": {
+      "type": "http",
+      "url": "https://api-createos.nodeops.network/mcp",
+      "headers": {
+        "X-Api-Key": "${CREATEOS_API_KEY}"
+      }
+    }
+  }
+}
