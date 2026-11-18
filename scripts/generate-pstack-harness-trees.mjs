@@ -51,6 +51,15 @@ const TERMS = [
 ];
 const ROUTE_KEY = "Run another pstack skill";
 const SKILL_NAME = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const CLAUDE_MODEL = /^(opus|sonnet|haiku|fable|inherit|claude-[a-z]+-\d+(?:-\d+)*)$/;
+const CLAUDE_FAMILY = /^claude-(opus|sonnet|haiku|fable)-\d/;
+
+// Claude Code agent frontmatter takes an alias, `inherit`, or a model ID, and sets no effort. A Cursor slug
+// such as claude-opus-5-5-xhigh-fast spells out effort and speed, so only its family survives.
+function claudeCodeModel(value) {
+  if (CLAUDE_MODEL.test(value)) return value;
+  return value.match(CLAUDE_FAMILY)?.[1];
+}
 
 function walk(dir) {
   return readdirSync(dir).flatMap((name) => {
@@ -125,6 +134,27 @@ function render() {
     join(PSTACK, "README.md"),
   ];
   const files = new Map(copies.map((path) => [relative(PSTACK, path), file(path)]));
+  const rejected = [];
+  for (const [path, entry] of files) {
+    if (!path.startsWith("agents/") || !path.endsWith(".md")) continue;
+    const text = entry.bytes.toString("utf8");
+    const frontmatter = text.match(/^---\n([\s\S]*?)\n---/)?.[1];
+    if (frontmatter === undefined) continue;
+    const lines = [];
+    for (const line of frontmatter.split("\n")) {
+      const value = line.match(/^model:\s*(\S+)$/)?.[1];
+      if (value === undefined) {
+        lines.push(line);
+        continue;
+      }
+      // Cursor's inherit leaves the agent on the parent's model, so the line goes.
+      if (value === "inherit-parent" || value === "auto") continue;
+      const model = claudeCodeModel(value);
+      if (model) lines.push(`model: ${model}`);
+      else rejected.push(`${path} sets model ${value}, which has no Claude Code value`);
+    }
+    entry.bytes = Buffer.from(text.replace(frontmatter, lines.join("\n")));
+  }
   const line =
     `In Claude Code, read [the Claude Code adapter](../../${ADAPTER}) once per session before you follow this skill. ` +
     "It maps the Cursor names in pstack skills to Claude Code.";
@@ -145,12 +175,14 @@ function render() {
     });
     entry.bytes = Buffer.from(text);
   }
-  return files;
+  return { files, rejected };
 }
 
 // Claude Code installs only the tree, so a relative link that works from pstack/ has to work inside the tree too.
 // Links to pstack files that the tree leaves out already point at GitHub, so a failure here is a link that leaves pstack/.
-const files = render();
+const { files, rejected } = render();
+for (const problem of rejected) console.log(`FAIL ${problem}`);
+if (rejected.length > 0) process.exit(1);
 const rendered = new Map([["README.md", { bytes: Buffer.from(README), executable: false }]]);
 const dangling = [];
 for (const [path, entry] of files) {
