@@ -787,6 +787,11 @@
       "name": "rillet",
       "source": "third_party/rillet",
       "description": "Query financial reports and manage customers, invoices, bills, contracts, and vendors in Rillet."
+    },
+    {
+      "name": "fiscal-ai",
+      "source": "third_party/fiscal-ai",
+      "description": "Pull source-linked financials, filings, ratios, prices, segments, KPIs, ownership, fund letters, and news from Fiscal.ai."
     }
   ]
 }
