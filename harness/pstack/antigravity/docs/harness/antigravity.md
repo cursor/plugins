@@ -71,7 +71,7 @@ Use the bundled runner `<pstack>/docs/harness/run-external-agent.mjs` via `run_c
    - Adversarial check (`/interrogate`) needing test/repro execution: `--mode readonly-bash`. When `--cwd` is inside a git repository, `run-external-agent.mjs` automatically creates a temporary detached git worktree snapshot (preserving tracked edits + untracked non-ignored files + `node_modules` symlinks), runs the agent there, verifies neither the snapshot nor source repo was mutated (exiting `76` with JSON `readonly_violation` if violated), and cleans up on exit or timeout (pass `--no-snapshot` only to disable).
    - Parallel implementation candidate (`/arena` worker): create a dedicated git worktree (`git worktree add /tmp/arena-<slug>/<arm> HEAD`) or scratch dir first, pass `--mode worktree --cwd /tmp/arena-<slug>/<arm> --main-workspace <workspace-root>`. `run-external-agent.mjs` refuses `--mode worktree` with exit code `2` if `--cwd` resolves to the main workspace.
    - Quota / rate-limit failover: exit `75` (`EX_TEMPFAIL`) with a JSON `external_agent_quota` payload on `stderr` signals HTTP 429 / usage-limit exhaustion so callers can cleanly fail over without misclassifying as `1` (error) or `124` (timeout).
-   - Streaming heartbeat & checkpointing: `claude` runs with `stream-json` and `codex` with `--json` so active tool/thinking output continually refreshes the inactivity watchdog (`--idle-timeout-ms`, default `300000`) within the wall-clock ceiling (`--timeout-ms`, default `1800000`); if interrupted or timed out (`124`), accumulated partial text is saved to `<out>.partial`.
+   - Streaming heartbeat & checkpointing: `claude` runs with `stream-json` and `codex` with `--json` so active tool/thinking output continually refreshes the inactivity watchdog (`--idle-timeout-ms`, default `900000`). Wall-clock timeout defaults to `--timeout-ms 0` (no arbitrary kill while stream events keep arriving); even when a positive `--timeout-ms` is supplied, active streams are softly extended (up to 2h) unless `--hard-timeout` is explicitly passed. Never pass artificially short wall caps (like `--timeout-ms 600000`) or point `--cwd` at a multi-repo parent directory — scope `--cwd` to the target repository. If interrupted or timed out (`124`), accumulated partial text is saved to `<out>.partial`.
 3. Run:
    ```bash
    node <pstack>/docs/harness/run-external-agent.mjs \
@@ -80,7 +80,7 @@ Use the bundled runner `<pstack>/docs/harness/run-external-agent.mjs` via `run_c
      --cwd <target-dir> \
      [--snapshot|--no-snapshot] \
      [--main-workspace <workspace-root>] \
-     [--timeout-ms 1800000] [--idle-timeout-ms 300000] \
+     [--timeout-ms 0] [--idle-timeout-ms 900000] [--hard-timeout] \
      --prompt-file <scratch-prompt-file> \
      --out <scratch-out-file>
    ```

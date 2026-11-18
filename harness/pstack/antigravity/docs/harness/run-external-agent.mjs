@@ -20,8 +20,9 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 
-const DEFAULT_TIMEOUT_MS = 1_800_000;
-const DEFAULT_IDLE_TIMEOUT_MS = 300_000;
+const DEFAULT_TIMEOUT_MS = 0;
+const DEFAULT_IDLE_TIMEOUT_MS = 900_000;
+const MAX_SOFT_EXTENSION_MS = 7_200_000;
 const MAX_TIMEOUT_MS = 2_147_483_647;
 const CLAUDE_STREAM_TYPES = new Set([
   "system",
@@ -75,8 +76,9 @@ Options:
   --snapshot                   Force detached git worktree snapshot isolation (readonly / readonly-bash)
   --no-snapshot                Disable automatic git worktree snapshot isolation
   --out <abs-path>             Write final agent output to file (.partial saved on timeout/error)
-  --timeout-ms <ms>            Hard wall-clock timeout in ms (1..${MAX_TIMEOUT_MS}, default: ${DEFAULT_TIMEOUT_MS})
-  --idle-timeout-ms <ms>       Inactivity timeout without stream output (1..${MAX_TIMEOUT_MS}, default: min(${DEFAULT_IDLE_TIMEOUT_MS}, timeout-ms))
+  --timeout-ms <ms>            Wall-clock timeout in ms (0 disables wall kill; 1..${MAX_TIMEOUT_MS} is soft-extended while streaming unless --hard-timeout, default: ${DEFAULT_TIMEOUT_MS})
+  --hard-timeout               Force wall-clock termination even when stream-json heartbeat is active
+  --idle-timeout-ms <ms>       Inactivity timeout without stream output (1..${MAX_TIMEOUT_MS}, default: ${DEFAULT_IDLE_TIMEOUT_MS}, capped by --timeout-ms when > 0)
   --probe                      Check claude and codex availability/versions as JSON
   -h, --help                   Show this help`);
 }
@@ -194,6 +196,7 @@ function parseArgs(argv) {
     promptFile: null,
     out: null,
     timeoutMs: DEFAULT_TIMEOUT_MS,
+    hardTimeout: false,
     idleTimeoutMs: null,
   };
 
@@ -224,10 +227,12 @@ function parseArgs(argv) {
     } else if (arg === "--timeout-ms") {
       const raw = argv[++i];
       const parsed = Number(raw);
-      if (!Number.isSafeInteger(parsed) || parsed <= 0 || parsed > MAX_TIMEOUT_MS) {
-        throw new Error(`Invalid --timeout-ms value: ${raw} (must be an integer between 1 and ${MAX_TIMEOUT_MS})`);
+      if (!Number.isSafeInteger(parsed) || parsed < 0 || parsed > MAX_TIMEOUT_MS) {
+        throw new Error(`Invalid --timeout-ms value: ${raw} (must be an integer between 0 and ${MAX_TIMEOUT_MS})`);
       }
       opts.timeoutMs = parsed;
+    } else if (arg === "--hard-timeout") {
+      opts.hardTimeout = true;
     } else if (arg === "--idle-timeout-ms") {
       const raw = argv[++i];
       const parsed = Number(raw);
@@ -707,8 +712,16 @@ async function main() {
   const claudeAssistantMsgs = [];
   const codexAgentMsgs = [];
   let codexErrorText = "";
+  const startedAt = Date.now();
+  let lastStreamEventAt = 0;
+  let codexItemCount = 0;
 
-  const effectiveIdleMs = opts.idleTimeoutMs !== null ? opts.idleTimeoutMs : Math.min(DEFAULT_IDLE_TIMEOUT_MS, opts.timeoutMs);
+  const effectiveIdleMs =
+    opts.idleTimeoutMs !== null
+      ? opts.idleTimeoutMs
+      : opts.timeoutMs > 0
+        ? Math.min(DEFAULT_IDLE_TIMEOUT_MS, opts.timeoutMs)
+        : DEFAULT_IDLE_TIMEOUT_MS;
 
   const processStdoutLine = (rawLine, hasNewline) => {
     const trimmed = rawLine.trim();
@@ -717,6 +730,7 @@ async function main() {
         const obj = JSON.parse(trimmed);
         if (spec.cli === "claude" && obj && typeof obj.type === "string" && CLAUDE_STREAM_TYPES.has(obj.type)) {
           sawStreamJson = true;
+          lastStreamEventAt = Date.now();
           if (obj.type === "content_block_delta" && typeof obj.delta?.text === "string") {
             claudeDeltaBuf += obj.delta.text;
           } else if (obj.type === "stream_event" && typeof obj.event?.delta?.text === "string") {
@@ -741,6 +755,10 @@ async function main() {
         }
         if (spec.cli === "codex" && obj && typeof obj.type === "string" && CODEX_STREAM_TYPES.has(obj.type)) {
           sawStreamJson = true;
+          lastStreamEventAt = Date.now();
+          if (obj.type.startsWith("item.")) {
+            codexItemCount += 1;
+          }
           if (obj.type === "item.completed" && obj.item?.type === "agent_message" && typeof obj.item.text === "string") {
             codexAgentMsgs.push(obj.item.text);
           } else if (obj.type === "error" || obj.type === "turn.failed") {
@@ -778,8 +796,16 @@ async function main() {
 
   const writePartialIfAny = () => {
     flushStdoutLines();
-    if (!outPath || existsSync(outPath)) return;
-    const partial = resolvedText();
+    if (!outPath) return;
+    try {
+      if (existsSync(outPath) && statSync(outPath).size > 0) return;
+    } catch {
+      // Ignore stat errors and attempt partial write.
+    }
+    let partial = resolvedText();
+    if ((!partial || !partial.trim()) && spec.cli === "codex" && codexItemCount > 0) {
+      partial = `[codex partial: interrupted after ${codexItemCount} stream events before final agent_message]\n`;
+    }
     if (!partial || !partial.trim()) return;
     try {
       const normalized = partial.endsWith("\n") ? partial : `${partial}\n`;
@@ -790,8 +816,12 @@ async function main() {
   };
 
   let idleTimer = null;
+  let wallTimer = null;
   const clearTimers = () => {
-    clearTimeout(wallTimer);
+    if (wallTimer !== null) {
+      clearTimeout(wallTimer);
+      wallTimer = null;
+    }
     if (idleTimer !== null) {
       clearTimeout(idleTimer);
       idleTimer = null;
@@ -810,9 +840,28 @@ async function main() {
     });
   };
 
-  const wallTimer = setTimeout(() => {
-    onTimeout(`Timed out after ${opts.timeoutMs}ms waiting for ${cmd}`);
-  }, opts.timeoutMs);
+  const armWallTimer = (delayMs) => {
+    if (settled || opts.timeoutMs <= 0) return;
+    if (wallTimer !== null) clearTimeout(wallTimer);
+    wallTimer = setTimeout(() => {
+      if (settled) return;
+      const now = Date.now();
+      const streamActive =
+        !opts.hardTimeout &&
+        sawStreamJson &&
+        lastStreamEventAt > 0 &&
+        now - lastStreamEventAt < effectiveIdleMs &&
+        now - startedAt < MAX_SOFT_EXTENSION_MS;
+      if (streamActive) {
+        armWallTimer(Math.min(opts.timeoutMs, 600_000));
+        return;
+      }
+      onTimeout(`Timed out after ${now - startedAt}ms (configured ${opts.timeoutMs}ms) waiting for ${cmd}`);
+    }, delayMs);
+  };
+  if (opts.timeoutMs > 0) {
+    armWallTimer(opts.timeoutMs);
+  }
 
   const resetIdleTimer = () => {
     if (settled) return;
