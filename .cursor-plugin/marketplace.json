@@ -89,6 +89,11 @@
       "description": "Add Grok voice to an app: realtime speech-to-speech, speech-to-text dictation, text-to-speech read-aloud, and a log-driven fix loop for voice sessions."
     },
     {
+      "name": "readme-generator",
+      "source": "readme-generator",
+      "description": "Scan any repository and generate a complete, accurate README: description, features, requirements, install, usage, configuration, development, and license."
+    },
+    {
       "name": "advisor",
       "source": "advisor",
       "description": "Consult a stronger model before major decisions, when stuck, and before declaring done."
