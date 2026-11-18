@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "strava": {
+      "type": "http",
+      "url": "https://mcp.strava.com/mcp",
+      "placement": "server"
+    }
+  }
+}
