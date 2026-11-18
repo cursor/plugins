@@ -1,0 +1,39 @@
+{
+  "name": "hospitable",
+  "displayName": "Hospitable",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Manage short-term rental properties, reservations, calendars, guest messages, tasks, payouts, and owner statements in Hospitable.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://help.hospitable.com/en/articles/14424057-connect-an-ai-agent-to-hospitable-using-mcp",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "hospitable",
+    "short-term rental",
+    "vacation rental",
+    "airbnb",
+    "vrbo",
+    "booking.com",
+    "property management",
+    "reservations",
+    "guest messaging",
+    "calendar",
+    "owner statements",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "hospitable",
+    "property-management",
+    "hospitality",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
