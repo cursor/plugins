@@ -792,6 +792,11 @@
       "name": "item",
       "source": "third_party/item",
       "description": "Search, create, and update CRM contacts, companies, and custom objects, run saved views, manage lists, notes, and tasks, and ask the Item assistant about your customer data."
+    },
+    {
+      "name": "hq",
+      "source": "third_party/hq",
+      "description": "Read and capture company knowledge, projects, policies, files, and skills, message teammates and bots, and call governed integrations in HQ by Indigo."
     }
   ]
 }
