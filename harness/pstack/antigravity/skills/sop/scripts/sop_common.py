@@ -62,14 +62,8 @@ def resolve_runner_script(explicit: Optional[Path] = None) -> Path:
 
 
 def resolve_herdr_scripts_dir() -> Optional[Path]:
-    env_dir = os.environ.get("AGENT_SOP_SCRIPTS", "").strip()
-    candidates = [
-        Path(env_dir).expanduser() if env_dir else None,
-        Path.home() / "Developer" / "agent-sop" / "scripts",
-    ]
-    for cand in candidates:
-        if cand and (cand / "await.sh").is_file() and (cand / "herdr-agent.py").is_file():
-            return cand.resolve()
+    if (SCRIPT_DIR / "await.sh").is_file() and (SCRIPT_DIR / "herdr-agent.py").is_file():
+        return SCRIPT_DIR.resolve()
     return None
 
 

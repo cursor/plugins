@@ -32,7 +32,9 @@ python3 ./scripts/sop-open.py \
 
 - Use `--ensure-baseline` when driving changes directly without a subagent brief.
 - Every brief is mechanically validated by [check-brief.py](./scripts/check-brief.py) using [the brief template](./assets/templates/dispatch-brief.md) (`Intent` quotes verbatim, continuity rules honored, reviewers never see `handoff-*.md`).
-- When delegating `writer`, point it at [the handoff template](./assets/templates/handoff.md) (and [gate-packet.md](./assets/templates/gate-packet.md) / [delivery-report.md](./assets/templates/delivery-report.md)).
+- When delegating `writer`, point it at [the handoff template](./assets/templates/handoff.md) (and [gate-packet.md](./assets/templates/gate-packet.md), [delivery-report.md](./assets/templates/delivery-report.md), [disposition.md](./assets/templates/disposition.md)).
+- For tiny-change classification, run [diff-flags.py](./scripts/diff-flags.py). For gate packets and final reports, run [extract-gate-packet.py](./scripts/extract-gate-packet.py) and [extract-delivery-report.py](./scripts/extract-delivery-report.py) (with [check-disposition.py](./scripts/check-disposition.py) and [check-quota-action.py](./scripts/check-quota-action.py)) verbatim rather than summarizing.
+- For `pi` + `herdr-core` non-blocking push wakeup, use bundled [await.sh](./scripts/await.sh), [herdr-agent.py](./scripts/herdr-agent.py), and [sop-await.ts](./assets/pi/sop-await.ts).
 
 ## Phase 3: Deterministic 0-Token Gate
 
