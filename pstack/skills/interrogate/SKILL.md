@@ -10,7 +10,7 @@ Adversaries try to break a change or a design. A finding survives only when a ru
 
 ## Frame
 
-The scope is what the user names. Otherwise it is the branch diff from its merge base with the base branch, through the working tree. State the intent with the **in-your-own-words** skill, from the user's message, the commits, and the PR description. Ask the user when the intent is unclear.
+The scope is what the user names. Otherwise it is the branch diff from its merge base with the base branch, through the working tree. State the intent with the **in-your-own-words** skill, from the user's message, the commits, and the PR description. Ask the user when the intent is unclear. A delegate, which never stops to ask, picks the likeliest intent and states it as an assumption in the output.
 
 ## Fan out
 
@@ -26,6 +26,6 @@ Skip arena Phases C, D, and E. Adversaries find different failures, so the verdi
 
 ## Output
 
-- **Intent**: the restatement.
+- **Intent**: the restatement. When you assumed it, say so and name the alternative you passed over, so the coordinator can correct it.
 - **Findings**: for each verified finding, the command, its output, how it breaks the intent, and the adversaries that found it. Say "no verified findings" when none survive.
 - **Dropped**: for each adversary, the count of dropped findings and why.
