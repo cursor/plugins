@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { readFileSync, existsSync } from "fs";
-import { resolve, dirname } from "path";
+import { resolve, dirname, sep } from "path";
 import { fileURLToPath } from "url";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
@@ -11,6 +11,33 @@ const root = resolve(__dirname, "..");
 
 function loadJSON(path) {
   return JSON.parse(readFileSync(path, "utf-8"));
+}
+
+let errors = 0;
+
+function fail(message) {
+  console.error(`ERROR: ${message}`);
+  errors++;
+}
+
+// Load a (possibly untrusted) manifest without crashing the whole run on bad JSON.
+function tryLoadJSON(path, label) {
+  try {
+    return loadJSON(path);
+  } catch (err) {
+    fail(`${label}: invalid JSON (${err instanceof Error ? err.message : String(err)})`);
+    return null;
+  }
+}
+
+// Resolve an entry `source` and refuse paths that escape the repo (absolute or `..`).
+function resolveSourceDir(source, name) {
+  const dir = resolve(root, source);
+  if (dir !== root && !dir.startsWith(root + sep)) {
+    fail(`Plugin "${name}": source "${source}" escapes the repository root`);
+    return null;
+  }
+  return dir;
 }
 
 const marketplaceSchema = loadJSON(
@@ -23,13 +50,6 @@ addFormats(ajv);
 
 const validateMarketplace = ajv.compile(marketplaceSchema);
 const validatePlugin = ajv.compile(pluginSchema);
-
-let errors = 0;
-
-function fail(message) {
-  console.error(`ERROR: ${message}`);
-  errors++;
-}
 
 // 1. Validate marketplace.json
 const marketplacePath = resolve(root, ".cursor-plugin/marketplace.json");
@@ -50,7 +70,8 @@ if (!validateMarketplace(marketplace)) {
 
 // 2. Validate each plugin
 for (const entry of marketplace.plugins ?? []) {
-  const pluginDir = resolve(root, entry.source);
+  const pluginDir = resolveSourceDir(entry.source, entry.name);
+  if (pluginDir === null) continue;
   const pluginJsonPath = resolve(pluginDir, ".cursor-plugin/plugin.json");
 
   // Check source directory exists
@@ -69,7 +90,11 @@ for (const entry of marketplace.plugins ?? []) {
     continue;
   }
 
-  const pluginJson = loadJSON(pluginJsonPath);
+  const pluginJson = tryLoadJSON(
+    pluginJsonPath,
+    `Plugin "${entry.name}" (${entry.source}/.cursor-plugin/plugin.json)`
+  );
+  if (pluginJson === null) continue;
 
   if (!validatePlugin(pluginJson)) {
     fail(
@@ -98,7 +123,8 @@ const claudeMarketplace = existsSync(claudeMarketplacePath)
   : { plugins: [] };
 
 for (const entry of claudeMarketplace.plugins ?? []) {
-  const pluginDir = resolve(root, entry.source);
+  const pluginDir = resolveSourceDir(entry.source, entry.name);
+  if (pluginDir === null) continue;
   const pluginJsonPath = resolve(pluginDir, ".claude-plugin/plugin.json");
 
   if (!existsSync(pluginJsonPath)) {
@@ -108,8 +134,30 @@ for (const entry of claudeMarketplace.plugins ?? []) {
     continue;
   }
 
-  const pluginJson = loadJSON(pluginJsonPath);
-  if (pluginJson.name && pluginJson.name !== entry.name) {
+  const pluginJson = tryLoadJSON(
+    pluginJsonPath,
+    `Plugin "${entry.name}" (${entry.source}/.claude-plugin/plugin.json)`
+  );
+  if (pluginJson === null) continue;
+
+  if (!validatePlugin(pluginJson)) {
+    fail(
+      `Plugin "${entry.name}": Claude plugin.json schema validation failed (${entry.source}/.claude-plugin/plugin.json):`
+    );
+    for (const err of validatePlugin.errors) {
+      const detail =
+        err.keyword === "additionalProperties"
+          ? `${err.message}: "${err.params.additionalProperty}"`
+          : err.message;
+      console.error(`  ${err.instancePath || "/"}: ${detail}`);
+    }
+  }
+
+  if (!pluginJson.name) {
+    fail(
+      `Plugin "${entry.name}": .claude-plugin/plugin.json is missing "name"`
+    );
+  } else if (pluginJson.name !== entry.name) {
     fail(
       `Plugin "${entry.name}": Claude marketplace name does not match .claude-plugin/plugin.json name "${pluginJson.name}"`
     );
@@ -126,14 +174,15 @@ for (const entry of [
   ...(marketplace.plugins ?? []),
   ...(claudeMarketplace.plugins ?? []),
 ]) {
-  sources.set(resolve(root, entry.source), entry.name);
+  const dir = resolveSourceDir(entry.source, entry.name);
+  if (dir !== null) sources.set(dir, entry.name);
 }
 
 for (const [pluginDir, name] of sources) {
   const versions = manifestPaths
     .map((path) => resolve(pluginDir, path))
     .filter((path) => existsSync(path))
-    .map((path) => ({ path, version: loadJSON(path).version }))
+    .map((path) => ({ path, version: tryLoadJSON(path, path.slice(root.length + 1))?.version }))
     .filter(({ version }) => version !== undefined);
 
   if (new Set(versions.map(({ version }) => version)).size > 1) {
