@@ -1,0 +1,37 @@
+{
+  "name": "expensify",
+  "displayName": "Expensify",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "never",
+    "grokbot": "0.52.0",
+    "sand": "0.52.0"
+  },
+  "description": "Connect your Expensify account so Grok can search your expenses, reports, receipts, and invoices to answer questions about your spending. You'll share the Expensify data your account can already see. Access is read-only, and you can revoke it anytime.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://use.expensify.com/blog/expensify-mcp",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "expensify",
+    "expenses",
+    "expense reports",
+    "receipts",
+    "invoices",
+    "reimbursements",
+    "finance",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "expensify",
+    "finance",
+    "expenses",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

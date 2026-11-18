@@ -774,6 +774,21 @@
       "description": "Look up orders and customers, create and process returns, work support tickets, review marketing campaigns and automations, manage fulfillment and inventory, and build analytics reports in Redo."
     },
     {
+      "name": "strava",
+      "source": "third_party/strava",
+      "description": "Connect your Strava account so Grok can read your activities, stats, and athlete profile to answer questions about your training. You'll share your profile and activity data, including private activities. Access is read-only, and you can disconnect anytime from Strava's My Apps settings."
+    },
+    {
+      "name": "expensify",
+      "source": "third_party/expensify",
+      "description": "Connect your Expensify account so Grok can search your expenses, reports, receipts, and invoices to answer questions about your spending. You'll share the Expensify data your account can already see. Access is read-only, and you can revoke it anytime."
+    },
+    {
+      "name": "rillet",
+      "source": "third_party/rillet",
+      "description": "Query financial reports and manage customers, invoices, bills, contracts, and vendors in Rillet."
+    },
+    {
       "name": "fatetell",
       "source": "third_party/fatetell",
       "description": "Chinese astrology computed by FateTell's own BaZi engine: cast a BaZi (八字, Four Pillars) chart from any birth date, open the charts saved in your FateTell account, and check today's fortune and the Chinese almanac. Connecting signs you in to a FateTell account."
