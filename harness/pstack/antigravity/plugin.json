@@ -1,0 +1,17 @@
+{
+  "name": "pstack",
+  "displayName": "pstack (Poteto Stack)",
+  "version": "0.15.43",
+  "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence.",
+  "logo": "assets/logo.png",
+  "suggestedPrompts": [
+    "/poteto-mode investigate why this bug happens before fixing anything",
+    "/poteto-mode build a small feature with a verification test",
+    "/pstack-swarm check every package or test target in parallel and summarize"
+  ],
+  "author": {
+    "name": "Lauren Tan"
+  },
+  "homepage": "https://github.com/cursor/plugins/tree/main/pstack",
+  "repository": "https://github.com/cursor/plugins"
+}
