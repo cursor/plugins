@@ -1,0 +1,37 @@
+{
+  "name": "paypal",
+  "displayName": "PayPal",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://developer.paypal.com/ai-tools/mcp-server",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "paypal",
+    "payments",
+    "invoices",
+    "orders",
+    "refunds",
+    "subscriptions",
+    "disputes",
+    "transactions",
+    "commerce",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "paypal",
+    "payments",
+    "commerce",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

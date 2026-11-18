@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "google-search-console": {
+      "type": "http",
+      "url": "https://api.cursor.com/rest-mcp/google-search-console/mcp"
+    }
+  }
+}

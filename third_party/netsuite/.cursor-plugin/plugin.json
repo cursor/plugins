@@ -1,0 +1,49 @@
+{
+  "name": "netsuite",
+  "displayName": "NetSuite",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.19.0"
+  },
+  "description": "Work with records, reports, saved searches, and SuiteQL queries in NetSuite.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/article_3200541651.html",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "netsuite",
+    "oracle",
+    "erp",
+    "suiteql",
+    "saved searches",
+    "accounting",
+    "ai connector service",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "netsuite",
+    "erp",
+    "accounting",
+    "mcp"
+  ],
+  "variables": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "NETSUITE_MCP_URL"
+    ],
+    "properties": {
+      "NETSUITE_MCP_URL": {
+        "type": "string",
+        "title": "NetSuite MCP server URL",
+        "description": "Account-specific AI Connector Service URL. Every tool in the account: https://<accountid>.suitetalk.api.netsuite.com/services/mcp/v1/all. Only the MCP Standard Tools SuiteApp: https://<accountid>.suitetalk.api.netsuite.com/services/mcp/v1/suiteapp/com.netsuite.mcpstandardtools. Find the account ID under Setup → Company → Company Information, lowercased with underscores replaced by hyphens, so 1234567_SB1 becomes 1234567-sb1."
+      }
+    }
+  },
+  "mcpServers": "./mcp.json"
+}
