@@ -396,11 +396,14 @@ function checkTree(dir, files) {
   });
 }
 
-function readPreservedUserRules(targetDir) {
+function readPreservedUserRules(targetDir, defaultRules = "") {
   const rulesPath = join(targetDir, "rules", "AGENTS.md");
   try {
     const currentRules = readFileSync(rulesPath, "utf8");
-    return currentRules.includes("# user-configured: true") ? currentRules : null;
+    if (currentRules.includes("# user-configured: true")) {
+      return currentRules;
+    }
+    return defaultRules && currentRules !== defaultRules ? currentRules : null;
   } catch {
     return null;
   }
@@ -458,6 +461,14 @@ function installTree({ targetDir, preservedRules, useSymlink = false }) {
   }
 }
 
+function resolveInstallDirArg(argv) {
+  const idx = argv.indexOf("--install-dir");
+  if (idx !== -1 && idx + 1 < argv.length && argv[idx + 1]) {
+    return resolve(argv[idx + 1]);
+  }
+  return join(homedir(), ".gemini", "config", "plugins", "pstack");
+}
+
 function main() {
   const analysis = analyzePstack(PSTACK);
   if (analysis.problems.length > 0) {
@@ -476,8 +487,9 @@ function main() {
   const isCheck = process.argv.includes("--check");
   const isInstall = process.argv.includes("--install");
   const useSymlink = process.argv.includes("--symlink");
-  const targetDir = join(homedir(), ".gemini", "config", "plugins", "pstack");
-  const preservedRules = isInstall ? readPreservedUserRules(targetDir) : null;
+  const targetDir = resolveInstallDirArg(process.argv.slice(2));
+  const defaultRules = files.get("rules/AGENTS.md")?.bytes.toString("utf8") ?? "";
+  const preservedRules = isInstall ? readPreservedUserRules(targetDir, defaultRules) : null;
 
   if (isCheck) {
     const drifted = checkTree(AGY_OUT, files);
