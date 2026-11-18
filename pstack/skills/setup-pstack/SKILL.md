@@ -15,7 +15,7 @@ Enumerate the model slugs you can pass to a `Task` subagent in this session. Tha
 
 ### 2. Load current state
 
-The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.cursor/rules/pstack-models.mdc` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `hardest tasks`, `architect runners`, `reflect tooling`, or `why investigators`, is from a retired role. Drop it.
+The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.cursor/rules/pstack-models.mdc` already exists, read it and treat its `# budget` line, its `quota fallback` line, and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `hardest tasks`, `architect runners`, `reflect tooling`, or `why investigators`, is from a retired role. Drop it. `quota fallback` is not a role. Keep it. If that line is missing, the working value is `inherit-parent`.
 
 A rule without the `# defaults: 3` line comes from an older setup. That setup wrote a line for every role, so some of its values are old defaults, not choices. Before step 3, replace these values:
 
@@ -37,23 +37,27 @@ Every other value is the user's choice and stays, including an old slug in any o
 
 **(c) Show the roles and confirm.** Show every role with its model, marking any real slug not in the detected set as needing a choice. Also list each line step 2 dropped. Ask whether to accept as-is or change specific roles, offering the detected models at `xhigh` or below plus `inherit-parent` and `auto` (both mean: this role runs on the parent chat model, which is how Auto users stay on Auto) as the options. Prefer AskQuestion over free text. For panel roles (arena runners, interrogate reviewers) the value is a list, and one subagent runs per entry, alias entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena runs one judge. It tries only values from a vendor other than the parent's, in list order, so order it by preference. Fable and the other Claude models are one vendor. An `inherit-parent` or `auto` value never judges. `swarm workers` is the default model for every worker unless a race or comparison assigns another model per arm.
 
+**(d) Ask for a quota fallback.** This value is used only when a role's model is not available in the session, including when the other-models quota is used up and only Cursor models remain. The budget does not change it. Prefer AskQuestion. Name the current value when the rule has one. With no line, say the working value is `inherit-parent`. Offer `inherit-parent`, `auto`, and the detected models at `xhigh` or below. Recommend `inherit-parent`: the subagent follows the parent chat model, so a chat on Auto or a Cursor model keeps working. A real slug is used only while it is still available.
+
 ### 4. Validate
 
-Every real slug written must be in the detected set and at `xhigh` or below. `inherit-parent` and `auto` always pass. If a chosen real slug is not available, stop and ask again.
+Every real slug written, including a real `quota fallback` slug, must be in the detected set and at `xhigh` or below. `inherit-parent` and `auto` always pass. If a chosen real slug is not available, stop and ask again.
 
 ### 5. Write the rule
 
-Write `~/.cursor/rules/pstack-models.mdc` with `alwaysApply: true`, the `# defaults: 3` line, a `# budget` line with the chosen label and the effort that label names, and one line per role, using the same labels poteto-mode uses. Overwrite the whole file so re-runs stay idempotent. Shape:
+Write `~/.cursor/rules/pstack-models.mdc` with `alwaysApply: true`, the `# defaults: 3` line, a `# budget` line with the chosen label and the effort that label names, the `quota fallback` line, and one line per role, using the same labels poteto-mode uses. Overwrite the whole file so re-runs stay idempotent. Shape:
 
 ```
 ---
 description: pstack per-role model choices (overrides skill defaults)
 alwaysApply: true
 ---
-# pstack model configuration. One line per role. Delete a line to fall back to the skill default.
+# pstack model configuration. One line per role. Delete a role line to fall back to the skill default.
+# `quota fallback` is not a role. When a role's model is not available, use this value.
 # `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit Task `model` and spawn `generalPurpose`). Alias entries in a panel list still count toward its fan-out.
 # defaults: 3
 # budget: large (xhigh)
+quota fallback: inherit-parent
 feature, refactoring: claude-opus-5-5-xhigh-fast
 bug-fix: claude-opus-5-5-xhigh-fast
 perf-issue: claude-opus-5-5-xhigh-fast
