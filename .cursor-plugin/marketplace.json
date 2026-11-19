@@ -812,6 +812,11 @@
       "name": "lmty",
       "source": "third_party/lmty",
       "description": "Read tracked competitors, competitive intelligence reports, change logs, evidence, social mentions, and market feeds for your products, and browse LMTY's public Markets, event timelines, and company, product, and person profiles."
+    },
+    {
+      "name": "iflytek-skills",
+      "source": "third_party/iflytek-skills",
+      "description": "Speech, OCR, translation, proofreading, and multimodal workflows powered by iFLYTEK APIs."
     }
   ]
 }
