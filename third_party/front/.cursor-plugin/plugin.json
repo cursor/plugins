@@ -1,7 +1,7 @@
 {
   "name": "front",
   "displayName": "Front",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Search conversations, draft and send replies, and manage tags, tasks, and inboxes.",
   "author": {
     "name": "Cursor",
@@ -33,12 +33,12 @@
       "CLIENT_ID": {
         "type": "string",
         "title": "Front Client ID",
-        "description": "Client ID of a Front developer app with the Front MCP feature, from Front Settings → Company → Developer."
+        "description": "Client ID of a Front developer app with the Front MCP feature, from Front Settings → Company → Developer. Do not use AI agent credentials from Settings → Company → Agents."
       },
       "CLIENT_SECRET": {
         "type": "string",
         "title": "Front Client Secret",
-        "description": "Client Secret of the same Front developer app."
+        "description": "Client Secret of the same Front developer app. Do not use AI agent credentials from Settings → Company → Agents."
       }
     },
     "required": [
