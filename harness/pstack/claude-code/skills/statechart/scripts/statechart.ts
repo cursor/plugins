@@ -119,8 +119,13 @@ try {
       [...runtime, path.join(import.meta.dirname, "janitor.ts"), String(worker.pid), stage, tmp],
       { detached: true, stdio: ["pipe", "ignore", "ignore"] },
     );
+    const toJanitor = janitor.stdin;
+    toJanitor?.on("error", () => {});
     const exited = new Promise<number>((resolve) =>
-      worker.on("exit", (code) => resolve(code ?? 2)),
+      worker.on("exit", (code) => {
+        toJanitor?.write("exited\n");
+        resolve(code ?? 2);
+      }),
     );
     await Promise.race([stopped, exited]);
     const running = worker.exitCode === null && worker.signalCode === null;
