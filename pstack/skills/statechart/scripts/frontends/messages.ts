@@ -42,7 +42,7 @@ export const textOf = ({ body }: Message) =>
   body.filter((part) => typeof part === "string").join("\n");
 
 export const actionOf = (m: Message) =>
-  /^\d+: (?:Back to state: )?<([^\s>]+)/.exec(textOf(m))?.[1];
+  /^\d+: (?:Back to state: )?<([^\s>(]+)/.exec(textOf(m))?.[1];
 
 export const messageState = (m: Message) => {
   const lines = textOf(m).split("\n");

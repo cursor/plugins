@@ -48,7 +48,7 @@ export function parseDot(input: Lines): Graph {
     return copy;
   };
   for (const line of linesOf(input)) {
-    const edge = /^(-?\d+) -> (-?\d+) \[label="([^"]*)"/.exec(line);
+    const edge = /^(-?\d+) -> (-?\d+) \[label="([^"(]*)/.exec(line);
     if (edge) {
       steps.set(edge.slice(1).join(" "), {
         from: own(edge[1]),

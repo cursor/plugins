@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { plainText, runtime } from "../backends/plain-text.ts";
-import { readMessages } from "../frontends/messages.ts";
+import { actionOf, readMessages } from "../frontends/messages.ts";
 
 const tool = (code: number, level: number, ...lines: string[]) =>
   [`@!@!@STARTMSG ${code}:${level} @!@!@`, ...lines, `@!@!@ENDMSG ${code} @!@!@`].join("\n");
@@ -60,6 +60,43 @@ test("TLC's -tool output prints as plain TLC prints it", () => {
       "",
     ].join("\n"),
   );
+});
+
+test("a step's action is the name TLC 2.19 prints, without the arguments TLC 1.8.0 adds", () => {
+  const actionIn = (code: number, line: string) => {
+    const [m] = readMessages(tool(code, 4, line, "n = 1", ""));
+    assert.ok(typeof m === "object");
+    return actionOf(m);
+  };
+  for (const [name, code, tlc219, tlc180] of [
+    [
+      "Run",
+      2217,
+      "2: <Run line 4, col 16 to line 4, col 34 of module ActionName>",
+      "2: <Run(TRUE) line 4, col 16 to line 4, col 34 of module ActionName>",
+    ],
+    [
+      "Send",
+      2217,
+      "2: <Send line 4, col 15 to line 4, col 33 of module Args>",
+      '2: <Send(1,"a b") line 4, col 15 to line 4, col 33 of module Args>',
+    ],
+    [
+      "C!Up",
+      2217,
+      "2: <C!Up line 4, col 1 to line 4, col 22 of module Inst>",
+      "2: <C!Up(1) line 4, col 1 to line 4, col 22 of module Inst>",
+    ],
+    [
+      "Back",
+      2122,
+      "1: Back to state: <Back line 5, col 12 to line 5, col 26 of module Args>",
+      "1: Back to state: <Back(<<1>>) line 5, col 12 to line 5, col 26 of module Args>",
+    ],
+  ] satisfies [string, number, string, string][]) {
+    assert.equal(actionIn(code, tlc219), name, tlc219);
+    assert.equal(actionIn(code, tlc180), name, tlc180);
+  }
 });
 
 test("a message that TLC prints inside another prints as plain TLC prints it", () => {
