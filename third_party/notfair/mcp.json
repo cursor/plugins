@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "NotFair": {
+      "type": "http",
+      "url": "https://notfair.co/api/mcp/notfair"
+    }
+  }
+}
