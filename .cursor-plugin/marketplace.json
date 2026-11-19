@@ -812,6 +812,11 @@
       "name": "lmty",
       "source": "third_party/lmty",
       "description": "Read tracked competitors, competitive intelligence reports, change logs, evidence, social mentions, and market feeds for your products, and browse LMTY's public Markets, event timelines, and company, product, and person profiles."
+    },
+    {
+      "name": "levea",
+      "source": "third_party/levea",
+      "description": "Edit videos from plain-language prompts: viral clips, 280+ animated caption templates, 9:16 reframing, voiceover, and MP4 export."
     }
   ]
 }
