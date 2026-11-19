@@ -36,6 +36,7 @@ pstack skills use Cursor names. In Claude Code, read this file once per session,
 | A `gemini-*` or other non-Claude slug | Omit `model` so the agent runs on the session model, and say so. |
 | `auto` or `inherit-parent` | Omit `model`. |
 | The `pstack-models.mdc` rule, `~/.cursor/rules/pstack-models.mdc` | `~/.claude/rules/pstack-models.md`. Claude Code loads it into every new session, so its role lines are already in context. If they are not, read the file. If the file or the role's line is missing, use the skill's default slug. |
+| `quota fallback` | The same line in `~/.claude/rules/pstack-models.md`. A missing line means `inherit-parent`. A non-Claude fallback slug omits `model` at spawn time. |
 | A role value `<model> <effort>`, such as `opus high` | `model: "opus"` and `effort: "high"`. |
 
 ## setup-pstack
@@ -43,8 +44,8 @@ pstack skills use Cursor names. In Claude Code, read this file once per session,
 Claude Code loads every `.md` file in `~/.claude/rules/` into each new session, so `setup-pstack` writes its rule there. Follow its steps with these changes:
 
 - Detect. The detected models are the `model` values that the `Agent` tool schema lists, each with an effort from its `effort` values. Write a real model as `<model> <effort>`, such as `opus xhigh`. The effort is the last token, so the budget step works as written.
-- Defaults. Map each default slug with the rows above: `claude-opus-5-5-xhigh-fast` is `opus xhigh`, `claude-opus-5-5-high-fast` is `opus high`, `claude-fable-5-2-high` is `fable high`, and `gemini-4-carbon-high` is `inherit-parent`.
-- Write. Write `~/.claude/rules/pstack-models.md` with no frontmatter, then the comment lines, the `# budget` line, and one line per role from step 5. Overwrite the whole file. Never put the role lines in `CLAUDE.md` or `AGENTS.md`.
+- Defaults. Map each default slug with the rows above: `claude-opus-5-5-xhigh-fast` is `opus xhigh`, `claude-opus-5-5-high-fast` is `opus high`, `claude-fable-5-2-high` is `fable high`, and `gemini-4-neon-high` is `inherit-parent`.
+- Write. Write `~/.claude/rules/pstack-models.md` with no frontmatter, then the comment lines, the `# budget` line, the `quota fallback` line, and one line per role from step 5. Overwrite the whole file. Never put the role lines in `CLAUDE.md` or `AGENTS.md`.
 
 ## Paths
 

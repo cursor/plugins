@@ -1,0 +1,42 @@
+{
+  "name": "fiscal-ai",
+  "displayName": "Fiscal.ai",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Pull source-linked financials, filings, ratios, prices, segments, KPIs, ownership, fund letters, and news from Fiscal.ai.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://docs.fiscal.ai/docs/guides/mcp-integration",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "fiscal.ai",
+    "fiscal",
+    "financial data",
+    "fundamentals",
+    "financial statements",
+    "sec filings",
+    "stock prices",
+    "ratios",
+    "segments",
+    "kpis",
+    "ownership",
+    "fund letters",
+    "etf",
+    "equity research",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "fiscal.ai",
+    "finance",
+    "equity research",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
