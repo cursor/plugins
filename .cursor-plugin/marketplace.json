@@ -817,6 +817,11 @@
       "name": "sabre-developer-hub",
       "source": "third_party/sabre-developer-hub",
       "description": "Search and read Sabre Developer Hub documentation, OpenAPI specs, and Sabre-published agent skills for travel APIs, SDKs, and product collections."
+    },
+    {
+      "name": "levea",
+      "source": "third_party/levea",
+      "description": "Edit videos from plain-language prompts: viral clips, 280+ animated caption templates, 9:16 reframing, voiceover, and MP4 export."
     }
   ]
 }
