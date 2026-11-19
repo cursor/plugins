@@ -210,3 +210,17 @@ test("TLC's run time prints as plain TLC prints it, with each field wrapping", (
   ] satisfies [number, string][])
     assert.equal(runtime(ms), printed, String(ms));
 });
+
+test("CRLF line endings (Windows JVM) still close @!@!@ENDMSG markers", () => {
+  // The Windows JVM writes CRLF. The marker regexes are $ anchored, so an
+  // unstripped trailing \r keeps a message open and readVerdict sees no rule
+  // that broke. linesOf strips \r so the same output parses either way.
+  const lf = [
+    tool(2111, 1, "Evaluating invariant Bad failed."),
+    tool(2186, 0, "Finished in 0ms at (T)"),
+    "",
+  ].join("\n");
+  const crlf = lf.split("\n").join("\r\n");
+  assert.equal(plain(lf), plain(crlf));
+  assert.match(plain(crlf), /^Error: Evaluating invariant Bad failed\./);
+});

@@ -35,7 +35,18 @@ export const parseState = (label: string, parsed = new Map<string, [string, Valu
 
 export type Lines = string | Iterable<string>;
 
-export const linesOf = (input: Lines) => (typeof input === "string" ? input.split("\n") : input);
+// The Windows JVM writes CRLF; the @!@!@STARTMSG/@!@!@ENDMSG markers in
+// messages.ts are matched with a $ anchor, so a trailing \r would keep a
+// message open and readVerdict would see no rule that broke. Normalize every
+// line here so all consumers (messages, dot, counters) are CRLF-safe.
+const stripCR = (line: string) => (line.endsWith("\r") ? line.slice(0, -1) : line);
+
+export const linesOf = (input: Lines): Iterable<string> =>
+  typeof input === "string"
+    ? input.split("\n").map(stripCR)
+    : (function* () {
+        for (const line of input) yield stripCR(line);
+      })();
 
 export function parseDot(input: Lines): Graph {
   const states = new Map<string, State>();
