@@ -337,6 +337,36 @@ test("a chart of only the bug paths words each one with the view, asked once for
   });
 });
 
+test("a graph step's action is the name TLC 2.19 prints, without the arguments TLC 1.8.0 adds", () => {
+  const graph = parseDot(`strict digraph DiskGraph {
+node [shape=box,style=rounded]
+nodesep=0.35;
+subgraph cluster_graph {
+color="white";
+7109620955888255307 [label="n = 0",style = filled]
+7109620955888255307 -> 7101432614442790758 [label="Send(1,\\"a b\\")",color="black",fontcolor="black"];
+7101432614442790758 [label="n = 1",tooltip="n = 1"];
+7109620955888255307 -> 7101432614442790758 [label="Send(2,\\"c\\")",color="black",fontcolor="black"];
+7101432614442790758 -> 7125856885119737105 [label="Send(1,\\"a b\\")",color="black",fontcolor="black"];
+7125856885119737105 [label="n = 2",tooltip="n = 2"];
+7101432614442790758 -> 7125856885119737105 [label="Send(2,\\"c\\")",color="black",fontcolor="black"];
+7125856885119737105 -> 7109620955888255307 [label="Back(<<1>>)",color="black",fontcolor="black"];
+{rank = same; 7109620955888255307;}
+{rank = same; 7101432614442790758;}
+{rank = same; 7125856885119737105;}
+}
+}`);
+  const n = (id: string) => graph.states.get(id)?.vars.n;
+  assert.deepEqual(
+    graph.steps.map((s) => [n(s.from), n(s.to), s.action]),
+    [
+      [0, 1, "Send"],
+      [1, 2, "Send"],
+      [2, 0, "Back"],
+    ],
+  );
+});
+
 test("the graph that parseDot returns keeps none of the text it read", () => {
   v8.setFlagsFromString("--expose-gc");
   const gc: () => void = vm.runInNewContext("gc");
