@@ -138,6 +138,13 @@ export default async function (pi: any) {
                next: `The dispatch is incomplete: the agent stopped but ${fresh} was not written. Read the output, ` +
                      `check the agent's live state, and send it back for the artifact with a new arm. This is not a finished round.` };
     }
+    if (rc === "9") {
+      return {
+        head: "is BLOCKED on an interactive prompt (rc=9)",
+        next: "Read its output and screen snapshot now (for example a workspace trust or approval dialog). " +
+              "Ask the user or resolve the prompt before sending input, then arm a continuation wait.",
+      };
+    }
     if (rc === "124" || reason === "timeout") {
       return { head: "hit its deadline (rc=124)",
                next: "The wait failed; the agent did not succeed. Check the agent's live state: still working → arm a " +

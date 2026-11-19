@@ -35,6 +35,8 @@ python3 ./scripts/sop-open.py \
 - When delegating `writer`, point it at [the handoff template](./assets/templates/handoff.md) (and [gate-packet.md](./assets/templates/gate-packet.md), [delivery-report.md](./assets/templates/delivery-report.md), [disposition.md](./assets/templates/disposition.md)).
 - For tiny-change classification, run [diff-flags.py](./scripts/diff-flags.py). For gate packets and final reports, run [extract-gate-packet.py](./scripts/extract-gate-packet.py) and [extract-delivery-report.py](./scripts/extract-delivery-report.py) (with [check-disposition.py](./scripts/check-disposition.py) and [check-quota-action.py](./scripts/check-quota-action.py)) verbatim rather than summarizing.
 - For `pi` + `herdr-core` non-blocking push wakeup, use bundled [await.sh](./scripts/await.sh), [herdr-agent.py](./scripts/herdr-agent.py), and [sop-await.ts](./assets/pi/sop-await.ts).
+  - When `pi` runs via `antigravity-acp`, invoke `await.sh` through Pi's bridged `pi_bash` tool (not ACP's built-in shell tool) so `sop-await.ts` observes `bash` `tool_call`/`tool_result` and arms the watcher.
+  - For CLIs without OSC 7501 (such as `agy` in a fresh worktree), `herdr-agent.py` probes the screen for startup trust prompts and settles with `rc=9` (`blocked`); when running directly inside `HERDR_ENV=1` without `hc`, use `herdr agent start` / `herdr agent prompt --wait` so `agent_not_ready` / `agent_blocked` surfaces immediately.
 
 ## Phase 3: Deterministic 0-Token Gate
 

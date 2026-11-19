@@ -70,6 +70,21 @@ RC_ERROR = 10
 RC_LOST = 12
 RC_TIMEOUT = 124
 SNAPSHOT_LINES = 2000
+SCREEN_PROBE_START_S = 5.0
+SCREEN_PROBE_INTERVAL_S = 3.0
+
+# Conservative patterns for CLIs (e.g. agy in a fresh git worktree) that do not
+# emit OSC 7501 and stall on an interactive workspace/folder trust dialog.
+SCREEN_BLOCKED_RE = re.compile(
+    r"(?:"
+    r"do you trust (?:the files in )?this (?:folder|workspace|directory|project)"
+    r"|is this a project you trust"
+    r"|trust (?:this )?(?:folder|workspace|directory|project|repository)"
+    r"|yes,\s*i trust (?:this|the)"
+    r"|quick safety check"
+    r")",
+    re.IGNORECASE,
+)
 
 # await.sh's runner exports these to its wait command; their presence is how
 # run/start know a sentinel will record the agent's completion. hc starts
@@ -398,8 +413,25 @@ def artifact_fresh(path: Path | None, baseline: int | None) -> bool:
     return cur is not None and (baseline is None or cur > baseline)
 
 
+def detect_screen_blocked(address: str) -> str | None:
+    """Return matching bottom-screen lines if a non-OSC CLI is stalled on a trust dialog."""
+    try:
+        res = hc_raw("read", address, "--lines", "40")
+    except (OSError, RuntimeError):
+        return None
+    if res.returncode != 0:
+        return None
+    cleaned = ANSI.sub("", res.stdout)
+    lines = [line.rstrip() for line in cleaned.splitlines() if line.strip()]
+    tail = "\n".join(lines[-25:])
+    if not tail or not SCREEN_BLOCKED_RE.search(tail):
+        return None
+    return "\n".join(lines[-12:])
+
+
 def watch(address: str, baseline_turn: int, pid: int | None, args, log: Path) -> int:
-    deadline = time.monotonic() + args.timeout_s if args.timeout_s and args.timeout_s > 0 else None
+    started_at = time.monotonic()
+    deadline = started_at + args.timeout_s if args.timeout_s and args.timeout_s > 0 else None
     artifact = Path(args.artifact).expanduser() if getattr(args, "artifact", None) else None
     idle_grace_s = getattr(args, "idle_grace_s", 30.0)
     art_baseline = artifact_stamp(artifact)
@@ -423,6 +455,7 @@ def watch(address: str, baseline_turn: int, pid: int | None, args, log: Path) ->
 
     grace_deadline: float | None = None
     grace_turn: int | None = None
+    next_screen_probe = started_at + SCREEN_PROBE_START_S
 
     while True:
         info = get(address)
@@ -445,6 +478,17 @@ def watch(address: str, baseline_turn: int, pid: int | None, args, log: Path) ->
                         continue
                 return settle(*verdict, info, missing_artifact=True)
             return settle(*verdict, info)
+        if (
+            info is not None
+            and status_word(info) is None
+            and (info.get("turn") or 0) <= baseline_turn
+            and time.monotonic() >= next_screen_probe
+        ):
+            next_screen_probe = time.monotonic() + SCREEN_PROBE_INTERVAL_S
+            blocked_screen = detect_screen_blocked(address)
+            if blocked_screen:
+                print(f"BLOCKED_SCREEN:\n{blocked_screen}", flush=True)
+                return settle("blocked", RC_BLOCKED, info)
         if grace_deadline is not None and info is not None and status_word(info) == "working":
             # The agent woke back up (e.g. a background task completed); reset
             # the baseline to the turn it paused on and keep watching.
