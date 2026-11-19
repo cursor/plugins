@@ -1,0 +1,33 @@
+{
+  "name": "kling-ai",
+  "$schema": "https://cursor.com/schemas/cursor-plugin/plugin.json",
+  "description": "Generate and edit images with Kling Image 4.0, create videos with Kling 4.0 and Kling 4.0 Flash, and reuse Elements through Kling MCP.",
+  "version": "1.4.1",
+  "author": {
+    "name": "KLING AI"
+  },
+  "homepage": "https://kling.ai",
+  "repository": "https://github.com/klingai-tech/cursor-plugin",
+  "license": "MIT",
+  "keywords": [
+    "kling",
+    "kling-ai",
+    "image-generation",
+    "video-generation",
+    "mcp",
+    "oauth"
+  ],
+  "logo": "assets/kling-logo.png",
+  "rules": "rules",
+  "skills": "skills",
+  "mcpServers": "mcp.json",
+  "tags": [
+    "media",
+    "creative",
+    "ai-generation",
+    "video",
+    "image",
+    "mcp",
+    "oauth"
+  ]
+}

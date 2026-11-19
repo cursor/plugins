@@ -1,0 +1,14 @@
+{
+  "name": "kling-ai-cursor-plugin",
+  "version": "1.4.1",
+  "private": true,
+  "type": "module",
+  "description": "Generate and edit images with Kling Image 4.0, create videos with Kling 4.0 and Kling 4.0 Flash, and reuse Elements through Kling MCP.",
+  "scripts": {
+    "check": "node scripts/verify-plugin.mjs",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
