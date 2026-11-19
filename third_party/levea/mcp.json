@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "levea": {
+      "type": "http",
+      "url": "https://api.livecore.ai/api/v1/misc/mcp",
+      "placement": "server"
+    }
+  }
+}
