@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "expensify": {
+      "type": "http",
+      "url": "https://www.expensify.com/mcp",
+      "placement": "server"
+    }
+  }
+}

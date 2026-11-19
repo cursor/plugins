@@ -37,6 +37,8 @@ policy:
 | `resume` | Use `followup_task` or `resume_agent` when offered. Preserve the skill's restrictions on reusing a delegate. |
 | `file_attachments` | Put absolute file paths in the brief. |
 
+When `poteto-mode` starts an agent, begin its brief with `Read <pstack>/skills/poteto-mode/worker.md before anything else.` Replace `<pstack>` with the absolute path to the installed package.
+
 Use the returned agent identifier with the session's send, wait, and follow-up tools. `wait_agent` can report mailbox updates. Read the delivered messages to get the answer. A timeout is not completion. Use `close_agent` only when it exists. After a capacity error, wait for existing work. Do not retry with a different model. On hosts without a close tool, completion does not necessarily free a slot.
 
 When selecting another model or effort requires a fresh context, use the spawn tool's fresh-context option (`fork_turns: "none"` on hosts that expose it) and supply the task, paths, and relevant constraints explicitly. Full-history forks may inherit model and effort and reject overrides.
@@ -48,7 +50,7 @@ Current Codex releases enable subagents by default. Local clients can disable th
 | Cursor | Codex |
 | --- | --- |
 | `pstack-models.mdc`, `~/.cursor/rules/pstack-models.mdc` | Read `$CODEX_HOME/pstack-models.md` (default `~/.codex/pstack-models.md`) when a skill selects models. Codex does not automatically load this file. |
-| An unconfigured `claude-*`, `grok-*`, or `gpt-*` default | Inherit the parent. A Cursor model slug is not evidence that Codex can run it. |
+| An unconfigured Cursor model default, including `claude-*`, `gemini-*`, `grok-*`, and `gpt-*` | Inherit the parent. |
 | `auto` or `inherit-parent` | Omit model and effort overrides. Each panel entry represents one independent agent. |
 | A configured Codex model | Pass it only if the current spawn tool and available model inventory support it. |
 | `<model>@<effort>` | Pass the model and supported `reasoning_effort` separately. |
