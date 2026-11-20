@@ -29,7 +29,22 @@ claude code leaves auto-update off for third-party marketplaces, so pstack stays
 
 claude code prefixes plugin commands and agents, so `/poteto-mode` is `/pstack:poteto-mode`. the [claude code adapter](./docs/harness/claude-code.md) maps every other cursor name. in claude code, `/pstack:setup-pstack` writes your model choices to `~/.claude/rules/pstack-models.md`, and a step that needs a cursor-only feature, such as bugbot or automations, is skipped with a one-line note.
 
-claude code installs a generated copy of pstack, including this readme and the guide, from [`harness/pstack/`](https://github.com/cursor/plugins/tree/main/harness/pstack) at the repository root. after you change pstack, run `node scripts/generate-pstack-harness-trees.mjs` from the repository root and commit the result. ci fails while the generated copy is out of date.
+### Codex
+
+Run these commands from the repository root:
+
+```bash
+codex plugin marketplace add .
+codex plugin add pstack@pstack-plugins
+```
+
+Start a new Codex session and select `$pstack:poteto-mode` from the skill picker. In the Codex package, `docs/harness/codex.md` describes how pstack uses Codex tools and session settings.
+
+After you update the generated package in your checkout, run `codex plugin add pstack@pstack-plugins` again to refresh your installed copy.
+
+### Regenerate the plugin packages
+
+Claude Code, Antigravity, and Codex install generated copies from `harness/pstack/` at the repository root. Edit the shared sources under `pstack/`, run `node scripts/generate-pstack-harness-trees.mjs`, and commit the result. CI checks all three copies for drift.
 
 ## get started
 

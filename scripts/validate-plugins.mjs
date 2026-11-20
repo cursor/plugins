@@ -116,6 +116,21 @@ for (const entry of claudeMarketplace.plugins ?? []) {
   }
 }
 
+const codexMarketplace = loadJSON(resolve(root, ".agents/plugins/marketplace.json"));
+const codexEntry = codexMarketplace.plugins?.find((entry) => entry.name === "pstack");
+const codexSource = "./harness/pstack/codex";
+if (codexMarketplace.name !== "pstack-plugins" ||
+    codexEntry?.source?.source !== "local" || codexEntry.source.path !== codexSource) {
+  fail(`Codex marketplace must expose pstack@pstack-plugins at ${codexSource}`);
+} else {
+  const codexManifestPath = resolve(root, codexSource, ".codex-plugin/plugin.json");
+  if (!existsSync(codexManifestPath)) {
+    fail(`Codex marketplace target is missing ${codexSource}/.codex-plugin/plugin.json`);
+  } else if (loadJSON(codexManifestPath).name !== codexEntry.name) {
+    fail("Codex marketplace plugin name does not match .codex-plugin/plugin.json");
+  }
+}
+
 const manifestPaths = [
   ".cursor-plugin/plugin.json",
   ".claude-plugin/plugin.json",

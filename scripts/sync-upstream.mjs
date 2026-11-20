@@ -151,7 +151,7 @@ function syncRepo(repoRoot, opts) {
   }
 
   git(
-    ["commit", "-m", `chore(sync): merge upstream cursor/plugins (${upstreamSha}) and regenerate Antigravity harness`],
+    ["commit", "-m", `chore(sync): merge upstream cursor/plugins (${upstreamSha}) and regenerate pstack packages`],
     repoRoot,
     { inherit: true },
   );
@@ -224,9 +224,11 @@ function runSelfTest() {
     }
 
     const r1 = run("node", [scriptPath, "--install-dir", installDir], forkDir);
-    const mergedBro = readFileSync(join(forkDir, "harness", "pstack", "antigravity", "skills", "bro", "SKILL.md"), "utf8");
-    if (!mergedBro.includes("Upstream sync marker sentence.")) {
-      throw new Error(`Expected regenerated antigravity bro skill to contain upstream update; stdout=${r1.stdout}`);
+    for (const tree of ["claude-code", "antigravity", "codex"]) {
+      const mergedBro = readFileSync(join(forkDir, "harness", "pstack", tree, "skills", "bro", "SKILL.md"), "utf8");
+      if (!mergedBro.includes("Upstream sync marker sentence.")) {
+        throw new Error(`Expected regenerated ${tree} bro skill to contain upstream update; stdout=${r1.stdout}`);
+      }
     }
     const installedBro = readFileSync(join(installDir, "skills", "bro", "SKILL.md"), "utf8");
     if (!installedBro.includes("Upstream sync marker sentence.")) {

@@ -5,6 +5,7 @@ on:
     paths:
       - ".cursor-plugin/marketplace.json"
       - ".claude-plugin/marketplace.json"
+      - ".agents/plugins/marketplace.json"
       - "**/plugin.json"
       - "schemas/**"
       - "pstack/**"

@@ -1,7 +1,7 @@
 # pstack harness tree
 
-This folder is generated from `pstack/skills`, `pstack/agents`, `pstack/docs/guide`, `pstack/docs/harness/claude-code.md`, `pstack/docs/harness/antigravity.md`, `pstack/docs/harness/run-external-agent.mjs`, `pstack/README.md`, `pstack/LICENSE`, and `pstack/plugin.json`. Do not edit it by hand.
+This folder is generated from `pstack/skills`, `pstack/agents`, `pstack/docs/guide`, `pstack/docs/harness`, `pstack/README.md`, `pstack/LICENSE`, and `pstack/plugin.json`. Do not edit it by hand.
 
-Cursor uses `pstack/` directly, Claude Code installs `claude-code/`, and Antigravity (`agy`) installs `antigravity/`. Each tree leaves out the rest of `pstack/`, such as `pstack/automations`. A relative link to a pstack file that the tree leaves out points at that file on GitHub `main` instead.
+Cursor uses `pstack/` directly. Claude Code, Antigravity, and Codex install from `claude-code/`, `antigravity/`, and `codex/`. The generated trees omit files such as `pstack/automations`. Links to omitted pstack files point to GitHub.
 
 After editing those sources, run `node scripts/generate-pstack-harness-trees.mjs` from the repository root and commit the result.
