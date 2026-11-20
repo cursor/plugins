@@ -399,6 +399,7 @@ export interface GitHubReader {
     context: PrContext,
     after: string | null
   ): Promise<RollupPage>;
+  workflowRuns(context: PrContext, head: string): Promise<readonly Check[]>;
   reviewThreadPage(
     context: PrContext,
     after: string | null

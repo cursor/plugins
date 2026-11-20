@@ -455,6 +455,122 @@ function graphqlArgs(
   ];
 }
 
+type WorkflowRunCheck = T.Check & {
+  readonly id: number;
+  readonly attempt: number;
+  readonly runNumber: number;
+  readonly execution: string;
+};
+
+function positiveInteger(value: unknown, path: string): number {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value <= 0)
+    missing(path, value);
+  return value;
+}
+
+export function parseWorkflowRunPage(
+  value: unknown,
+  head: string
+): {
+  readonly checks: readonly WorkflowRunCheck[];
+  readonly ids: readonly number[];
+  readonly count: number;
+  readonly total: number;
+} {
+  const page = record(value, "workflow runs");
+  const total = page.total_count;
+  if (!Number.isSafeInteger(total) || Number(total) < 0)
+    missing("workflow runs.total_count", total);
+  const runs = list(page.workflow_runs, "workflow runs.workflow_runs");
+  const ids: number[] = [];
+  const checks = runs
+    .map((value, index) => {
+      const run = record(value, `workflow runs[${index}]`);
+      const id = positiveInteger(run.id, "workflow run.id");
+      const attempt = positiveInteger(
+        run.run_attempt,
+        "workflow run.run_attempt"
+      );
+      const runNumber = positiveInteger(
+        run.run_number,
+        "workflow run.run_number"
+      );
+      const workflowId = positiveInteger(
+        run.workflow_id,
+        "workflow run.workflow_id"
+      );
+      const event = string(run.event, "workflow run.event");
+      const repositoryId = positiveInteger(
+        at(run, ["head_repository", "id"]),
+        "workflow run.head_repository.id"
+      );
+      const branch = optionalString(run.head_branch, "workflow run.head_branch");
+      const prs = run.pull_requests === null
+        ? null
+        : list(run.pull_requests, "workflow run.pull_requests")
+            .map((pr) => JSON.stringify([
+              positiveInteger(
+                at(pr, ["number"]),
+                "workflow run.pull_requests.number"
+              ),
+              positiveInteger(
+                at(pr, ["base", "repo", "id"]),
+                "workflow run.pull_requests.base.repo.id"
+              ),
+              string(at(pr, ["base", "ref"]), "workflow run.pull_requests.base.ref"),
+            ]))
+            .sort();
+      const automatic = event === "push" || event === "pull_request" ||
+        event === "pull_request_target";
+      const unambiguous = automatic && branch !== null && prs !== null &&
+        (event === "push" ? prs.length <= 1 : prs.length === 1);
+      const execution = JSON.stringify([
+        workflowId,
+        event,
+        repositoryId,
+        branch,
+        prs,
+        ...(unambiguous ? [] : [id]),
+      ]);
+      ids.push(id);
+      const sha = string(run.head_sha, "workflow run.head_sha");
+      const name = string(run.name, "workflow run.name");
+      const link = string(run.html_url, "workflow run.html_url");
+      const status = enumValue(
+        run.status,
+        [
+          "queued",
+          "in_progress",
+          "waiting",
+          "pending",
+          "requested",
+          "completed",
+        ] as const,
+        "workflow run.status"
+      );
+      const conclusion = optionalString(
+        run.conclusion,
+        "workflow run.conclusion"
+      );
+      if (sha !== head) return null;
+      const details = { name, link, description: "", workflow: name };
+      const reportedState = conclusion?.toUpperCase() ?? status.toUpperCase();
+      const check: T.Check =
+        status !== "completed" || conclusion === null
+          ? gateOr("pending", details, reportedState)
+          : conclusion === "success"
+            ? { ...details, kind: "passed", reportedState }
+            : conclusion === "skipped" || conclusion === "neutral"
+              ? { ...details, kind: "skipped", reportedState }
+              : conclusion === "action_required"
+                ? gateOr("failed", details, reportedState)
+                : { ...details, kind: "failed", reportedState };
+      return { ...check, id, attempt, runNumber, execution };
+    })
+    .filter((check): check is NonNullable<typeof check> => check !== null);
+  return { checks, ids, count: runs.length, total: Number(total) };
+}
+
 export class GhGitHubReader implements T.GitHubReader {
   async originRepo(): Promise<T.Repository | null> {
     const result = await run(["git", "remote", "get-url", "origin"]);
@@ -575,6 +691,57 @@ export class GhGitHubReader implements T.GitHubReader {
       "contexts.pageInfo.endCursor"
     );
     return { checks, endCursor: page.hasNextPage && cursor ? cursor : null };
+  }
+  async workflowRuns(
+    context: T.PrContext,
+    head: string
+  ): Promise<readonly T.Check[]> {
+    const latest = new Map<string, WorkflowRunCheck>();
+    const ids = new Set<number>();
+    let total: number | null = null;
+    for (let page = 1; page <= 10; page++) {
+      const result = parseWorkflowRunPage(
+        await runJson([
+          "gh",
+          "api",
+          "-X",
+          "GET",
+          `repos/${context.owner}/${context.repo}/actions/runs`,
+          "-f",
+          `head_sha=${head}`,
+          "-F",
+          "per_page=100",
+          "-F",
+          `page=${page}`,
+        ]),
+        head
+      );
+      if (result.total >= 1000)
+        missing("workflow runs exceeds complete-observation limit", result.total);
+      if (total !== null && result.total !== total)
+        missing("workflow runs total changed during pagination", result.total);
+      total = result.total;
+      if (result.count !== Math.min(100, total - ids.size))
+        missing("workflow runs incomplete page", result.count);
+      for (const id of result.ids) {
+        if (ids.has(id)) missing("workflow runs duplicate id", id);
+        ids.add(id);
+      }
+      for (const check of result.checks) {
+        const previous = latest.get(check.execution);
+        if (previous !== undefined &&
+          previous.runNumber === check.runNumber && previous.id !== check.id)
+          missing("workflow runs ambiguous run number", check.runNumber);
+        if (previous === undefined || previous.runNumber < check.runNumber ||
+          (previous.runNumber === check.runNumber && previous.attempt < check.attempt))
+          latest.set(check.execution, check);
+      }
+      if (ids.size === total)
+        return [...latest.values()].map(
+          ({ id, attempt, runNumber, execution, ...check }) => check
+        );
+    }
+    return missing("workflow runs pagination limit");
   }
   async reviewThreadPage(
     context: T.PrContext,
