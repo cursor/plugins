@@ -1,0 +1,30 @@
+{
+  "name": "fiu-mcp-connector",
+  "displayName": "FIU Global Financial Data",
+  "version": "1.0.1",
+  "description": "Query objective global market quotes, financial statements, company data, funds, bonds, IPOs, news, calendars and macroeconomic data through FIU MCP. Read-only data retrieval; no investment advice or trading operations.",
+  "author": {
+    "name": "深圳市融聚汇信息科技有限公司"
+  },
+  "homepage": "https://ai.szfiu.com",
+  "repository": "https://gitlab.szfiu.com/ai/szfiu-mcp-adapter",
+  "license": "LicenseRef-Proprietary",
+  "keywords": [
+    "finance",
+    "market-data",
+    "mcp",
+    "stocks",
+    "funds",
+    "bonds"
+  ],
+  "category": "finance",
+  "tags": [
+    "finance",
+    "market-data",
+    "read-only",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json",
+  "logo": "icon.svg"
+}
