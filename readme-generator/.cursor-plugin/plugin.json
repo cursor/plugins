@@ -1,0 +1,28 @@
+{
+  "name": "readme-generator",
+  "displayName": "README Generator",
+  "version": "1.0.0",
+  "description": "Scan any repository and generate a complete, accurate README: description, features, requirements, install, usage, configuration, development, and license. Never invents commands or features that are not in the repo.",
+  "author": {
+    "name": "PeaBox",
+    "email": "iwebslogtech@gmail.com"
+  },
+  "homepage": "https://github.com/cursor/plugins",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/avatar.png",
+  "keywords": [
+    "readme",
+    "documentation",
+    "docs",
+    "generator",
+    "markdown"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "documentation",
+    "readme",
+    "productivity"
+  ],
+  "skills": "./skills/"
+}
