@@ -8,6 +8,11 @@ disable-model-invocation: true
 
 The chart shows how a system moves between states, in the words of the person who reads it. That person, the reader, decides whether the behavior is right.
 
+For a workflow review that also checks phase contracts, producer/consumer agreement,
+recovery, and payload or provider boundaries, use
+[workflow-verification](../workflow-verification/SKILL.md). It selects executable checks
+and uses this skill when a bounded model helps resolve ordering or concurrency questions.
+
 ## Run
 
 Work in a scratch folder outside the repo. Write a TLA+ spec and its config. Then run:
