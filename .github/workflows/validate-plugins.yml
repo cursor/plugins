@@ -2,16 +2,7 @@ name: Validate plugins
 
 on:
   pull_request:
-    paths:
-      - ".cursor-plugin/marketplace.json"
-      - ".claude-plugin/marketplace.json"
-      - ".agents/plugins/marketplace.json"
-      - "**/plugin.json"
-      - "schemas/**"
-      - "pstack/**"
-      - "harness/**"
-      - "scripts/**"
-      - ".github/workflows/validate-plugins.yml"
+    branches: [main]
 
 jobs:
   validate:
