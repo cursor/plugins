@@ -2,6 +2,7 @@ name: Validate plugins
 
 on:
   pull_request:
+    branches: [main]
     paths:
       - ".cursor-plugin/marketplace.json"
       - ".claude-plugin/marketplace.json"
