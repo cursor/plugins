@@ -143,11 +143,11 @@ const launcherTools = () => {
 };
 
 const linkedLauncher = () => {
-  const links = fs.mkdtempSync(path.join(os.tmpdir(), "statechart-links-"));
+  const links = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "statechart-links-")));
   const [first, second] = [path.join(links, "a"), path.join(links, "b")];
   fs.mkdirSync(first);
   fs.mkdirSync(second);
-  fs.symlinkSync(path.relative(second, launcher), path.join(second, "statechart"));
+  fs.symlinkSync(path.relative(second, fs.realpathSync(launcher)), path.join(second, "statechart"));
   fs.symlinkSync(path.join(second, "statechart"), path.join(first, "statechart"));
   return path.join(first, "statechart");
 };
@@ -162,6 +162,7 @@ for (const [how, command] of [
       command: [command()],
       env: { PATH: `${path.dirname(process.execPath)}${path.delimiter}${launcherTools()}` },
     });
+    assert.ifError(r.error);
     assert.equal(r.stderr, "");
     assert.equal(r.status, 1);
     assert.equal(read(path.join(r.out, "chart.mmd")), read(path.join(dir, "chart.mmd")));
