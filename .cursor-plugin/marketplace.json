@@ -812,6 +812,11 @@
       "name": "lmty",
       "source": "third_party/lmty",
       "description": "Read tracked competitors, competitive intelligence reports, change logs, evidence, social mentions, and market feeds for your products, and browse LMTY's public Markets, event timelines, and company, product, and person profiles."
+    },
+    {
+      "name": "fatetell",
+      "source": "third_party/fatetell",
+      "description": "Chinese astrology computed by FateTell's own BaZi engine: cast a BaZi (八字, Four Pillars) chart from any birth date, open the charts saved in your FateTell account, and check today's fortune and the Chinese almanac. Connecting signs you in to a FateTell account."
     }
   ]
 }

@@ -150,6 +150,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `createos` | [CreateOS](third_party/createos/) | Cursor | Integrations | Deploy and manage projects, environments, deployments, domains, logs, cron jobs, security scans, templates, and sandboxes on NodeOps CreateOS. |
 | `fiscal-ai` | [Fiscal.ai](third_party/fiscal-ai/) | Cursor | Integrations | Pull source-linked financials, filings, ratios, prices, segments, KPIs, ownership, fund letters, and news from Fiscal.ai. |
 | `lmty` | [LMTY](third_party/lmty/) | Cursor | Integrations | Read tracked competitors, competitive intelligence reports, change logs, evidence, social mentions, and market feeds for your products, and browse LMTY's public Markets, event timelines, and company, product, and person profiles. |
+| `fatetell` | [FateTell](third_party/fatetell/) | FateTell | Integrations | Chinese astrology computed by FateTell's own BaZi engine: cast a BaZi (八字, Four Pillars) chart from any birth date, open the charts saved in your FateTell account, and check today's fortune and the Chinese almanac. Connecting signs you in to a FateTell account. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

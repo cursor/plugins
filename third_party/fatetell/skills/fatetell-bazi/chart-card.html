@@ -1,0 +1,176 @@
+<!doctype html>
+<!--
+FateTell chart card: static template.
+
+The same layout as the card the FateTell MCP server returns as an MCP App
+(ui://fatetell/chart-card). Hosts without MCP Apps can show this file instead.
+Replace each {{placeholder}} with the value from the get_saved_chart or
+cast_bazi_chart result. Paths below are fields of structuredContent; the same
+values appear in the text content (summary lines and the elements table).
+
+  lang attribute     zh-Hans, zh-Hant or en, the language of the conversation
+  {{who}}            display_name (get_saved_chart); for cast_bazi_chart use the label for "chart"
+  {{birth}}          birth.date, then birth.time (or the label for "time unknown" when birth.time is null)
+  {{gender}}         gender (get_saved_chart) or birth.gender (cast_bazi_chart)
+  {{dm_stem}}        day_master.stem
+  {{dm_el}}          element class of day_master.element.code (see element classes)
+  verdict chips      only when the result has judgment; otherwise delete the whole <span class="verdict">
+  {{verdict}}        judgment.verdict
+  {{favorable}}      judgment.favorable[].element, by rank, joined with " · "
+  {{unfavorable}}    judgment.unfavorable[].element, by rank, joined with " · "
+  {{P.ten_god}}      pillars.P.ten_god for P = year, month, hour (the day column shows the Day Master label)
+  {{P.stem}}         pillars.P.stem, class from pillars.P.stem_element.code
+  {{P.branch}}       pillars.P.branch, class from pillars.P.branch_element.code
+  hidden stems       one <i> line per entry of pillars.P.hidden_stems: stem, element class, ten_god
+  life stage row     pillars.P.life_stage; delete the row when the result has no life_stage
+  {{P.nayin}}        pillars.P.nayin
+  luck buttons       one button per luck_pillars.steps[]: start_year, ganzhi, stem_ten_god;
+                     data-start is start_year; aria-pressed="true" on the step containing the current year
+  {{open_url}}       links[] entry with rel "chart"; https://fatetell.com when the result has no links
+
+Term values ({code, zh, en}): use zh for zh-Hans, zh in traditional characters for zh-Hant, en for en.
+Element classes: wood mu, fire huo, earth tu, metal jin, water shui (e-* for the round seals, c-* for text).
+The years row under the luck pillars is computed by the script below from the pressed button.
+
+Labels by language:
+  zh-Hans  年柱 月柱 日柱 时柱 | 十神 天干 地支 藏干 长生 纳音 | 日主 喜 忌 | 大运 现在 | 在 FateTell 打开 | 男 女 | 时辰未知 | 命盘
+  zh-Hant  年柱 月柱 日柱 時柱 | 十神 天干 地支 藏干 長生 納音 | 日主 喜 忌 | 大運 現在 | 在 FateTell 打開 | 男 女 | 時辰未知 | 命盤
+  en       Year Month Day Hour | Ten God Stem Branch Hidden Stage Na Yin | Day Master Favors Avoid | Luck pillars now | Open in FateTell | M F | time unknown | Chart
+-->
+<html lang="{{lang}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>FateTell</title>
+<style>
+:root {
+  --ft-paper: #f7f6f3; --ft-paper-2: #efeeea; --ft-ink: #232326; --ft-ink-2: #5a5a60; --ft-ink-3: #8c8c93;
+  --ft-line: rgba(35,35,38,.12); --ft-seal: #b4342a;
+  --ft-jin: #b8923a; --ft-mu: #3f8a6a; --ft-shui: #3b7a8c; --ft-huo: #a63d2c; --ft-tu: #9a6a3f;
+  --ft-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
+  --ft-sans: system-ui, -apple-system, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --ft-latin: "EB Garamond", Georgia, "Times New Roman", serif;
+  color-scheme: light;
+}
+:root:lang(zh-Hant) { --ft-serif: "Noto Serif TC", "Source Han Serif TC", "Songti TC", serif; --ft-sans: system-ui, -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+@media (prefers-color-scheme: dark) { :root {
+  --ft-paper: #1f1f22; --ft-paper-2: #26262a; --ft-ink: #ecebe7; --ft-ink-2: #b4b4ba; --ft-ink-3: #7f7f87;
+  --ft-line: rgba(236,235,231,.14); --ft-seal: #d2493d;
+  --ft-jin: #d4ad55; --ft-mu: #5fae88; --ft-shui: #5a9fb2; --ft-huo: #d4634f; --ft-tu: #bb8656; color-scheme: dark; } }
+html, body { margin: 0; padding: 0; }
+body { background: var(--ft-paper-2); color: var(--ft-ink); font-family: var(--ft-sans); padding: 16px; }
+.card { max-width: 640px; margin: 0 auto; background: var(--ft-paper); border: 1px solid var(--ft-line); border-radius: 4px; padding: 18px 20px 14px; display: grid; gap: 14px; font-size: 13px; min-width: 0; }
+.card > * { min-width: 0; }
+.card-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 14px; }
+.who { font: 500 15px/1.3 var(--ft-sans); }
+.who small { color: var(--ft-ink-3); font-weight: 400; margin-left: 8px; font-size: 12px; }
+.dm { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 12px; color: var(--ft-ink-2); }
+.dm b { font: 700 15px/1 var(--ft-serif); }
+.verdict { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--ft-line); border-radius: 2px; padding: 2px 7px; font-size: 12px; color: var(--ft-ink-2); white-space: nowrap; }
+.chip.on { background: var(--ft-ink); color: var(--ft-paper); border-color: var(--ft-ink); }
+.pillars { display: grid; grid-template-columns: 56px repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--ft-ink-2); border-bottom: 1px solid var(--ft-ink-2); padding: 2px 0 4px; }
+.pillars > div { padding: 7px 4px; text-align: center; min-width: 0; }
+.pillars > div:nth-child(-n+5) { border-bottom: 1px solid var(--ft-line); padding-bottom: 6px; margin-bottom: 4px; }
+.pillars .lbl { display: flex; align-items: center; text-align: left; color: var(--ft-ink-3); font-size: 12px; padding-left: 0; }
+.pillars .col { color: var(--ft-ink-3); font-size: 12px; letter-spacing: .08em; }
+.god { font-size: 12px; color: var(--ft-ink-2); }
+.god.dm-god { color: var(--ft-ink); font-weight: 500; }
+.gz { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; color: #fff; font: 700 22px/1 var(--ft-serif); }
+.e-jin { background: var(--ft-jin); } .e-mu { background: var(--ft-mu); } .e-shui { background: var(--ft-shui); } .e-huo { background: var(--ft-huo); } .e-tu { background: var(--ft-tu); }
+.c-jin { color: var(--ft-jin); } .c-mu { color: var(--ft-mu); } .c-shui { color: var(--ft-shui); } .c-huo { color: var(--ft-huo); } .c-tu { color: var(--ft-tu); }
+.hid { font-size: 12px; line-height: 1.6; color: var(--ft-ink-2); }
+.hid i { font-style: normal; font-family: var(--ft-serif); font-weight: 700; }
+.cs { font-size: 12px; color: var(--ft-ink-2); }
+.cs b { font-weight: 500; color: var(--ft-ink); }
+.nayin { font-size: 12px; color: var(--ft-ink-2); }
+.luck-h { display: flex; justify-content: space-between; align-items: baseline; color: var(--ft-ink-3); font-size: 12px; letter-spacing: .08em; }
+.luck { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+.luck button { all: unset; cursor: pointer; flex: 0 0 auto; min-width: 58px; text-align: center; padding: 7px 6px 6px; border: 1px solid var(--ft-line); border-radius: 2px; display: grid; gap: 2px; }
+.luck button .y { font-size: 11px; color: var(--ft-ink-3); font-variant-numeric: tabular-nums; }
+.luck button .g { font: 700 15px/1.2 var(--ft-serif); }
+.luck button .t { font-size: 11px; color: var(--ft-ink-2); }
+.luck button[aria-pressed="true"] { background: var(--ft-ink); border-color: var(--ft-ink); }
+.luck button[aria-pressed="true"] * { color: var(--ft-paper); }
+.luck button:focus-visible { outline: 2px solid var(--ft-seal); outline-offset: 1px; }
+.years { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; margin-top: 8px; }
+.years div { text-align: center; padding: 6px 0; background: var(--ft-paper-2); border-radius: 2px; }
+.years .y { font-size: 10px; color: var(--ft-ink-3); font-variant-numeric: tabular-nums; }
+.years .g { font: 500 13px/1.3 var(--ft-serif); }
+.years div.now { outline: 1px solid var(--ft-seal); }
+.card-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; padding-top: 4px; }
+.brand { display: inline-flex; align-items: center; gap: 6px; color: var(--ft-ink-3); font: 500 12px/1 var(--ft-latin); letter-spacing: .06em; }
+.brand svg { width: 14px; height: 14px; }
+.open { display: inline-flex; align-items: center; min-height: 38px; padding: 0 18px; background: var(--ft-ink); color: var(--ft-paper); border-radius: 3px; font-size: 13px; font-weight: 500; text-decoration: none; letter-spacing: .02em; }
+.open:focus-visible { outline: 2px solid var(--ft-seal); outline-offset: 2px; }
+@media (max-width: 480px) {
+  body { padding: 8px; }
+  .card { padding: 14px 14px 12px; gap: 12px; }
+  .card-head { flex-direction: column; align-items: flex-start; }
+  .pillars { grid-template-columns: 40px repeat(4, minmax(0, 1fr)); }
+  .gz { width: 34px; height: 34px; font-size: 19px; }
+  .hid { font-size: 11px; }
+  .years { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+</style>
+</head>
+<body>
+<div class="card" role="group" aria-label="FateTell">
+  <div class="card-head">
+    <div class="who">{{who}}<small>FateTell · {{birth}} · {{gender}}</small></div>
+    <div class="dm">{{label_day_master}} <b class="c-{{dm_el}}">{{dm_stem}}</b>
+      <span class="verdict"><span class="chip on">{{verdict}}</span><span class="chip">{{label_favors}} {{favorable}}</span><span class="chip">{{label_avoid}} {{unfavorable}}</span></span>
+    </div>
+  </div>
+
+  <div class="pillars">
+    <div class="lbl"></div><div class="col">{{label_year}}</div><div class="col">{{label_month}}</div><div class="col">{{label_day}}</div><div class="col">{{label_hour}}</div>
+    <div class="lbl">{{label_ten_god}}</div><div class="god">{{year.ten_god}}</div><div class="god">{{month.ten_god}}</div><div class="god dm-god">{{label_day_master}}</div><div class="god">{{hour.ten_god}}</div>
+    <div class="lbl">{{label_stem}}</div><div><span class="gz e-{{year.stem_el}}">{{year.stem}}</span></div><div><span class="gz e-{{month.stem_el}}">{{month.stem}}</span></div><div><span class="gz e-{{day.stem_el}}">{{day.stem}}</span></div><div><span class="gz e-{{hour.stem_el}}">{{hour.stem}}</span></div>
+    <div class="lbl">{{label_branch}}</div><div><span class="gz e-{{year.branch_el}}">{{year.branch}}</span></div><div><span class="gz e-{{month.branch_el}}">{{month.branch}}</span></div><div><span class="gz e-{{day.branch_el}}">{{day.branch}}</span></div><div><span class="gz e-{{hour.branch_el}}">{{hour.branch}}</span></div>
+    <div class="lbl">{{label_hidden}}</div>
+    <div class="hid"><i class="c-{{el}}">{{hidden_stem}}</i>·{{hidden_ten_god}}<br><!-- repeat per year.hidden_stems --></div>
+    <div class="hid"><i class="c-{{el}}">{{hidden_stem}}</i>·{{hidden_ten_god}}<br><!-- repeat per month.hidden_stems --></div>
+    <div class="hid"><i class="c-{{el}}">{{hidden_stem}}</i>·{{hidden_ten_god}}<br><!-- repeat per day.hidden_stems --></div>
+    <div class="hid"><i class="c-{{el}}">{{hidden_stem}}</i>·{{hidden_ten_god}}<br><!-- repeat per hour.hidden_stems --></div>
+    <div class="lbl">{{label_stage}}</div><div class="cs"><b>{{year.life_stage}}</b></div><div class="cs"><b>{{month.life_stage}}</b></div><div class="cs"><b>{{day.life_stage}}</b></div><div class="cs"><b>{{hour.life_stage}}</b></div>
+    <div class="lbl">{{label_nayin}}</div><div class="nayin">{{year.nayin}}</div><div class="nayin">{{month.nayin}}</div><div class="nayin">{{day.nayin}}</div><div class="nayin">{{hour.nayin}}</div>
+  </div>
+
+  <div>
+    <div class="luck-h"><span>{{label_luck}}</span><span id="luck-range"></span></div>
+    <div class="luck" role="group">
+      <!-- one button per luck_pillars.steps[]; append " · {{label_now}}" to .y on the current step -->
+      <button type="button" data-start="{{start_year}}" aria-pressed="false"><span class="y">{{start_year}}</span><span class="g">{{ganzhi}}</span><span class="t">{{stem_ten_god}}</span></button>
+    </div>
+    <div class="years" id="years"></div>
+  </div>
+
+  <div class="card-foot">
+    <span class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14.5 2.5c4.5 0 7.5 3.2 7.5 7.6 0 6.3-6.6 9.4-13.2 11.3-1.3.4-2.1-.4-1.6-1.6C9.4 14.5 7 12.6 7 10.1c0-4.4 3-7.6 7.5-7.6z"/></svg>FateTell</span>
+    <a class="open" href="{{open_url}}" target="_blank" rel="noopener noreferrer">{{label_open}}</a>
+  </div>
+</div>
+<script>
+(function () {
+  var STEMS = '甲乙丙丁戊己庚辛壬癸', BRANCHES = '子丑寅卯辰巳午未申酉戌亥';
+  function gz(y) { var i = (y - 1984) % 60; if (i < 0) i += 60; return STEMS.charAt(i % 10) + BRANCHES.charAt(i % 12); }
+  var thisYear = new Date().getFullYear();
+  var buttons = [].slice.call(document.querySelectorAll('.luck button'));
+  function show(btn) {
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+    var start = parseInt(btn.getAttribute('data-start'), 10);
+    if (isNaN(start)) return;
+    document.getElementById('luck-range').textContent = btn.querySelector('.g').textContent + ' ' + start + '–' + (start + 9);
+    var html = '';
+    for (var y = start; y < start + 10; y++) html += '<div' + (y === thisYear ? ' class="now"' : '') + '><div class="y">' + y + '</div><div class="g">' + gz(y) + '</div></div>';
+    document.getElementById('years').innerHTML = html;
+  }
+  buttons.forEach(function (b) { b.addEventListener('click', function () { show(b); }); });
+  var current = buttons.filter(function (b) { return b.getAttribute('aria-pressed') === 'true'; })[0] || buttons[0];
+  if (current) show(current);
+})();
+</script>
+</body>
+</html>
