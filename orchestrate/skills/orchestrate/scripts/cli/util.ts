@@ -4,6 +4,10 @@ import { userInfo } from "node:os";
 import { join, resolve } from "node:path";
 
 import { createSlackAdapter } from "../adapters/index.ts";
+import {
+  SLACK_TOKEN_ENV,
+  slackTokenConfigured,
+} from "../adapters/slack/client.ts";
 import type { CommentCriticality, SlackAdapter } from "../adapters/types.ts";
 import { AgentManager, type RespawnSource } from "../core/agent-manager.ts";
 import type { CommentDestinations } from "../core/comment-retry-queue.ts";
@@ -37,8 +41,10 @@ export interface SpawnOptions {
   wait?: boolean;
 }
 
-const SLACK_CHANNEL_REQUIRED_MESSAGE =
-  "set --slack-channel or SLACK_CHANNEL_ID, or unset SLACK_BOT_TOKEN to disable Slack";
+/** Channel env var. Prefixed so it can't collide with another tool's Slack app. */
+export const SLACK_CHANNEL_ENV = "ORCHESTRATE_SLACK_CHANNEL_ID";
+
+const SLACK_CHANNEL_REQUIRED_MESSAGE = `set --slack-channel or ${SLACK_CHANNEL_ENV}, or unset ${SLACK_TOKEN_ENV} to disable Slack`;
 
 export interface TreeVictim {
   taskName: string;
@@ -439,7 +445,7 @@ export function resolveSlackChannelOption(
 ): string | undefined {
   const flag = explicit?.trim();
   if (flag) return flag;
-  const env = process.env.SLACK_CHANNEL_ID?.trim();
+  const env = process.env[SLACK_CHANNEL_ENV]?.trim();
   return env || undefined;
 }
 
@@ -469,7 +475,7 @@ export function resolveWorkspaceSlackChannelOrBail(args: {
 }
 
 function requireSlackChannelIfTokenSet(channel: string | undefined): void {
-  if (process.env.SLACK_BOT_TOKEN && !channel) {
+  if (slackTokenConfigured() && !channel) {
     throw new PlanValidationError(SLACK_CHANNEL_REQUIRED_MESSAGE);
   }
 }
@@ -565,7 +571,7 @@ export function loadAndonTargetOrBail(opts: { workspace?: string }): {
   const slack = createSlackAdapter(plan.slackKickoffRef.channel);
   if (!slack) {
     throw new PlanValidationError(
-      "set SLACK_BOT_TOKEN before running andon commands"
+      `set ${SLACK_TOKEN_ENV} before running andon commands`
     );
   }
   return { slack, ref: plan.slackKickoffRef };

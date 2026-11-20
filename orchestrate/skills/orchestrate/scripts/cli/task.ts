@@ -59,7 +59,7 @@ export function registerTaskCommands(program: Command): void {
     )
     .option(
       "--slack-channel <id>",
-      "Slack channel id for the root run. Falls back to SLACK_CHANNEL_ID."
+      "Slack channel id for the root run. Falls back to ORCHESTRATE_SLACK_CHANNEL_ID."
     )
     .option(
       "--max-runtime-sec <number>",
@@ -115,7 +115,7 @@ export function registerTaskCommands(program: Command): void {
     )
     .option(
       "--slack-channel <id>",
-      "Slack channel id for run visibility. Falls back to SLACK_CHANNEL_ID."
+      "Slack channel id for run visibility. Falls back to ORCHESTRATE_SLACK_CHANNEL_ID."
     )
     .option(
       "--dispatcher-name <name>",
