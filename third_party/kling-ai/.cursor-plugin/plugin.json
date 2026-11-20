@@ -1,8 +1,8 @@
 {
   "name": "kling-ai",
   "$schema": "https://cursor.com/schemas/cursor-plugin/plugin.json",
-  "description": "Generate and edit images with Kling Image 4.0, create videos with Kling 4.0 and Kling 4.0 Flash, and reuse Elements through Kling MCP.",
-  "version": "1.4.1",
+  "description": "Generate and edit images with Kling Image 4.0, create videos with Kling 4.0 (including HDR) and Kling 4.0 Flash, and reuse Elements through Kling MCP.",
+  "version": "1.4.2",
   "author": {
     "name": "KLING AI"
   },

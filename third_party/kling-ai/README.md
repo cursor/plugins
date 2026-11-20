@@ -1,7 +1,7 @@
 # Kling AI for Cursor
 
 Generate images and videos, reuse Elements, and track Kling tasks from Cursor
-Agent chat. This is the **Global** plugin on the `main` branch, version **1.4.1**.
+Agent chat. This is the **Global** plugin on the `main` branch, version **1.4.2**.
 Using a China account? See the [China plugin on the `cn` branch](https://github.com/klingai-tech/cursor-plugin/tree/cn).
 
 ## Quick start
@@ -91,7 +91,7 @@ or [中文](skills/kling-ai/references/prompt-examples.md#推荐提示词).
 
 - Text-to-image, reference-guided editing, and coherent image series. If no image model is specified, prefer Kling Image 4.0 when it is available and meets the request, then consider the account's compatible default.
 - [Kling Image 4.0](https://kling.ai/quickstart/kling-image-4-user-guide) supports native 8K and Series Mode for up to 10 coherent images in one generation. Available settings follow the connected account's MCP capabilities.
-- Kling 4.0: text-to-video, first/last/intermediate keyframes, and Omni-Ref with images, videos, audio, and Elements. Outputs are 3–30 seconds at 720p, with 1080p available to eligible accounts.
+- Kling 4.0: text-to-video, first/last/intermediate keyframes, and Omni-Ref with images, videos, audio, and Elements. Outputs are 3–30 seconds and default to 720p. Accounts with access to 1080p or 4K can enable HDR output in text-to-video, image-to-video, and Omni-Ref.
 - Kling 4.0 Flash: text-to-video, single first-frame image-to-video, and Omni-Ref with images, videos, and Elements. Outputs are 3–20 seconds at 720p.
 - Both Omni-Ref models support smart shot splitting. Synchronized sound generation and source audio retention are mutually exclusive. Model availability and settings follow the connected account.
 - Live account-scoped model discovery, reference limits, and billing disclosures

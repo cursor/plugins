@@ -35,6 +35,12 @@ request as its text. Keep reference inputs in the outer schema's input slots.
 Before sending, compare every explicit requirement with the actual serialized
 value or supported input; build the result summary from those values afterward.
 
+## HDR video output
+
+- Kling 4.0 declares string values `none` (default) and `hdr`. Enable HDR only when the user requests HDR output and the selected tool/model pair advertises it. Use the live default when the user leaves HDR unspecified.
+- HDR requires `1080p` or `4k` on the connected account. When resolution is unspecified, apply the video quality defaults among the eligible HDR resolutions. If the user explicitly asks for `720p` HDR or another unavailable combination, explain the limitation and ask which setting to change before submission.
+- Put HDR and resolution in separate entries in `arguments`, for example `{"name":"hdr","value":"hdr"}` and `{"name":"resolution","value":"1080p"}`. Show both in the settings for approval. Report the submitted mode and verify the result's actual HDR format only when output metadata is available.
+
 ## References and Elements
 
 Apply only when using actual/required reference inputs or Elements. Read [asset workflows](asset-workflows.md) for lookup and upload operations.

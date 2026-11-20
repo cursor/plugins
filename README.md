@@ -151,6 +151,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `fiscal-ai` | [Fiscal.ai](third_party/fiscal-ai/) | Cursor | Integrations | Pull source-linked financials, filings, ratios, prices, segments, KPIs, ownership, fund letters, and news from Fiscal.ai. |
 | `lmty` | [LMTY](third_party/lmty/) | Cursor | Integrations | Read tracked competitors, competitive intelligence reports, change logs, evidence, social mentions, and market feeds for your products, and browse LMTY's public Markets, event timelines, and company, product, and person profiles. |
 | `kling-ai` | [Kling AI Plugin](third_party/kling-ai/) | KLING AI | Integrations | Generate and edit images with Kling Image 4.0, create videos with Kling 4.0 and Kling 4.0 Flash, and reuse Elements through Kling MCP. |
+| `kling-ai-cn` | [Kling AI China Plugin](third_party/kling-ai-cn/) | KLING AI | Integrations | Generate and edit images with Kling Image 4.0, create videos with Kling 4.0 and Kling 4.0 Flash, and reuse Elements through the China-region Kling MCP. |
 | `sabre-developer-hub` | [Sabre Developer Hub](third_party/sabre-developer-hub/) | Cursor | Integrations | Search and read Sabre Developer Hub documentation, OpenAPI specs, and Sabre-published agent skills for travel APIs, SDKs, and product collections. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 

@@ -1,0 +1,6 @@
+node_modules/
+.env
+.env.*
+outputs/
+assets/generated/
+.DS_Store
