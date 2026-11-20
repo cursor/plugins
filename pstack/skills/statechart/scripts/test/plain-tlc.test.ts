@@ -234,7 +234,9 @@ test(
           "---- MODULE Cycle ----",
           "EXTENDS Naturals",
           "VARIABLE x",
-          "Next == x' = (x + 1) % 100005",
+          "Grow == x' = (x + 1) % 100005",
+          "Absent == FALSE /\\ UNCHANGED x",
+          "Next == Grow \\/ Absent",
           "Spec == x = 0 /\\ [][Next]_x /\\ WF_x(Next)",
           "Early == x # 3",
           "Back == []<>(x = 0)",
@@ -247,6 +249,11 @@ test(
     assert.deepEqual(v.breaks, new Map([["Early", 3]]));
     assert.deepEqual(v.holds, []);
     assert.deepEqual(v.unchecked, ["Back", "NoDeadlock"]);
+    assert.match(v.report, /^Actions that made no step: Absent\.$/m);
+    assert.match(
+      v.report,
+      /^TLC did not explore every reachable state, so these actions may still happen beyond the explored states\.$/m,
+    );
     assert.match(
       v.report,
       /^After the first break, each TLC run stops at 100,000 distinct states\./m,

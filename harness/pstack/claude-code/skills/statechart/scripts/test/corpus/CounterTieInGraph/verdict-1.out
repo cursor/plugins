@@ -5,26 +5,26 @@ TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
 Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
 @!@!@ENDMSG 2401 @!@!@
 @!@!@STARTMSG 2187:0 @!@!@
-Running breadth-first search Model-Checking with fp 0 and seed 545950692941649856 with 1 worker on 8 cores with 23888MB heap and 64MB offheap memory [pid: 575417] (Linux 6.12.94+ amd64, Eclipse Adoptium 25.0.5 x86_64, MSBDiskFPSet, DiskStateQueue).
+Running breadth-first search Model-Checking with fp 0 and seed 8717006557838004566 with 1 worker on 8 cores with 8028MB heap and 64MB offheap memory [pid: 49548] (Linux 6.8.0-1060-aws amd64, Ubuntu 17.0.20.1 x86_64, MSBDiskFPSet, DiskStateQueue).
 @!@!@ENDMSG 2187 @!@!@
 @!@!@STARTMSG 2220:0 @!@!@
 Starting SANY...
 @!@!@ENDMSG 2220 @!@!@
-Parsing file /agent/repos/plugins/pstack/skills/statechart/scripts/test/corpus/CounterTieInGraph/CounterTieInGraph.tla
-Parsing file /tmp/statechart-3KuimN/statechart-CbtSSq/tmp-verdict-1/Naturals.tla
+Parsing file /home/ubuntu/repos/cursor-plugins/pstack/skills/statechart/scripts/test/corpus/CounterTieInGraph/CounterTieInGraph.tla
+Parsing file /tmp/statechart-7zXTWT/statechart-JMxKYL/tmp-verdict-1/Naturals.tla
 Semantic processing of module Naturals
 Semantic processing of module CounterTieInGraph
 @!@!@STARTMSG 2219:0 @!@!@
 SANY finished.
 @!@!@ENDMSG 2219 @!@!@
 @!@!@STARTMSG 2185:0 @!@!@
-Starting... (2026-10-26 21:45:52)
+Starting... (2026-11-20 13:42:51)
 @!@!@ENDMSG 2185 @!@!@
 @!@!@STARTMSG 2189:0 @!@!@
 Computing initial states...
 @!@!@ENDMSG 2189 @!@!@
 @!@!@STARTMSG 2190:0 @!@!@
-Finished computing initial states: 1 distinct state generated at 2026-10-26 21:45:52.
+Finished computing initial states: 1 distinct state generated at 2026-11-20 13:42:51.
 @!@!@ENDMSG 2190 @!@!@
 @!@!@STARTMSG 2110:1 @!@!@
 Invariant OneOrThree is violated.
@@ -42,8 +42,59 @@ x = 0
 x = 1
 
 @!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2201:0 @!@!@
+The coverage statistics at 2026-11-20 13:42:51
+@!@!@ENDMSG 2201 @!@!@
+@!@!@STARTMSG 2773:0 @!@!@
+<Init line 4, col 1 to line 4, col 4 of module CounterTieInGraph>: 1:1
+@!@!@ENDMSG 2773 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 4, col 9 to line 4, col 13 of module CounterTieInGraph: 1
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<Inc line 5, col 1 to line 5, col 3 of module CounterTieInGraph>: 1:2
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 5, col 8 to line 5, col 12 of module CounterTieInGraph: 1
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 5, col 8 to line 5, col 8 of module CounterTieInGraph: 2
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 5, col 17 to line 5, col 26 of module CounterTieInGraph: 1
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 5, col 22 to line 5, col 26 of module CounterTieInGraph: 2
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<Alpha line 6, col 1 to line 6, col 5 of module CounterTieInGraph>: 0:0
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 6, col 19 to line 6, col 24 of module CounterTieInGraph: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<Down line 7, col 1 to line 7, col 4 of module CounterTieInGraph>: 0:0
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 7, col 18 to line 7, col 27 of module CounterTieInGraph: 0
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<OneOrThree line 11, col 1 to line 11, col 10 of module CounterTieInGraph>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 11, col 15 to line 11, col 28 of module CounterTieInGraph: 2
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 11, col 15 to line 11, col 19 of module CounterTieInGraph: 2
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 11, col 24 to line 11, col 28 of module CounterTieInGraph: 1
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2202:0 @!@!@
+End of statistics.
+@!@!@ENDMSG 2202 @!@!@
 @!@!@STARTMSG 2200:0 @!@!@
-Progress(2) at 2026-10-26 21:45:52: 2 states generated (358 s/min), 2 distinct states found (358 ds/min), 0 states left on queue.
+Progress(2) at 2026-11-20 13:42:51: 2 states generated (378 s/min), 2 distinct states found (378 ds/min), 0 states left on queue.
 @!@!@ENDMSG 2200 @!@!@
 @!@!@STARTMSG 2199:0 @!@!@
 2 states generated, 2 distinct states found, 0 states left on queue.
@@ -52,5 +103,5 @@ Progress(2) at 2026-10-26 21:45:52: 2 states generated (358 s/min), 2 distinct s
 The depth of the complete state graph search is 2.
 @!@!@ENDMSG 2194 @!@!@
 @!@!@STARTMSG 2186:0 @!@!@
-Finished in 340ms at (2026-10-26 21:45:52)
+Finished in 321ms at (2026-11-20 13:42:51)
 @!@!@ENDMSG 2186 @!@!@

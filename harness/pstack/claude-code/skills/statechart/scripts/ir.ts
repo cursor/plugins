@@ -105,6 +105,7 @@ export const EC = {
   TLC_STATE_PRINT3: 2218,
   TLC_SANY_END: 2219,
   TLC_SANY_START: 2220,
+  TLC_COVERAGE_NEXT: 2772,
 } as const;
 
 export const LEVEL = { NONE: 0, ERROR: 1, TLCBUG: 2, WARNING: 3, STATE: 4 } as const;
@@ -132,6 +133,7 @@ export type CheckResult = {
   drawing: { status: number | null } | undefined;
   states: { distinct: number; initial: number; complete: boolean; cut: boolean };
   messages: Iterable<Part>;
+  actions: { unseen: string[]; complete: boolean };
 };
 
 export const RERUN_STATES = 100_000;

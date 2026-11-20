@@ -24,6 +24,7 @@ The first run installs TLC and Java with mise and needs the network.
 
 - Write each rule that the reader agrees to as an INVARIANT. A rule can be about a screen, a result, a stored value, or a message. If the model has no variable for a rule, add the variable. Never weaken a rule to make it hold.
 - Write `Next` as a disjunction of the actions, such as `YouPressPlay \/ YouPressStop`. If you do not, TLC names every step `Next`.
+- The report lists actions that made no step using TLC's verdict-run coverage. Parameter instances are grouped by action declaration; an action under an empty `\E` domain is never instantiated and is not listed. TLC counts generated successors before applying constraints. If no coverage run explored every reachable state, the report notes that the listed actions may still happen beyond the explored states. This information does not change rule outcomes or the exit code.
 - A state with no step out breaks `NoDeadlock`, also when it is a correct end state. When an INVARIANT or a PROPERTY already has that name, the rule is `CHECK_DEADLOCK`. Add to `Next` an action that is true only in the end states and changes nothing, such as `Done == phase \in {"paid", "failed"} /\ UNCHANGED vars`, and give it a label in `step()`.
 
 ## Pick the chart

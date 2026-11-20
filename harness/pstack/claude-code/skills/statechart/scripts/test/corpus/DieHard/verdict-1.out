@@ -5,26 +5,26 @@ TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
 Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
 @!@!@ENDMSG 2401 @!@!@
 @!@!@STARTMSG 2187:0 @!@!@
-Running breadth-first search Model-Checking with fp 0 and seed 2887941706987132567 with 1 worker on 8 cores with 23888MB heap and 64MB offheap memory [pid: 576086] (Linux 6.12.94+ amd64, Eclipse Adoptium 25.0.5 x86_64, MSBDiskFPSet, DiskStateQueue).
+Running breadth-first search Model-Checking with fp 0 and seed 337226140889270515 with 1 worker on 8 cores with 8028MB heap and 64MB offheap memory [pid: 49961] (Linux 6.8.0-1060-aws amd64, Ubuntu 17.0.20.1 x86_64, MSBDiskFPSet, DiskStateQueue).
 @!@!@ENDMSG 2187 @!@!@
 @!@!@STARTMSG 2220:0 @!@!@
 Starting SANY...
 @!@!@ENDMSG 2220 @!@!@
-Parsing file /agent/repos/plugins/pstack/skills/statechart/scripts/test/corpus/DieHard/DieHard.tla
-Parsing file /tmp/statechart-bks8OV/statechart-9Ptgia/tmp-verdict-1/Naturals.tla
+Parsing file /home/ubuntu/repos/cursor-plugins/pstack/skills/statechart/scripts/test/corpus/DieHard/DieHard.tla
+Parsing file /tmp/statechart-Pc8V79/statechart-1piSYE/tmp-verdict-1/Naturals.tla
 Semantic processing of module Naturals
 Semantic processing of module DieHard
 @!@!@STARTMSG 2219:0 @!@!@
 SANY finished.
 @!@!@ENDMSG 2219 @!@!@
 @!@!@STARTMSG 2185:0 @!@!@
-Starting... (2026-10-26 21:45:59)
+Starting... (2026-11-20 13:42:58)
 @!@!@ENDMSG 2185 @!@!@
 @!@!@STARTMSG 2189:0 @!@!@
 Computing initial states...
 @!@!@ENDMSG 2189 @!@!@
 @!@!@STARTMSG 2190:0 @!@!@
-Finished computing initial states: 1 distinct state generated at 2026-10-26 21:45:59.
+Finished computing initial states: 1 distinct state generated at 2026-11-20 13:42:58.
 @!@!@ENDMSG 2190 @!@!@
 @!@!@STARTMSG 2110:1 @!@!@
 Invariant NotSolved is violated.
@@ -74,8 +74,113 @@ The behavior up to this point is:
 /\ small = 3
 
 @!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2201:0 @!@!@
+The coverage statistics at 2026-11-20 13:42:59
+@!@!@ENDMSG 2201 @!@!@
+@!@!@STARTMSG 2773:0 @!@!@
+<Init line 13, col 1 to line 13, col 4 of module DieHard>: 2:2
+@!@!@ENDMSG 2773 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 13, col 9 to line 13, col 28 of module DieHard: 2
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<FillSmall line 15, col 1 to line 15, col 9 of module DieHard>: 2:18
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 15, col 14 to line 15, col 37 of module DieHard: 18
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<FillBig line 16, col 1 to line 16, col 7 of module DieHard>: 3:18
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 16, col 12 to line 16, col 37 of module DieHard: 18
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<EmptySmall line 17, col 1 to line 17, col 10 of module DieHard>: 1:16
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 17, col 15 to line 17, col 38 of module DieHard: 16
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<EmptyBig line 18, col 1 to line 18, col 8 of module DieHard>: 1:15
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 18, col 13 to line 18, col 38 of module DieHard: 15
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<SmallToBig line 20, col 1 to line 20, col 10 of module DieHard>: 3:15
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 21, col 6 to line 21, col 31 of module DieHard: 15
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 21, col 13 to line 21, col 31 of module DieHard: 15
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 9, col 14 to line 9, col 35 of module DieHard: 15
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 9, col 17 to line 9, col 21 of module DieHard: 15
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 9, col 28 to line 9, col 28 of module DieHard: 7
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 9, col 35 to line 9, col 35 of module DieHard: 8
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 21, col 17 to line 21, col 27 of module DieHard: 15
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 22, col 6 to line 22, col 34 of module DieHard: 15
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<BigToSmall line 24, col 1 to line 24, col 10 of module DieHard>: 3:15
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 25, col 6 to line 25, col 33 of module DieHard: 14
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 25, col 15 to line 25, col 33 of module DieHard: 15
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 9, col 14 to line 9, col 35 of module DieHard: 15
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 9, col 17 to line 9, col 21 of module DieHard: 15
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 9, col 28 to line 9, col 28 of module DieHard: 5
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |||line 9, col 35 to line 9, col 35 of module DieHard: 10
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  ||line 25, col 19 to line 25, col 29 of module DieHard: 15
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 26, col 6 to line 26, col 34 of module DieHard: 14
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 26, col 13 to line 26, col 34 of module DieHard: 15
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<TypeOK line 11, col 1 to line 11, col 6 of module DieHard>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 11, col 11 to line 11, col 40 of module DieHard: 14
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<NotSolved line 37, col 1 to line 37, col 9 of module DieHard>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 37, col 14 to line 37, col 20 of module DieHard: 14
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2202:0 @!@!@
+End of statistics.
+@!@!@ENDMSG 2202 @!@!@
 @!@!@STARTMSG 2200:0 @!@!@
-Progress(7) at 2026-10-26 21:45:59: 73 states generated (13,113 s/min), 14 distinct states found (2,514 ds/min), 1 states left on queue.
+Progress(7) at 2026-11-20 13:42:59: 73 states generated (13,232 s/min), 14 distinct states found (2,537 ds/min), 1 states left on queue.
 @!@!@ENDMSG 2200 @!@!@
 @!@!@STARTMSG 2199:0 @!@!@
 73 states generated, 14 distinct states found, 1 states left on queue.
@@ -87,5 +192,5 @@ The depth of the complete state graph search is 7.
 The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 2 and the 95th percentile is 2).
 @!@!@ENDMSG 2268 @!@!@
 @!@!@STARTMSG 2186:0 @!@!@
-Finished in 338ms at (2026-10-26 21:45:59)
+Finished in 335ms at (2026-11-20 13:42:59)
 @!@!@ENDMSG 2186 @!@!@

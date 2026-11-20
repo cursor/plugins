@@ -108,6 +108,7 @@ function draw(graph: Graph, view: View, loops: Bug[] = []) {
     stop: undefined,
     drawing: undefined,
     states: { distinct: graph.states.size, initial: 1, complete: true, cut: false },
+    actions: { unseen: [], complete: true },
   };
   return { chart: mermaid(chart), report: report(result, found, chart, stories) };
 }
@@ -312,6 +313,7 @@ test("a chart of only the bug paths words each one with the view, asked once for
       stop: undefined,
       drawing: undefined,
       states: { distinct: 1234, initial: 1, complete: true, cut: false },
+      actions: { unseen: [], complete: true },
       messages: [],
     },
     checkView(view, inspect),
