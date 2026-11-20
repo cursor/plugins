@@ -688,9 +688,13 @@ export function orderStack(
   if (start === undefined) return [context];
   const down: T.OpenPullRequest[] = [];
   let current = start;
+  // Guard against a base/head cycle (e.g. two PRs opened in opposite directions between the same
+  // two branches): without this the loop grows `down` without bound and crashes / hangs.
+  const downSeen = new Set<T.PrNumber>([start.number]);
   while (byHead.has(current.baseRefName)) {
     const parent = byHead.get(current.baseRefName);
-    if (parent === undefined) break;
+    if (parent === undefined || downSeen.has(parent.number)) break;
+    downSeen.add(parent.number);
     down.push(parent);
     current = parent;
   }

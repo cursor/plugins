@@ -469,6 +469,23 @@ describe("context and stack discovery", () => {
     expect(JSON.parse(child.stdout).map((item: { number: number }) => item.number)).toEqual([42]);
   });
 
+  it("terminates on a base/head cycle between two PRs", () => {
+    // Two PRs opened in opposite directions between branches `a` and `b` form a cycle; the
+    // down-traversal must not loop forever. Bound the subprocess so a regression fails, not hangs.
+    const program = `import { orderStack } from ${JSON.stringify(import.meta.dir + "/github.ts")};
+      const out = orderStack(${JSON.stringify({ ...context, number: 1 })}, [
+        { number: 1, headRefName: "a", baseRefName: "b", isCrossRepository: false },
+        { number: 2, headRefName: "b", baseRefName: "a", isCrossRepository: false }
+      ]);
+      console.log(JSON.stringify(out.map((item) => Number(item.number))));`;
+    const child = spawnSync(process.execPath, ["-e", program], { encoding: "utf8", timeout: 2000 });
+    expect(child.error).toBeUndefined();
+    expect(child.status).toBe(0);
+    const order = JSON.parse(child.stdout);
+    expect(order).toContain(1);
+    expect(new Set(order).size).toBe(order.length);
+  });
+
   it("requests and parses fork identity from gh before stack discovery", () => {
     const directory = mkdtempSync(join(tmpdir(), "watch-pr-fork-"));
     try {
