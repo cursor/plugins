@@ -4,8 +4,6 @@
       "type": "http",
       "url": "https://mcp.frontapp.com/mcp",
       "auth": {
-        "CLIENT_ID": "${CLIENT_ID}",
-        "CLIENT_SECRET": "${CLIENT_SECRET}",
         "scopes": ["feature:mcp"]
       }
     }
