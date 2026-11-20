@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "hospitable": {
+      "type": "http",
+      "url": "https://mcp.hospitable.com/mcp"
+    }
+  }
+}

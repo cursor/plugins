@@ -1,7 +1,7 @@
 {
   "name": "front",
   "displayName": "Front",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Search conversations, draft and send replies, and manage tags, tasks, and inboxes.",
   "author": {
     "name": "Cursor",
@@ -27,24 +27,5 @@
     "email",
     "productivity"
   ],
-  "variables": {
-    "type": "object",
-    "properties": {
-      "CLIENT_ID": {
-        "type": "string",
-        "title": "Front Client ID",
-        "description": "Client ID of a Front developer app with the Front MCP feature, from Front Settings → Company → Developer."
-      },
-      "CLIENT_SECRET": {
-        "type": "string",
-        "title": "Front Client Secret",
-        "description": "Client Secret of the same Front developer app."
-      }
-    },
-    "required": [
-      "CLIENT_ID",
-      "CLIENT_SECRET"
-    ]
-  },
   "mcpServers": "./mcp.json"
 }
