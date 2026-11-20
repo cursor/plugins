@@ -52,16 +52,27 @@ export function renderStatusTable(rows: T.NonEmpty<T.PrSnapshot>): string {
   }
   return `${lines.join("\n")}\n`;
 }
+function sanitizeText(value: string): string {
+  return value
+    .replace(/\x1b\[[0-9;]*[a-zA-Z]/g, "")
+    .replace(/[\x00-\x1f\x7f-\x9f]/g, "");
+}
 function threadLine(thread: T.ReviewThread): string {
   const comment = thread.firstComment;
+  const path = comment?.path ? sanitizeText(comment.path) : "None";
+  const authorLogin = comment?.authorLogin
+    ? sanitizeText(comment.authorLogin)
+    : "None";
+  const bodyLine = (comment?.body ?? "").split(/\r?\n/, 1)[0] ?? "";
+  const sanitizedBody = sanitizeText(bodyLine).slice(0, 180);
   return [
     thread.id,
-    comment?.path ?? "None",
+    path,
     comment?.line ?? "None",
-    comment?.authorLogin ?? "None",
+    authorLogin,
     `isBugBot=${thread.isBugbot}`,
     `bugbotReviewPasses=${thread.bugbotReviewPasses}`,
-    (comment?.body ?? "").split(/\r?\n/, 1)[0]?.slice(0, 180) ?? "",
+    sanitizedBody,
   ].join(" ");
 }
 type StatusQueryBlocker = {

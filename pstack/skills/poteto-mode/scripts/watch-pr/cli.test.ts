@@ -151,6 +151,45 @@ describe("rendering", () => {
       "| [#1](https://github.com/owner/repo/pull/1) | \u2014 | \u2014 | ✅ merged |"
     );
   });
+
+  it("sanitizes review thread paths, authors, and comment bodies in blocker output", () => {
+    const blockerVerdict = {
+      schemaVersion: 1,
+      sequence: 1,
+      observedAt: "2026-07-26T00:00:00.000Z",
+      mode: "single",
+      kind: "BLOCKER",
+      terminal: true,
+      exitCode: 3,
+      blocker: {
+        kind: "review-threads",
+        pr: context,
+        threads: [
+          {
+            id: "thread_1",
+            isBugbot: false,
+            bugbotReviewPasses: 0,
+            firstComment: {
+              authorLogin: "evil\x1b[2K\ruser",
+              body: "\x1b[31mDangerous\x1b[0m\r\nSecond line",
+              createdAt: "2026-07-26T00:00:00.000Z",
+              path: "src/\x1b[31minvalid\x1b[0m\x00path.ts",
+              line: 12,
+            },
+          },
+        ],
+      },
+    } satisfies WatcherVerdict;
+
+    const rendered = renderPretty(blockerVerdict);
+    expect(rendered).toContain("BLOCKER: review-threads");
+    expect(rendered).toContain(
+      "thread_1 src/invalidpath.ts 12 eviluser isBugBot=false bugbotReviewPasses=0 Dangerous"
+    );
+    expect(rendered).not.toContain("\x1b");
+    expect(rendered).not.toContain("\r");
+    expect(rendered).not.toContain("Second line");
+  });
 });
 
 describe("main", () => {
