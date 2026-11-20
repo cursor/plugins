@@ -1,7 +1,7 @@
 {
   "name": "pstack",
   "displayName": "pstack (Poteto Stack)",
-  "version": "0.15.43",
+  "version": "0.15.46",
   "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence.",
   "logo": "assets/logo.png",
   "suggestedPrompts": [

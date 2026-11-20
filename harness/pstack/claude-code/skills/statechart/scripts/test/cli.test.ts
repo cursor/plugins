@@ -102,6 +102,35 @@ for (const name of fs.readdirSync(corpus)) {
   });
 }
 
+function asTlcPrintsOnWindows(text: string) {
+  const lines = text.split("\n");
+  let depth = 0;
+  for (let i = 0; i < lines.length - 1; i++) {
+    if (/@!@!@STARTMSG \d+:\d+ @!@!@$/.test(lines[i])) depth++;
+    else if (/^@!@!@ENDMSG \d+ @!@!@$/.test(lines[i])) depth--;
+    if (!depth) lines[i] += "\r";
+  }
+  return lines.join("\n");
+}
+
+for (const name of fs.readdirSync(corpus)) {
+  test(`${name} writes the committed chart and report from TLC's output with Windows line ends`, () => {
+    const dir = copyCase(name, (d) => {
+      for (const f of fs.readdirSync(d))
+        if (f.endsWith(".out"))
+          fs.writeFileSync(path.join(d, f), asTlcPrintsOnWindows(read(path.join(d, f))));
+    });
+    const r = run(dir);
+    assert.equal(r.stderr, "");
+    const first = path.join(dir, "verdict-1.exit");
+    const plain = fs.existsSync(first) ? Number(read(first)) : 0;
+    assert.equal(r.status, plain === 0 ? 0 : [11, 12, 13].includes(plain) ? 1 : 2);
+    assert.equal(r.report, read(path.join(corpus, name, "report.md")));
+    assert.equal(read(path.join(r.out, "chart.mmd")), read(path.join(corpus, name, "chart.mmd")));
+    for (const f of r.files) assert.doesNotMatch(read(path.join(r.out, f)), /\r|@!@!@/, f);
+  });
+}
+
 const launcher = path.join(here, "../statechart");
 
 const launcherTools = () => {

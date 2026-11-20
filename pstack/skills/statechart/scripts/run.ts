@@ -8,7 +8,7 @@ import { inspect } from "node:util";
 import { boundRun, chartRun, configText } from "./backends/cfg.ts";
 import { plainText } from "./backends/plain-text.ts";
 import { readConfig } from "./frontends/config.ts";
-import { parseDot } from "./frontends/dot.ts";
+import { parseDot, splitLines } from "./frontends/dot.ts";
 import { readCounterexample, readMarks } from "./frontends/marks.ts";
 import { readMessages } from "./frontends/messages.ts";
 import { initialOnlyProperties, readChecks, readSany, readSpec } from "./frontends/spec.ts";
@@ -55,10 +55,10 @@ export function* fileLines(file: string) {
         kept = end;
         continue;
       }
-      yield* buf.toString("utf8", 0, cut).split("\n");
+      yield* splitLines(buf.toString("utf8", 0, cut));
       kept = buf.copy(buf, 0, cut + 1, end);
     }
-    yield buf.toString("utf8", 0, kept);
+    yield* splitLines(buf.toString("utf8", 0, kept));
   } finally {
     fs.closeSync(fd);
   }
@@ -82,7 +82,7 @@ const runChild = (file: string, args: string[], options: { cwd: string; env: Nod
     execFile(
       file,
       args,
-      { encoding: "utf8", maxBuffer: 1 << 30, ...options },
+      { encoding: "utf8", maxBuffer: 1 << 30, windowsHide: true, ...options },
       (error, stdout, stderr) =>
         resolve({
           status: error ? (typeof error.code === "number" ? error.code : null) : 0,
@@ -92,14 +92,6 @@ const runChild = (file: string, args: string[], options: { cwd: string; env: Nod
         }),
     );
   });
-
-export const killGroup = (pid: number) =>
-  new Promise((resolve) =>
-    spawn("/bin/sh", ["-c", 'kill -s KILL -- "-$1"', "sh", String(pid)], { stdio: "ignore" }).on(
-      "exit",
-      resolve,
-    ),
-  );
 
 export const messageOf = (error: unknown) =>
   typeof error === "object" &&
@@ -142,10 +134,10 @@ function* outputLines(output: Output) {
       rest = buf;
       continue;
     }
-    yield* utf8.decode(buf.subarray(0, cut)).split("\n");
+    yield* splitLines(utf8.decode(buf.subarray(0, cut)));
     rest = buf.subarray(cut + 1);
   }
-  yield utf8.decode(rest);
+  yield* splitLines(utf8.decode(rest));
 }
 
 const messagesOf = (output: Output): Iterable<Part> => ({
@@ -170,7 +162,7 @@ const runToFiles = (
     for (const f of files) fds.push(fs.openSync(f, "w"));
     let child: ChildProcess;
     try {
-      child = spawn(file, args, { ...options, stdio: ["ignore", ...fds] });
+      child = spawn(file, args, { ...options, stdio: ["ignore", ...fds], windowsHide: true });
     } finally {
       for (const fd of fds) fs.closeSync(fd);
     }
@@ -298,6 +290,8 @@ export async function check(specFile: string, configFile: string): Promise<Check
         [
           `-Djava.io.tmpdir=${tmp}`,
           `-DTLA-Library=${folder}`,
+          "-Dstdout.encoding=UTF-8",
+          "-Dstderr.encoding=UTF-8",
           ...jvm,
           "-cp",
           tlc.jar,
