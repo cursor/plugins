@@ -2,10 +2,7 @@
   "mcpServers": {
     "front": {
       "type": "http",
-      "url": "https://mcp.frontapp.com/mcp",
-      "auth": {
-        "scopes": ["feature:mcp"]
-      }
+      "url": "https://mcp.frontapp.com/mcp"
     }
   }
 }
