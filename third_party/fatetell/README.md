@@ -67,7 +67,7 @@ Birth data sent for chart casting and the almanac is not stored; results stay in
 ## Docs
 
 - Documentation: https://fatetell.com/mcp/docs
-- Source of the plugin files: https://github.com/RussGuo/fatetell-mcp
+- Source of the plugin files: https://github.com/RussGuo/fatetell-bazi-mcp
 - Support: contact@fatetell.com
 
 ## License

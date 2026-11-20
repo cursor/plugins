@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 0.1.2
+
+- Version aligned with the FateTell MCP 0.1.2 release. The source repository is now `RussGuo/fatetell-bazi-mcp` (renamed; the old address redirects). The MCP server entry, the skill and the logo are unchanged.
+
 ## 0.1.1
 
 - Version aligned with the FateTell MCP 0.1.1 release. The MCP server entry, the skill and the logo are unchanged.

@@ -789,6 +789,31 @@
       "description": "Query financial reports and manage customers, invoices, bills, contracts, and vendors in Rillet."
     },
     {
+      "name": "item",
+      "source": "third_party/item",
+      "description": "Search, create, and update CRM contacts, companies, and custom objects, run saved views, manage lists, notes, and tasks, and ask the Item assistant about your customer data."
+    },
+    {
+      "name": "hq",
+      "source": "third_party/hq",
+      "description": "Read and capture company knowledge, projects, policies, files, and skills, message teammates and bots, and call governed integrations in HQ by Indigo."
+    },
+    {
+      "name": "createos",
+      "source": "third_party/createos",
+      "description": "Deploy and manage projects, environments, deployments, domains, logs, cron jobs, security scans, templates, and sandboxes on NodeOps CreateOS."
+    },
+    {
+      "name": "fiscal-ai",
+      "source": "third_party/fiscal-ai",
+      "description": "Pull source-linked financials, filings, ratios, prices, segments, KPIs, ownership, fund letters, and news from Fiscal.ai."
+    },
+    {
+      "name": "lmty",
+      "source": "third_party/lmty",
+      "description": "Read tracked competitors, competitive intelligence reports, change logs, evidence, social mentions, and market feeds for your products, and browse LMTY's public Markets, event timelines, and company, product, and person profiles."
+    },
+    {
       "name": "fatetell",
       "source": "third_party/fatetell",
       "description": "Chinese astrology computed by FateTell's own BaZi engine: cast a BaZi (八字, Four Pillars) chart from any birth date, open the charts saved in your FateTell account, and check today's fortune and the Chinese almanac. Connecting signs you in to a FateTell account."
