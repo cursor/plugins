@@ -18,16 +18,13 @@ Or run `/add-plugin front` in chat.
   "mcpServers": {
     "front": {
       "type": "http",
-      "url": "https://mcp.frontapp.com/mcp",
-      "auth": {
-        "scopes": ["feature:mcp"]
-      }
+      "url": "https://mcp.frontapp.com/mcp"
     }
   }
 }
 ```
 
-The connection requests Front's `feature:mcp` scope, the value Front documents for clients that need one. Each user signs in with their own Front account, and tool calls run with that teammate's Front permissions.
+Cursor supplies the Front OAuth client and requests the scope Front needs. Each user signs in with their own Front account, and tool calls run with that teammate's Front permissions.
 
 ## Setup
 

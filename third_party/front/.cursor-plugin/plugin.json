@@ -1,7 +1,7 @@
 {
   "name": "front",
   "displayName": "Front",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Search conversations, draft and send replies, and manage tags, tasks, and inboxes.",
   "author": {
     "name": "Cursor",
