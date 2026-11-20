@@ -3,16 +3,6 @@ name: Validate plugins
 on:
   pull_request:
     branches: [main]
-    paths:
-      - ".cursor-plugin/marketplace.json"
-      - ".claude-plugin/marketplace.json"
-      - ".agents/plugins/marketplace.json"
-      - "**/plugin.json"
-      - "schemas/**"
-      - "pstack/**"
-      - "harness/**"
-      - "scripts/**"
-      - ".github/workflows/validate-plugins.yml"
 
 jobs:
   validate:
@@ -32,6 +22,9 @@ jobs:
 
       - name: Check generated pstack harness trees
         run: node scripts/generate-pstack-harness-trees.mjs --check
+
+      - name: Verify shared skill parity and reviewed agent mappings
+        run: python3 scripts/check-pstack-parity.py
 
       - name: Test pstack skill scripts
         run: node --disable-warning=ExperimentalWarning --test pstack/skills/*/scripts/test/*.test.ts

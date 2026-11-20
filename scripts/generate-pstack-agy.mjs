@@ -59,7 +59,7 @@ const GUIDE = "docs/guide";
 
 export function walk(dir) {
   return readdirSync(dir).flatMap((name) => {
-    if (name === ".DS_Store" || name === "node_modules") return [];
+    if (name === ".DS_Store" || name === "node_modules" || name === "__pycache__") return [];
     const path = join(dir, name);
     return statSync(path).isDirectory() ? walk(path) : [path];
   });
