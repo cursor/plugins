@@ -48,6 +48,7 @@ export function report(
     stop,
     drawing,
     states,
+    warnings,
   }: {
     spec: Spec;
     graph: Graph;
@@ -57,6 +58,7 @@ export function report(
     stop: Stop | undefined;
     drawing: { status: number | null } | undefined;
     states: { distinct: number; initial: number; complete: boolean; cut: boolean };
+    warnings: string[];
   },
   found: Bug[],
   chart: Chart | undefined,
@@ -153,6 +155,13 @@ export function report(
         `TLC found a counterexample. It is in tlc-${rule.name}.out.`,
       );
   }
+  if (warnings.length)
+    out.push(
+      "",
+      "## TLC warnings",
+      `TLC printed ${warnings.length === 1 ? "this warning" : "these warnings"} while it checked the rules. A rule can hold only because of the problem that ${warnings.length === 1 ? "the" : "a"} warning names.`,
+      ...warnings.map(fenced),
+    );
   if (holds.length) out.push("", "## Rules that hold", holds.join(", "));
   if (unchecked.length) out.push("", "## Rules not checked", unchecked.join(", "));
   if (unchecked.length && states.cut)

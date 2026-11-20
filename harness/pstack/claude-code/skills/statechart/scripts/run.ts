@@ -340,6 +340,7 @@ export async function check(specFile: string, configFile: string): Promise<Check
       let first: FileResult | undefined;
       let stop: Stop | undefined;
       const states = { distinct: 0, initial: 0, complete: false, cut: false };
+      const warnings = new Set<string>();
       for (let k = 1; groups.length;) {
         const group: Rule[] = [];
         for (const rule of groups[0]) if (!verdicts.has(ruleKey(rule))) group.push(rule);
@@ -363,7 +364,9 @@ export async function check(specFile: string, configFile: string): Promise<Check
           bounded ? "ChartBound" : spec.module,
         ]);
         first ??= r;
-        const { broke, distinct, initial } = readVerdict(messagesOf(r.output));
+        const verdict = readVerdict(messagesOf(r.output), bounded);
+        const { broke, distinct, initial } = verdict;
+        for (const w of verdict.warnings) warnings.add(w);
         states.distinct = Math.max(states.distinct, distinct);
         states.initial = Math.max(states.initial, initial);
         const rule = broke && brokenRule(group, broke);
@@ -396,7 +399,7 @@ export async function check(specFile: string, configFile: string): Promise<Check
           );
       }
       for (const rule of all) if (!verdicts.has(ruleKey(rule))) decide(rule, "not checked");
-      return { first: first!, stop, states };
+      return { first: first!, stop, states, warnings: [...warnings] };
     };
     fs.writeFileSync(path.join(dir, "ChartBound.tla"), boundRun(spec.module));
     const judged = await judge();
@@ -426,6 +429,7 @@ export async function check(specFile: string, configFile: string): Promise<Check
       stop: judged.stop,
       states: judged.states,
       messages: messagesOf(judged.first.output),
+      warnings: judged.warnings,
       rules: checked,
     };
     if (judged.states.distinct <= CHART_STATES) {
