@@ -78,7 +78,6 @@ function renderClaude() {
 
 function renderCodex() {
   const files = packageFiles(CODEX_ADAPTER, ["docs/harness/run-external-agent.mjs"]);
-  files.set("skills/setup-pstack/SKILL.md", file(join(PSTACK, "docs/harness/codex/setup-pstack.md")));
   const line =
     `For Codex, read [the Codex adapter](../../${CODEX_ADAPTER}) before following this skill. ` +
     "Its host mappings also apply to linked playbooks.";

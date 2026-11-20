@@ -69,6 +69,7 @@ function parseLines(text) {
 
 function runHarnessScripts(repoRoot, opts) {
   run("node", ["scripts/generate-pstack-harness-trees.mjs", "--check"], repoRoot, { inherit: true });
+  run("python3", ["scripts/check-pstack-parity.py"], repoRoot, { inherit: true });
   run("node", ["scripts/check-pstack-docs.mjs"], repoRoot, { inherit: true });
   if (opts.install) {
     const agyArgs = ["scripts/generate-pstack-agy.mjs", "--install"];
@@ -163,7 +164,7 @@ function syncRepo(repoRoot, opts) {
 function seedMinimalRepo(targetDir) {
   cpSync(join(ROOT, "pstack"), join(targetDir, "pstack"), { recursive: true });
   cpSync(join(ROOT, "cursor-team-kit", "skills"), join(targetDir, "cursor-team-kit", "skills"), { recursive: true });
-  for (const name of ["generate-pstack-agy.mjs", "generate-pstack-harness-trees.mjs", "check-pstack-docs.mjs", "sync-upstream.mjs"]) {
+  for (const name of ["generate-pstack-agy.mjs", "generate-pstack-harness-trees.mjs", "check-pstack-docs.mjs", "check-pstack-parity.py", "sync-upstream.mjs"]) {
     const dst = join(targetDir, "scripts", name);
     mkdirSync(dirname(dst), { recursive: true });
     cpSync(join(ROOT, "scripts", name), dst);
