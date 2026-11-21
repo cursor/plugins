@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "zerodha-kite": {
+      "type": "http",
+      "url": "https://mcp.kite.trade/mcp"
+    }
+  }
+}
