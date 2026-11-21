@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: npm install --no-save ajv ajv-formats fast-check@4.5.3
 
+      - name: Test plugin validation
+        run: node --test scripts/validate-plugins.test.mjs
+
       - name: Validate plugin definitions
         run: node scripts/validate-plugins.mjs
 
