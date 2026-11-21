@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "face": {
+      "type": "http",
+      "url": "https://face.mcp.acedata.cloud/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ACEDATACLOUD_API_TOKEN}"
+      }
+    }
+  }
+}
