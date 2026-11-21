@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "fish": {
+      "type": "http",
+      "url": "https://fish.mcp.acedata.cloud/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ACEDATACLOUD_API_TOKEN}"
+      }
+    }
+  }
+}
