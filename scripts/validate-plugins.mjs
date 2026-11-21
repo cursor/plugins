@@ -49,7 +49,13 @@ if (!validateMarketplace(marketplace)) {
 }
 
 // 2. Validate each plugin
+const pluginNames = new Set();
 for (const entry of marketplace.plugins ?? []) {
+  if (pluginNames.has(entry.name)) {
+    fail(`.cursor-plugin/marketplace.json: duplicate plugin name "${entry.name}"`);
+  }
+  pluginNames.add(entry.name);
+
   const pluginDir = resolve(root, entry.source);
   const pluginJsonPath = resolve(pluginDir, ".cursor-plugin/plugin.json");
 
