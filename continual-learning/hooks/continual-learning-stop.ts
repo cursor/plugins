@@ -3,6 +3,7 @@
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { stdin } from "bun";
+import { isWorkspaceExcluded } from "./workspace-exclusions";
 
 const STATE_PATH = resolve(".cursor/hooks/state/continual-learning.json");
 const INCREMENTAL_INDEX_PATH = resolve(
@@ -146,6 +147,10 @@ async function parseHookInput<T>(): Promise<T> {
 async function main(): Promise<number> {
   try {
     const input = await parseHookInput<StopHookInput>();
+    if (isWorkspaceExcluded()) {
+      console.log(JSON.stringify({}));
+      return 0;
+    }
     const state = loadState();
 
     if (input.generation_id && input.generation_id === state.lastProcessedGenerationId) {

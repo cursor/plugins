@@ -14,6 +14,17 @@ Use from `continual-learning` when transcript deltas may produce durable memory 
 
 ## Workflow
 
+Before reading transcripts or writing any files, run the absolute workspace-exclusion
+helper path supplied by `continual-learning` with `bun run`, quoting the path and
+using the supplied workspace directory as the working directory. Do not rely on
+`CURSOR_PLUGIN_ROOT` being available in the shell. Continue only if the command
+succeeds and returns `{"excluded":false}`. If it reports an exclusion, fails, or
+returns an unexpected result, stop without updating memory or the incremental index.
+
+If the helper path or workspace directory is missing, stop and ask the caller to
+invoke the `continual-learning` skill, which resolves the installed helper path.
+Use that skill for manually requested updates too.
+
 1. Read existing `AGENTS.md` first. If it does not exist, create it with only:
    - `## Learned User Preferences`
    - `## Learned Workspace Facts`
