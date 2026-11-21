@@ -54,7 +54,7 @@ After the user submits the secret, you do not see the value. The value is in tha
 
 Store `{url, key}` in that UI's own directory. Buttons POST to this local server. The local server, not the browser, POSTs to the Grok Bot webhook.
 
-Bind the server to `0.0.0.0:<port>`, not `127.0.0.1`. Tailscale peers cannot reach a localhost-only bind.
+Bind the server to `127.0.0.1:<app-port>`. `tailscale serve` (below) publishes it to the tailnet over HTTPS. Do not bind to `0.0.0.0`, because that exposes plain HTTP on every interface, including a public IP if the host has one.
 
 The server POSTs to the webhook URL with:
 
@@ -76,12 +76,19 @@ If a POST can fail, append the same JSON to a local log. Drain that log from the
 
 Agents on this computer share one Tailscale node. Do not create a second hostname on a node that is already online.
 
-If `tailscale status` shows an online node, skip install. Read the hostname from `tailscale status`. Read the IPv4 address from `tailscale ip -4`. Give the user both URLs:
+If `tailscale status` shows an online node, skip install. Read the hostname from `tailscale status`.
 
-- `http://<hostname>.<tailnet>.ts.net:<port>`
-- `http://<100.x.x.x>:<port>`
+Serve the page over HTTPS. Browsers such as Edge and Chrome upgrade typed links to `https://`, and a plain-HTTP port then fails with `ERR_SSL_PROTOCOL_ERROR`. Publish the localhost app with a real Let's Encrypt certificate, reachable on the tailnet only:
 
-Use HTTP. Do not add HTTPS unless the user asks.
+```
+sudo tailscale serve --bg --https=<port> http://127.0.0.1:<app-port>
+```
+
+Never use `tailscale funnel` for a bot UI, because funnel makes it public. Check `tailscale serve status` first, and pick a port that no other entry uses. The serve config is saved in tailscaled's state, so it survives restarts.
+
+Give the user one URL: `https://<hostname>.<tailnet>.ts.net:<port>`. The 100.x IP does not match the certificate, so do not hand it out.
+
+If `tailscale serve` says HTTPS is not enabled, the tailnet admin turns on MagicDNS and HTTPS Certificates in the Tailscale admin console's DNS page. Tell the user that. Do not fall back to plain HTTP without telling them.
 
 If Tailscale is not installed, install it:
 
@@ -98,7 +105,7 @@ sudo tailscale up --hostname=<short-name> --accept-dns=false --ssh=false
 The command prints a login URL. Send that URL to the user. The user approves the machine in the browser. Do not ask for Tailscale credentials. Do not type them.
 
 After the node is online, confirm with `tailscale status` and `tailscale ip -4`.
-Probe `http://<100.x.x.x>:<port>/` and expect HTTP 200.
+Probe `https://<hostname>.<tailnet>.ts.net:<port>/` from another tailnet peer, or with `curl --resolve <hostname>.<tailnet>.ts.net:<port>:<100.x.x.x>`. Expect HTTP 200 with a valid certificate, so do not pass `-k`.
 
 If the login URL expires, run `tailscale up` again and send the new URL.
 
