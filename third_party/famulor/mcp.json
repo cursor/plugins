@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "famulor": {
+      "type": "http",
+      "url": "https://app.famulor.io/mcp",
+      "headers": {
+        "Authorization": "Bearer ${FAMULOR_API_KEY}"
+      }
+    }
+  }
+}
