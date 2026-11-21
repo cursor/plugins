@@ -20,9 +20,10 @@ if [[ ! -f "$STATE_FILE" ]]; then
   exit 0
 fi
 
-# Extract completion promise from state file frontmatter
+# Extract completion promise from state file frontmatter. A missing key is an
+# empty value, not a hook failure (see stop-hook.sh).
 FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
-COMPLETION_PROMISE=$(echo "$FRONTMATTER" | grep '^completion_promise:' | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
+COMPLETION_PROMISE=$(echo "$FRONTMATTER" | { grep '^completion_promise:' || true; } | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
 
 # No promise configured, nothing to check
 if [[ "$COMPLETION_PROMISE" = "null" ]] || [[ -z "$COMPLETION_PROMISE" ]]; then
