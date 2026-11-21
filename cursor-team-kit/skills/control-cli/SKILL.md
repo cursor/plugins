@@ -38,12 +38,14 @@ Use a repeatable local harness to exercise an interactive CLI instead of poking 
 
 ```bash
 SESSION="cli-harness-$(date +%s)"
-tmux new-session -d -s "$SESSION" -- <command-under-test>
-tmux capture-pane -pt "$SESSION"
+tmux new-session -d -s "$SESSION" -- <command-under-test> \; set-option -t "$SESSION" remain-on-exit on
+tmux capture-pane -p -S - -t "$SESSION"
 tmux send-keys -t "$SESSION" "help" Enter
-tmux capture-pane -pt "$SESSION"
+tmux capture-pane -p -S - -t "$SESSION"
 tmux kill-session -t "$SESSION"
 ```
+
+Without `remain-on-exit`, a CLI that exits or crashes takes its session with it, and `capture-pane` only reports `can't find session` (or `no server running`) instead of the error. `-S -` includes scrollback, where tmux can leave a dead pane's last output.
 
 For Node CLIs:
 
