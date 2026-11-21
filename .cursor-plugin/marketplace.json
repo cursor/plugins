@@ -817,6 +817,11 @@
       "name": "sabre-developer-hub",
       "source": "third_party/sabre-developer-hub",
       "description": "Search and read Sabre Developer Hub documentation, OpenAPI specs, and Sabre-published agent skills for travel APIs, SDKs, and product collections."
+    },
+    {
+      "name": "keenable",
+      "source": "third_party/keenable",
+      "description": "Search the web and fetch pages as clean markdown."
     }
   ]
 }
