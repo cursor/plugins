@@ -1,0 +1,48 @@
+{
+  "name": "suno",
+  "displayName": "Suno by Ace Data Cloud",
+  "version": "1.0.1",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Generate Suno music and lyrics with Ace Data Cloud; query the original task ID for completed audio.",
+  "author": {
+    "name": "Ace Data Cloud Dev",
+    "email": "dev@acedata.cloud"
+  },
+  "homepage": "https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=suno_cursor_shared_manifest_pricing",
+  "repository": "https://github.com/AceDataCloud/SunoCursor",
+  "license": "MIT",
+  "logo": "assets/logo.jpg",
+  "keywords": [
+    "suno",
+    "music",
+    "music generation",
+    "lyrics",
+    "audio",
+    "ace data cloud",
+    "acedatacloud",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "suno",
+    "music",
+    "audio",
+    "acedatacloud"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "ACEDATACLOUD_API_TOKEN": {
+        "type": "string",
+        "title": "Ace Data Cloud API token",
+        "description": "Service API key from https://platform.acedata.cloud/console/applications with Suno access."
+      }
+    },
+    "required": [
+      "ACEDATACLOUD_API_TOKEN"
+    ]
+  },
+  "mcpServers": "./mcp.json"
+}

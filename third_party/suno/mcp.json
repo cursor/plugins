@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "suno": {
+      "type": "http",
+      "url": "https://suno.mcp.acedata.cloud/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ACEDATACLOUD_API_TOKEN}"
+      }
+    }
+  }
+}
