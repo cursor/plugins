@@ -12,6 +12,10 @@ function isImport(line) {
   return s.startsWith('import ') || s.startsWith('import{') || s.startsWith('} from ');
 }
 
+function isDiffMetadata(line) {
+  return /^(?:index |old mode |new mode |deleted file mode |new file mode |similarity index |dissimilarity index |rename from |rename to |copy from |copy to |Binary files |GIT binary patch(?:\s|$))/.test(line);
+}
+
 function isWhitespaceOnly(del, add) {
   return del.replace(/^-/, '').replace(/\s/g, '') === add.replace(/^\+/, '').replace(/\s/g, '');
 }
@@ -117,7 +121,7 @@ function renderDiff(target, diffInput) {
   var oL = 0, nL = 0, pD = false, pA = false;
   for (var pi = 0; pi < wsOut.length; pi++) {
     var line = wsOut[pi];
-    if (line.startsWith('--- ') || line.startsWith('+++ ') || line.startsWith('diff ')) continue;
+    if (line === '' || line.startsWith('--- ') || line.startsWith('+++ ') || line.startsWith('diff ') || isDiffMetadata(line)) continue;
     if (line.startsWith('@@')) {
       var hm = line.match(/@@ -(\d+)(?:,\d+)? \+(\d+)/);
       if (hm) { oL = parseInt(hm[1]); nL = parseInt(hm[2]); }
