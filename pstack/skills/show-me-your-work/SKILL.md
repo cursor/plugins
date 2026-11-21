@@ -18,7 +18,7 @@ Copy `references/decision-log-template.tsv` (the header row) to start a clean lo
 - **phase.** The phase or workstream.
 - **decision.** What was chosen or done, one line.
 - **why.** The reason in plain words. If a principle drove it, say it plainly, not as a jargon tag.
-- **evidence.** A link or path that proves it: commit SHA, PR number, `file:line`, or an artifact, trace, or screenshot path. Never a paragraph.
+- **evidence.** A link or path that proves it: commit SHA, PR number, `file:line`, or an artifact, trace, or screenshot path. Never a paragraph. It tests the claim as worded, not a weaker one: a row that says "fresh checkout" cites `git status --short`, not only `git rev-parse HEAD`.
 - **result.** The outcome or predicate state: `tests green`, `reverted`, `pixel-diff 0`, `INCONCLUSIVE`, `open`.
 
 An example, plain-spoken so a reviewer reads it at a glance.

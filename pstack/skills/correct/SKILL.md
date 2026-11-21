@@ -12,7 +12,7 @@ Assume every contributor is an agent that sees only the files it opened, copies 
 
 ## Find the mistake classes
 
-First, read recent commits, reverts, review comments, agent instruction files, and comments that explain workarounds. Group the mistakes into classes. A class counts once it has happened twice.
+First, read recent commits, reverts, review comments, agent instruction files, and comments that explain workarounds. Group the mistakes into classes. A class counts once it has happened twice. Split agent-written text from the operator's own by content or marker. An author login does not prove a person wrote it, because agent reviews often post under the operator's account.
 
 ## Fix each class at the highest level that works
 
