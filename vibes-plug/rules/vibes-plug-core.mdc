@@ -1,0 +1,57 @@
+---
+alwaysApply: true
+description: "Vibes-Plug 159-Skill AI Agent Swarm Architecture — Universal AI plugin for modern 2026 development"
+globs: "**/*"
+---
+
+# Vibes-Plug Core Rules
+
+## Primary Trigger & Skill Auto-Synchronization (Pemicu Utama)
+**MANDATORY**: Upon installation, `vibes-plug` acts as the PRIMARY TRIGGER and master conductor for all tasks.
+- Cursor AI automatically detects user intent and auto-synchronizes cooperating skills without waiting for manual `@` mentions.
+- Cross-domain cooperation is automatic: Frontend (`senior-frontend`), Backend (`js-backend-expert`), Database (`database-orm-expert`), Payments (`doku-payment-gateway`, `saas-billing`), Hardening (`production-ready-hardener`, `anti-slop`).
+
+## Skill Resolution Protocol
+This project uses 159 specialized skills in the `skills/` directory. Each skill is a `SKILL.md` file.
+
+**Before any task:**
+1. Identify relevant skills from the domain table below.
+2. Read their `skills/<skill-name>/SKILL.md` file.
+3. Follow the patterns and best practices defined in the skill.
+
+## Skill Domain Map
+
+| Domain | Key Skills |
+|---|---|
+| 🤖 AI & Agentic | `ai-llm-integration-expert`, `vercel-ai-sdk-expert`, `deep-research-analyst`, `synthetic-data-finetuning-expert`, `pydantic-ai-expert`, `ai-media-generation-expert`, `mcp-server-architect`, `vector-db-rag-expert`, `multi-agent-orchestration`, `llm-finops-router`, `ai-prompt-engineering-expert` |
+| 🎨 Design & UI/UX | `design-system-architect`, `hig`, `ui-ux-pro-max`, `svg-animation-motion-expert`, `data-visualization-expert`, `rich-text-editor-expert`, `modern-css-native-expert` |
+| 🖥️ Frontend | `senior-frontend`, `tailwind-expert`, `nextjs-app-router-expert`, `astro-framework-expert`, `svelte-sveltekit-expert`, `solidjs-expert`, `angular-expert`, `tanstack-query-expert`, `state-management-expert`, `vue-frontend-expert`, `performance-web-vitals`, `form-validation-expert`, `blockchain-web3-expert` |
+| 📱 Mobile & Desktop | `mobile-expo-expert`, `apple-ecosystem-expert`, `tauri-expert`, `desktop-electron-expert`, `pwa-offline-first-expert` |
+| ⚙️ Backend | `js-backend-expert`, `python-programming-expert`, `go-programming-expert`, `rust-programming-expert`, `typescript-expert`, `api-design-expert`, `graphql-apollo-expert`, `bun-runtime-expert`, `n8n-automation-expert`, `chatbot-messaging-expert`, `pdf-document-generation-expert` |
+| ☁️ SaaS & Cloud | `saas-architect`, `saas-billing`, `saas-multi-tenant`, `cloud-hosting-expert`, `ci-cd-devops-architect`, `payment-gateway-expert`, `doku-payment-gateway`, `event-driven-architect`, `monorepo-architect` |
+| 🗄️ Database | `database-orm-expert`, `supabase-security-expert`, `data-pipeline-etl-expert` |
+| 🔒 Security & QA | `authentication-identity-expert`, `e2e-testing-expert`, `production-ready-hardener`, `autonomous-tdd-debugger`, `zero-trust-secret-vault`, `supabase-security-expert`, `anti-slop`, `zero-tech-debt-auditor` |
+| 🔍 SEO | `seo`, `data-telemetry-expert` |
+| 🛠️ Utilities | `brainstorming`, `prd-architect`, `session-memory-manager`, `web-scraper`, `website-design-cloner`, `zero-to-prod-orchestrator` |
+
+## Core Stack (2026 Edition)
+- **Frontend:** React 19, Next.js 15 App Router, Tailwind CSS v4 (@theme), TypeScript 5.8+
+- **Backend:** Node.js 24 LTS, Bun 1.2+, Hono v4, Fastify 5, Python 3.14, Go 1.25+, Rust 2024
+- **Database:** Prisma 6, Drizzle ORM, PostgreSQL, Supabase, Neon, Turso
+- **AI/LLM:** Vercel AI SDK 5.x/6.x, MCP v1.x (FastMCP / Streamable HTTP), pgvector, RAG pipelines
+
+## Behavioral Rules
+1. **Deep Reasoning:** Think before acting. Analyze constraints → question assumptions → validate → execute.
+2. **Sovereign Anti-Slop Directive:** Strict zero-tolerance for placeholders (`// TODO`, `// ...`), mock data in prod, obvious syntax comments, and conversational sycophancy. 100% complete implementations on first try. Audit with `node scripts/check-anti-slop.js`.
+3. **New Projects:** Auto-generate `PRD.md`, `ERD.md`, `DOKUMENTASI.md` before any code.
+4. **Bilingual:** Skills support English & Bahasa Indonesia.
+5. **Clean Code:** Follow SOLID, DRY, Clean Code principles (ref: `scalability-clean-code`).
+6. **Sovereign Token Optimization:** Deterministic KV-cache prefixing (`kv-cache-prefix-optimizer`), subagent context pruning, adaptive model cascading (`adaptive-model-cascade`), compact checkpoints (<300 tokens), and zero code truncation.
+
+## Orchestration Flow
+1. **Plan:** `brainstorming` → `prd-architect`
+2. **Design:** `design-system-architect` → `senior-frontend` → `ui-ux-pro-max`
+3. **Build:** `js-backend-expert` → `event-driven-architect` → `autonomous-tdd-debugger`
+4. **AI:** `ai-llm-integration-expert` → `mcp-server-architect` → `multi-agent-orchestration`
+5. **SaaS:** `saas-architect` → auto-coordinates billing, tenancy, payments (`saas-billing`, `saas-multi-tenant`, `doku-payment-gateway`)
+6. **Ship:** `e2e-testing-expert` → `zero-tech-debt-auditor` → `seo` → `anti-slop` → `production-ready-hardener`

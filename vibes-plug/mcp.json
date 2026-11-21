@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "vibes-plug": {
+      "command": "npx",
+      "args": ["-y", "vibes-plug@latest", "mcp"]
+    }
+  }
+}
