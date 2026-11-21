@@ -9,7 +9,7 @@ Sub-agents are **cloud-only at v1**. The `agents:` field on `AgentOptions` is wi
 Define named sub-agents that the main agent can spawn via the `Agent` tool:
 
 ```typescript
-const agent = Agent.create({
+const agent = await Agent.create({
   apiKey: process.env.CURSOR_API_KEY!,
   model: { id: "composer-2" },
   cloud: {
@@ -47,7 +47,7 @@ The key-name (`"code-reviewer"`) is how the main agent refers to the sub-agent. 
 Cloud sub-agents reference parent MCP servers by **name**, not inline config. Inline `McpServerConfig` entries are rejected at v1 with `ConfigurationError("cloud custom subagents only support string references in v1.")`. Configure the server on the parent's `mcpServers` map and reference it by key from the sub-agent:
 
 ```typescript
-const agent = Agent.create({
+const agent = await Agent.create({
   apiKey: process.env.CURSOR_API_KEY!,
   model: { id: "composer-2" },
   cloud: { repos: [{ url: "https://github.com/your-org/your-repo", startingRef: "main" }] },
@@ -75,7 +75,7 @@ The parent's `mcpServers` is the truth; sub-agents pick by name from that map.
 Agent IDs persist. Resume later from any process with the right options:
 
 ```typescript
-const agent = Agent.resume(agentId, {
+const agent = await Agent.resume(agentId, {
   apiKey: process.env.CURSOR_API_KEY!,
   model: { id: "composer-2" },
   local: { cwd: process.cwd() },
@@ -220,8 +220,8 @@ export class MyAgentOrchestrator {
       },
     };
     await using agent = agentId
-      ? Agent.resume(agentId, options)
-      : Agent.create(options);
+      ? await Agent.resume(agentId, options)
+      : await Agent.create(options);
 
     const run = await agent.send(prompt);
     const result = await run.wait();

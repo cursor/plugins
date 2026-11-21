@@ -69,10 +69,12 @@ Use for fire-and-forget scripts, GitHub Actions steps, or any "send this prompt,
 
 ### 2. `Agent.create(...)` + `agent.send(...)` — durable with follow-ups
 
+`Agent.create()` and `Agent.resume()` return promises. Await the handle before using it. With explicit resource management, use `await using agent = await Agent.create(...)`: `await using` awaits disposal, not the initializer.
+
 ```typescript
 import { Agent } from "@cursor/sdk";
 
-const agent = Agent.create({
+const agent = await Agent.create({
   apiKey: process.env.CURSOR_API_KEY!,
   model: { id: "composer-2" },
   local: { cwd: process.cwd() },
@@ -102,7 +104,7 @@ Use when you need streaming, multi-turn conversation, or lifecycle operations (c
 ### 3. `Agent.resume(...)` — pick up an existing agent later
 
 ```typescript
-const agent = Agent.resume(previousAgentId, {
+const agent = await Agent.resume(previousAgentId, {
   apiKey: process.env.CURSOR_API_KEY!,
   model: { id: "composer-2" },
   local: { cwd: process.cwd() },
@@ -149,7 +151,7 @@ try {
 The SDK holds handles to local executors, persisted run stores, and cloud API clients. Not disposing means leaked child processes, open databases, and in long-running services, memory growth. Always dispose in a `finally`, or use `Agent.prompt()` (disposes for you), or use the `await using` syntax if your tsconfig targets it:
 
 ```typescript
-await using agent = Agent.create({ /* ... */ });
+await using agent = await Agent.create({ /* ... */ });
 ```
 
 ### 4. Streaming is optional but `wait()` is (almost) required

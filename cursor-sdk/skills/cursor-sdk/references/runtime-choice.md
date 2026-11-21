@@ -34,7 +34,7 @@ If two points pull opposite ways, Cloud is usually the safer pick for production
 ## Local Runtime — How It Actually Works
 
 ```typescript
-const agent = Agent.create({
+const agent = await Agent.create({
   apiKey: process.env.CURSOR_API_KEY!,
   model: { id: "composer-2" },
   local: { cwd: "/absolute/or/relative/path/to/repo" },
@@ -56,7 +56,7 @@ When to prefer local:
 ## Cloud Runtime — How It Actually Works
 
 ```typescript
-const agent = Agent.create({
+const agent = await Agent.create({
   apiKey: process.env.CURSOR_API_KEY!,
   model: { id: "composer-2" },
   cloud: {
@@ -93,8 +93,8 @@ When to prefer cloud:
 Perfectly fine, common pattern (e.g., local inspection + cloud PR). Each agent is independent; dispose both.
 
 ```typescript
-const localAgent = Agent.create({ /* ... local */ });
-const cloudAgent = Agent.create({ /* ... cloud */ });
+const localAgent = await Agent.create({ /* ... local */ });
+const cloudAgent = await Agent.create({ /* ... cloud */ });
 try {
   const summary = await Agent.prompt("Summarize the diff on HEAD", {
     apiKey,
