@@ -1,7 +1,7 @@
 ---
 name: docs-reliability-review
 description: Check whether the documented setup and run paths reliably lead to the real working path
-model: fast
+model: inherit
 readonly: true
 ---
 
