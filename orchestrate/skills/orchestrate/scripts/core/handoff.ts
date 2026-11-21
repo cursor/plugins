@@ -61,7 +61,8 @@ export function resolveRunBranch(args: {
  */
 export function parseHandoffVerification(handoff: string): Verification | null {
   const fromCanonical = readSectionValue({ handoff, heading: "Verification" });
-  if (fromCanonical) {
+  if (/^##[\t ]+Verification[\t ]*\r?$/m.test(handoff)) {
+    if (!fromCanonical) return null;
     const normalized = normalizeEnumValue(fromCanonical);
     if (isVerification(normalized)) return normalized;
     return null;
