@@ -22,7 +22,7 @@ Or run `/add-plugin xero` in chat.
       "command": "npx",
       "args": [
         "-y",
-        "@xeroapi/xero-mcp-server@latest"
+        "@xeroapi/xero-mcp-server@0.0.17"
       ],
       "env": {
         "XERO_CLIENT_ID": "${XERO_CLIENT_ID}",
@@ -32,6 +32,8 @@ Or run `/add-plugin xero` in chat.
   }
 }
 ```
+
+The server version is pinned on purpose. Bump it in the config above when a new release matters.
 
 Xero does not publish a hosted MCP endpoint. Its official server runs locally over stdio and authenticates with a **Custom Connection** — Xero's machine-to-machine OAuth 2.0 flow — so the plugin takes a client ID and secret rather than prompting for browser sign-in.
 
