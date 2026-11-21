@@ -77,18 +77,36 @@ export async function speak(text: string, voice_id = "eve", language = "auto") {
 
 ```ts
 // client
+// Keep this player in the shared store, not in each message button.
 let current: HTMLAudioElement | null = null;
-async function readAloud(text: string, voiceId = "eve") {
-  current?.pause(); current = null;                       // one utterance at a time
-  const res = await fetch("/api/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, voice_id: voiceId }) });
-  if (!res.ok) throw new Error("TTS request failed");
-  const url = URL.createObjectURL(await res.blob());
-  const audio = new Audio(url);
-  audio.addEventListener("ended", () => URL.revokeObjectURL(url)); // avoid blob leaks
-  current = audio;
-  await audio.play();                                      // call from the click handler’s promise chain
+let currentUrl: string | null = null;
+let generation = 0;
+function stop() {
+  generation++; // invalidate pending requests as well as active playback
+  current?.pause(); current = null;
+  if (currentUrl) URL.revokeObjectURL(currentUrl);
+  currentUrl = null;
 }
-function stop() { current?.pause(); current = null; }
+async function readAloud(text: string, voiceId = "eve") {
+  stop();
+  const request = generation;
+  const res = await fetch("/api/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, voice_id: voiceId }) });
+  if (request !== generation) return;
+  if (!res.ok) throw new Error("TTS request failed");
+  const blob = await res.blob();
+  if (request !== generation) return; // stop/new click may occur while reading the body
+  const url = URL.createObjectURL(blob);
+  const audio = new Audio(url);
+  current = audio; currentUrl = url;
+  audio.addEventListener("ended", () => { if (current === audio) stop(); });
+  try {
+    await audio.play(); // call from the click handler's promise chain
+  } catch (error) {
+    if (request !== generation) return; // stop/replacement can reject a pending play()
+    if (current === audio) stop();
+    throw error;
+  }
+}
 ```
 
    - Safari: `audio.duration` is `Infinity` on blob URLs. If you need a progress bar, decode with `AudioContext.decodeAudioData(buf.slice(0))` or request `with_timestamps: true` and read `duration` from the JSON envelope (audio is then base64 in `audio`).
@@ -104,9 +122,29 @@ new WebSocketServer({ port: 8789 }).on("connection", (client) => {
   const q = new URLSearchParams({ language: "en", voice: "eve", codec: "pcm", sample_rate: "24000" /* optimize_streaming_latency: "1" */ });
   const up = new WebSocket(`wss://api.x.ai/v1/tts?${q}`, { headers: { Authorization: `Bearer ${process.env.XAI_API_KEY}` } });
   up.on("message", (d) => client.send(d.toString()));                                   // audio.delta, audio.done, audio.clear, session.updated, error
-  client.on("message", (d) => up.readyState === WebSocket.OPEN && up.send(d.toString())); // text.delta, text.done, text.clear, session.update
-  const end = () => { client.close(); up.close(); };
+  // The browser connection opens before the upstream handshake completes.
+  // Preserve early text.delta/text.done order, with a bounded pre-open queue.
+  let pending: string[] = [], pendingBytes = 0;
+  const end = () => { pending = []; pendingBytes = 0; client.close(); up.close(); };
+  up.on("open", () => {
+    if (client.readyState !== WebSocket.OPEN) return;
+    pending.forEach((message) => up.send(message));
+    pending = []; pendingBytes = 0;
+  });
+  client.on("message", (d) => {
+    const message = d.toString();
+    if (up.readyState === WebSocket.OPEN) up.send(message);
+    else if (up.readyState === WebSocket.CONNECTING) {
+      pendingBytes += Buffer.byteLength(message);
+      if (pendingBytes > 64 * 1024) {
+        pending = []; pendingBytes = 0;
+        client.close(1009, "Upstream not ready; pending text limit exceeded");
+        up.close();
+      } else pending.push(message);
+    }
+  });
   up.on("close", end); up.on("error", end); client.on("close", end);
+  client.on("error", end); // contain browser transport failures
 });
 ```
 
@@ -126,6 +164,10 @@ ws.addEventListener("message", (e) => {
     const ch = buf.getChannelData(0);
     for (let i = 0; i < pcm.length; i++) ch[i] = pcm[i] / 32768;
     const src = ctx.createBufferSource(); src.buffer = buf; src.connect(ctx.destination);
+    src.onended = () => {
+      src.disconnect();
+      sources = sources.filter((source) => source !== src); // retain queued/playing audio only
+    };
     playhead = Math.max(playhead, ctx.currentTime + 0.15);   // ~150 ms lead so chunks butt together
     src.start(playhead); playhead += buf.duration; sources.push(src);
   } else if (ev.type === "audio.done") { /* utterance finished; socket stays open */ }
@@ -170,9 +212,9 @@ r.raise_for_status(); audio_bytes = r.content  # audio/mpeg
 
 7. **Smoke**
    - Batch: `curl -X POST https://api.x.ai/v1/tts -H "Authorization: Bearer $XAI_API_KEY" -H "Content-Type: application/json" -d '{"text":"Hello from read aloud.","voice_id":"eve","language":"en"}' --output /tmp/hello.mp3` → 200 `audio/mpeg` (MP3, 24 kHz, 128 kbps, mono), plays. Omit `language` → 422 (observed; the docs’ table only lists 400). `voice_id: "nope"` → 404.
-   - In the app: no speaker while a reply streams; it appears when the reply ends. Click → spinner → stop square → back to speaker when audio ends; click again mid-play → stops at once; click a second reply while the first plays → first stops, second plays. Safari: first play works from the click, `URL.revokeObjectURL` fires on `ended`.
+   - In the app: no speaker while a reply streams; it appears when the reply ends. Click → spinner → stop square → back to speaker when audio ends; click again mid-play → stops at once; click a second reply while the first plays → first stops, second plays. Click two replies before either fetch resolves, resolving the older one last → only the latest plays. Stop during fetch or body download → nothing starts afterward; stopped/replaced audio releases its blob URL. Safari: first play works from the click, `URL.revokeObjectURL` fires on `ended`.
    - Text prep: a reply with a fenced block, a table, a `[1]` citation and a stray `[laugh]` → spoken as “Code block omitted”, one sentence per row, the citation intact, the tag gone. Unit-test this; it is pure.
-   - Streaming: send a two-sentence reply token by token; audio should start before `text.done`. Send `text.clear` mid-utterance → `audio.clear`, playback stops with nothing stale. Second utterance on the same socket → fresh `audio.delta`s, no bleed from the first.
+   - Streaming: send a two-sentence reply token by token; audio should start before `text.done`. Send `text.clear` mid-utterance → `audio.clear`, playback stops with nothing stale. Second utterance on the same socket → fresh `audio.delta`s, no bleed from the first. After playback drains, the active-source collection is empty; finished chunks and their PCM buffers are released between utterances.
    - Search the client bundle for `XAI_API_KEY`; it must not be there. Against a running dev server, fetch `/`, collect the `/_next/static/chunks/*.js` (or equivalent) URLs it references, and grep each; do not rely on a production build you have not made.
    - Debug from logs with `/debug-voice`; swap its hook points to `audio.delta` (byte counts), `audio.done`, `audio.clear`, `error`.
 
