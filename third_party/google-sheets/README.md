@@ -36,7 +36,8 @@ The bundled `google-sheets` skill teaches agents spreadsheet conventions: when t
 - Google Sheets API: https://developers.google.com/workspace/sheets/api/reference/rest
 - Google Workspace overview: https://developers.google.com/workspace
 
-Logo is the official Google Sheets product icon, placed on a white tile with padding so it reads well in the Cursor UI.
+Logo is Google's current official Google Sheets product icon, with padding on a transparent background:
+https://www.gstatic.com/images/branding/productlogos/sheets_2026q3/v1/web/192px.svg
 
 ## License
 
