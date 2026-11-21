@@ -1,7 +1,7 @@
 {
   "name": "github",
   "displayName": "GitHub",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "minClientVersions": {
     "cursor": "3.13.0"
   },
@@ -37,6 +37,12 @@
         "type": "string",
         "title": "GitHub personal access token",
         "description": "Fine-grained or classic PAT from https://github.com/settings/tokens with the repo scopes you want the agent to use."
+      },
+      "GITHUB_MCP_FEATURES": {
+        "type": "string",
+        "title": "GitHub MCP feature flags (optional)",
+        "description": "Comma-separated feature flags sent in the X-MCP-Features header. Set mcp_apps_disable_form_deferral so issue_write, create_pull_request and update_pull_request run directly instead of waiting on an interactive form, which automations and background agents cannot submit. Leave empty to keep GitHub's defaults.",
+        "default": ""
       }
     },
     "required": ["GITHUB_PERSONAL_ACCESS_TOKEN"]

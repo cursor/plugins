@@ -21,7 +21,8 @@ Or run `/add-plugin github` in chat.
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/",
       "headers": {
-        "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
+        "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}",
+        "X-MCP-Features": "${GITHUB_MCP_FEATURES}"
       }
     }
   }
@@ -51,6 +52,10 @@ Prefer a fine-grained token scoped to specific repositories when that is enough.
 In **Dashboard → Plugins → Configure**, set **GitHub personal access token** to the value you just created.
 
 Tool calls run with that token's permissions. Rotate or revoke the token from GitHub Settings if it is ever exposed.
+
+### 3. Automations and background agents (optional)
+
+When the client supports MCP Apps, GitHub's server answers `issue_write`, `create_pull_request` and `update_pull_request` with an interactive form and waits for someone to submit it. Automations and background agents have nobody to submit it, so the issue or PR is never created. Set **GitHub MCP feature flags** to `mcp_apps_disable_form_deferral` to make those tools run directly. The value is sent as the `X-MCP-Features` header (comma-separated); leave it empty to keep GitHub's defaults.
 
 ## Docs
 
