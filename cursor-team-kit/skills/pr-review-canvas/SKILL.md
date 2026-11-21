@@ -17,7 +17,7 @@ Run these `gh api` calls in parallel:
 ```bash
 gh api repos/{owner}/{repo}/pulls/{number} --jq '{title, body, user: .user.login, state, additions, deletions, changed_files, base: .base.ref, head: .head.ref}'
 gh api repos/{owner}/{repo}/pulls/{number}/files --paginate --jq '.[] | {filename, status, additions, deletions, patch}'
-gh api repos/{owner}/{repo}/pulls/{number}/comments --jq '.[] | {user: .user.login, body, path, line}'
+gh api --paginate repos/{owner}/{repo}/pulls/{number}/comments --jq '.[] | {user: .user.login, body, path, line: (.line // .original_line)}'
 ```
 
 ### 2. Analyze the PR and write the body HTML
