@@ -814,6 +814,11 @@
       "description": "Read tracked competitors, competitive intelligence reports, change logs, evidence, social mentions, and market feeds for your products, and browse LMTY's public Markets, event timelines, and company, product, and person profiles."
     },
     {
+      "name": "sabre-developer-hub",
+      "source": "third_party/sabre-developer-hub",
+      "description": "Search and read Sabre Developer Hub documentation, OpenAPI specs, and Sabre-published agent skills for travel APIs, SDKs, and product collections."
+    },
+    {
       "name": "keenable",
       "source": "third_party/keenable",
       "description": "Search the web and fetch pages as clean markdown."

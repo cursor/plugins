@@ -36,7 +36,8 @@ The bundled `google-docs` skill teaches agents document-authoring conventions: t
 - Google Docs API: https://developers.google.com/workspace/docs/api/reference/rest
 - Google Workspace overview: https://developers.google.com/workspace
 
-Logo is the official Google Docs product icon, placed on a white tile with padding so it reads well in the Cursor UI.
+Logo is Google's current official Google Docs product icon, with padding on a transparent background:
+https://www.gstatic.com/images/branding/productlogos/docs_2026/v2/web/192px.svg
 
 ## License
 
