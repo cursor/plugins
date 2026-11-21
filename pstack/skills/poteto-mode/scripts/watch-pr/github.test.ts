@@ -469,6 +469,31 @@ describe("context and stack discovery", () => {
     expect(JSON.parse(child.stdout).map((item: { number: number }) => item.number)).toEqual([42]);
   });
 
+  it("terminates when two open PRs merge their branches into each other", () => {
+    const program = `import { orderStack } from ${JSON.stringify(import.meta.dir + "/github.ts")};
+      console.log(JSON.stringify(orderStack(${JSON.stringify(context)}, [
+        { number: 40, headRefName: "develop", baseRefName: "main", isCrossRepository: false },
+        { number: 41, headRefName: "main", baseRefName: "develop", isCrossRepository: false },
+        { number: 42, headRefName: "feature", baseRefName: "main", isCrossRepository: false }
+      ])));`;
+    const child = spawnSync(process.execPath, ["-e", program], { encoding: "utf8", timeout: 2000 });
+    expect(child.error).toBeUndefined();
+    expect(child.status).toBe(0);
+    expect(JSON.parse(child.stdout).map((item: { number: number }) => item.number)).toEqual([40, 41, 42]);
+  });
+
+  it("does not list the watched PR twice when its stack loops back to it", () => {
+    const program = `import { orderStack } from ${JSON.stringify(import.meta.dir + "/github.ts")};
+      console.log(JSON.stringify(orderStack(${JSON.stringify(context)}, [
+        { number: 41, headRefName: "base-feature", baseRefName: "feature", isCrossRepository: false },
+        { number: 42, headRefName: "feature", baseRefName: "base-feature", isCrossRepository: false }
+      ])));`;
+    const child = spawnSync(process.execPath, ["-e", program], { encoding: "utf8", timeout: 2000 });
+    expect(child.error).toBeUndefined();
+    expect(child.status).toBe(0);
+    expect(JSON.parse(child.stdout).map((item: { number: number }) => item.number)).toEqual([41, 42]);
+  });
+
   it("requests and parses fork identity from gh before stack discovery", () => {
     const directory = mkdtempSync(join(tmpdir(), "watch-pr-fork-"));
     try {
