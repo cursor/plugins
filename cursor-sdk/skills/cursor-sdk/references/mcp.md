@@ -58,7 +58,7 @@ const agent = Agent.create({
   mcpServers: {
     linear: {
       type: "http",
-      url: "https://mcp.linear.app/sse",
+      url: "https://mcp.linear.app/mcp",
       headers: { Authorization: `Bearer ${process.env.LINEAR_API_KEY!}` },
     },
     github: {
@@ -165,7 +165,7 @@ mcpServers: {
 mcpServers: {
   linear: {
     type: "http",
-    url: "https://mcp.linear.app/sse",
+    url: "https://mcp.linear.app/mcp",
     headers: { Authorization: `Bearer ${process.env.LINEAR_API_KEY!}` },
   },
 },
