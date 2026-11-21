@@ -1,6 +1,6 @@
 # pstack in Antigravity (`agy`)
 
-pstack skills use Cursor names. In Antigravity (`agy`), read this file once per session, then map each Cursor name in a skill with the tables below. `<pstack>` means the installed pstack plugin directory (normally `~/.gemini/config/plugins/pstack`). If a Cursor field has no row, drop it and say so. Never pass a field, model slug, or schema value that an Antigravity tool rejects.
+pstack skills use Cursor names. In Antigravity (`agy`), read this file once per session, then map each Cursor name in a skill with the tables below. `<pstack>` means the folder holding `skills/` and `docs/` (two levels up from any skill's `SKILL.md`, e.g. `~/.gemini/config/plugins/pstack` or the `skills.json` target's parent). If a Cursor field has no row, drop it and say so. Never pass a field, model slug, or schema value that an Antigravity tool rejects.
 
 ## Orchestrator Two-Phase (`Plan` -> `Execute`) Compatibility
 
@@ -9,7 +9,7 @@ Antigravity Orchestrator models run in two phases per request: a read-only **Pla
 - **When `exit_plan_mode` is present (Plan Mode active):** Do not attempt edits or spawn write subagents. Complete the read-only upfront phases inside Plan Mode:
   1. Match the task to a `poteto-mode` playbook and select applicable principles from the inline index.
   2. Run read-only exploration (`read_file`, read-only `run_command`, or `invoke_subagent` with `TypeName: "research"`).
-  3. Sketch at least two boundary/data-shape options (`/architect`) and write the 4-item Throughput Checkpoint.
+  3. Sketch at least two boundary/data-shape options (`/architect`) and pick the shape with one owner per piece of state (or plan an `/arena` bakeoff for a large or contested design).
   4. Hand off via `exit_plan_mode` with the matched playbook's steps, named data shape, verification commands, and `Re-plan if` signs so the Execution turn runs prototypes, `poteto-agent` delegates, and verification.
 - **When `exit_plan_mode` is absent (`--mode auto`, `--mode accept-edits`, or single-phase models):** Execute the matched playbook directly end-to-end.
 
@@ -30,7 +30,7 @@ Antigravity Orchestrator models run in two phases per request: a read-only **Pla
 | Cursor | Antigravity (`agy`) |
 | --- | --- |
 | `subagent_type: generalPurpose` | `TypeName: "self"` (for `invoke_subagent`) or `type_name="self"` (for `run_workflow` `agent()`). |
-| `poteto-agent`, `comment-sicko` | `TypeName: "poteto-agent"`, `TypeName: "comment-sicko"`. Always include the absolute path `<pstack>/skills/poteto-mode/SKILL.md` in every `poteto-agent` `Prompt`, and start the prompt with `Read <pstack>/skills/poteto-mode/worker.md before anything else.` |
+| `poteto-agent`, `comment-sicko` | Use `TypeName: "poteto-agent"` / `"comment-sicko"` when registered. If unregistered (e.g. loaded via `skills.json` in an isolated T3 Code profile), register it with `define_subagent` (or use `TypeName: "self"`) using the agent brief from `<pstack>/agents/`. Always include the absolute path `<pstack>/skills/poteto-mode/SKILL.md` in every `poteto-agent` `Prompt`, and start the prompt with `Read <pstack>/skills/poteto-mode/worker.md before anything else.` |
 | `readonly: true` | `TypeName: "research"` (true read-only sandbox with no network access). When a check (`/interrogate`) must run repro commands, use `TypeName: "self"` with `Workspace: "share"` (or `run-external-agent.mjs --mode readonly-bash`) and verify main workspace `git status` stays clean afterward. |
 | `readonly: false` | `TypeName: "self"` or `TypeName: "poteto-agent"`. |
 | `environment: "cloud"` | `Workspace: "share"` (git-worktree-like shared repo copy) or `Workspace: "branch"` (isolated clone). Respect user rules in `GEMINI.md` / `AGENTS.md`: on Expo/mobile repositories, preserve `ios/`, `android/`, and build caches and never run `--clean` or delete native build caches. |
@@ -42,6 +42,10 @@ Antigravity Orchestrator models run in two phases per request: a read-only **Pla
 
 ## Models & Cross-Vendor Execution (`claude` & `codex`)
 
+### In T3 Code (Preferred When Available)
+
+When `orchestrator_capabilities` and `delegate_task` are present, read [the T3 Code overlay](./t3-code.md) once per session and use `delegate_task` for cross-provider panel seats, `isolation: "worktree"` fan-outs, and canonical or `t3:` model specs. Standalone Antigravity uses the rules below.
+
 ### 1. Default Mode: Same-Vendor Fast Concurrency
 
 By default, pstack in Antigravity runs **fast same-vendor concurrency** using native `invoke_subagent` and `run_workflow`, consuming zero external CLI quota unless cross-vendor execution is configured or requested:
@@ -50,7 +54,7 @@ By default, pstack in Antigravity runs **fast same-vendor concurrency** using na
 | --- | --- |
 | `claude-` slugs (`claude-opus-5-5-xhigh-fast`, `claude-fable-5-2-high`, etc.), `grok-`, `gpt-`, `gemini-*` | Map to `Model: "inherit"` by default (or `"pro"` / `"flash"` / `"flash_lite"` when configured in `<pstack>/rules/AGENTS.md`). Never pass raw model slugs to `invoke_subagent` or `run_workflow` — their schema only accepts `"inherit"`, `"pro"`, `"flash"`, and `"flash_lite"`. |
 | `auto` or `inherit-parent` | `Model: "inherit"`. |
-| `pstack-models.mdc` (`~/.cursor/rules/pstack-models.mdc`) | `<pstack>/rules/AGENTS.md`. Antigravity loads plugin `rules/AGENTS.md` automatically while `pstack` is enabled. If a role is missing, default to `inherit`. |
+| `pstack-models.mdc` (`~/.cursor/rules/pstack-models.mdc`) | In T3 Code, read shared `~/.config/pstack/t3-models.md` first (per `./t3-code.md`), otherwise `<pstack>/rules/AGENTS.md`. Antigravity loads plugin `rules/AGENTS.md` automatically while `pstack` is enabled. If a role is missing, keep the skill's upstream default (routed via `./t3-code.md` in T3 Code, or mapped to `Model: "inherit"` in standalone Antigravity). |
 | `/arena` Phase C cross-judge under `inherit` | When `arena cross-judge pool` resolves only to `inherit` (same vendor as the parent), skip Phase C cross-judge per `arena` vendor rules and note why, unless the user requests a cross-vendor judge or configures one below. |
 
 ### 2. Optional Cross-Vendor Mode (`claude`, `codex`, and built-in `swarm`)
@@ -59,7 +63,7 @@ Cross-vendor diversity is supported on demand (when the user asks for `claude`, 
 
 - **`cli:codex`** or **`cli:codex:<model>`** (vendor: `openai`)
 - **`cli:claude`**, **`cli:claude:<model>`**, or **`cli:claude:<model>:<effort>`** (vendor: `anthropic`, e.g. `cli:claude:opus:xhigh`, `cli:claude:fable:high`, `cli:claude:sonnet:high`)
-- **`swarm:<agy-model-slug>`** (uses Antigravity's built-in `swarm` tool, e.g. `swarm:claude-opus-4-6-thinking`, `swarm:gemini-4-hydrogen-xhigh`, `swarm:gpt-oss-120b-medium`)
+- **`swarm:<agy-model-slug>`** (uses Antigravity's built-in `swarm` tool, e.g. `swarm:gemini-4-neon-xhigh`, `swarm:claude-opus-5-5-high`, `swarm:gpt-oss-120b-medium`)
 
 #### How to invoke `cli:codex` and `cli:claude` safely
 
@@ -89,11 +93,15 @@ Use the bundled runner `<pstack>/docs/harness/run-external-agent.mjs` via `run_c
 
 When `/setup-pstack` runs in Antigravity:
 
+- In T3 Code, follow [the T3 Code overlay](./t3-code.md) instead (reads and writes shared `~/.config/pstack/t3-models.md` across Claude Code, Antigravity, and Codex).
+- In standalone Antigravity, follow the steps below:
+
 1. **Detect**:
    - Native tiers for `invoke_subagent` / `run_workflow`: `inherit`, `pro`, `flash`, `flash_lite`.
+   - T3 Code providers & models (when available): call `orchestrator_capabilities`.
    - External CLIs: run `node <pstack>/docs/harness/run-external-agent.mjs --probe`.
-   - Built-in `swarm` models (optional): run `agy models` if the user wants `swarm:<slug>` panel arms.
-2. **Default policy**: Unless the user explicitly requests cross-vendor panels or non-inherit tiers, keep all roles at `inherit` (fast same-vendor concurrency).
+   - Built-in `swarm` models (optional): call `swarm(action="models", all=true)`.
+2. **Default policy**: Keep routine single-agent roles at `inherit` (fast same-vendor concurrency) and omit panel role lines so panels follow upstream skill defaults automatically. Add or edit any individual role or seat line when the user wants overrides (`inherit`, canonical slugs, `t3:...`, `cli:...`, `swarm:...`).
 3. **Write**: Overwrite `<pstack>/rules/AGENTS.md` as plain Markdown (no frontmatter, under 24,000 bytes), keeping `# user-configured: true`, `# defaults: 3`, `# budget: ...`, and the role lines so re-installing pstack preserves user preferences. Never put pstack role lines in project `CLAUDE.md`, `AGENTS.md`, or `GEMINI.md`.
 
 ## Paths

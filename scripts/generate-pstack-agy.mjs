@@ -41,6 +41,7 @@ export const TERMS = [
   { key: "claude-", re: /\bclaude-[a-z]+-\d/ },
   { key: "grok-", re: /\bgrok-\d/ },
   { key: "gpt-", re: /\bgpt-\d/ },
+  { key: "gemini-", re: /\bgemini-\d/ },
   { key: "inherit-parent", re: /inherit-parent/ },
   { key: "pstack-models.mdc", re: /pstack-models\.mdc/ },
   { key: ".cursor/skills/", re: /\.cursor\/skills/ },
@@ -55,6 +56,7 @@ export const LINK_RE = /\]\(([^)\s]+)\)/g;
 
 const AGY_ADAPTER = "docs/harness/antigravity.md";
 const AGY_RUNNER = "docs/harness/run-external-agent.mjs";
+const T3_OVERLAY = "docs/harness/t3-code.md";
 const GUIDE = "docs/guide";
 
 export function walk(dir) {
@@ -257,24 +259,24 @@ function buildCommentSicko(pstackDir) {
 
 function buildDefaultRules() {
   return `# pstack model configuration (Antigravity)
-# One line per role. Delete a line or set \`inherit\` to run on the parent conversation model.
+# In T3 Code, \`/setup-pstack\` manages the shared \`~/.config/pstack/t3-models.md\` across Claude Code, Antigravity, and Codex (overriding this file).
+# One line per role. Omitted roles follow upstream skill defaults (routed via ./t3-code.md in T3 Code, or \`inherit\` in standalone Antigravity).
 # Built-in subagents (\`invoke_subagent\` / \`run_workflow\`) only accept: \`inherit\`, \`pro\`, \`flash\`, \`flash_lite\`.
-# Cross-vendor specs (used when you ask for cross-vendor review/arena, or configured here):
-#   - \`cli:codex\` or \`cli:codex:<model>\` (OpenAI Codex CLI)
-#   - \`cli:claude\` or \`cli:claude:<model>[:<effort>]\` (Claude Code CLI, e.g. \`cli:claude:opus:xhigh\`, \`cli:claude:fable:high\`)
-#   - \`swarm:<agy-model-slug>\` (Antigravity \`swarm\` tool, e.g. \`swarm:claude-opus-4-6-thinking\`)
+# Customize any role or panel seat individually using:
+#   - \`inherit\` / \`inherit-parent\` / \`auto\` (parent model)
+#   - Canonical pstack slugs (from upstream skill defaults, routed via \`delegate_task\` in T3 Code)
+#   - \`t3:<providerInstanceId>/<model>[:<effort>[:fast]]\` (explicit T3 Code target)
+#   - \`cli:codex[:<model>]\` or \`cli:claude[:<model>[:<effort>]]\` (standalone CLI runner)
+#   - \`swarm:<agy-model-slug>\` (Antigravity \`swarm\` tool)
 #
 # defaults: 3
-# budget: large (inherit)
+# budget: large (xhigh)
 feature, refactoring: inherit
 bug-fix: inherit
 perf-issue: inherit
 hillclimb: inherit
 judgment and prose: inherit
-arena runners: inherit, inherit, inherit
-arena cross-judge pool: inherit
 swarm workers: inherit
-interrogate reviewers: inherit, inherit, inherit
 `;
 }
 
@@ -324,6 +326,7 @@ export function buildAntigravityFiles({
   }
 
   files.set(AGY_ADAPTER, file(adapterPath));
+  files.set(T3_OVERLAY, file(join(pstack, T3_OVERLAY)));
   files.set(AGY_RUNNER, { bytes: readFileSync(join(pstack, AGY_RUNNER)), executable: true });
   files.set("README.md", file(join(pstack, "README.md")));
   files.set("LICENSE", file(join(pstack, "LICENSE")));

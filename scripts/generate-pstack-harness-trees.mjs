@@ -19,6 +19,7 @@ import {
 // Outside pstack/ so Cursor, which copies the whole plugin folder, does not install this tree too.
 const CLAUDE_ADAPTER = "docs/harness/claude-code.md";
 const CODEX_ADAPTER = "docs/harness/codex.md";
+const T3_OVERLAY = "docs/harness/t3-code.md";
 const GUIDE = "docs/guide";
 const COMMAND = "node scripts/generate-pstack-harness-trees.mjs";
 const README = `# pstack harness tree
@@ -61,7 +62,7 @@ function packageFiles(adapter, extras = []) {
 }
 
 function renderClaude() {
-  const files = packageFiles(CLAUDE_ADAPTER);
+  const files = packageFiles(CLAUDE_ADAPTER, [T3_OVERLAY]);
   const line =
     `In Claude Code, read [the Claude Code adapter](../../${CLAUDE_ADAPTER}) once per session before you follow this skill. ` +
     "It maps the Cursor names in pstack skills to Claude Code.";
@@ -70,6 +71,14 @@ function renderClaude() {
     const entry = files.get(`skills/${skill}/SKILL.md`);
     entry.bytes = Buffer.from(entry.bytes.toString("utf8").replace(/^(# .*)\n+/m, `$1\n\n${line}\n\n`));
   }
+  const adapterEntry = files.get(CLAUDE_ADAPTER);
+  const t3OverlaySection = `
+## T3 Code
+
+When \`orchestrator_capabilities\` and \`delegate_task\` are present, read [the T3 Code overlay](./t3-code.md) once per session: share \`~/.config/pstack/t3-models.md\` (taking precedence over \`~/.claude/rules/pstack-models.md\`) across all T3 Code agents for \`/setup-pstack\` and pstack skills, keep \`Agent\` for same-provider Claude work without extra options or separate worktrees, and use \`delegate_task\` for cross-provider seats, explicit options, and \`isolation: "worktree"\` fan-outs.
+When absent (standalone Claude Code), ignore \`t3-code.md\` and follow this file as written (treating any \`t3:*\` spec like a non-Claude slug).
+`;
+  adapterEntry.bytes = Buffer.from(`${adapterEntry.bytes.toString("utf8").trimEnd()}\n${t3OverlaySection}`);
   for (const manifest of ["plugin.json", ".claude-plugin/plugin.json"]) {
     files.set(manifest, file(join(PSTACK, "plugin.json")));
   }
@@ -77,7 +86,7 @@ function renderClaude() {
 }
 
 function renderCodex() {
-  const files = packageFiles(CODEX_ADAPTER, ["docs/harness/run-external-agent.mjs"]);
+  const files = packageFiles(CODEX_ADAPTER, ["docs/harness/run-external-agent.mjs", T3_OVERLAY]);
   const line =
     `For Codex, read [the Codex adapter](../../${CODEX_ADAPTER}) before following this skill. ` +
     "Its host mappings also apply to linked playbooks.";

@@ -66,3 +66,8 @@ Claude Code has no Cursor Automations, Bugbot, Cursor cloud agents, or built-in 
 | Bugbot | Bugbot comments on a GitHub PR are ordinary review threads, so triage them with the forge command that the step gives. Skip a step that starts, waits for, or configures Bugbot when the PR has no Bugbot check or comment. |
 | Cursor cloud agents | `environment: "cloud"` maps to a worktree, as in Subagent fields. Skip a step that needs the cloud agent itself, such as its dashboard status or its own machine. |
 | A built-in PR tool | Use the forge command that the step gives, such as `gh pr create`. That is not a skip, so write no line. |
+
+## T3 Code
+
+When `orchestrator_capabilities` and `delegate_task` are present, read [the T3 Code overlay](./t3-code.md) once per session: share `~/.config/pstack/t3-models.md` (taking precedence over `~/.claude/rules/pstack-models.md`) across all T3 Code agents for `/setup-pstack` and pstack skills, keep `Agent` for same-provider Claude work without extra options or separate worktrees, and use `delegate_task` for cross-provider seats, explicit options, and `isolation: "worktree"` fan-outs.
+When absent (standalone Claude Code), ignore `t3-code.md` and follow this file as written (treating any `t3:*` spec like a non-Claude slug).

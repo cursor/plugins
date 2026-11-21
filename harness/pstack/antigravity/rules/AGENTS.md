@@ -1,19 +1,19 @@
 # pstack model configuration (Antigravity)
-# One line per role. Delete a line or set `inherit` to run on the parent conversation model.
+# In T3 Code, `/setup-pstack` manages the shared `~/.config/pstack/t3-models.md` across Claude Code, Antigravity, and Codex (overriding this file).
+# One line per role. Omitted roles follow upstream skill defaults (routed via ./t3-code.md in T3 Code, or `inherit` in standalone Antigravity).
 # Built-in subagents (`invoke_subagent` / `run_workflow`) only accept: `inherit`, `pro`, `flash`, `flash_lite`.
-# Cross-vendor specs (used when you ask for cross-vendor review/arena, or configured here):
-#   - `cli:codex` or `cli:codex:<model>` (OpenAI Codex CLI)
-#   - `cli:claude` or `cli:claude:<model>[:<effort>]` (Claude Code CLI, e.g. `cli:claude:opus:xhigh`, `cli:claude:fable:high`)
-#   - `swarm:<agy-model-slug>` (Antigravity `swarm` tool, e.g. `swarm:claude-opus-4-6-thinking`)
+# Customize any role or panel seat individually using:
+#   - `inherit` / `inherit-parent` / `auto` (parent model)
+#   - Canonical pstack slugs (from upstream skill defaults, routed via `delegate_task` in T3 Code)
+#   - `t3:<providerInstanceId>/<model>[:<effort>[:fast]]` (explicit T3 Code target)
+#   - `cli:codex[:<model>]` or `cli:claude[:<model>[:<effort>]]` (standalone CLI runner)
+#   - `swarm:<agy-model-slug>` (Antigravity `swarm` tool)
 #
 # defaults: 3
-# budget: large (inherit)
+# budget: large (xhigh)
 feature, refactoring: inherit
 bug-fix: inherit
 perf-issue: inherit
 hillclimb: inherit
 judgment and prose: inherit
-arena runners: inherit, inherit, inherit
-arena cross-judge pool: inherit
 swarm workers: inherit
-interrogate reviewers: inherit, inherit, inherit
