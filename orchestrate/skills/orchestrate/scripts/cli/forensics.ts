@@ -161,6 +161,7 @@ export function registerForensicsCommands(program: Command): void {
           }
         }
         console.log(`killed ${cancelled} cloud agent(s); ${failed} failed.`);
+        if (failed > 0) process.exitCode = 1;
       }
     );
 }
