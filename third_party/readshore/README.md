@@ -2,7 +2,7 @@
 
 Cursor plugin that connects agents to [ReadShore](https://readshore.app/) through ReadShore's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
 
-ReadShore is a read-later app. Connect your ReadShore library to find the articles, videos and posts you saved, read their saved text alongside ReadShore's summary and analysis, see what has waited longest unread, and save new links to read later.
+Save an article now and find it later in your own words. Connect your ReadShore library to see how many items you have saved, find articles by topic or tag, and open the original source. Ask about a saved passage, its summary or your notes. Create your library on the web or on iPhone.
 
 ## Install
 
@@ -40,7 +40,8 @@ You need a ReadShore account. Create one in the iPhone app or in the web app at 
 
 | Area | Capabilities |
 | --- | --- |
-| Find | Search your saves by words, reading state and save order, including what has waited longest unread |
+| Overview | See how many items are saved, unread or marked as favorites, and which tags you use |
+| Find | Search your saves by words, tag, reading state and save order, including what has waited longest unread |
 | Read | Read a save's text with ReadShore's summary and analysis, cited by numbered passages |
 | Save | Save a link to read later |
 
