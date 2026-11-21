@@ -104,8 +104,14 @@ try {
   const cloudRun = await cloudAgent.send(`Follow up on: ${summary.result}`);
   await cloudRun.wait();
 } finally {
-  await localAgent[Symbol.asyncDispose]();
-  await cloudAgent[Symbol.asyncDispose]();
+  const disposals = await Promise.allSettled([
+    localAgent[Symbol.asyncDispose](),
+    cloudAgent[Symbol.asyncDispose](),
+  ]);
+  const failure = disposals.find((entry) => entry.status === "rejected");
+  if (failure?.status === "rejected") throw failure.reason;
 }
 ```
+
+If one disposal fails, the other handle still runs. Otherwise that agent keeps its executor lease or its cloud stream.
 
