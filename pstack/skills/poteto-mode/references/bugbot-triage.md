@@ -140,3 +140,11 @@ Append new candidate learnings here during or after babysitting when they look t
   exists for a missing dependency rather than a failed operation.
 - Source: one CLI-rename PR whose fallback existed for a missing binary rather
   than a failed command.
+
+### Review findings that contradict the diff's own stated invariant
+
+- Confidence: candidate
+- Skip when: never on its own. This is a verification-priority hint, not a dismissal pattern.
+- Do not skip when: n/a
+- Example signal: a review comment claims a storage key, fingerprint, or test misses a case that a comment in the same diff declares impossible. Read the invariant's real scope (id generation, encoding, test coverage) before fixing or dismissing; the diff's own claim is often narrower than its prose.
+- Source: one fold-persistence PR where three review passes each contradicted an invariant the diff itself stated (ephemeral reveal had no test, the head key did not pin the card mapping, the identity join was not injective); all three verified real and fixed.
