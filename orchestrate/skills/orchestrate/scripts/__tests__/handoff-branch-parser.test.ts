@@ -3,6 +3,13 @@ import { describe, expect, test } from "bun:test";
 import { parseHandoffBranch, resolveRunBranch } from "../core/handoff.ts";
 
 describe("parseHandoffBranch / resolveRunBranch", () => {
+  test("A branch written as a one-item list is read", () => {
+    const body = ["## Branch", "- `agent/listed-abc1`", "## What I did"].join(
+      "\n"
+    );
+    expect(parseHandoffBranch(body)).toBe("agent/listed-abc1");
+  });
+
   test("Worker template wraps branch value in single backticks", () => {
     const body = [
       "## Status",

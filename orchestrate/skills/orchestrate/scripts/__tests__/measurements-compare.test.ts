@@ -44,6 +44,31 @@ describe("compareMeasurement / applyMeasurementParser / buildMeasurementEnv", ()
     expect((result.driftFraction ?? 0) > 1).toBeTruthy();
   });
 
+  test("Fractional measurements use relative tolerance at either unit scale", () => {
+    for (const [after, measured, outcome] of [
+      ["0.01 s", "0.1 s", "value-mismatch"],
+      ["10 ms", "100 ms", "value-mismatch"],
+      ["-0.01 s", "-0.1 s", "value-mismatch"],
+      ["0.01 s", "0.0105 s", "match"],
+      ["10 ms", "10.5 ms", "match"],
+      ["0 s", "0.09 s", "match"],
+      ["0 s", "0.2 s", "value-mismatch"],
+    ] as const) {
+      const result = compareMeasurement({
+        spec: baseSpec,
+        measured,
+        claim: claim(after),
+      });
+      expect(result.outcome).toBe(outcome);
+    }
+    const result = compareMeasurement({
+      spec: baseSpec,
+      measured: "0.1 s",
+      claim: claim("0.01 s"),
+    });
+    expect(result.driftFraction).toBeCloseTo(9);
+  });
+
   test("Custom tolerance widens matching window", () => {
     const result = compareMeasurement({
       spec: { ...baseSpec, toleranceFraction: 0.5 },
@@ -149,6 +174,23 @@ describe("compareMeasurement / applyMeasurementParser / buildMeasurementEnv", ()
     );
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.value).toBe("bytes");
+  });
+
+  test("regex parser with the g flag still returns capture group 1 of the first match", () => {
+    const stdout = "passing: 12 failing: 3\npassing: 40 failing: 0\n";
+    const grouped = applyMeasurementParser(
+      { kind: "regex", pattern: "passing: (\\d+)", flags: "g" },
+      stdout
+    );
+    expect(grouped.ok).toBe(true);
+    if (grouped.ok) expect(grouped.value).toBe("12");
+
+    const whole = applyMeasurementParser(
+      { kind: "regex", pattern: "passing: \\d+", flags: "gm" },
+      stdout
+    );
+    expect(whole.ok).toBe(true);
+    if (whole.ok) expect(whole.value).toBe("passing: 12");
   });
 
   test("regex parser without match returns ok false", () => {

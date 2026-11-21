@@ -41,6 +41,7 @@ import type { CommentDestinations } from "./comment-retry-queue.ts";
 
 const SPAWN_MAX_ATTEMPTS = 3;
 const SPAWN_RETRY_BACKOFF_MS = 2_000;
+// Overridable for tests via ORCHESTRATE_WATCHDOG_POLL_MS.
 const WAIT_WATCHDOG_POLL_INTERVAL_MS = 60_000;
 // Internal watchdog "noticed idle" debug logs. Lower threshold = earlier
 // visibility into stalled SSE / tool-call streams without disturbing the
@@ -55,6 +56,10 @@ const STUCK_ESCALATION_MS = 1_800_000;
 // still reports running. Without it, state.attention and saveState frequency
 // would blow up. Negligible cost when retries take ~1-2 minutes.
 const WAIT_RECOVERY_RETRY_BACKOFF_MS = 5_000;
+// How long waitAndHandoff waits for `run.stream()` to end after `run.wait()`
+// (or the watchdog poll) has already produced the result. A live stream ends
+// within milliseconds of the run; a dead one never does.
+const WAIT_STREAM_DRAIN_GRACE_MS = 2_000;
 
 export type RespawnSource = "local-cli" | "self-planner" | "script-auto-retry";
 
@@ -883,7 +888,12 @@ export class AgentManager {
           lastWaitError = errorMessage(waitErr);
           throw waitErr;
         }
-        await streamPromise;
+        // When the watchdog poll won the race, `run.stream()` is still parked
+        // on a dead SSE and never ends; awaiting it here would hang the
+        // reconcile loop that the watchdog exists to free. `rr` is
+        // authoritative either way, so the stream gets a short grace to
+        // deliver what it already has, then the loop moves on without it.
+        await Promise.race([streamPromise, sleep(WAIT_STREAM_DRAIN_GRACE_MS)]);
         if (rr.status !== "error") break;
         lastWaitError = runResultErrorMessage(rr) ?? lastWaitError;
 
@@ -1864,7 +1874,7 @@ async function waitRunWithWatchdog(args: {
   const pollLoop = async (): Promise<RunResult> => {
     while (!ac.signal.aborted) {
       try {
-        await sleep(WAIT_WATCHDOG_POLL_INTERVAL_MS, undefined, {
+        await sleep(watchdogPollIntervalMs(), undefined, {
           signal: ac.signal,
         });
       } catch {
@@ -1950,13 +1960,14 @@ export async function inspectRunStream(args: {
   try {
     while (Date.now() - startedAt < args.timeoutMs) {
       const remaining = Math.max(0, args.timeoutMs - (Date.now() - startedAt));
+      const deadline = new AbortController();
       const next = await Promise.race([
         iterator.next(),
-        sleep(remaining).then(() => ({
+        sleep(remaining, undefined, { signal: deadline.signal }).then(() => ({
           done: true as const,
           value: undefined,
         })),
-      ]);
+      ]).finally(() => deadline.abort());
       if (next.done) break;
       const event = next.value;
       if (event.type === "assistant") {
@@ -1982,7 +1993,11 @@ export async function inspectRunStream(args: {
       }
     }
   } finally {
-    await Promise.race([iterator.return?.(), sleep(1_000)]);
+    const cleanupDeadline = new AbortController();
+    await Promise.race([
+      iterator.return?.(),
+      sleep(1_000, undefined, { signal: cleanupDeadline.signal }),
+    ]).finally(() => cleanupDeadline.abort());
   }
   const toolCallWindowStart = Date.now() - 5 * 60_000;
 
@@ -2011,6 +2026,15 @@ export function formatToolCallIdleWarning(args: {
     ? new Date(args.lastToolCallAt).toISOString()
     : `none since wait start (${new Date(args.waitStartedAt).toISOString()})`;
   return `${args.taskLabel}: tool_call idle ${args.idleMs}ms; last=${lastCall}`;
+}
+
+function watchdogPollIntervalMs(): number {
+  const raw = process.env.ORCHESTRATE_WATCHDOG_POLL_MS;
+  if (!raw) return WAIT_WATCHDOG_POLL_INTERVAL_MS;
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) && parsed > 0
+    ? parsed
+    : WAIT_WATCHDOG_POLL_INTERVAL_MS;
 }
 
 function toolCallStuckThresholdMs(): number {

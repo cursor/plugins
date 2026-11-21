@@ -32,7 +32,11 @@ export const MAX_BOOT_MS = 30 * 60 * 1000;
 const ACTIVE_ROOT_RUN_STATUSES = new Set(["pending", "running"]);
 
 type AgentListApi = {
-  list: (opts: { runtime: "cloud"; limit: number }) => Promise<unknown>;
+  list: (opts: {
+    runtime: "cloud";
+    limit: number;
+    cursor?: string;
+  }) => Promise<unknown>;
   listRuns?: (
     agentId: string,
     opts: { runtime: "cloud"; limit: number }
@@ -480,30 +484,38 @@ export async function findActiveRootPlanner(
   rootSlug: string,
   nowMs: number = Date.now()
 ): Promise<ActiveRootPlanner | null> {
-  const list = await agentApi.list({ runtime: "cloud", limit: 50 });
   // Exact match, not startsWith: a prefix slug would otherwise adopt another
   // goal's `<slug>-root` planner (e.g. "auth" adopting "auth-ui-root").
   const rootPlannerName = `${rootSlug}-root`;
-  for (const item of listItems(list)) {
-    const name = stringField(item, "name");
-    if (!name) continue;
-    if (name !== rootPlannerName) continue;
-    const createdAt = timeMs(field(item, "createdAt"));
-    if (createdAt === null || nowMs - createdAt > MAX_BOOT_MS) continue;
-    const agentId =
-      stringField(item, "agentId") ?? stringField(item, "id") ?? null;
-    if (!agentId) continue;
-    const embeddedRun = latestRunFromItem(item);
-    const run = embeddedRun ?? (await latestRunForAgent(agentApi, agentId));
-    const status = runStatus(run);
-    if (!ACTIVE_ROOT_RUN_STATUSES.has(status)) continue;
-    return {
-      agentId,
-      runId: stringField(run, "id") ?? null,
-      status,
-      name,
-    };
-  }
+  let cursor: string | undefined;
+  do {
+    const list = await agentApi.list({
+      runtime: "cloud",
+      limit: 50,
+      ...(cursor ? { cursor } : {}),
+    });
+    for (const item of listItems(list)) {
+      const name = stringField(item, "name");
+      if (!name) continue;
+      if (name !== rootPlannerName) continue;
+      const createdAt = timeMs(field(item, "createdAt"));
+      if (createdAt === null || nowMs - createdAt > MAX_BOOT_MS) continue;
+      const agentId =
+        stringField(item, "agentId") ?? stringField(item, "id") ?? null;
+      if (!agentId) continue;
+      const embeddedRun = latestRunFromItem(item);
+      const run = embeddedRun ?? (await latestRunForAgent(agentApi, agentId));
+      const status = runStatus(run);
+      if (!ACTIVE_ROOT_RUN_STATUSES.has(status)) continue;
+      return {
+        agentId,
+        runId: stringField(run, "id") ?? null,
+        status,
+        name,
+      };
+    }
+    cursor = isRecord(list) ? stringField(list, "nextCursor") : undefined;
+  } while (cursor);
   return null;
 }
 

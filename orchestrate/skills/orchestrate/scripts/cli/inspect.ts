@@ -2,8 +2,13 @@ import type { Command } from "commander";
 import { isAndonActive } from "../core/andon.ts";
 import { renderPrompt } from "../core/prompts.ts";
 import { renderModelCatalog } from "../models.ts";
-import type { TaskState } from "../schemas.ts";
-import { firstChars, loadOrBail, parsePositiveIntegerOrBail } from "./util.ts";
+import { TASK_STATUSES, type TaskState } from "../schemas.ts";
+import {
+  firstChars,
+  loadOrBail,
+  parsePositiveIntegerOrBail,
+  parseTaskStatusOrBail,
+} from "./util.ts";
 
 export function registerInspectCommands(program: Command): void {
   program
@@ -58,7 +63,7 @@ export function registerInspectCommands(program: Command): void {
     .argument("<workspace>", "Path to the orchestrate workspace")
     .option(
       "--status <status>",
-      "Filter by status (pending|running|handed-off|error|pruned)"
+      `Filter by status (${TASK_STATUSES.join("|")})`
     )
     .option("--json", "Emit JSON instead of a table")
     .description(
@@ -66,9 +71,19 @@ export function registerInspectCommands(program: Command): void {
     )
     .action(
       async (workspace: string, opts: { status?: string; json?: boolean }) => {
+        let status: TaskState["status"] | undefined;
+        try {
+          status =
+            opts.status === undefined
+              ? undefined
+              : parseTaskStatusOrBail(opts.status);
+        } catch (err) {
+          console.error(err instanceof Error ? err.message : String(err));
+          process.exit(1);
+        }
         const mgr = await loadOrBail(workspace);
-        const rows = opts.status
-          ? mgr.tasks.filter(t => t.status === opts.status)
+        const rows = status
+          ? mgr.tasks.filter(t => t.status === status)
           : mgr.tasks;
         if (opts.json) {
           console.log(JSON.stringify(rows, null, 2));
