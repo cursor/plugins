@@ -133,6 +133,32 @@ for (const name of fs.readdirSync(corpus)) {
 
 const launcher = path.join(here, "../statechart");
 
+const coverageLine = (module: string, generated: number) =>
+  `@!@!@STARTMSG 2772:0 @!@!@\n<Extra line 1, col 1 to line 1, col 5 of module ${module}>: 0:${generated}\n@!@!@ENDMSG 2772 @!@!@\n`;
+
+test("coverage remembers a step in any verdict run and distinguishes imported declarations", () => {
+  const dir = copyCase("FirstRule", (d) => {
+    for (const [file, generated] of [["verdict-1.out", 1], ["verdict-2.out", 0]] as const) {
+      const full = path.join(d, file);
+      fs.appendFileSync(full, coverageLine("Lib", generated) + coverageLine("Other", 0));
+    }
+  });
+  const r = run(dir);
+  assert.equal(r.status, 1);
+  assert.match(r.report, /^Actions that made no step: Other!Extra\.$/m);
+  assert.match(r.report, /TLC did not explore every reachable state/);
+});
+
+test("missing coverage adds no action paragraph", () => {
+  const dir = copyCase("Vac", (d) => {
+    const file = path.join(d, "verdict-1.out");
+    fs.writeFileSync(file, read(file).replace(/@!@!@STARTMSG 2772:0 @!@!@[\s\S]*?@!@!@ENDMSG 2772 @!@!@\n/g, ""));
+  });
+  const r = run(dir);
+  assert.equal(r.status, 0);
+  assert.doesNotMatch(r.report, /Actions that made no step|beyond the explored states/);
+});
+
 const launcherTools = () => {
   const bin = fs.mkdtempSync(path.join(os.tmpdir(), "statechart-bin-"));
   for (const tool of ["dirname", "readlink", "sed"]) {

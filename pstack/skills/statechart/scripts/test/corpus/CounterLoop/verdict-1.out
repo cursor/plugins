@@ -5,20 +5,20 @@ TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
 Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
 @!@!@ENDMSG 2401 @!@!@
 @!@!@STARTMSG 2187:0 @!@!@
-Running breadth-first search Model-Checking with fp 0 and seed 1997723372202237936 with 1 worker on 8 cores with 23888MB heap and 64MB offheap memory [pid: 573119] (Linux 6.12.94+ amd64, Eclipse Adoptium 25.0.5 x86_64, MSBDiskFPSet, DiskStateQueue).
+Running breadth-first search Model-Checking with fp 0 and seed -9147580116546491855 with 1 worker on 8 cores with 8028MB heap and 64MB offheap memory [pid: 48390] (Linux 6.8.0-1060-aws amd64, Ubuntu 17.0.20.1 x86_64, MSBDiskFPSet, DiskStateQueue).
 @!@!@ENDMSG 2187 @!@!@
 @!@!@STARTMSG 2220:0 @!@!@
 Starting SANY...
 @!@!@ENDMSG 2220 @!@!@
-Parsing file /agent/repos/plugins/pstack/skills/statechart/scripts/test/corpus/CounterLoop/CounterLoop.tla
-Parsing file /tmp/statechart-Tv1ATQ/statechart-pnoZEE/tmp-verdict-1/Naturals.tla
+Parsing file /home/ubuntu/repos/cursor-plugins/pstack/skills/statechart/scripts/test/corpus/CounterLoop/CounterLoop.tla
+Parsing file /tmp/statechart-SE9QRj/statechart-6cehSp/tmp-verdict-1/Naturals.tla
 Semantic processing of module Naturals
 Semantic processing of module CounterLoop
 @!@!@STARTMSG 2219:0 @!@!@
 SANY finished.
 @!@!@ENDMSG 2219 @!@!@
 @!@!@STARTMSG 2185:0 @!@!@
-Starting... (2026-10-26 21:45:33)
+Starting... (2026-11-20 13:42:33)
 @!@!@ENDMSG 2185 @!@!@
 @!@!@STARTMSG 2212:0 @!@!@
 Implied-temporal checking--satisfiability problem has 1 branches.
@@ -27,13 +27,13 @@ Implied-temporal checking--satisfiability problem has 1 branches.
 Computing initial states...
 @!@!@ENDMSG 2189 @!@!@
 @!@!@STARTMSG 2190:0 @!@!@
-Finished computing initial states: 1 distinct state generated at 2026-10-26 21:45:33.
+Finished computing initial states: 1 distinct state generated at 2026-11-20 13:42:34.
 @!@!@ENDMSG 2190 @!@!@
 @!@!@STARTMSG 2200:0 @!@!@
-Progress(3) at 2026-10-26 21:45:33: 4 states generated, 3 distinct states found, 0 states left on queue.
+Progress(3) at 2026-11-20 13:42:34: 4 states generated, 3 distinct states found, 0 states left on queue.
 @!@!@ENDMSG 2200 @!@!@
 @!@!@STARTMSG 2192:0 @!@!@
-Checking temporal properties for the complete state space with 3 total distinct states at (2026-10-26 21:45:33)
+Checking temporal properties for the complete state space with 3 total distinct states at (2026-11-20 13:42:34)
 @!@!@ENDMSG 2192 @!@!@
 @!@!@STARTMSG 2116:1 @!@!@
 Temporal properties were violated.
@@ -63,14 +63,50 @@ x = 2
 
 @!@!@ENDMSG 2122 @!@!@
 @!@!@STARTMSG 2267:0 @!@!@
-Finished checking temporal properties in 00s at 2026-10-26 21:45:33
+Finished checking temporal properties in 00s at 2026-11-20 13:42:34
 @!@!@ENDMSG 2267 @!@!@
+@!@!@STARTMSG 2201:0 @!@!@
+The coverage statistics at 2026-11-20 13:42:34
+@!@!@ENDMSG 2201 @!@!@
+@!@!@STARTMSG 2773:0 @!@!@
+<Init line 5, col 1 to line 5, col 4 of module CounterLoop>: 2:2
+@!@!@ENDMSG 2773 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 5, col 9 to line 5, col 13 of module CounterLoop: 2
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<Up line 6, col 1 to line 6, col 2 of module CounterLoop>: 2:4
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 6, col 7 to line 6, col 11 of module CounterLoop: 4
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 6, col 7 to line 6, col 7 of module CounterLoop: 6
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 6, col 16 to line 6, col 25 of module CounterLoop: 4
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<Back line 7, col 1 to line 7, col 4 of module CounterLoop>: 0:2
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 7, col 9 to line 7, col 13 of module CounterLoop: 6
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 7, col 9 to line 7, col 9 of module CounterLoop: 4
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 7, col 18 to line 7, col 23 of module CounterLoop: 2
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2202:0 @!@!@
+End of statistics.
+@!@!@ENDMSG 2202 @!@!@
 @!@!@STARTMSG 2200:0 @!@!@
-Progress(3) at 2026-10-26 21:45:33: 4 states generated (687 s/min), 3 distinct states found (515 ds/min), 0 states left on queue.
+Progress(3) at 2026-11-20 13:42:34: 4 states generated (821 s/min), 3 distinct states found (616 ds/min), 0 states left on queue.
 @!@!@ENDMSG 2200 @!@!@
 @!@!@STARTMSG 2199:0 @!@!@
 4 states generated, 3 distinct states found, 0 states left on queue.
 @!@!@ENDMSG 2199 @!@!@
 @!@!@STARTMSG 2186:0 @!@!@
-Finished in 352ms at (2026-10-26 21:45:33)
+Finished in 295ms at (2026-11-20 13:42:34)
 @!@!@ENDMSG 2186 @!@!@

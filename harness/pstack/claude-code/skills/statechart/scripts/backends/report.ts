@@ -48,6 +48,7 @@ export function report(
     stop,
     drawing,
     states,
+    actions,
   }: {
     spec: Spec;
     graph: Graph;
@@ -57,6 +58,7 @@ export function report(
     stop: Stop | undefined;
     drawing: { status: number | null } | undefined;
     states: { distinct: number; initial: number; complete: boolean; cut: boolean };
+    actions: { unseen: string[]; complete: boolean };
   },
   found: Bug[],
   chart: Chart | undefined,
@@ -127,6 +129,11 @@ export function report(
     out.push(
       `With ${list(merged)}, TLC keeps one representative for each group of states that it counts as the same. An arrow can lead to the representative rather than to the state that the step reaches.`,
     );
+  if (actions.unseen.length) {
+    out.push("", `Actions that made no step: ${actions.unseen.join(", ")}.`);
+    if (!actions.complete)
+      out.push("TLC did not explore every reachable state, so these actions may still happen beyond the explored states.");
+  }
   for (const bug of found) {
     const steps = `${bug.path.length} step${bug.path.length === 1 ? "" : "s"}`;
     out.push("", `## ${bug.rule.name} breaks`);

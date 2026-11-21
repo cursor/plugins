@@ -5,26 +5,26 @@ TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
 Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
 @!@!@ENDMSG 2401 @!@!@
 @!@!@STARTMSG 2187:0 @!@!@
-Running breadth-first search Model-Checking with fp 0 and seed 1181357196558921690 with 1 worker on 8 cores with 23888MB heap and 64MB offheap memory [pid: 570543] (Linux 6.12.94+ amd64, Eclipse Adoptium 25.0.5 x86_64, MSBDiskFPSet, DiskStateQueue).
+Running breadth-first search Model-Checking with fp 0 and seed 4069005064862624246 with 1 worker on 8 cores with 8028MB heap and 64MB offheap memory [pid: 46982] (Linux 6.8.0-1060-aws amd64, Ubuntu 17.0.20.1 x86_64, MSBDiskFPSet, DiskStateQueue).
 @!@!@ENDMSG 2187 @!@!@
 @!@!@STARTMSG 2220:0 @!@!@
 Starting SANY...
 @!@!@ENDMSG 2220 @!@!@
-Parsing file /agent/repos/plugins/pstack/skills/statechart/scripts/test/corpus/CounterAction/CounterAction.tla
-Parsing file /tmp/statechart-0h3ubN/statechart-C3zSS6/tmp-verdict-1/Naturals.tla
+Parsing file /home/ubuntu/repos/cursor-plugins/pstack/skills/statechart/scripts/test/corpus/CounterAction/CounterAction.tla
+Parsing file /tmp/statechart-vDGqE4/statechart-TDYBJX/tmp-verdict-1/Naturals.tla
 Semantic processing of module Naturals
 Semantic processing of module CounterAction
 @!@!@STARTMSG 2219:0 @!@!@
 SANY finished.
 @!@!@ENDMSG 2219 @!@!@
 @!@!@STARTMSG 2185:0 @!@!@
-Starting... (2026-10-26 21:45:12)
+Starting... (2026-11-20 13:42:13)
 @!@!@ENDMSG 2185 @!@!@
 @!@!@STARTMSG 2189:0 @!@!@
 Computing initial states...
 @!@!@ENDMSG 2189 @!@!@
 @!@!@STARTMSG 2190:0 @!@!@
-Finished computing initial states: 1 distinct state generated at 2026-10-26 21:45:12.
+Finished computing initial states: 1 distinct state generated at 2026-11-20 13:42:13.
 @!@!@ENDMSG 2190 @!@!@
 @!@!@STARTMSG 2110:1 @!@!@
 Invariant NotThree is violated.
@@ -42,8 +42,50 @@ x = 0
 x = 3
 
 @!@!@ENDMSG 2217 @!@!@
+@!@!@STARTMSG 2201:0 @!@!@
+The coverage statistics at 2026-11-20 13:42:13
+@!@!@ENDMSG 2201 @!@!@
+@!@!@STARTMSG 2773:0 @!@!@
+<Init line 6, col 1 to line 6, col 4 of module CounterAction>: 1:1
+@!@!@ENDMSG 2773 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 6, col 9 to line 6, col 13 of module CounterAction: 1
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<Inc line 8, col 1 to line 8, col 3 of module CounterAction>: 1:2
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 8, col 8 to line 8, col 17 of module CounterAction: 2
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2772:0 @!@!@
+<Jump line 9, col 1 to line 9, col 4 of module CounterAction>: 0:2
+@!@!@ENDMSG 2772 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 9, col 9 to line 9, col 13 of module CounterAction: 3
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  |line 9, col 9 to line 9, col 9 of module CounterAction: 2
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 9, col 18 to line 9, col 23 of module CounterAction: 1
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<NotThree line 19, col 1 to line 19, col 8 of module CounterAction>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 19, col 13 to line 19, col 17 of module CounterAction: 3
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2774:0 @!@!@
+<NotFour line 21, col 1 to line 21, col 7 of module CounterAction>
+@!@!@ENDMSG 2774 @!@!@
+@!@!@STARTMSG 2221:0 @!@!@
+  line 21, col 12 to line 21, col 16 of module CounterAction: 2
+@!@!@ENDMSG 2221 @!@!@
+@!@!@STARTMSG 2202:0 @!@!@
+End of statistics.
+@!@!@ENDMSG 2202 @!@!@
 @!@!@STARTMSG 2200:0 @!@!@
-Progress(2) at 2026-10-26 21:45:12: 3 states generated (524 s/min), 2 distinct states found (349 ds/min), 1 states left on queue.
+Progress(2) at 2026-11-20 13:42:13: 3 states generated (687 s/min), 2 distinct states found (458 ds/min), 1 states left on queue.
 @!@!@ENDMSG 2200 @!@!@
 @!@!@STARTMSG 2199:0 @!@!@
 3 states generated, 2 distinct states found, 1 states left on queue.
@@ -52,5 +94,5 @@ Progress(2) at 2026-10-26 21:45:12: 3 states generated (524 s/min), 2 distinct s
 The depth of the complete state graph search is 2.
 @!@!@ENDMSG 2194 @!@!@
 @!@!@STARTMSG 2186:0 @!@!@
-Finished in 347ms at (2026-10-26 21:45:12)
+Finished in 265ms at (2026-11-20 13:42:13)
 @!@!@ENDMSG 2186 @!@!@
