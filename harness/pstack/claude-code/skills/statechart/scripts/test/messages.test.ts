@@ -1,12 +1,26 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import { test } from "node:test";
+import { fileURLToPath } from "node:url";
 import { plainText, runtime } from "../backends/plain-text.ts";
 import { readMessages } from "../frontends/messages.ts";
+import { readVerdict } from "../frontends/verdict.ts";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
 
 const tool = (code: number, level: number, ...lines: string[]) =>
   [`@!@!@STARTMSG ${code}:${level} @!@!@`, ...lines, `@!@!@ENDMSG ${code} @!@!@`].join("\n");
 
 const plain = (text: string) => [...plainText(readMessages(text))].join("");
+
+test("TLC output with Windows line ends names the rule that breaks and prints as with Unix ones", () => {
+  const unix = fs.readFileSync(path.join(here, "corpus", "FirstRule", "verdict-1.out"), "utf8");
+  const windows = unix.replaceAll("\n", "\r\n");
+  assert.deepEqual(readVerdict(readMessages(windows)).broke, { kind: "invariant", name: "NotOne" });
+  assert.deepEqual(readVerdict(readMessages(windows)), readVerdict(readMessages(unix)));
+  assert.equal(plain(windows), plain(unix));
+});
 
 test("TLC's -tool output prints as plain TLC prints it", () => {
   const text = [

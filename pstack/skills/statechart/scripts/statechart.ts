@@ -4,7 +4,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { killGroup, messageOf } from "./run.ts";
+import { killGroup } from "./kill.ts";
+import { messageOf } from "./run.ts";
 
 const USAGE = `Usage: statechart SPEC.tla [--config FILE] [--view FILE] [--out DIR]
 
@@ -110,26 +111,26 @@ try {
       {
         detached: true,
         stdio: ["ignore", "inherit", "inherit"],
-        env: { ...process.env, TMPDIR: tmp },
+        env: { ...process.env, TMPDIR: tmp, TEMP: tmp, TMP: tmp },
       },
     );
     janitor = spawn(
-      "/bin/sh",
-      [
-        "-c",
-        'while read -r line; do :; done; kill -s KILL -- "-$1"; rm -rf -- "$2" "$3"',
-        "sh",
-        String(worker.pid),
-        stage,
-        tmp,
-      ],
+      process.execPath,
+      [...runtime, path.join(import.meta.dirname, "janitor.ts"), String(worker.pid), stage, tmp],
       { detached: true, stdio: ["pipe", "ignore", "ignore"] },
     );
+    const toJanitor = janitor.stdin;
+    toJanitor?.on("error", () => {});
     const exited = new Promise<number>((resolve) =>
-      worker.on("exit", (code) => resolve(code ?? 2)),
+      worker.on("exit", (code) => {
+        toJanitor?.write("exited\n");
+        resolve(code ?? 2);
+      }),
     );
     await Promise.race([stopped, exited]);
-    await killGroup(worker.pid as number);
+    const running = worker.exitCode === null && worker.signalCode === null;
+    const groupOutlivesWorker = process.platform !== "win32";
+    if (worker.pid !== undefined && (running || groupOutlivesWorker)) await killGroup(worker.pid);
     const verdict = await exited;
     if (stop) {
       console.error(`${stop} stopped the check, so the command wrote nothing.`);
