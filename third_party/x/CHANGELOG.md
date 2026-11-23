@@ -2,11 +2,12 @@
 
 All notable changes to this plugin will be documented here.
 
-## 2.11.2 — Refresh stale X Chat helper clones and venvs
+## 2.11.2 — Refresh stale X Chat helper clones/venvs and pass xdk_version on sends
 
 - The X Chat helper setup block now checks the installed `chatxdk` version in `.venv`, the `chatxdk` pin in `requirements.txt` (requiring at least `0.7.0`), and the presence of `xchat_lite.py`.
 - When a local copy is stale and `git pull --ff-only` fails, setup fetches and resets inside `xchat-grokbot-helper`'s own clone (or re-clones into a fresh directory), then installs dependencies from `requirements.txt` instead of an unpinned `chatxdk`.
 - Requirements are also reinstalled whenever a cheap `git pull --ff-only` updates `requirements.txt`.
+- X Chat send instructions now pass `xdk_version` to `send_chat_message` exactly as output by the helper (including replies, reactions, edits, media, and first-message sends).
 
 ## 2.11.1 — Find a contact's chat, X DMs only via send_chat_message
 
