@@ -1,6 +1,6 @@
 {
   "name": "pstack-opencode",
-  "version": "0.15.36",
+  "version": "0.15.46",
   "private": true,
   "description": "pstack for OpenCode: the poteto agent style, its principles, its playbooks, and the poteto-mode mandate.",
   "type": "module",

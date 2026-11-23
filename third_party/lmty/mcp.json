@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "lmty": {
+      "type": "http",
+      "url": "https://mcp.lmty.dev/mcp"
+    }
+  }
+}

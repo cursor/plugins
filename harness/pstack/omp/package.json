@@ -1,6 +1,6 @@
 {
   "name": "pstack-omp",
-  "version": "0.15.36",
+  "version": "0.15.46",
   "private": true,
   "description": "pstack for omp: the poteto agent style, its principles, and its playbooks.",
   "type": "module",

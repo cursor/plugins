@@ -1,4 +1,4 @@
-# QuickBooks Online
+# Intuit QuickBooks
 
 Cursor plugin that connects agents to [QuickBooks Online](https://quickbooks.intuit.com) — Intuit's cloud accounting product — through Intuit's remote [Model Context Protocol](https://modelcontextprotocol.io/) server, which Cursor credentials for you.
 
@@ -7,7 +7,7 @@ Read a company file's accounting data: invoices, bills, expenses, payments, cust
 ## Install
 
 1. Open **Cursor Settings → Plugins**.
-2. Search for **QuickBooks Online**.
+2. Search for **Intuit QuickBooks**.
 3. Click **Install**, then sign in to Intuit when Cursor prompts you.
 
 Or run `/add-plugin quickbooks-online` in chat.

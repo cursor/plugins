@@ -6,9 +6,8 @@ Search conversations, read full timelines, draft and send replies, post internal
 
 ## Install
 
-1. A Front admin creates a developer app and notes its credentials (see [Setup](#setup)).
-2. Open **Cursor Settings → Plugins**, search for **Front**, and click **Install**.
-3. Set **Front Client ID** and **Front Client Secret**, then complete the Front sign-in prompt.
+1. Open **Cursor Settings → Plugins**, search for **Front**, and click **Install**.
+2. Complete the Front sign-in prompt.
 
 Or run `/add-plugin front` in chat.
 
@@ -19,41 +18,19 @@ Or run `/add-plugin front` in chat.
   "mcpServers": {
     "front": {
       "type": "http",
-      "url": "https://mcp.frontapp.com/mcp",
-      "auth": {
-        "CLIENT_ID": "${CLIENT_ID}",
-        "CLIENT_SECRET": "${CLIENT_SECRET}",
-        "scopes": ["feature:mcp"]
-      }
+      "url": "https://mcp.frontapp.com/mcp"
     }
   }
 }
 ```
 
-Front does not support dynamic client registration, so the connection is a confidential client: a Front admin registers one developer app and Cursor sends that app's client ID and secret. Each user still signs in with their own Front account, and tool calls run with that teammate's Front permissions.
+Cursor supplies the Front OAuth client and requests the scope Front needs. Each user signs in with their own Front account, and tool calls run with that teammate's Front permissions.
 
 ## Setup
 
-### 1. Create the Front developer app
+There is nothing to configure. Install the plugin and complete the Front sign-in prompt.
 
-In Front, go to **Settings → Company → Developer** and create an app (for example "Cursor MCP Connector"):
-
-1. On the **Features** tab, click **Add feature** and select **Front MCP**.
-2. Note the **Client ID** and **Client secret**.
-3. Register the redirect URLs Cursor uses:
-
-   | Surface | Redirect URL |
-   | --- | --- |
-   | Desktop | `http://localhost:8787/callback` |
-   | Web and Cloud Agents | `https://www.cursor.com/agents/mcp/oauth/callback` |
-   | Grok Bot | `https://www.cursor.com/bot/mcp/oauth/callback` |
-
-4. Under **Resource permissions**, select the narrowest set that covers your use case: `read` for a research agent, `read` + `write` for a drafting copilot, and `send` only if the agent should actually send messages.
-5. Save the app.
-
-### 2. Enter the credentials in Cursor
-
-In **Dashboard → Plugins → Configure**, set **Front Client ID** and **Front Client Secret** from that app. On a team marketplace an admin sets them once for everyone; each member still completes their own Front sign-in.
+A Front admin decides what the connection can reach by choosing **Resource permissions** on the connected app: `read` for a research agent, `read` + `write` for a drafting copilot, and `send` only if the agent should actually send messages.
 
 ## What agents can do
 

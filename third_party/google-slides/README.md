@@ -36,7 +36,8 @@ The bundled `google-slides` skill teaches agents deck-building conventions: obje
 - Google Slides API: https://developers.google.com/workspace/slides/api/reference/rest
 - Google Workspace overview: https://developers.google.com/workspace
 
-Logo is the official Google Slides product icon, placed on a white tile with padding so it reads well in the Cursor UI.
+Logo is Google's current official Google Slides product icon, with padding on a transparent background:
+https://www.gstatic.com/images/branding/productlogos/slides_2026/v2/web/192px.svg
 
 ## License
 

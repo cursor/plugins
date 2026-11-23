@@ -1,0 +1,41 @@
+{
+  "name": "createos",
+  "displayName": "CreateOS",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Deploy and manage projects, environments, deployments, domains, logs, cron jobs, security scans, templates, and sandboxes on NodeOps CreateOS.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://createos.sh/docs/API-MCP/MCP-Operations",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "createos",
+    "nodeops",
+    "deploy",
+    "deployment",
+    "hosting",
+    "paas",
+    "cloud",
+    "docker",
+    "sandbox",
+    "domains",
+    "logs",
+    "analytics",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "createos",
+    "nodeops",
+    "deployment",
+    "cloud",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

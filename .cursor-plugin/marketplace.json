@@ -139,6 +139,11 @@
       "description": "Run GA4 reports and manage property configuration."
     },
     {
+      "name": "google-search-console",
+      "source": "third_party/google-search-console",
+      "description": "Query search performance, inspect URLs, and manage sitemaps."
+    },
+    {
       "name": "gong",
       "source": "third_party/gong",
       "description": "Pull account summaries, deal insights, and call briefs."
@@ -579,6 +584,11 @@
       "description": "Work with customers, vendors, items, sales and purchase documents, and the general ledger in Business Central."
     },
     {
+      "name": "sap-s4hana-cloud",
+      "source": "third_party/sap-s4hana-cloud",
+      "description": "Work with business partners, products, sales and purchase orders, supplier invoices, and journal entry items in SAP S/4HANA Cloud."
+    },
+    {
       "name": "square",
       "source": "third_party/square",
       "description": "Work with payments, orders, catalog, customers, and invoices."
@@ -694,6 +704,11 @@
       "description": "Read your Tesla cars and energy sites, and send commands you confirm."
     },
     {
+      "name": "uber-courier",
+      "source": "third_party/uber-courier",
+      "description": "Get a price, book, track, and cancel a package delivery on your Uber account."
+    },
+    {
       "name": "fitmetrics",
       "source": "third_party/fitmetrics",
       "description": "Review Trainerize clients and check-ins, and update macros, messages, and programs."
@@ -722,6 +737,91 @@
       "name": "front",
       "source": "third_party/front",
       "description": "Search conversations, draft and send replies, and manage tags, tasks, and inboxes."
+    },
+    {
+      "name": "paypal",
+      "source": "third_party/paypal",
+      "description": "Work with invoices, orders, refunds, subscriptions, disputes, and transactions in PayPal."
+    },
+    {
+      "name": "engine",
+      "source": "third_party/engine",
+      "description": "Search and book hotels, shorten or cancel stays, and check support cases in Engine."
+    },
+    {
+      "name": "squarespace",
+      "source": "third_party/squarespace",
+      "description": "Brainstorm business names and check domain availability, pricing, and checkout links on Squarespace."
+    },
+    {
+      "name": "runta",
+      "source": "third_party/runta",
+      "description": "Create and run persistent agent runtimes, publish ports, and manage egress, checkpoints, and images in Runta."
+    },
+    {
+      "name": "hospitable",
+      "source": "third_party/hospitable",
+      "description": "Manage short-term rental properties, reservations, calendars, guest messages, tasks, payouts, and owner statements in Hospitable."
+    },
+    {
+      "name": "close",
+      "source": "third_party/close",
+      "description": "Search and update leads, contacts, opportunities, tasks, and conversations in Close."
+    },
+    {
+      "name": "factset",
+      "source": "third_party/factset",
+      "description": "Query FactSet fundamentals, prices, estimates, ownership, and company data."
+    },
+    {
+      "name": "redo",
+      "source": "third_party/redo",
+      "description": "Look up orders and customers, create and process returns, work support tickets, review marketing campaigns and automations, manage fulfillment and inventory, and build analytics reports in Redo."
+    },
+    {
+      "name": "strava",
+      "source": "third_party/strava",
+      "description": "Connect your Strava account so Grok can read your activities, stats, and athlete profile to answer questions about your training. You'll share your profile and activity data, including private activities. Access is read-only, and you can disconnect anytime from Strava's My Apps settings."
+    },
+    {
+      "name": "expensify",
+      "source": "third_party/expensify",
+      "description": "Connect your Expensify account so Grok can search your expenses, reports, receipts, and invoices to answer questions about your spending. You'll share the Expensify data your account can already see. Access is read-only, and you can revoke it anytime."
+    },
+    {
+      "name": "rillet",
+      "source": "third_party/rillet",
+      "description": "Query financial reports and manage customers, invoices, bills, contracts, and vendors in Rillet."
+    },
+    {
+      "name": "item",
+      "source": "third_party/item",
+      "description": "Search, create, and update CRM contacts, companies, and custom objects, run saved views, manage lists, notes, and tasks, and ask the Item assistant about your customer data."
+    },
+    {
+      "name": "hq",
+      "source": "third_party/hq",
+      "description": "Read and capture company knowledge, projects, policies, files, and skills, message teammates and bots, and call governed integrations in HQ by Indigo."
+    },
+    {
+      "name": "createos",
+      "source": "third_party/createos",
+      "description": "Deploy and manage projects, environments, deployments, domains, logs, cron jobs, security scans, templates, and sandboxes on NodeOps CreateOS."
+    },
+    {
+      "name": "fiscal-ai",
+      "source": "third_party/fiscal-ai",
+      "description": "Pull source-linked financials, filings, ratios, prices, segments, KPIs, ownership, fund letters, and news from Fiscal.ai."
+    },
+    {
+      "name": "lmty",
+      "source": "third_party/lmty",
+      "description": "Read tracked competitors, competitive intelligence reports, change logs, evidence, social mentions, and market feeds for your products, and browse LMTY's public Markets, event timelines, and company, product, and person profiles."
+    },
+    {
+      "name": "sabre-developer-hub",
+      "source": "third_party/sabre-developer-hub",
+      "description": "Search and read Sabre Developer Hub documentation, OpenAPI specs, and Sabre-published agent skills for travel APIs, SDKs, and product collections."
     }
   ]
 }
