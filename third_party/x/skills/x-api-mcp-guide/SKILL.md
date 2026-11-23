@@ -92,17 +92,70 @@ MCP returns raw encrypted events. The local helper `xchat_lite.py` unlocks Juice
 Set it up yourself. Don't ask the owner where it is or to download it. Use one `XCHAT_ROOT` for the clone, `HELPER`, and `SCRIPT`, and reuse it on later turns.
 
 ```bash
-if [ -f "$HOME/xchat-lite/xchat_lite.py" ]; then
+XCHAT_REPO="https://github.com/xdevplatform/xchat-grokbot-helper.git"
+fresh=0
+if [ -f "$HOME/xchat-lite/xchat_lite.py" ] || [ -e "$HOME/xchat-lite/.git" ]; then
   XCHAT_ROOT="$HOME/xchat-lite"
-elif [ -f "./xchat-lite/xchat_lite.py" ]; then
+elif [ -f "./xchat-lite/xchat_lite.py" ] || [ -e "./xchat-lite/.git" ]; then
   XCHAT_ROOT="$(pwd)/xchat-lite"
 else
-  git clone https://github.com/xdevplatform/xchat-grokbot-helper.git "$HOME/xchat-lite"
   XCHAT_ROOT="$HOME/xchat-lite"
+  if [ -e "$XCHAT_ROOT" ]; then
+    XCHAT_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/xchat-lite.XXXXXX")"
+  fi
+  GIT_TERMINAL_PROMPT=0 git clone -q "$XCHAT_REPO" "$XCHAT_ROOT"
+  fresh=1
 fi
-[ -e "$XCHAT_ROOT/.git" ] && git -C "$XCHAT_ROOT" pull -q --ff-only 2>/dev/null || true
-if [ ! -x "$XCHAT_ROOT/.venv/bin/python" ]; then
-  python3 -m venv "$XCHAT_ROOT/.venv" && "$XCHAT_ROOT/.venv/bin/pip" install -U pip chatxdk
+xchat_ge_070() {
+  python3 -c 'import re, sys
+m = re.match(r"(\d+)\.(\d+)(?:\.(\d+))?(a|b|rc|\.dev)?", sys.argv[1].strip())
+sys.exit(0 if m and (tuple(int(x or 0) for x in m.groups()[:3]), 0 if m.group(4) else 1) >= ((0, 7, 0), 1) else 1)' "$1"
+}
+xchat_req_ok() {
+  [ -f "$1/xchat_lite.py" ] && [ -f "$1/requirements.txt" ] && xchat_ge_070 "$(python3 -c 'import pathlib, re, sys
+m = re.search(r"(?im)^\s*chatxdk(?:\[[^\]]*\])?\s*(?:===?|>=|~=)\s*([^\s;#]+)", pathlib.Path(sys.argv[1]).read_text())
+print(m.group(1) if m else "")' "$1/requirements.txt")"
+}
+req_before="$(cat "$XCHAT_ROOT/requirements.txt" 2>/dev/null || true)"
+pull_ok="$fresh"
+if [ "$fresh" -eq 0 ] && [ -e "$XCHAT_ROOT/.git" ] && GIT_TERMINAL_PROMPT=0 git -C "$XCHAT_ROOT" pull -q --ff-only 2>/dev/null; then
+  pull_ok=1
+fi
+venv_ver=""
+if [ -x "$XCHAT_ROOT/.venv/bin/python" ]; then
+  venv_ver="$("$XCHAT_ROOT/.venv/bin/python" -c 'import importlib.metadata as m; print(m.version("chatxdk"))' 2>/dev/null || true)"
+fi
+venv_ok=0; if xchat_ge_070 "$venv_ver"; then venv_ok=1; fi
+repo_ok=0; if xchat_req_ok "$XCHAT_ROOT"; then repo_ok=1; fi
+if [ "$repo_ok" -eq 0 ] || { [ "$venv_ok" -eq 0 ] && [ "$pull_ok" -eq 0 ]; }; then
+  refreshed=0
+  if [ -e "$XCHAT_ROOT/.git" ]; then
+    case "$(git -C "$XCHAT_ROOT" remote get-url origin 2>/dev/null || true)" in
+      *xchat-grokbot-helper*)
+        if GIT_TERMINAL_PROMPT=0 git -C "$XCHAT_ROOT" fetch -q origin 2>/dev/null; then
+          def="$(git -C "$XCHAT_ROOT" symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null || true)"
+          if [ -z "$def" ]; then
+            GIT_TERMINAL_PROMPT=0 git -C "$XCHAT_ROOT" remote set-head origin -a >/dev/null 2>&1 || true
+            def="$(git -C "$XCHAT_ROOT" symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null || echo origin/main)"
+          fi
+          if git -C "$XCHAT_ROOT" checkout -q -f --track -B "${def#origin/}" "$def" 2>/dev/null; then
+            refreshed=1
+          fi
+        fi
+        ;;
+    esac
+  fi
+  if [ "$refreshed" -eq 0 ]; then
+    XCHAT_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/xchat-lite.XXXXXX")"
+    GIT_TERMINAL_PROMPT=0 git clone -q "$XCHAT_REPO" "$XCHAT_ROOT"
+  fi
+fi
+req_after="$(cat "$XCHAT_ROOT/requirements.txt" 2>/dev/null || true)"
+if [ "$venv_ok" -eq 0 ] || [ "$req_after" != "$req_before" ] || [ ! -x "$XCHAT_ROOT/.venv/bin/python" ]; then
+  if [ ! -x "$XCHAT_ROOT/.venv/bin/python" ] || ! "$XCHAT_ROOT/.venv/bin/python" -m pip --version >/dev/null 2>&1; then
+    python3 -m venv --clear "$XCHAT_ROOT/.venv"
+  fi
+  "$XCHAT_ROOT/.venv/bin/python" -m pip install -U pip -r "$XCHAT_ROOT/requirements.txt"
 fi
 HELPER="$XCHAT_ROOT/.venv/bin/python"
 SCRIPT="$XCHAT_ROOT/xchat_lite.py"
