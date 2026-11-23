@@ -34,11 +34,12 @@ const decode = (text: string) =>
 function parseXml(xml: string) {
   const document: XmlNode = { tag: "", text: "", children: [] };
   const open = [document];
-  for (const [, close, tag, empty, text] of xml.matchAll(
-    /<(\/?)([^\s/>?!]+)[^>]*?(\/?)>|<[?!][^>]*>|([^<]+)/g,
+  for (const [, cdata, close, tag, empty, text] of xml.matchAll(
+    /<!\[CDATA\[([\s\S]*?)\]\]>|<!--[\s\S]*?-->|<(\/?)([^\s/>?!]+)[^>]*?(\/?)>|<[?!][^>]*>|([^<]+)/g,
   )) {
     const parent = open[open.length - 1];
-    if (text !== undefined) parent.text += decode(text);
+    if (cdata !== undefined) parent.text += cdata;
+    else if (text !== undefined) parent.text += decode(text);
     else if (close) open.pop();
     else if (tag) {
       const node: XmlNode = { tag, text: "", children: [] };
