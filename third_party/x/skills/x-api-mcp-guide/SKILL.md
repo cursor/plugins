@@ -146,16 +146,64 @@ if [ "$repo_ok" -eq 0 ] || { [ "$venv_ok" -eq 0 ] && [ "$pull_ok" -eq 0 ]; }; th
     esac
   fi
   if [ "$refreshed" -eq 0 ]; then
-    XCHAT_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/xchat-lite.XXXXXX")"
-    GIT_TERMINAL_PROMPT=0 git clone -q "$XCHAT_REPO" "$XCHAT_ROOT"
+    tmp_root="$(mktemp -d "${TMPDIR:-/tmp}/xchat-lite.XXXXXX")"
+    if GIT_TERMINAL_PROMPT=0 git clone -q "$XCHAT_REPO" "$tmp_root" 2>/dev/null; then
+      XCHAT_ROOT="$tmp_root"
+    else
+      rm -rf "$tmp_root"
+    fi
   fi
 fi
 req_after="$(cat "$XCHAT_ROOT/requirements.txt" 2>/dev/null || true)"
 if [ "$venv_ok" -eq 0 ] || [ "$req_after" != "$req_before" ] || [ ! -x "$XCHAT_ROOT/.venv/bin/python" ]; then
-  if [ ! -x "$XCHAT_ROOT/.venv/bin/python" ] || ! "$XCHAT_ROOT/.venv/bin/python" -m pip --version >/dev/null 2>&1; then
-    python3 -m venv --clear "$XCHAT_ROOT/.venv"
+  XCHAT_PY=""
+  for py in python3 python3.14 python3.13 python3.12 python3.11 python3.10; do
+    if command -v "$py" >/dev/null 2>&1 && "$py" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)' 2>/dev/null; then
+      XCHAT_PY="$py"; break
+    fi
+  done
+  new_venv="$XCHAT_ROOT/.venv.new"
+  rm -rf "$new_venv"
+  install_ok=0
+  fail_reason=""
+  if [ -z "$XCHAT_PY" ]; then
+    py_ver="$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))' 2>/dev/null || echo missing)"
+    fail_reason="Python $py_ver is older than 3.10 (chatxdk 0.7+ requires Python 3.10+)"
+  elif [ ! -f "$XCHAT_ROOT/requirements.txt" ]; then
+    fail_reason="requirements.txt is missing"
+  elif ! err="$("$XCHAT_PY" -m venv "$new_venv" 2>&1)"; then
+    fail_reason="$XCHAT_PY -m venv failed ($(printf '%s\n' "$err" | awk 'NF{l=$0}END{print l}'))"
+  elif ! err="$(PIP_NO_COLOR=1 "$new_venv/bin/python" -m pip install -q -U pip -r "$XCHAT_ROOT/requirements.txt" 2>&1)"; then
+    fail_reason="pip install failed ($(printf '%s\n' "$err" | awk 'NF{l=$0}END{print l}'))"
+  elif ! "$new_venv/bin/python" -c 'import chatxdk' 2>/dev/null; then
+    fail_reason="import chatxdk failed in new venv"
+  elif ! xchat_ge_070 "$("$new_venv/bin/python" -c 'import importlib.metadata as m; print(m.version("chatxdk"))' 2>/dev/null || true)"; then
+    fail_reason="installed chatxdk is still below 0.7.0"
+  else
+    old_venv="$XCHAT_ROOT/.venv.old"
+    rm -rf "$old_venv"
+    if [ -e "$XCHAT_ROOT/.venv" ]; then
+      mv "$XCHAT_ROOT/.venv" "$old_venv"
+    fi
+    if mv "$new_venv" "$XCHAT_ROOT/.venv"; then
+      rm -rf "$old_venv"
+      install_ok=1
+    else
+      if [ -e "$old_venv" ]; then
+        mv "$old_venv" "$XCHAT_ROOT/.venv" || true
+      fi
+      fail_reason="failed to swap new venv into place"
+    fi
   fi
-  "$XCHAT_ROOT/.venv/bin/python" -m pip install -U pip -r "$XCHAT_ROOT/requirements.txt"
+  if [ "$install_ok" -eq 0 ]; then
+    rm -rf "$new_venv"
+    if [ -x "$XCHAT_ROOT/.venv/bin/python" ] && "$XCHAT_ROOT/.venv/bin/python" -c 'import chatxdk' 2>/dev/null; then
+      printf 'X Chat helper is outdated (keeping existing chatxdk %s venv): %s\n' "${venv_ver:-unknown}" "$fail_reason" >&2
+    else
+      printf 'X Chat helper setup failed (no working venv): %s\n' "$fail_reason" >&2
+      false
+    fi
+  fi
 fi
 HELPER="$XCHAT_ROOT/.venv/bin/python"
 SCRIPT="$XCHAT_ROOT/xchat_lite.py"

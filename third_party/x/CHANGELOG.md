@@ -6,6 +6,7 @@ All notable changes to this plugin will be documented here.
 
 - The X Chat helper setup block now checks the installed `chatxdk` version in `.venv`, the `chatxdk` pin in `requirements.txt` (requiring at least `0.7.0`), and the presence of `xchat_lite.py`.
 - When a local copy is stale and `git pull --ff-only` fails, setup fetches and resets inside `xchat-grokbot-helper`'s own clone (or re-clones into a fresh directory), then installs dependencies from `requirements.txt` instead of an unpinned `chatxdk`.
+- Reinstalls build into a temporary `.venv.new` and swap it into `.venv` only after `pip install` and `import chatxdk` succeed (requiring Python 3.10+); on failure, the existing working `.venv` is preserved with a one-line warning explaining why the helper is outdated.
 - Requirements are also reinstalled whenever a cheap `git pull --ff-only` updates `requirements.txt`.
 - X Chat send instructions now pass `xdk_version` to `send_chat_message` exactly as output by the helper (including replies, reactions, edits, media, and first-message sends).
 
