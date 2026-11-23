@@ -821,7 +821,7 @@
     {
       "name": "levea",
       "source": "third_party/levea",
-      "description": "Edit videos from plain-language prompts: viral clips, 280+ animated caption templates, 9:16 reframing, voiceover, and MP4 export."
+      "description": "Edit videos from plain-language prompts: viral clips, 200+ animated caption templates, 9:16 reframing, voiceover, and MP4 export."
     }
   ]
 }

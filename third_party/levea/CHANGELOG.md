@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.0.1
+
+- Docs: caption template count is now "200+", and the README no longer lists the removed layer-shortcut tools.
+
 ## 1.0.0 — initial release
 
 - Added the `levea` MCP server pointing at Levea's hosted Streamable HTTP endpoint (`https://api.livecore.ai/api/v1/misc/mcp`).

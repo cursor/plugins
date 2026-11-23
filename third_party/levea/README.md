@@ -2,7 +2,7 @@
 
 Cursor plugin that connects agents to [Levea](https://www.livecore.ai) through Levea's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
 
-Describe an edit in plain language and get a finished MP4: extract viral clips from long recordings, apply 280+ animated caption templates, reframe 16:9 video to 9:16 with active speaker tracking, remove silences, layer B-roll and motion graphics, add voiceover and music, manage brand kits, and export for TikTok, Reels, Shorts, and YouTube.
+Describe an edit in plain language and get a finished MP4: extract viral clips from long recordings, apply 200+ animated caption templates, reframe 16:9 video to 9:16 with active speaker tracking, remove silences, layer B-roll and motion graphics, add voiceover and music, manage brand kits, and export for TikTok, Reels, Shorts, and YouTube.
 
 ## Install
 
@@ -45,9 +45,8 @@ You need a Levea account (`https://www.livecore.ai`). New accounts can be create
 | Autonomous editing (Mode A) | `autonomous_edit`, `autonomous_edit_streaming`, `queue_edit` |
 | Direct canonical actions & preview (Mode B) | `search_tools`, `get_action_schema`, `execute_action`, `execute_batch`, `render_preview` |
 | Built-in craft skills (100+ playbooks) | `search_skills`, `load_skill`, `read_skill_resource` |
-| Deterministic layer shortcuts | `update_layer`, `delete_layer`, `trim_layer`, `apply_transition` |
 | Job & task polling | `check_job_status`, `check_task_status`, `get_active_task` |
-| Caption templates (280+ styles) | `list_caption_templates`, `apply_caption_template`, `save_caption_template`, `save_current_caption_template`, `delete_caption_template` |
+| Caption templates (200+ styles) | `list_caption_templates`, `apply_caption_template`, `save_caption_template`, `save_current_caption_template`, `delete_caption_template` |
 | Brand kits | `list_brand_kits`, `get_brand_kit`, `create_brand_kit`, `update_brand_kit`, `delete_brand_kit` |
 | Projects | `list_projects`, `get_project`, `create_project`, `delete_project` |
 | Assets | `asset_upload_url`, `list_assets`, `delete_asset`, `transcribe_asset` |
