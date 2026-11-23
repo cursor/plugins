@@ -1,13 +1,14 @@
 ---
 name: reframe
-description: "Find the words experts use for the operator's task and the neighboring fields that solved it under other names, then rewrite the prompt in those words. Use for /reframe."
+description: "Teach the expert words for what the operator is building, borrow words from neighboring fields that solved the same problem, then rewrite their description with them. Use for /reframe."
 disable-model-invocation: true
 ---
 
-I want to ask for this the way an expert would. Before rewriting my prompt, work out three things from my own words and files:
+Teach the operator the expert words for what they are building. Start from their own files, code and description, not a summary.
 
-1. Name the words experts use for this, and say which part of my description each one names.
-2. Name the neighboring fields that solved the same problem under other names. For each, say what carries over and where the analogy breaks.
-3. Say what I don't know I don't know: the ideas next to this one that I haven't mentioned.
+1. Give 8 to 12 terms, ranked by how much each would change what gets built. For each, give the word and its meaning in one plain sentence, the part of their description it names, one real project, paper or system that uses it that way, with a link, and what it lets them ask an agent for.
+2. Pick 2 or 3 neighboring fields that solved the same shape of problem under other names. For each, say what carries over, where the analogy breaks, and which terms come back.
+3. Name what they didn't mention but should care about.
+4. Rewrite their description with the new words.
 
-Then rewrite my prompt in those words.
+Open every link and confirm it uses the term that way. Cut any citation you can't confirm. No padding.
