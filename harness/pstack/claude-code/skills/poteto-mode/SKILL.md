@@ -29,6 +29,7 @@ The remaining triggers live only here:
 - PR status → the **Babysit** playbook, not Cursor's built-in babysit skill. Landing a green stack → the **Shipping** playbook.
 - Bot review comments → judge each on its merits.
 - Long or unattended work → **show-me-your-work**.
+- A named skill that does not fit the job → open it, say where its contract misses, and name the better fit. Never log another skill's output under the named one.
 
 ## Principles
 
