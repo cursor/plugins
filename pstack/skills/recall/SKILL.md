@@ -1,12 +1,14 @@
 ---
 name: recall
-description: "Reconstruct your recent working context from your own chat history, live state, and the shared record (user reports, prior fixes, incidents), then hand back a tight current-state brief. Use for 'recall my work on X', 'catch me up', 'what have I been working on', 'where did I leave off', before starting or resuming work."
+description: "Reconstruct your recent working context from your own chat history, live state, and the shared record (user reports, prior fixes, incidents), then hand back a tight current-state brief. Also manages shared project memory with save and clean. Use for 'recall my work on X', 'catch me up', 'what have I been working on', 'where did I leave off', before starting or resuming work."
 disable-model-invocation: true
 ---
 
 # Recall
 
 **Before you start or resume work, you rebuild the user's recent working context and hand back a tight capsule of where things stand now and what to do next.**
+
+Explicit `save <topic>` and `clean` requests use the [shared project memory reference](references/project-memory.md). For ordinary recall, read relevant entries from `.pstack/memory.md` if it exists, cite them in the brief, and check them against the current project record.
 
 Keep it tight and on-topic. Read only what the in-scope threads need, then stop.
 

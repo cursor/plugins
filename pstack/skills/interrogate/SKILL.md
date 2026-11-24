@@ -12,6 +12,10 @@ Adversaries try to break a change or a design. A finding survives only when a ru
 
 The scope is what the user names. Otherwise it is the branch diff from its merge base with the base branch, through the working tree. State the intent with the **in-your-own-words** skill, from the user's message, the commits, and the PR description. Ask the user when the intent is unclear.
 
+## Acceptance criteria
+
+When an in-scope spec exists, read its acceptance criteria and any companion plan before reviewing. Give reviewers the criterion IDs and the relevant evidence. Check that the diff implements each criterion it claims to cover, that completed tasks have evidence, and that changed behavior maps to an approved criterion. Record missing behavior, unexplained scope, and verification gaps with a criterion ID and a file, command, or artifact reference. Label checks you did not run. Keep this coverage summary separate from the verified findings.
+
 ## Fan out
 
 Run Phase A steps 3 and 4 and Phase B of the **arena** skill, with four changes. Read the `interrogate reviewers` line in place of `arena runners`. Copy the scope's uncommitted changes into each worktree. Spawn each adversary as `generalPurpose`. In place of the arena task and rationale, give each adversary the scope, the intent, and this brief:
@@ -27,5 +31,6 @@ Skip arena Phases C, D, and E. Adversaries find different failures, so the verdi
 ## Output
 
 - **Intent**: the restatement.
+- **Acceptance coverage** (when a spec applies): criteria checked, deviations, and gaps in evidence.
 - **Findings**: for each verified finding, the command, its output, how it breaks the intent, and the adversaries that found it. Say "no verified findings" when none survive.
 - **Dropped**: for each adversary, the count of dropped findings and why.

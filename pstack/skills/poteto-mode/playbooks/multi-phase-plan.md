@@ -8,4 +8,6 @@
 4. Tests alone are not sufficient verification. A PR is verified only when its unit, live, and perf boxes are all checked. Each live box drives the real surface with a concrete scenario and a pass predicate. The perf box names the metric, the probe, the trunk baseline measured first, and the number that fails. A PR that changes an interaction waits for the operator's review before merge.
 5. Hand back the plan path and stop. Execution starts on the operator's explicit go.
 
+For work that needs to resume across sessions, add a [verified task list](../references/verified-plans.md) to the plan. Keep one task per independently verifiable unit. Put its acceptance criterion and any live or performance evidence in the corresponding PR section. Only the verifier marks task checkboxes complete.
+
 **Reply:** the plan path, the PR ids with their dependencies and the review-gated set, and what stays unproven.
