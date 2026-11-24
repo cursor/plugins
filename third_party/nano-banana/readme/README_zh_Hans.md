@@ -8,11 +8,9 @@ Generate Nano Banana images and retrieve the finished image. 插件复用 [Ace D
 
 ## 1. 搜索并安装独立 Nano Banana 插件
 
-打开 [Cursor 官方插件市场](https://cursor.com/marketplace)或 Cursor 的 **Customize**，搜索 **Nano Banana**（亦可搜 nano banana, nanobanana, nano-banana），核对显示名 **Nano Banana by Ace Data Cloud**、作者 **Ace Data Cloud Dev**，选择 **Install** 以及项目/用户范围。Cursor 3.24 曾使用 **Customize → Browse Marketplace → Add**，以所装版本为准。安装本插件不依赖 Ace 合集。
+在 [Cursor 插件市场](https://cursor.com/marketplace)或 **Customize** 中搜索 **Nano Banana by Ace Data Cloud**。如果显示由 **Ace Data Cloud Dev** 发布的条目，可选择 **Install**。
 
-**发布状态：**[官方收录申请](https://github.com/cursor/plugins/pull/562)仍待审核；源码公开或检查成功不等于市场已上架。准确条目不存在时，不要安装同名无关插件。可选的`~/.cursor/plugins/local/nano-banana/`源码本地审查属于手动路径，不能计作官方分发。本插件提供工具，不会在 Cursor 聊天模型服务商列表新增 Ace 预设。
-
-准确官方条目尚未发布时，按[固定候选本地审查步骤](../docs/local-review.md)复制已跟踪文件并记录commit，不猜市场地址。加载前核已有安装、允许本地导入，再Reload；指向外部源码目录的软链接会被跳过，同名市场安装优先。本地加载不计官方安装成功。
+也可从[独立插件 v1.0.1 发布页](https://github.com/AceDataCloud/NanoBananaCursor/releases/tag/v1.0.1)下载 **Source code (zip)**。将解压目录中的插件文件（包括隐藏的 `.cursor-plugin` 目录）复制到 `~/.cursor/plugins/local/nano-banana/`，然后运行 **Developer: Reload Window**。本地加载需要允许插件导入；如果编辑器已经安装市场版本，请只保留一份以免工具重复。[Cursor 本地安装说明](https://cursor.com/docs/plugins#test-plugins-locally)
 
 ## 2. 注册/登录并取得服务 API Token
 
@@ -34,7 +32,7 @@ Generate Nano Banana images and retrieve the finished image. 插件复用 [Ace D
 
 打开 **Customize → Plugins → Nano Banana by Ace Data Cloud → Configure**（旧版本可能只显示 **Nano Banana**），将Token填到 **Ace Data Cloud API token**，点 **Save**，等保存完成后重开确认遮蔽值。Cursor替换`ACEDATACLOUD_API_TOKEN`，插件自行添加`Bearer `并连接托管HTTP MCP，无需启动本地Python/Node服务。工具未加载时重新连接。
 
-路径和变量行为依据 **2026-10-18**读取的[Cursor官方插件说明](https://cursor.com/docs/reference/plugins#variables)。本插件当前版本的Configure真实截图仍待补；下方官方图只演示后续工具确认和结果区域，不是此Token输入框。
+路径和变量行为依据 **2026-10-18**读取的[Cursor官方插件说明](https://cursor.com/docs/reference/plugins#variables)。下方官方截图展示后续的工具确认和结果界面。
 
 ## 4. 首次调用
 
