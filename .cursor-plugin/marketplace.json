@@ -576,7 +576,7 @@
     {
       "name": "kling",
       "source": "third_party/kling",
-      "description": "Generate Kling videos and retrieve the finished clip."
+      "description": "Generate Kling videos with an Ace Data Cloud application token and retrieve the finished clip."
     },
     {
       "name": "tailscale",

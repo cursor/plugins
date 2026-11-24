@@ -1,12 +1,12 @@
-# Cursor Kling 插件
+# Kling by Ace Data Cloud · Cursor 插件
 
-Generate Kling videos and retrieve the finished clip. 插件复用 [Ace Data Cloud kling MCP](https://github.com/AceDataCloud/MCPs/tree/main/kling)，并提供专用 Agent skill。实际工具参数和限制以在线 MCP schema 为准。
+这是由 Ace Data Cloud 维护的第三方插件。它使用你的 Ace Data Cloud 应用密钥，通过 [Ace Data Cloud Kling MCP](https://github.com/AceDataCloud/MCPs/tree/main/kling) 生成视频，费用计入你的 Ace Data Cloud 账户。工具和限制以当前 MCP 定义为准。
 
 [English guide](../README.md) · [可复制的首跑提示词](../examples/first-run.md) · [当前价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=kling_cursor_shared_readme_pricing_zh_hans)
 
 ## 1. 搜索安装
 
-在 Cursor 3.24 打开 **Customize → Browse Marketplace**，搜索 **Kling**，确认作者 **Ace Data Cloud Dev** 和服务图标后点击 **Add**。较早版本可能在 Settings 中提供 Plugins 入口。也可在聊天中输入 `/add-plugin kling`。若官方条目尚未出现，可在 `~/.cursor/plugins/local/kling/` 本地审查；本地安装不代表 Marketplace 已上架。
+在 Cursor 3.24 打开 **Customize → Browse Marketplace**，搜索 **Kling by Ace Data Cloud**，确认作者 **Ace Data Cloud Dev** 和服务图标后点击 **Add**。较早版本可能在 Settings 中提供 Plugins 入口。也可在聊天中输入 `/add-plugin kling`。若官方条目尚未出现，可在 `~/.cursor/plugins/local/kling/` 本地审查；本地安装不代表 Marketplace 已上架。
 
 ## 2. 获取服务 API Key
 
@@ -18,7 +18,7 @@ Generate Kling videos and retrieve the finished clip. 插件复用 [Ace Data Clo
 
 ## 3. 配置插件
 
-打开 **Customize → Plugins → Kling → Configure**，将 Key 原文填入 **Ace Data Cloud API token** 并点击 **Save**。Cursor 将其用于 `ACEDATACLOUD_API_TOKEN`；插件会自行添加 `Bearer `，连接 `https://kling.mcp.acedata.cloud/mcp`；无需安装本地 Python 服务。工具未出现时重新连接 MCP。
+打开 **Customize → Plugins → Kling by Ace Data Cloud → Configure**，将 Key 原文填入 **Ace Data Cloud API token** 并点击 **Save**。Cursor 将其用于 `ACEDATACLOUD_API_TOKEN`；插件会自行添加 `Bearer `，连接 `https://kling.mcp.acedata.cloud/mcp`；无需安装本地 Python 服务。工具未出现时重新连接 MCP。
 
 ## 4. 首次调用
 
