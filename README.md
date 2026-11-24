@@ -153,6 +153,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `sabre-developer-hub` | [Sabre Developer Hub](third_party/sabre-developer-hub/) | Cursor | Integrations | Search and read Sabre Developer Hub documentation, OpenAPI specs, and Sabre-published agent skills for travel APIs, SDKs, and product collections. |
 | `freshbooks` | [FreshBooks](third_party/freshbooks/) | Cursor | Finance and Legal | Manage invoices, clients, expenses, bills, time tracking, and accounting reports. |
 | `campfire` | [Campfire](third_party/campfire/) | Cursor | Finance and Legal | Pull financial statements, ledgers, AR/AP, revenue recognition, and close status, and ask Ember about your books. |
+| `easyship` | [Easyship](third_party/easyship/) | Cursor | Integrations | Compare courier rates, create shipments, buy labels, book pickups, track parcels, and read shipping analytics across 550+ couriers. |
 | `iflytek-skills` | [iFLYTEK Skills](third_party/iflytek-skills/) | iFLYTEK | Integrations | Speech, OCR, translation, proofreading, and multimodal workflows powered by iFLYTEK APIs. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 

@@ -829,6 +829,11 @@
       "description": "Pull financial statements, ledgers, AR/AP, revenue recognition, and close status, and ask Ember about your books."
     },
     {
+      "name": "easyship",
+      "source": "third_party/easyship",
+      "description": "Compare courier rates, create shipments, buy labels, book pickups, track parcels, and read shipping analytics across 550+ couriers."
+    },
+    {
       "name": "iflytek-skills",
       "source": "third_party/iflytek-skills",
       "description": "Speech, OCR, translation, proofreading, and multimodal workflows powered by iFLYTEK APIs."
