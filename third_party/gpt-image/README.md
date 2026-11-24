@@ -8,11 +8,9 @@ Generate GPT Image pictures and retrieve the finished image. This standalone plu
 
 ## 1. Find the independent GPT Image plugin
 
-Open the [Cursor Marketplace](https://cursor.com/marketplace) or **Customize** in Cursor. Search **GPT Image** (gpt image, gpt-image, gpt image 2), then look for **GPT Image by Ace Data Cloud** and publisher/author **Ace Data Cloud Dev**. Select **Install** and choose the project or user scope. Cursor 3.24 used **Customize → Browse Marketplace → Add**; use the controls in your installed version. Installing this plugin does not require an Ace collection plugin.
+In [Cursor Marketplace](https://cursor.com/marketplace) or **Customize**, search for **GPT Image by Ace Data Cloud**. If the entry from **Ace Data Cloud Dev** is available, select **Install**.
 
-**Publication status:** [the official submission](https://github.com/cursor/plugins/pull/548) is pending review; an available source repository or a passing check does not prove a live Marketplace listing. If the exact listing is absent, do not install a similarly named unrelated plugin. An optional source/local review under `~/.cursor/plugins/local/gpt-image/` is a manual route, not official distribution. This is a tool integration, not an Ace preset in Cursor's chat-model provider list.
-
-For an unpublished candidate, use the [pinned local-review procedure](docs/local-review.md) rather than guessing a Marketplace URL. It copies the tracked candidate files, checks for an existing installation, and records the exact commit. Local loading needs a reload and allowed local imports; an external-repository symlink is skipped, and a same-name Marketplace install takes precedence. This procedure does not claim official installation.
+To load a standalone copy, download **Source code (zip)** from the [v1.0.1 release](https://github.com/AceDataCloud/GPTImageCursor/releases/tag/v1.0.1). Copy the contents of the extracted plugin folder, including its hidden `.cursor-plugin` directory, into `~/.cursor/plugins/local/gpt-image/`. Run **Developer: Reload Window**. Local imports must be allowed. Use one copy in the editor to avoid duplicate tools. [Cursor local installation instructions](https://cursor.com/docs/plugins#test-plugins-locally)
 
 ## 2. Register or sign in and get a service API token
 
@@ -34,7 +32,7 @@ Copy only the service token string: no `Bearer ` prefix, quotation marks or reda
 
 Open **Customize → Plugins → GPT Image by Ace Data Cloud → Configure** (older versions may show **GPT Image**). Paste the token in **Ace Data Cloud API token**, choose **Save**, wait for completion, then reopen Configure to confirm a masked value. Cursor substitutes `ACEDATACLOUD_API_TOKEN`; the plugin adds `Bearer ` and connects to its hosted HTTP MCP. No Python or Node server needs to be started. Reconnect if tools have not loaded.
 
-The Configure path and variable behavior follow the [official Cursor plugin reference](https://cursor.com/docs/reference/plugins#variables), checked **2026-10-18**. A current Ace-specific Configure screenshot is still pending; the official screenshots below illustrate the subsequent tool approval/result UI, not this token field.
+The Configure path and variable behavior follow the [official Cursor plugin reference](https://cursor.com/docs/reference/plugins#variables), checked **2026-10-18**. The screenshots below show Cursor’s tool approval and result views.
 
 ```json
 {
