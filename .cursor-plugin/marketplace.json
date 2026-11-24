@@ -832,6 +832,11 @@
       "name": "easyship",
       "source": "third_party/easyship",
       "description": "Compare courier rates, create shipments, buy labels, book pickups, track parcels, and read shipping analytics across 550+ couriers."
+    },
+    {
+      "name": "jobber",
+      "source": "third_party/jobber",
+      "description": "Look up clients, quotes, jobs, visits, and invoices, and create clients, requests, and quotes."
     }
   ]
 }
