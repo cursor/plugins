@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "bill": {
+      "type": "http",
+      "url": "https://gateway.prod.bill.com/ai-mcp-server/v1"
+    }
+  }
+}
