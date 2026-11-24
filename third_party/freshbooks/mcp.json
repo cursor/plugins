@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "freshbooks": {
+      "type": "http",
+      "url": "https://mcp.freshbooks.com/v1"
+    }
+  }
+}
