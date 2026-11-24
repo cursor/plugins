@@ -819,6 +819,21 @@
       "description": "Search and read Sabre Developer Hub documentation, OpenAPI specs, and Sabre-published agent skills for travel APIs, SDKs, and product collections."
     },
     {
+      "name": "freshbooks",
+      "source": "third_party/freshbooks",
+      "description": "Manage invoices, clients, expenses, bills, time tracking, and accounting reports."
+    },
+    {
+      "name": "campfire",
+      "source": "third_party/campfire",
+      "description": "Pull financial statements, ledgers, AR/AP, revenue recognition, and close status, and ask Ember about your books."
+    },
+    {
+      "name": "easyship",
+      "source": "third_party/easyship",
+      "description": "Compare courier rates, create shipments, buy labels, book pickups, track parcels, and read shipping analytics across 550+ couriers."
+    },
+    {
       "name": "notfair",
       "source": "third_party/notfair",
       "description": "Operate Google, Meta, X, LinkedIn, Reddit, and TikTok Ads plus GA4, Search Console, GoHighLevel, and WordPress through one OAuth MCP."
