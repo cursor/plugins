@@ -827,6 +827,11 @@
       "name": "campfire",
       "source": "third_party/campfire",
       "description": "Pull financial statements, ledgers, AR/AP, revenue recognition, and close status, and ask Ember about your books."
+    },
+    {
+      "name": "bill",
+      "source": "third_party/bill",
+      "description": "Search bills, payments, invoices, and card spend."
     }
   ]
 }
