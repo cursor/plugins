@@ -817,6 +817,11 @@
       "name": "sabre-developer-hub",
       "source": "third_party/sabre-developer-hub",
       "description": "Search and read Sabre Developer Hub documentation, OpenAPI specs, and Sabre-published agent skills for travel APIs, SDKs, and product collections."
+    },
+    {
+      "name": "freshbooks",
+      "source": "third_party/freshbooks",
+      "description": "Manage invoices, clients, expenses, bills, time tracking, and accounting reports."
     }
   ]
 }
