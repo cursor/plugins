@@ -50,12 +50,7 @@ Reload the target project or start a fresh agent rooted there. Verify that these
 - `why`
 - `tdd`
 - `unslop`
-- `principle-separate-before-serializing-shared-state`
-- `principle-minimize-reader-load`
-- `principle-guard-the-context-window`
-- `principle-sequence-verifiable-units`
-- `principle-fix-root-causes`
-- `principle-prove-it-works`
+- `poteto-mode` (with leaf principle references `references/principle-separate-before-serializing-shared-state/SKILL.md`, `references/principle-minimize-reader-load/SKILL.md`, `references/principle-guard-the-context-window/SKILL.md`, `references/principle-sequence-verifiable-units/SKILL.md`, `references/principle-fix-root-causes/SKILL.md`, and `references/principle-prove-it-works/SKILL.md`)
 
 Do not count a skill loaded from the current session or a user-scoped plugin. The check must show that a fresh agent in the target repository receives pstack through project settings.
 

@@ -39,7 +39,7 @@ Read these. Do not copy their contents into this file.
 |-------|-------|
 | Shared mode (Principles index, non-negotiable triggers, Writing the reply, Autonomy, Subagents, playbook catalog) | pstack `poteto-mode` skill |
 | Shared playbooks | pstack `poteto-mode/playbooks/<name>.md` |
-| Principle leaves | pstack `principle-*` skills |
+| Principle leaves | pstack `poteto-mode/references/principle-<name>/SKILL.md` |
 | `deslop`, `control-ui`, `control-cli`, `verify-this` | `cursor-team-kit` plugin |
 | Repo coding standards | The repo's `AGENTS.md`, `.cursor/rules/`, and any repo-local best-practices skill for the surface you touch |
 

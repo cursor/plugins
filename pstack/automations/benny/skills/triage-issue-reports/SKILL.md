@@ -24,8 +24,8 @@ Load the external Benny configuration supplied by the automation. If the config 
 - If worker isolation cannot enforce those limits, do the work in the coordinator.
 - Never create an issue that cannot link back to the source thread.
 - Prefer no ticket over a guessed or duplicate ticket.
-- Apply pstack's `principle-separate-before-serializing-shared-state` to source coordinates.
-- Apply pstack's `principle-minimize-reader-load` and `unslop` skills to the final verdict.
+- Apply pstack's `poteto-mode` principle reference `references/principle-separate-before-serializing-shared-state/SKILL.md` to source coordinates.
+- Apply pstack's `poteto-mode` principle reference `references/principle-minimize-reader-load/SKILL.md` and `unslop` skill to the final verdict.
 
 ## 1. Freeze source coordinates
 

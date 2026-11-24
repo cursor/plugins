@@ -5,7 +5,7 @@
 // Exits 1 when the docs drift from the tree.
 
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { dirname, join, posix } from "node:path";
+import { basename, dirname, join, posix } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -35,8 +35,11 @@ const isSkill = (path) => existsSync(join(path, "SKILL.md"));
 const isMarkdown = (path) => path.endsWith(".md") && statSync(path).isFile();
 
 const skills = names(join(PSTACK, "skills"), isSkill);
-const principles = skills.filter((name) => name.startsWith("principle-"));
-const commands = skills.filter((name) => !name.startsWith("principle-"));
+const principles = names(
+  join(PSTACK, "skills", "poteto-mode", "references"),
+  (path) => basename(path).startsWith("principle-") && isSkill(path),
+);
+const commands = skills;
 const playbooks = names(join(PSTACK, "skills", "poteto-mode", "playbooks"), isMarkdown).map((name) => name.slice(0, -3));
 const agents = names(join(PSTACK, "agents"), isMarkdown).map((name) => name.slice(0, -3));
 const teamKit = names(join(ROOT, "cursor-team-kit", "skills"), isSkill);
@@ -74,7 +77,7 @@ function anchors(path) {
 }
 
 const expected = {
-  skills: [skills.length, commands.length],
+  skills: [skills.length],
   principles: [principles.length],
   playbooks: [playbooks.length],
   agents: [agents.length],
@@ -127,6 +130,11 @@ const readme = text.get("README.md");
 for (const skill of skills) {
   if (!readme.includes(`(./skills/${skill}/SKILL.md)`)) problems.push(`README.md does not list skill ${skill}`);
 }
+for (const principle of principles) {
+  if (!readme.includes(`(./skills/poteto-mode/references/${principle}/SKILL.md)`)) {
+    problems.push(`README.md does not list principle ${principle}`);
+  }
+}
 for (const playbook of playbooks) {
   if (!readme.includes(`(./skills/poteto-mode/playbooks/${playbook}.md)`)) problems.push(`README.md does not list playbook ${playbook}`);
 }
@@ -138,7 +146,7 @@ const inDocs = new Set([...named.values()].flatMap((set) => [...set]));
 const inGuide = new Set(docs.filter((doc) => doc !== "README.md").flatMap((doc) => [...named.get(doc)]));
 const unnamed = commands.filter((name) => !inGuide.has(name));
 console.log(
-  `tree: ${skills.length} skills (${commands.length} commands, ${principles.length} principles), ` +
+  `tree: ${skills.length} skills, ${principles.length} principles, ` +
     `${playbooks.length} playbooks, ${agents.length} agents`,
 );
 console.log(
