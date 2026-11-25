@@ -1,0 +1,55 @@
+{
+  "name": "nooks",
+  "displayName": "Nooks",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Search prospects, accounts, calls, and transcripts, and manage sequences, enrollments, tasks, and emails in Nooks.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://support.nooks.ai/articles/1983758998-how-to-integrate-nooks-with-claude",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "nooks",
+    "sales",
+    "sales engagement",
+    "dialer",
+    "sequences",
+    "prospects",
+    "calls",
+    "coaching",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "nooks",
+    "sales",
+    "mcp",
+    "sequences"
+  ],
+  "variables": {
+    "type": "object",
+    "properties": {
+      "CLIENT_ID": {
+        "type": "string",
+        "title": "Nooks Client ID",
+        "description": "Client ID of a Nooks OAuth app (Nooks Settings → All Settings → Developer → OAuth Apps)."
+      },
+      "CLIENT_SECRET": {
+        "type": "string",
+        "title": "Nooks Client Secret",
+        "description": "Client Secret of the same Nooks OAuth app."
+      }
+    },
+    "required": [
+      "CLIENT_ID",
+      "CLIENT_SECRET"
+    ]
+  },
+  "mcpServers": "./mcp.json"
+}
