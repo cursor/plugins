@@ -89,6 +89,35 @@ describe("readiness truth table", () => {
       blocker: { kind: "failing-checks" },
     });
   });
+
+  it("waits while GitHub replaces draft-time failures", async () => {
+    const reader = fakeReader({
+      facts: { mergeStateStatus: "BLOCKED" },
+      fastPath: {
+        kind: "checks",
+        checks: [failedCheck("Jest"), pendingCheck("Run: Jest")],
+      },
+      commitRollups: [{ oid: "head", state: "PENDING" }],
+    });
+    const snapshot = await readSnapshot({
+      reader,
+      context: context(2),
+      pendingHistory: "omit",
+      allowDraft: false,
+    });
+
+    expect(snapshot.kind).toBe("open");
+    if (snapshot.kind !== "open") throw new Error("expected open snapshot");
+    expect(snapshot.ci).toMatchObject({
+      kind: "ci-pending",
+      failed: [],
+      pending: [{ name: "Run: Jest" }],
+    });
+    expect(classifyPr(snapshot)).toMatchObject({
+      kind: "waiting",
+      pending: [{ name: "Run: Jest" }],
+    });
+  });
 });
 
 describe("snapshot query planning", () => {

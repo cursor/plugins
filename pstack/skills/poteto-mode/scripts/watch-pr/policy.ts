@@ -96,7 +96,9 @@ export async function readSnapshot(args: {
       all: checks.checks,
       hadPreviousPassingCi: merge.hadPreviousPassingCi,
     };
-    if (failed !== null)
+    if (pending !== null && merge.github.headRollupState === "PENDING")
+      ci = { ...base, kind: "ci-pending", failed: [], pending };
+    else if (failed !== null)
       ci = {
         ...base,
         kind: "ci-failing",
