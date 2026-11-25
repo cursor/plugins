@@ -28,8 +28,8 @@ Load the external Benny configuration supplied by the automation. If the config,
 - Existing pull requests or commits switch the run to verify mode. Do not author over them.
 - Use `github.com` pull request links.
 - Keep captures, recordings, logs, and tokens out of source control.
-- Use pstack's `principle-guard-the-context-window` for delegated analysis.
-- Apply pstack's `principle-sequence-verifiable-units`, `principle-fix-root-causes`, and `principle-prove-it-works` through repro, fix, and verification.
+- Use pstack's `poteto-mode` principle reference `references/principle-guard-the-context-window/SKILL.md` for delegated analysis.
+- Apply pstack's `poteto-mode` principle references `references/principle-sequence-verifiable-units/SKILL.md`, `references/principle-fix-root-causes/SKILL.md`, and `references/principle-prove-it-works/SKILL.md` through repro, fix, and verification.
 
 ## 1. Freeze source coordinates
 

@@ -103,7 +103,7 @@ The default answer is `/poteto-mode`, which runs most of the others when its ste
 | Build a page whose buttons wake a Grok Bot over a webhook | [`/make-bot-ui`](../make-bot-ui/SKILL.md) |
 | Find their way around pstack | `/poteto-help` |
 
-If a skill directory next to this one is missing from the table, read its frontmatter and route by its description. The `principle-*` directories are covered under principles below.
+If a skill directory next to this one is missing from the table, read its frontmatter and route by its description.
 
 Close calls:
 
@@ -134,7 +134,7 @@ Without `/poteto-mode`, a phrase such as "babysit this pr" can start Cursor's ow
 
 pstack has no planning skill. Cursor's Plan Mode works alongside it. For work that spans phases or stacked PRs, asking `/poteto-mode` for a plan runs the [Multi-phase plan playbook](../poteto-mode/playbooks/multi-phase-plan.md), which writes the plan and doesn't implement it. For a design question, the Prototype playbook or `/architect` settles it in code first.
 
-Principles are one-rule skills that `/poteto-mode` reads and cites in its replies. The user rarely invokes one. They steer with the names instead, as in "apply prove it works. show me the real output." Typing `/principle-<name>` still loads one on demand. [Guide page 8](../../docs/guide/08-principles.md) lists them.
+Principles are one-rule references under `poteto-mode/references/principle-*/SKILL.md` that `/poteto-mode` reads and cites in its replies. They are not top-level skills and have no slash command. Users steer with the names instead, as in "apply prove it works. show me the real output." [Guide page 8](../../docs/guide/08-principles.md) lists them.
 
 ## Fix a run that went wrong
 
