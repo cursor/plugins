@@ -242,7 +242,7 @@ const PlanObjectSchema = z
     slackChannel: nonEmptyStringSchema
       .optional()
       .describe(
-        "Slack channel id for run visibility. Set from --slack-channel or SLACK_CHANNEL_ID by kickoff or the first root run."
+        "Slack channel id for run visibility. Set from --slack-channel or ORCHESTRATE_SLACK_CHANNEL_ID by kickoff or the first root run."
       ),
     slackKickoffRef: z
       .object({
@@ -500,6 +500,38 @@ export const StopResultSchema = z.discriminatedUnion("action", [
   NoopStopResultSchema,
 ]);
 
+const ModelSelectionSchema = z
+  .object({
+    id: z.string().min(1).describe("Model id as accepted by the Cursor API."),
+    params: z
+      .array(z.object({ id: z.string(), value: z.string() }))
+      .optional()
+      .describe("Model parameters, e.g. reasoning, effort, thinking, fast."),
+  })
+  .describe("Canonical SDK selection passed to `Agent.create({ model })`.");
+
+const ModelProfileSchema = z.object({
+  slug: z
+    .string()
+    .min(1)
+    .describe("Authoring name planners write into `tasks[].model`."),
+  selection: ModelSelectionSchema,
+  summary: z.string().describe("One-line description planners read."),
+  strengths: z
+    .array(z.string())
+    .describe("Capability keywords planners match a task against."),
+  speed: z.string().describe("Relative latency, e.g. fast, medium, slow."),
+  use: z.string().describe("When a planner should pick this model."),
+  defaultFor: z
+    .array(TaskTypeSchema)
+    .optional()
+    .describe(
+      "Task types that use this model when `tasks[].model` is omitted."
+    ),
+});
+
+export const ModelCatalogSchema = z.array(ModelProfileSchema);
+
 const TreeTaskSchema = z
   .object({
     name: taskNameSchema,
@@ -534,6 +566,7 @@ export type SpawnResult = z.infer<typeof SpawnResultSchema>;
 export type RecoverResult = z.infer<typeof RecoverResultSchema>;
 export type StopResult = z.infer<typeof StopResultSchema>;
 export type TreeTask = z.infer<typeof TreeTaskSchema>;
+export type ModelProfile = z.infer<typeof ModelProfileSchema>;
 export interface TreeState {
   rootSlug: string | null;
   tasks: TreeTask[];
@@ -574,6 +607,19 @@ export function parsePlanTaskValue(value: unknown, source: string): PlanTask {
     value,
     source,
     recoveryHint: "Fix the task definition before spawning.",
+  });
+}
+
+export function parseModelCatalogJson(
+  text: string,
+  source: string
+): ModelProfile[] {
+  return parseJsonWithSchema({
+    schema: ModelCatalogSchema,
+    text,
+    source,
+    recoveryHint:
+      "Every entry needs slug, selection, summary, strengths, speed, and use. Unset the variable and run `bun cli.ts models --json` to copy the built-in catalog as a starting point.",
   });
 }
 
