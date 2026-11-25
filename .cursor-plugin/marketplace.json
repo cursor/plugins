@@ -834,6 +834,11 @@
       "description": "Compare courier rates, create shipments, buy labels, book pickups, track parcels, and read shipping analytics across 550+ couriers."
     },
     {
+      "name": "jobber",
+      "source": "third_party/jobber",
+      "description": "Look up clients, quotes, jobs, visits, and invoices, and create clients, requests, and quotes."
+    },
+    {
       "name": "iflytek-skills",
       "source": "third_party/iflytek-skills",
       "description": "Speech, OCR, translation, proofreading, and multimodal workflows powered by iFLYTEK APIs."
