@@ -25,6 +25,8 @@ First, read recent commits, reverts, review comments, agent instruction files, a
 
 Then fix the most frequent classes now, one commit each. Prove each new check fails on a real past mistake. Run the same command locally and in CI. Exceptions go on the offending line with a reason, an expiry date, and a human's approval.
 
+For a check behind an opt-in switch, show that the switch is on in the configuration the normal workflow uses and that the workflow runs the check. A replay with the switch forced on doesn't count as activation proof. If the check is inactive or you lack activation proof, record it as pending, not shipped.
+
 ## Keep the rule table
 
 Last, keep a table in the agent instruction file that pairs each rule with what enforces it. When the operator corrects you, fix the mistake and add the rule. If the rule was already there and nothing enforces it, that's a repeat, so fix it at the highest level in the same change. Drop a rule once its mistake can't happen.
