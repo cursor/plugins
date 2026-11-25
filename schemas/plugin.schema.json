@@ -7,6 +7,10 @@
   "required": ["name"],
   "additionalProperties": false,
   "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional JSON Schema pointer for editor autocomplete; ignored by tooling."
+    },
     "name": {
       "type": "string",
       "minLength": 1,
