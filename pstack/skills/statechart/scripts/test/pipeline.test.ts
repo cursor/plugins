@@ -164,6 +164,7 @@ const twoStates = (breaks: Rule[], property = "Settles"): CheckResult => ({
   drawing: undefined,
   states: { distinct: 2, initial: 1, complete: true, cut: false },
   messages: [{ code: EC.TLC_FINISHED, level: LEVEL.NONE, body: ["Finished in 394ms at (T)"] }],
+  warnings: [],
 });
 
 const body = (files: Map<string, Iterable<string | Uint8Array>>, name: string) => {

@@ -1,4 +1,4 @@
-import { EC, type Part } from "../ir.ts";
+import { EC, LEVEL, type Part } from "../ir.ts";
 import { textOf } from "./messages.ts";
 
 export type Break =
@@ -19,12 +19,18 @@ const DISTINCT = new Map<number, RegExp>([
   [EC.TLC_STATS, /(\d+) distinct states found/],
 ]);
 
-export function readVerdict(messages: Iterable<Part>) {
+const aboutTheRun = (code: number, bounded: boolean) =>
+  code === EC.TLC_ENVIRONMENT_JVM_GC ||
+  (bounded && code === EC.TLC_FEATURE_LIVENESS_CONSTRAINTS);
+
+export function readVerdict(messages: Iterable<Part>, bounded = false) {
   let broke: Break | undefined;
   let distinct = 0;
   let initial = 0;
+  const warnings: string[] = [];
   for (const m of messages) {
     if (typeof m === "string") continue;
+    if (m.level === LEVEL.WARNING && !aboutTheRun(m.code, bounded)) warnings.push(textOf(m));
     const count = DISTINCT.get(m.code)?.exec(textOf(m));
     if (count) distinct = Math.max(distinct, Number(count[1]));
     if (m.code === EC.TLC_INIT_GENERATED1 || m.code === EC.TLC_INIT_GENERATED2)
@@ -36,5 +42,5 @@ export function readVerdict(messages: Iterable<Part>) {
     const name = named?.[1].exec(textOf(m))?.[1];
     if (named && name) broke = { kind: named[0], name };
   }
-  return { broke, distinct, initial };
+  return { broke, distinct, initial, warnings };
 }

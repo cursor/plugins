@@ -1,0 +1,24 @@
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: Breaks NoDeadlock
+    lg1: Path to the NoDeadlock bug
+  }
+  class lg0 breaks
+  class lg1 bugPath
+  s0: side=0 x=0 paid=FALSE
+  s1: side=1 x=0 paid=FALSE
+  s2: side=0 x=1 paid=FALSE
+  s3: side=0 x=2 paid=FALSE
+  s4: side=0 x=3 paid=FALSE
+  s5: side=0 x=4 paid=FALSE
+  s6: side=0 x=5 paid=FALSE
+  [*] --> s0
+  [*] --> s1
+  s0 --> s2: Step
+  s2 --> s3: Step
+  s3 --> s4: Step
+  s4 --> s5: Step
+  s5 --> s6: Step
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  class s1 breaks
+  class s1 bugPath

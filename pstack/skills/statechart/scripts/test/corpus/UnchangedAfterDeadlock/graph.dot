@@ -1,0 +1,25 @@
+strict digraph DiskGraph {
+nodesep=0.35;
+subgraph cluster_graph {
+color="white";
+-5243620187527078639 [label="/\\ side = 0\n/\\ x = 0\n/\\ paid = FALSE",style = filled]
+7331602431577323913 [label="/\\ side = 1\n/\\ x = 0\n/\\ paid = FALSE",style = filled]
+-5243620187527078639 -> 2592443193205854937 [label="Step",color="black",fontcolor="black"];
+2592443193205854937 [label="/\\ side = 0\n/\\ x = 1\n/\\ paid = FALSE"];
+2592443193205854937 -> -4858708178491410644 [label="Step",color="black",fontcolor="black"];
+-4858708178491410644 [label="/\\ side = 0\n/\\ x = 2\n/\\ paid = FALSE"];
+-4858708178491410644 -> 2905587872829569252 [label="Step",color="black",fontcolor="black"];
+2905587872829569252 [label="/\\ side = 0\n/\\ x = 3\n/\\ paid = FALSE"];
+2905587872829569252 -> -6887147292129408661 [label="Step",color="black",fontcolor="black"];
+-6887147292129408661 [label="/\\ side = 0\n/\\ x = 4\n/\\ paid = FALSE"];
+-6887147292129408661 -> 3795178130618893987 [label="Step",color="black",fontcolor="black"];
+3795178130618893987 [label="/\\ side = 0\n/\\ x = 5\n/\\ paid = FALSE"];
+3795178130618893987 -> 3795178130618893987 [label="Next",color="black",fontcolor="black"];
+{rank = same; -5243620187527078639;7331602431577323913;}
+{rank = same; 2592443193205854937;}
+{rank = same; -4858708178491410644;}
+{rank = same; 2905587872829569252;}
+{rank = same; -6887147292129408661;}
+{rank = same; 3795178130618893987;}
+}
+}
