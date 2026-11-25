@@ -122,17 +122,20 @@ export function drawnEdges(r: Region): Edge[] {
     );
     if (!into.length || into.some((e) => wayIn(e) !== wayIn(into[0]))) continue;
     const one = into.length === 1;
+    const first = into[0].label;
+    const common = into.every((e) => e.label === first) ? first : undefined;
+    const hoisted = common !== undefined && common !== "";
     const at = out.indexOf(into[0]);
     out = out.filter((e) => !into.includes(e));
     out.splice(
       at,
       0,
-      { ...into[0], to: parent, label: one ? into[0].label : undefined },
+      { ...into[0], to: parent, label: one ? into[0].label : hoisted ? common : undefined },
       ...into.map((e) => ({
         from: parent,
         start: true,
         to: e.to,
-        label: one ? undefined : e.label,
+        label: one ? undefined : hoisted ? undefined : e.label,
       })),
     );
   }

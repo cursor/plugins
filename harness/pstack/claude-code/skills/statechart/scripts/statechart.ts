@@ -149,14 +149,24 @@ try {
           { cause: error },
         );
       }
+      if (tmp) {
+        fs.rmSync(tmp, { recursive: true, force: true });
+        tmp = undefined;
+      }
       process.stdout.write(fs.readFileSync(path.join(dest, "report.md")));
       console.log(`\nWrote ${out}`);
       exitCode = verdict;
     } else exitCode = 2;
   } finally {
-    fs.rmSync(stage, { recursive: true, force: true });
-    if (tmp) fs.rmSync(tmp, { recursive: true, force: true });
-    janitor?.kill("SIGKILL");
+    try {
+      fs.rmSync(stage, { recursive: true, force: true });
+    } catch {}
+    try {
+      if (tmp) fs.rmSync(tmp, { recursive: true, force: true });
+    } catch {}
+    try {
+      janitor?.kill("SIGKILL");
+    } catch {}
   }
   process.exit(exitCode);
 } catch (error) {
