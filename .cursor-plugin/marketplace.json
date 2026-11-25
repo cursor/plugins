@@ -837,11 +837,6 @@
       "name": "jobber",
       "source": "third_party/jobber",
       "description": "Look up clients, quotes, jobs, visits, and invoices, and create clients, requests, and quotes."
-    },
-    {
-      "name": "nooks",
-      "source": "third_party/nooks",
-      "description": "Search prospects, accounts, calls, and transcripts, and manage sequences, enrollments, tasks, and emails in Nooks."
     }
   ]
 }
