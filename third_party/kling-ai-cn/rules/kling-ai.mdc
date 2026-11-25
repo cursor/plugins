@@ -1,0 +1,27 @@
+---
+description: Use Kling AI for prompts, storyboards, image, video, motion, asset, account, and task requests
+globs:
+alwaysApply: false
+---
+
+For Kling requests, use `$kling-ai` and route creative work to
+`$kling-ai-generate-image` or `$kling-ai-generate-video`. Use only the
+configured `kling-ai` China MCP at `https://klingai.com/mcp/plugin`.
+For prompt-only or storyboard-only requests, deliver the text without MCP calls.
+During generation preparation, discover live model capabilities across relevant
+tools and follow the dedicated Skill's model preferences. For video, include
+`omni_ref_video` when available. Confirm final billable settings before generation
+unless the same unsubmitted intent and unchanged settings are already explicitly
+authorized. Submit each confirmed intent at most once.
+
+Check current credits on the same connection immediately before submitting. If
+the balance is unavailable or insufficient, pause and follow the core Skill's
+recovery workflow. When the user asks to resume and the original submission
+has a task number, check that task first.
+
+Let a mounted generation MCP App refresh its own task. If no App is mounted
+and a `generationId` is known, query at the provider-permitted interval until
+terminal, cancelled, or the turn cannot continue. Report completion only after
+terminal success with usable primary media. Query once for an explicit standalone
+status request with a known task ID. Never switch regions or start or depend on
+a local Kling MCP server.
