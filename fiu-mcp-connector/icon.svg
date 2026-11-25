@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">FIU 融聚汇</title>
+  <defs>
+    <linearGradient id="red" x1="16" y1="1" x2="38" y2="61" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0d9d9"/>
+      <stop offset="0.28" stop-color="#bd7377"/>
+      <stop offset="0.63" stop-color="#a13e44"/>
+      <stop offset="1" stop-color="#962d33"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="25" y1="1" x2="14" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#red)" fill-rule="evenodd" d="M17 60C6 54 1 42 1 31C0 14 12 1 29 1C46 0 59 13 62 29C59 22 55 19 48 18C35 16 20 20 9 27C20 22 29 20 35 20L35 21C22 24 12 28 7 32C15 29 22 27 29 27L29 28C19 30 10 35 4 39C10 36 15 35 19 35L19 36C11 40 6 42 3 45C12 39 21 36 31 37L30 39ZM44 14C47 13 50 13 52 11L50 17L45 17L45 16L42 16Z"/>
+  <path fill="#942c32" d="M27 63L40 38C49 38 55 43 55 48C55 56 43 64 27 63Z"/>
+  <path fill="#73181e" fill-opacity="0.35" d="M27 63C42 62 53 56 55 48C56 57 41 65 27 63Z"/>
+  <path fill="#7e1e24" d="M3 42C-2 24 2 11 15 4C33-6 55 5 62 29C57 9 41-1 26 2C9 4 0 19 3 42Z"/>
+  <path fill="url(#shine)" d="M3 31C3 14 14 3 30 3C40 3 46 6 51 11C43 5 34 3 26 5C13 7 6 17 3 31Z"/>
+</svg>

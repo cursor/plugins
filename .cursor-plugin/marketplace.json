@@ -819,24 +819,9 @@
       "description": "Search and read Sabre Developer Hub documentation, OpenAPI specs, and Sabre-published agent skills for travel APIs, SDKs, and product collections."
     },
     {
-      "name": "freshbooks",
-      "source": "third_party/freshbooks",
-      "description": "Manage invoices, clients, expenses, bills, time tracking, and accounting reports."
-    },
-    {
-      "name": "campfire",
-      "source": "third_party/campfire",
-      "description": "Pull financial statements, ledgers, AR/AP, revenue recognition, and close status, and ask Ember about your books."
-    },
-    {
-      "name": "easyship",
-      "source": "third_party/easyship",
-      "description": "Compare courier rates, create shipments, buy labels, book pickups, track parcels, and read shipping analytics across 550+ couriers."
-    },
-    {
-      "name": "jobber",
-      "source": "third_party/jobber",
-      "description": "Look up clients, quotes, jobs, visits, and invoices, and create clients, requests, and quotes."
+      "name": "fiu-mcp-connector",
+      "source": "fiu-mcp-connector",
+      "description": "Query FIU global market and financial data through a read-only MCP server."
     }
   ]
 }

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "fiu-finance-data": {
+      "type": "streamableHttp",
+      "url": "https://ai.szfiu.com/api/mcp/v2",
+      "headers": {
+        "Authorization": "Bearer ${env:FIU_API_KEY}"
+      }
+    }
+  }
+}
