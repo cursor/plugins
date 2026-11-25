@@ -1,0 +1,11 @@
+name = "pstackVeil"
+defaultTargets = ["Corpus"]
+
+[[require]]
+name = "veil"
+git = "https://github.com/verse-lab/veil.git"
+rev = "57447722e7f25f06c75cff8735d10d41697afc14"
+
+[[lean_lib]]
+name = "Corpus"
+globs = ["Corpus.+"]
