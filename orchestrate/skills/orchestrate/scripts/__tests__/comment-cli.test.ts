@@ -2,14 +2,15 @@ import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { loadKickoffThreadTsOrBail } from "../cli/comments.ts";
 
 const TEST_SLACK_CHANNEL = "C123TEST";
 
-const CLI_PATH = new URL("../cli.ts", import.meta.url).pathname;
-const SCRIPTS_DIR = new URL("..", import.meta.url).pathname;
+const CLI_PATH = fileURLToPath(new URL("../cli.ts", import.meta.url));
+const SCRIPTS_DIR = dirname(CLI_PATH);
 
 describe("comment CLI", () => {
   test("Refuses to post without --task or --thread-ts", () => {
