@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { readFileSync, existsSync } from "fs";
-import { resolve, dirname } from "path";
+import { resolve, dirname, sep } from "path";
 import { fileURLToPath } from "url";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
@@ -119,12 +119,44 @@ for (const entry of claudeMarketplace.plugins ?? []) {
 const manifestPaths = [
   ".cursor-plugin/plugin.json",
   ".claude-plugin/plugin.json",
+  ".codex-plugin/plugin.json",
   "plugin.json",
 ];
+const codexMarketplacePath = resolve(root, ".agents/plugins/marketplace.json");
+const codexMarketplace = existsSync(codexMarketplacePath)
+  ? loadJSON(codexMarketplacePath)
+  : { plugins: [] };
+const codexSources = [];
+
+for (const entry of codexMarketplace.plugins ?? []) {
+  if (entry.source?.source !== "local" || typeof entry.source.path !== "string" || !entry.source.path.startsWith("./")) {
+    fail(`Plugin "${entry.name}": Codex marketplace source must be a ./-prefixed local path`);
+    continue;
+  }
+  const pluginDir = resolve(root, entry.source.path);
+  if (!pluginDir.startsWith(root + sep)) {
+    fail(`Plugin "${entry.name}": Codex marketplace source leaves the repository`);
+    continue;
+  }
+  codexSources.push({ ...entry, source: entry.source.path });
+  const manifestPath = resolve(pluginDir, "plugin.json");
+  if (!existsSync(manifestPath)) {
+    fail(`Plugin "${entry.name}": missing portable plugin.json in "${entry.source.path}"`);
+    continue;
+  }
+  const manifest = loadJSON(manifestPath);
+  if (manifest.name !== entry.name) fail(`Plugin "${entry.name}": Codex marketplace name differs from plugin.json`);
+  if (typeof entry.category !== "string" || !entry.category ||
+      !["AVAILABLE", "INSTALLED_BY_DEFAULT", "NOT_AVAILABLE"].includes(entry.policy?.installation) ||
+      !["ON_INSTALL", "ON_USE"].includes(entry.policy?.authentication)) {
+    fail(`Plugin "${entry.name}": Codex marketplace policy or category is missing or unsupported`);
+  }
+}
 const sources = new Map();
 for (const entry of [
   ...(marketplace.plugins ?? []),
   ...(claudeMarketplace.plugins ?? []),
+  ...codexSources,
 ]) {
   sources.set(resolve(root, entry.source), entry.name);
 }
