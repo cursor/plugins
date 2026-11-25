@@ -1,0 +1,36 @@
+{
+  "name": "trivago",
+  "displayName": "trivago",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0",
+    "grokbot": "0.49.0",
+    "sand": "0.49.0"
+  },
+  "description": "Find hotels by place, dates, or landmark and compare up to three deals per property from different booking sites, with ratings, amenities, and price trends.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://github.com/cursor/plugins/tree/main/third_party/trivago",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "keywords": [
+    "trivago",
+    "hotels",
+    "accommodation",
+    "travel",
+    "booking",
+    "price-comparison",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "trivago",
+    "travel",
+    "hotels",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}
