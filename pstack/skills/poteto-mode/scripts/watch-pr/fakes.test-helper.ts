@@ -13,6 +13,7 @@ import type {
   RollupPage,
 } from "./types.ts";
 import { parsePrNumber } from "./types.ts";
+import { WatcherQueryError } from "./github.ts";
 
 export interface FakeReaderOptions {
   readonly facts?: Partial<Omit<PullRequestFacts, "context">>;
@@ -24,6 +25,11 @@ export interface FakeReaderOptions {
   readonly openPullRequests?: readonly OpenPullRequest[];
   readonly origin?: Repository | null;
   readonly current?: PrContext;
+  readonly workflowStatus?:
+    "queued" | "in_progress" | "success" | "failure" | "none";
+  readonly workflowHead?: string;
+  readonly workflowError?: boolean;
+  readonly changedHead?: string;
 }
 
 function toRawThread(thread: ReviewThread): RawReviewThread {
@@ -86,6 +92,7 @@ export function fakeReader(
   };
   let page = 0;
   let threadPage = 0;
+  let factsReads = 0;
   return {
     calls,
     async originRepo() {
@@ -100,7 +107,15 @@ export function fakeReader(
     },
     async pullRequest(requested) {
       calls.push("pullRequest");
-      return { ...defaults, ...options.facts, context: requested };
+      factsReads++;
+      return {
+        ...defaults,
+        ...options.facts,
+        ...(factsReads > 1 && options.changedHead
+          ? { headRefOid: options.changedHead }
+          : {}),
+        context: requested,
+      };
     },
     async openPullRequests() {
       calls.push("openPullRequests");
@@ -113,6 +128,37 @@ export function fakeReader(
     async checkRollupPage(_requested, after) {
       calls.push(`checkRollupPage:${after ?? "null"}`);
       return options.rollupPages?.[page++] ?? { checks: [], endCursor: null };
+    },
+    async workflowRuns(_requested, head) {
+      calls.push(`workflowRuns:${head}`);
+      if (options.workflowError)
+        throw new WatcherQueryError({
+          kind: "command-exit",
+          retryable: true,
+          detail: "workflow query failed",
+          code: 1,
+        });
+      if (
+        options.workflowStatus === undefined ||
+        options.workflowStatus === "none" ||
+        (options.workflowHead && options.workflowHead !== head)
+      )
+        return [];
+      return [
+        {
+          name: "CI",
+          description: "",
+          workflow: "CI",
+          link: "",
+          kind:
+            options.workflowStatus === "failure"
+              ? "failed"
+              : options.workflowStatus === "success"
+                ? "passed"
+                : "pending",
+          reportedState: options.workflowStatus.toUpperCase(),
+        },
+      ];
     },
     async reviewThreadPage(_requested, after) {
       calls.push(`reviewThreadPage:${after ?? "null"}`);
