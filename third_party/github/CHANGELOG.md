@@ -1,3 +1,7 @@
+## 1.0.1
+
+- Require a non-empty `GITHUB_PERSONAL_ACCESS_TOKEN` (`minLength: 1`) and document the empty-Bearer / streaming-400 failure mode.
+
 # Changelog
 
 All notable changes to this plugin will be documented here.
