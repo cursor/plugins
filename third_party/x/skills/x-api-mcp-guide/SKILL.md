@@ -92,17 +92,118 @@ MCP returns raw encrypted events. The local helper `xchat_lite.py` unlocks Juice
 Set it up yourself. Don't ask the owner where it is or to download it. Use one `XCHAT_ROOT` for the clone, `HELPER`, and `SCRIPT`, and reuse it on later turns.
 
 ```bash
-if [ -f "$HOME/xchat-lite/xchat_lite.py" ]; then
+XCHAT_REPO="https://github.com/xdevplatform/xchat-grokbot-helper.git"
+fresh=0
+if [ -f "$HOME/xchat-lite/xchat_lite.py" ] || [ -e "$HOME/xchat-lite/.git" ]; then
   XCHAT_ROOT="$HOME/xchat-lite"
-elif [ -f "./xchat-lite/xchat_lite.py" ]; then
+elif [ -f "./xchat-lite/xchat_lite.py" ] || [ -e "./xchat-lite/.git" ]; then
   XCHAT_ROOT="$(pwd)/xchat-lite"
 else
-  git clone https://github.com/xdevplatform/xchat-grokbot-helper.git "$HOME/xchat-lite"
   XCHAT_ROOT="$HOME/xchat-lite"
+  if [ -e "$XCHAT_ROOT" ]; then
+    XCHAT_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/xchat-lite.XXXXXX")"
+  fi
+  GIT_TERMINAL_PROMPT=0 git clone -q "$XCHAT_REPO" "$XCHAT_ROOT"
+  fresh=1
 fi
-[ -e "$XCHAT_ROOT/.git" ] && git -C "$XCHAT_ROOT" pull -q --ff-only 2>/dev/null || true
-if [ ! -x "$XCHAT_ROOT/.venv/bin/python" ]; then
-  python3 -m venv "$XCHAT_ROOT/.venv" && "$XCHAT_ROOT/.venv/bin/pip" install -U pip chatxdk
+xchat_ge_070() {
+  python3 -c 'import re, sys
+m = re.match(r"(\d+)\.(\d+)(?:\.(\d+))?(a|b|rc|\.dev)?", sys.argv[1].strip())
+sys.exit(0 if m and (tuple(int(x or 0) for x in m.groups()[:3]), 0 if m.group(4) else 1) >= ((0, 7, 0), 1) else 1)' "$1"
+}
+xchat_req_ok() {
+  [ -f "$1/xchat_lite.py" ] && [ -f "$1/requirements.txt" ] && xchat_ge_070 "$(python3 -c 'import pathlib, re, sys
+m = re.search(r"(?im)^\s*chatxdk(?:\[[^\]]*\])?\s*(?:===?|>=|~=)\s*([^\s;#]+)", pathlib.Path(sys.argv[1]).read_text())
+print(m.group(1) if m else "")' "$1/requirements.txt")"
+}
+req_before="$(cat "$XCHAT_ROOT/requirements.txt" 2>/dev/null || true)"
+pull_ok="$fresh"
+if [ "$fresh" -eq 0 ] && [ -e "$XCHAT_ROOT/.git" ] && GIT_TERMINAL_PROMPT=0 git -C "$XCHAT_ROOT" pull -q --ff-only 2>/dev/null; then
+  pull_ok=1
+fi
+venv_ver=""
+if [ -x "$XCHAT_ROOT/.venv/bin/python" ]; then
+  venv_ver="$("$XCHAT_ROOT/.venv/bin/python" -c 'import importlib.metadata as m; print(m.version("chatxdk"))' 2>/dev/null || true)"
+fi
+venv_ok=0; if xchat_ge_070 "$venv_ver"; then venv_ok=1; fi
+repo_ok=0; if xchat_req_ok "$XCHAT_ROOT"; then repo_ok=1; fi
+if [ "$repo_ok" -eq 0 ] || { [ "$venv_ok" -eq 0 ] && [ "$pull_ok" -eq 0 ]; }; then
+  refreshed=0
+  if [ -e "$XCHAT_ROOT/.git" ]; then
+    case "$(git -C "$XCHAT_ROOT" remote get-url origin 2>/dev/null || true)" in
+      *xchat-grokbot-helper*)
+        if GIT_TERMINAL_PROMPT=0 git -C "$XCHAT_ROOT" fetch -q origin 2>/dev/null; then
+          def="$(git -C "$XCHAT_ROOT" symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null || true)"
+          if [ -z "$def" ]; then
+            GIT_TERMINAL_PROMPT=0 git -C "$XCHAT_ROOT" remote set-head origin -a >/dev/null 2>&1 || true
+            def="$(git -C "$XCHAT_ROOT" symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null || echo origin/main)"
+          fi
+          if git -C "$XCHAT_ROOT" checkout -q -f --track -B "${def#origin/}" "$def" 2>/dev/null; then
+            refreshed=1
+          fi
+        fi
+        ;;
+    esac
+  fi
+  if [ "$refreshed" -eq 0 ]; then
+    tmp_root="$(mktemp -d "${TMPDIR:-/tmp}/xchat-lite.XXXXXX")"
+    if GIT_TERMINAL_PROMPT=0 git clone -q "$XCHAT_REPO" "$tmp_root" 2>/dev/null; then
+      XCHAT_ROOT="$tmp_root"
+    else
+      rm -rf "$tmp_root"
+    fi
+  fi
+fi
+req_after="$(cat "$XCHAT_ROOT/requirements.txt" 2>/dev/null || true)"
+if [ "$venv_ok" -eq 0 ] || [ "$req_after" != "$req_before" ] || [ ! -x "$XCHAT_ROOT/.venv/bin/python" ]; then
+  XCHAT_PY=""
+  for py in python3 python3.14 python3.13 python3.12 python3.11 python3.10; do
+    if command -v "$py" >/dev/null 2>&1 && "$py" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)' 2>/dev/null; then
+      XCHAT_PY="$py"; break
+    fi
+  done
+  new_venv="$XCHAT_ROOT/.venv.new"
+  rm -rf "$new_venv"
+  install_ok=0
+  fail_reason=""
+  if [ -z "$XCHAT_PY" ]; then
+    py_ver="$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))' 2>/dev/null || echo missing)"
+    fail_reason="Python $py_ver is older than 3.10 (chatxdk 0.7+ requires Python 3.10+)"
+  elif [ ! -f "$XCHAT_ROOT/requirements.txt" ]; then
+    fail_reason="requirements.txt is missing"
+  elif ! err="$("$XCHAT_PY" -m venv "$new_venv" 2>&1)"; then
+    fail_reason="$XCHAT_PY -m venv failed ($(printf '%s\n' "$err" | awk 'NF{l=$0}END{print l}'))"
+  elif ! err="$(PIP_NO_COLOR=1 "$new_venv/bin/python" -m pip install -q -U pip -r "$XCHAT_ROOT/requirements.txt" 2>&1)"; then
+    fail_reason="pip install failed ($(printf '%s\n' "$err" | awk 'NF{l=$0}END{print l}'))"
+  elif ! "$new_venv/bin/python" -c 'import chatxdk' 2>/dev/null; then
+    fail_reason="import chatxdk failed in new venv"
+  elif ! xchat_ge_070 "$("$new_venv/bin/python" -c 'import importlib.metadata as m; print(m.version("chatxdk"))' 2>/dev/null || true)"; then
+    fail_reason="installed chatxdk is still below 0.7.0"
+  else
+    old_venv="$XCHAT_ROOT/.venv.old"
+    rm -rf "$old_venv"
+    if [ -e "$XCHAT_ROOT/.venv" ]; then
+      mv "$XCHAT_ROOT/.venv" "$old_venv"
+    fi
+    if mv "$new_venv" "$XCHAT_ROOT/.venv"; then
+      rm -rf "$old_venv"
+      install_ok=1
+    else
+      if [ -e "$old_venv" ]; then
+        mv "$old_venv" "$XCHAT_ROOT/.venv" || true
+      fi
+      fail_reason="failed to swap new venv into place"
+    fi
+  fi
+  if [ "$install_ok" -eq 0 ]; then
+    rm -rf "$new_venv"
+    if [ -x "$XCHAT_ROOT/.venv/bin/python" ] && "$XCHAT_ROOT/.venv/bin/python" -c 'import chatxdk' 2>/dev/null; then
+      printf 'X Chat helper is outdated (keeping existing chatxdk %s venv): %s\n' "${venv_ver:-unknown}" "$fail_reason" >&2
+    else
+      printf 'X Chat helper setup failed (no working venv): %s\n' "$fail_reason" >&2
+      false
+    fi
+  fi
 fi
 HELPER="$XCHAT_ROOT/.venv/bin/python"
 SCRIPT="$XCHAT_ROOT/xchat_lite.py"
@@ -201,8 +302,8 @@ The owner must approve the text unless they already told you to send or reply ("
 
 X DMs go out only through `send_chat_message`; an email or Slack draft tool can't send them, so never route a DM there or tell the owner it needs one. If the host holds a `send_chat_message` call for the owner to approve (Grok Bot shows an X Chat draft card), call it again with exactly the same arguments, the same encrypted payload included (don't re-encrypt), once they press Send or tell you to send it.
 
-- **Thread with a conversation key:** fetch events and `conversation_key_events`, `session-encrypt` with the approved text, then `send_chat_message` with `id`, `message_id`, `encoded_message_create_event`, and `encoded_message_event_signature`. Confirm without dumping ciphertext.
-- **No conversation key yet** (first message, or only plain messages): get both users' public keys (`public_key` and `public_key_version`), `session-encrypt` with `prepare` set (same shape as `prepare-keys` input), call `add_conversation_keys` with its output **before** `send_chat_message`, and strip any `_local_*` fields. `add_conversation_keys` returning `UNAUTHORIZED_REQUESTING_USER` means you can't set keys there or the peer isn't on X Chat: stop and report.
+- **Thread with a conversation key:** fetch events and `conversation_key_events`, `session-encrypt` with the approved text, then `send_chat_message` with `id`, `message_id`, `encoded_message_create_event`, `encoded_message_event_signature`, and `xdk_version` (pass `xdk_version` exactly as the helper output it on every send, including replies, reactions, edits, and media). Confirm without dumping ciphertext.
+- **No conversation key yet** (first message, or only plain messages): get both users' public keys (`public_key` and `public_key_version`), `session-encrypt` with `prepare` set (same shape as `prepare-keys` input), call `add_conversation_keys` with its output **before** `send_chat_message` (strip any `_local_*` fields), then call `send_chat_message` with `id`, `message_id`, `encoded_message_create_event`, `encoded_message_event_signature`, and `xdk_version` as output by the helper. `add_conversation_keys` returning `UNAUTHORIZED_REQUESTING_USER` means you can't set keys there or the peer isn't on X Chat: stop and report.
 
 Standalone `encrypt` fails without a conversation key; use `session-encrypt`.
 
