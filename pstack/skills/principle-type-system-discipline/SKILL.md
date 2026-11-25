@@ -13,3 +13,4 @@ Make the compiler reject impossible states, mismatched primitives, and unhandled
 - **Derive types from authoritative schemas.** When a schema file owns a shape, derive the type from it instead of hand-rolling a parallel one.
 
 For TypeScript syntax, see the **typescript-best-practices** skill.
+For Swift syntax, see the **swift-best-practices** skill.
