@@ -680,8 +680,10 @@ export function orderStack(
     open.filter((pr) => !pr.isCrossRepository).map((pr) => [pr.headRefName, pr])
   );
   const children = new Map<string, T.OpenPullRequest[]>();
-  for (const pr of open)
+  for (const pr of open) {
+    if (pr.isCrossRepository) continue;
     children.set(pr.baseRefName, [...(children.get(pr.baseRefName) ?? []), pr]);
+  }
   for (const values of children.values())
     values.sort((a, b) => a.number - b.number);
   const start = byNumber.get(context.number);
@@ -702,6 +704,7 @@ export function orderStack(
   const visit = (parent: T.OpenPullRequest): void => {
     if (parent.isCrossRepository) return;
     for (const child of children.get(parent.headRefName) ?? []) {
+      if (child.isCrossRepository) continue;
       if (seen.has(child.number)) continue;
       seen.add(child.number);
       up.push(child);
