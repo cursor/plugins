@@ -143,7 +143,11 @@ const launcherTools = () => {
 };
 
 const linkedLauncher = () => {
-  const links = fs.mkdtempSync(path.join(os.tmpdir(), "statechart-links-"));
+  // os.tmpdir() is a symlink on macOS (/tmp -> /private/tmp, /var -> /private/var).
+  // The kernel resolves a relative link's ".." segments from the physical directory,
+  // so building the link from the lexical path lands one level too shallow and the
+  // spawn fails. Resolve the temp directory first so both sides are physical.
+  const links = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "statechart-links-")));
   const [first, second] = [path.join(links, "a"), path.join(links, "b")];
   fs.mkdirSync(first);
   fs.mkdirSync(second);
