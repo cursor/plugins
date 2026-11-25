@@ -101,24 +101,40 @@ export const messageOf = (error: unknown) =>
     ? error.message
     : inspect(error);
 
-const joined = (files: string[]): Output => {
-  const fds: number[] = [];
-  const sizes: number[] = [];
-  for (const f of files) {
-    const fd = fs.openSync(f, "r");
-    fds.push(fd);
-    sizes.push(fs.fstatSync(fd).size);
-  }
-  return {
-    *[Symbol.iterator]() {
-      for (let f = 0; f < fds.length; f++)
-        for (let pos = 0; pos < sizes[f];) {
-          const buf = Buffer.allocUnsafe(Math.min(PART, sizes[f] - pos));
-          const n = fs.readSync(fds[f], buf, 0, buf.length, pos);
+export const joined = (files: string[]): Output => {
+  // The output is read more than once: check() reads it while judging, and
+  // the verdicts keep a lazy view that the pipeline reads after check()
+  // removes its temp dir. So the first read pins the bytes in memory and
+  // closes every descriptor, and later reads replay from the cache. Every
+  // consumer reads to completion, so pinning costs no more than the texts
+  // the callers already join.
+  let cache: Uint8Array[] | undefined;
+  const read = (): Uint8Array[] => {
+    if (cache) return cache;
+    const fds: number[] = [];
+    try {
+      const chunks: Uint8Array[] = [];
+      for (const f of files) {
+        const fd = fs.openSync(f, "r");
+        fds.push(fd);
+        const size = fs.fstatSync(fd).size;
+        for (let pos = 0; pos < size;) {
+          const buf = Buffer.allocUnsafe(Math.min(PART, size - pos));
+          const n = fs.readSync(fd, buf, 0, buf.length, pos);
           if (!n) break;
           pos += n;
-          yield buf.subarray(0, n);
+          chunks.push(buf.subarray(0, n));
         }
+      }
+      cache = chunks;
+      return chunks;
+    } finally {
+      for (const fd of fds) fs.closeSync(fd);
+    }
+  };
+  return {
+    *[Symbol.iterator]() {
+      yield* read();
     },
   };
 };
