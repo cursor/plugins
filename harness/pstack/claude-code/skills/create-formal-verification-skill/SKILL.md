@@ -38,7 +38,7 @@ If the check is a TLA+ model, tell the next agent to read every result with the 
 
 ## Prove it before you hand off
 
-Follow the generated skill once, as the next agent would, on a scratch change that breaks the property in the real code. It must catch the break. Then drop the scratch change and confirm that the check is back where it started: passing, or failing only on the findings you will report. A verify skill that was never run is a draft. If the skill misses the break or a step does not run, fix the skill or the verification, not the scratch change.
+Follow the generated skill, as the next agent would, on a scratch change that breaks the property in the real code. It must catch the break. When the property rests on more than one guard, break each one alone: a check that catches one missing guard can still pass with another gone. Then drop the scratch change and confirm that the check is back where it started: passing, or failing only on the findings you will report. A verify skill that was never run is a draft. If the skill misses the break or a step does not run, fix the skill or the verification, not the scratch change.
 
 ## Hand off
 
