@@ -6,9 +6,9 @@ Search accounts, prospects, calls, and coaching transcripts; build and edit sequ
 
 ## Install
 
-1. A Nooks admin creates an OAuth app and notes its credentials (see [Setup](#setup)).
-2. Open **Cursor Settings → Plugins**, search for **Nooks**, and click **Install**.
-3. Set **Nooks Client ID** and **Nooks Client Secret**, then complete the Nooks sign-in prompt.
+1. Open **Cursor Settings → Plugins**.
+2. Search for **Nooks**.
+3. Click **Install**, then complete the Nooks sign-in prompt.
 
 Or run `/add-plugin nooks` in chat.
 
@@ -19,40 +19,13 @@ Or run `/add-plugin nooks` in chat.
   "mcpServers": {
     "nooks": {
       "type": "http",
-      "url": "https://mcp.nooks.in/mcp",
-      "auth": {
-        "CLIENT_ID": "${CLIENT_ID}",
-        "CLIENT_SECRET": "${CLIENT_SECRET}"
-      }
+      "url": "https://mcp.nooks.in/mcp"
     }
   }
 }
 ```
 
-Nooks does not support dynamic client registration, so the connection is a confidential client: a Nooks admin registers one OAuth app and Cursor sends that app's client ID and secret (`client_secret_post`). Each user still signs in with their own Nooks account, and tool calls run with that user's Nooks permissions.
-
-## Setup
-
-### 1. Create the Nooks OAuth app
-
-In Nooks, go to **Settings → All Settings → Developer → OAuth Apps** and create an app (for example "Cursor"):
-
-1. Register the redirect URLs Cursor uses:
-
-   | Surface | Redirect URL |
-   | --- | --- |
-   | Desktop | `http://localhost:8787/callback` |
-   | Web and Cloud Agents | `https://www.cursor.com/agents/mcp/oauth/callback` |
-   | Grok Bot | `https://www.cursor.com/bot/mcp/oauth/callback` |
-
-2. Grant the app every available scope. Nooks recommends this for MCP apps because the agent may call any tool the signed-in user can; access is still enforced per user and per seat on every request.
-3. Copy the **Client ID** and **Client Secret**.
-
-Creating an OAuth app requires a Nooks Sequencing or AI Coaching seat, and only a Nooks Workspace admin can authorize the app the first time for a Workspace.
-
-### 2. Enter the credentials in Cursor
-
-In **Dashboard → Plugins → Configure**, set **Nooks Client ID** and **Nooks Client Secret** from that app. On a team marketplace an admin sets them once for everyone; each member still completes their own Nooks sign-in and picks the Workspace to connect.
+Auth is OAuth against Nooks (`https://oauth.nooks.in`). Cursor supplies the Nooks OAuth client, so there is no client ID or secret to configure. Each user signs in with their own Nooks account, picks the Nooks Workspace to connect if they belong to more than one, and approves the requested scopes. Tool calls run with that user's Nooks permissions.
 
 ## What agents can do
 
@@ -78,15 +51,15 @@ Nooks listed 46 tools at the time of writing, and the hosted server is the sourc
 - `searchCalls` and `getCallTranscript` only cover calls made by reps who hold an AI Coaching seat.
 - The connector cannot place calls.
 - One connection maps to one Nooks Workspace. To switch Workspaces, disconnect and sign in again.
-- Access tokens last up to an hour. To cut off access completely, disconnect in Cursor and revoke the OAuth app in Nooks.
+- Access tokens last up to an hour. To cut off access, disconnect Nooks in Cursor.
 
 ## Docs
 
-- How to integrate Nooks with Claude (tool list, scopes, FAQ): https://support.nooks.ai/articles/1983758998-how-to-integrate-nooks-with-claude
-- Setting up a Nooks OAuth app for MCP connectors: https://support.nooks.ai/articles/7188609428-setting-up-a-nooks-oauth-app-for-custom-claude-connectors
+- Nooks: https://www.nooks.ai/
+- Nooks MCP tool list, scopes, and FAQ: https://support.nooks.ai/articles/1983758998-how-to-integrate-nooks-with-claude
 - Server URL: https://mcp.nooks.in/mcp
 
-Logo is the Nooks mark from the nooks.ai favicon.
+Logo is Nooks' 2026 logo from https://beta.nooks.in/nooks-logo-2026.png.
 
 ## License
 
