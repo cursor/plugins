@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "minimax": {
+      "type": "http",
+      "url": "https://minimax.mcp.acedata.cloud/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ACEDATACLOUD_API_TOKEN}"
+      }
+    }
+  }
+}
