@@ -842,6 +842,11 @@
       "name": "folk",
       "source": "third_party/folk",
       "description": "Search and update people, companies, deals, notes, tasks, and interactions, enrich contacts, and run email campaigns in folk."
+    },
+    {
+      "name": "notfair",
+      "source": "third_party/notfair",
+      "description": "Operate Google, Meta, X, LinkedIn, Reddit, and TikTok Ads plus GA4, Search Console, GoHighLevel, and WordPress through one OAuth MCP."
     }
   ]
 }
