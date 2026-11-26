@@ -842,6 +842,11 @@
       "name": "folk",
       "source": "third_party/folk",
       "description": "Search and update people, companies, deals, notes, tasks, and interactions, enrich contacts, and run email campaigns in folk."
+    },
+    {
+      "name": "iflytek-skills",
+      "source": "third_party/iflytek-skills",
+      "description": "Speech, OCR, translation, proofreading, and multimodal workflows powered by iFLYTEK APIs."
     }
   ]
 }
