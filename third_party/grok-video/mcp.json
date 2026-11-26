@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "grok": {
+      "type": "http",
+      "url": "https://grok.mcp.acedata.cloud/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ACEDATACLOUD_API_TOKEN}"
+      }
+    }
+  }
+}
