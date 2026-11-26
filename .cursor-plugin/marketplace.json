@@ -837,6 +837,11 @@
       "name": "jobber",
       "source": "third_party/jobber",
       "description": "Look up clients, quotes, jobs, visits, and invoices, and create clients, requests, and quotes."
+    },
+    {
+      "name": "folk",
+      "source": "third_party/folk",
+      "description": "Search and update people, companies, deals, notes, tasks, and interactions, enrich contacts, and run email campaigns in folk."
     }
   ]
 }
