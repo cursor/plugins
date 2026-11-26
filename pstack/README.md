@@ -31,6 +31,8 @@ claude code prefixes plugin commands and agents, so `/poteto-mode` is `/pstack:p
 
 claude code installs a generated copy of pstack, including this readme and the guide, from [`harness/pstack/`](https://github.com/cursor/plugins/tree/main/harness/pstack) at the repository root. after you change pstack, run `node scripts/generate-pstack-harness-trees.mjs` from the repository root and commit the result. ci fails while the generated copy is out of date.
 
+opencode and oh my pi have no pstack package yet. link the folders in `pstack/skills/` into a skill folder that the harness loads, then add one line to its `AGENTS.md` that tells the agent to read the adapter before it follows a pstack skill. the [opencode adapter](./docs/harness/opencode.md) and the [oh my pi adapter](./docs/harness/omp.md) map the cursor names and list those skill folders.
+
 ## get started
 
 two steps:
