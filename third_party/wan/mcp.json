@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "wan": {
+      "type": "http",
+      "url": "https://wan.mcp.acedata.cloud/mcp",
+      "headers": {
+        "Authorization": "Bearer ${ACEDATACLOUD_API_TOKEN}"
+      }
+    }
+  }
+}
