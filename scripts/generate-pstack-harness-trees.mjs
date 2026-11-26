@@ -130,8 +130,9 @@ function render() {
     "It maps the Cursor names in pstack skills to Claude Code.";
   for (const [skill, { wrap }] of classes) {
     const path = `skills/${skill}/SKILL.md`;
-    const text = files.get(path).bytes.toString("utf8");
-    if (wrap) files.get(path).bytes = Buffer.from(text.replace(/^(# .*)\n+/m, `$1\n\n${line}\n\n`));
+    // Claude Code makes `name` the slash command, so a display name like "Poteto Mode" becomes the unrunnable `/pstack:Poteto Mode`.
+    const text = files.get(path).bytes.toString("utf8").replace(/^name: .*$/m, `name: ${skill}`);
+    files.get(path).bytes = Buffer.from(wrap ? text.replace(/^(# .*)\n+/m, `$1\n\n${line}\n\n`) : text);
   }
   files.set("LICENSE", file(join(PSTACK, "LICENSE")));
   for (const manifest of MANIFESTS) files.set(manifest, file(join(PSTACK, "plugin.json")));
