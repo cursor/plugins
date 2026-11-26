@@ -1,0 +1,25 @@
+{
+	"name": "team-builder-stack",
+	"displayName": "Team Builder Stack",
+	"version": "0.25.3",
+	"description": "Build, check, and coach your team of Grok Bots: one bot for each unit of your work, skills built from your real systems and examples, and one team spec as the source of truth. The skills plugin Team Builder uses.",
+	"author": {
+		"name": "Danny Graziosi"
+	},
+	"license": "MIT",
+	"logo": "assets/logo.png",
+	"keywords": [
+		"team-builder-stack",
+		"grok-bot",
+		"team-builder",
+		"skills",
+		"principles"
+	],
+	"category": "productivity",
+	"tags": [
+		"grok-bot",
+		"skills",
+		"principles"
+	],
+	"skills": "./skills/"
+}
