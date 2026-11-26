@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "cal-com": {
+      "type": "http",
+      "url": "https://mcp.cal.com/mcp"
+    }
+  }
+}
