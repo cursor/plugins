@@ -18,7 +18,7 @@ pstack skills use Cursor names. In Claude Code, read this file once per session,
 | --- | --- |
 | `subagent_type: generalPurpose` | `subagent_type: "general-purpose"` |
 | `poteto-agent`, `comment-sicko` | `pstack:poteto-agent`, `pstack:comment-sicko` |
-| The `model:` line in `poteto-agent`'s file | It holds a Cursor slug. Pass `model` and `effort` on every `Agent` call that spawns `pstack:poteto-agent`, mapped with the Models table, so that slug never reaches the API. |
+| The `poteto-agent` frontmatter | It has no model default. Pass a mapped `model` and `effort` for a real role slug; omit `model` for `auto` or `inherit-parent` so the agent inherits the parent session model. |
 | `readonly: true` | `subagent_type: "Explore"`. It keeps `Bash`, so the brief also says "do not edit files", and you check `git status` afterward. |
 | `readonly: false` | `general-purpose`. It keeps the session's MCP servers. |
 | `environment: "cloud"` | `isolation: "worktree"`. Name the branch or commit the worker checks out. |
