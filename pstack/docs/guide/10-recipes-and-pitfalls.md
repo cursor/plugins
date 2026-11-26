@@ -142,6 +142,14 @@ apply prove it works. show me the real output, not the build log.
 
 You rarely need more words. You need the right name, and [the principles page](./08-principles.md) is the vocabulary.
 
+## Restyle a screen that looks generated
+
+```text
+/polish-ui the settings page, match the landing page
+```
+
+[`/polish-ui`](../../skills/polish-ui/SKILL.md) restyles the screen from the project's own visual reference, or writes a short direction when there is none. It strips the common tells, such as gradient text, glass panels, and generic card rows, keeps the screen's behavior, and checks desktop and mobile renders.
+
 ## Get the reply in plain words
 
 ```text
