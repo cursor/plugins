@@ -5,17 +5,17 @@ TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
 Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
 @!@!@ENDMSG 2401 @!@!@
 @!@!@STARTMSG 2187:0 @!@!@
-Running breadth-first search Model-Checking with fp 0 and seed 6864481041110561583 with 1 worker on 8 cores with 23888MB heap and 64MB offheap memory [pid: 573162] (Linux 6.12.94+ amd64, Eclipse Adoptium 25.0.5 x86_64, MSBDiskFPSet, DiskStateQueue).
+Running breadth-first search Model-Checking with fp 0 and seed -2276417300194617738 with 1 worker on 8 cores with 8028MB heap and 64MB offheap memory [pid: 48431] (Linux 6.8.0-1060-aws amd64, Ubuntu 17.0.20.1 x86_64, MSBDiskFPSet, DiskStateQueue).
 @!@!@ENDMSG 2187 @!@!@
 @!@!@STARTMSG 2220:0 @!@!@
 Starting SANY...
 @!@!@ENDMSG 2220 @!@!@
-Parsing file /tmp/statechart-Tv1ATQ/statechart-pnoZEE/ChartRun.tla
-Parsing file /agent/repos/plugins/pstack/skills/statechart/scripts/test/corpus/CounterLoop/CounterLoop.tla
-Parsing file /tmp/statechart-Tv1ATQ/statechart-pnoZEE/tmp-ChartRun/Naturals.tla
-Parsing file /tmp/statechart-Tv1ATQ/statechart-pnoZEE/tmp-ChartRun/TLC.tla
-Parsing file /tmp/statechart-Tv1ATQ/statechart-pnoZEE/tmp-ChartRun/Sequences.tla
-Parsing file /tmp/statechart-Tv1ATQ/statechart-pnoZEE/tmp-ChartRun/FiniteSets.tla
+Parsing file /tmp/statechart-SE9QRj/statechart-6cehSp/ChartRun.tla
+Parsing file /home/ubuntu/repos/cursor-plugins/pstack/skills/statechart/scripts/test/corpus/CounterLoop/CounterLoop.tla
+Parsing file /tmp/statechart-SE9QRj/statechart-6cehSp/tmp-ChartRun/Naturals.tla
+Parsing file /tmp/statechart-SE9QRj/statechart-6cehSp/tmp-ChartRun/TLC.tla
+Parsing file /tmp/statechart-SE9QRj/statechart-6cehSp/tmp-ChartRun/Sequences.tla
+Parsing file /tmp/statechart-SE9QRj/statechart-6cehSp/tmp-ChartRun/FiniteSets.tla
 Semantic processing of module Naturals
 Semantic processing of module CounterLoop
 Semantic processing of module Sequences
@@ -26,13 +26,13 @@ Semantic processing of module ChartRun
 SANY finished.
 @!@!@ENDMSG 2219 @!@!@
 @!@!@STARTMSG 2185:0 @!@!@
-Starting... (2026-10-26 21:45:33)
+Starting... (2026-11-20 13:42:34)
 @!@!@ENDMSG 2185 @!@!@
 @!@!@STARTMSG 2189:0 @!@!@
 Computing initial states...
 @!@!@ENDMSG 2189 @!@!@
 @!@!@STARTMSG 2190:0 @!@!@
-Finished computing initial states: 1 distinct state generated at 2026-10-26 21:45:34.
+Finished computing initial states: 1 distinct state generated at 2026-11-20 13:42:34.
 @!@!@ENDMSG 2190 @!@!@
 @!@!@STARTMSG 2193:0 @!@!@
 Model checking completed. No error has been found.
@@ -41,7 +41,7 @@ Model checking completed. No error has been found.
   calculated (optimistic):  val = 1.6E-19
 @!@!@ENDMSG 2193 @!@!@
 @!@!@STARTMSG 2200:0 @!@!@
-Progress(3) at 2026-10-26 21:45:34: 4 states generated (661 s/min), 3 distinct states found (495 ds/min), 0 states left on queue.
+Progress(3) at 2026-11-20 13:42:34: 4 states generated (631 s/min), 3 distinct states found (473 ds/min), 0 states left on queue.
 @!@!@ENDMSG 2200 @!@!@
 @!@!@STARTMSG 2199:0 @!@!@
 4 states generated, 3 distinct states found, 0 states left on queue.
@@ -53,5 +53,5 @@ The depth of the complete state graph search is 3.
 The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 1 and the 95th percentile is 1).
 @!@!@ENDMSG 2268 @!@!@
 @!@!@STARTMSG 2186:0 @!@!@
-Finished in 366ms at (2026-10-26 21:45:34)
+Finished in 383ms at (2026-11-20 13:42:34)
 @!@!@ENDMSG 2186 @!@!@

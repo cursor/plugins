@@ -163,6 +163,7 @@ const twoStates = (breaks: Rule[], property = "Settles"): CheckResult => ({
   stop: undefined,
   drawing: undefined,
   states: { distinct: 2, initial: 1, complete: true, cut: false },
+  actions: { unseen: [], complete: true },
   messages: [{ code: EC.TLC_FINISHED, level: LEVEL.NONE, body: ["Finished in 394ms at (T)"] }],
 });
 
@@ -172,6 +173,19 @@ const body = (files: Map<string, Iterable<string | Uint8Array>>, name: string) =
     text += typeof part === "string" ? part : new TextDecoder().decode(part);
   return text;
 };
+
+test("unseen actions are informational and qualify incomplete exploration before rule sections", () => {
+  for (const complete of [false, true]) {
+    const result = twoStates([]);
+    result.actions = { unseen: ["BankAccepts"], complete };
+    const compiled = compile(result, noView);
+    assert.equal(compiled.exit, 0);
+    assert.match(compiled.report, /Actions that made no step: BankAccepts\./);
+    assert.equal(compiled.report.includes("TLC did not explore every reachable state"), !complete);
+    assert.ok(compiled.report.indexOf("Actions that made no step") < compiled.report.indexOf("## Rules that hold"));
+  }
+  assert.doesNotMatch(compile(twoStates([]), noView).report, /Actions that made no step|beyond the explored states/);
+});
 
 test("the pipeline turns a hand-built graph into the out folder's files with no TLC", () => {
   const broken = compile(twoStates([small]), noView);

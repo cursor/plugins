@@ -8,6 +8,7 @@ import { inspect } from "node:util";
 import { boundRun, chartRun, configText } from "./backends/cfg.ts";
 import { plainText } from "./backends/plain-text.ts";
 import { readConfig } from "./frontends/config.ts";
+import { readCoverage } from "./frontends/coverage.ts";
 import { parseDot, splitLines } from "./frontends/dot.ts";
 import { readCounterexample, readMarks } from "./frontends/marks.ts";
 import { readMessages } from "./frontends/messages.ts";
@@ -340,6 +341,8 @@ export async function check(specFile: string, configFile: string): Promise<Check
       let first: FileResult | undefined;
       let stop: Stop | undefined;
       const states = { distinct: 0, initial: 0, complete: false, cut: false };
+      const actions = new Map<string, { name: string; module: string; seen: boolean }>();
+      let coverageComplete = false;
       for (let k = 1; groups.length;) {
         const group: Rule[] = [];
         for (const rule of groups[0]) if (!verdicts.has(ruleKey(rule))) group.push(rule);
@@ -358,6 +361,8 @@ export async function check(specFile: string, configFile: string): Promise<Check
         const r = await runJava(name, "tlc2.TLC", [
           "-tool",
           ...PINNED_FLAGS,
+          "-coverage",
+          "0",
           ...(names(group, "deadlock").length ? [] : ["-deadlock"]),
           ...config(name, spec.written, extra),
           bounded ? "ChartBound" : spec.module,
@@ -368,6 +373,11 @@ export async function check(specFile: string, configFile: string): Promise<Check
         states.initial = Math.max(states.initial, initial);
         const rule = broke && brokenRule(group, broke);
         const cut = bounded && distinct >= RERUN_STATES;
+        const coverage = readCoverage(messagesOf(r.output));
+        if (coverage.size && !cut && (r.status === 0 || (r.status === 13 && broke?.kind === "temporal")))
+          coverageComplete = true;
+        for (const [key, action] of coverage)
+          actions.set(key, { ...action, seen: action.seen || actions.get(key)?.seen === true });
         if (exitClass(r.status) === 2) {
           stop = stopOf(r);
           break;
@@ -396,7 +406,20 @@ export async function check(specFile: string, configFile: string): Promise<Check
           );
       }
       for (const rule of all) if (!verdicts.has(ruleKey(rule))) decide(rule, "not checked");
-      return { first: first!, stop, states };
+      const modules = new Map<string, Set<string>>();
+      for (const { name, module } of actions.values()) {
+        if (!modules.has(name)) modules.set(name, new Set());
+        modules.get(name)!.add(module);
+      }
+      const unseen = new Set<string>();
+      for (const { name, module, seen } of actions.values())
+        if (!seen) unseen.add(modules.get(name)!.size > 1 ? `${module}!${name}` : name);
+      return {
+        first: first!,
+        stop,
+        states,
+        actions: { unseen: [...unseen].sort(), complete: coverageComplete },
+      };
     };
     fs.writeFileSync(path.join(dir, "ChartBound.tla"), boundRun(spec.module));
     const judged = await judge();
@@ -425,6 +448,7 @@ export async function check(specFile: string, configFile: string): Promise<Check
       exit,
       stop: judged.stop,
       states: judged.states,
+      actions: judged.actions,
       messages: messagesOf(judged.first.output),
       rules: checked,
     };
