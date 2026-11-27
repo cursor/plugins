@@ -842,6 +842,11 @@
       "name": "folk",
       "source": "third_party/folk",
       "description": "Search and update people, companies, deals, notes, tasks, and interactions, enrich contacts, and run email campaigns in folk."
+    },
+    {
+      "name": "regdatalab",
+      "source": "third_party/regdatalab",
+      "description": "Search FDA facilities, inspections, recalls, warning letters, 510(k)s, and drug labels for a company."
     }
   ]
 }
