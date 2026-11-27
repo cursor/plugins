@@ -842,6 +842,11 @@
       "name": "folk",
       "source": "third_party/folk",
       "description": "Search and update people, companies, deals, notes, tasks, and interactions, enrich contacts, and run email campaigns in folk."
+    },
+    {
+      "name": "jotform-form-backend",
+      "source": "third_party/jotform-form-backend",
+      "description": "Connect website forms to Form Backend, store submissions, and configure response emails."
     }
   ]
 }
