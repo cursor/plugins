@@ -85,6 +85,46 @@ const named = (report: string) => {
   return files;
 };
 
+for (const signal of ["SIGINT", "SIGTERM"] satisfies NodeJS.Signals[]) {
+  test(`${signal} queued at worker exit stops the check without publishing`, () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "statechart-exit-signal-"));
+    const preload = path.join(dir, "preload.cjs");
+    const receipt = path.join(dir, "receipt");
+    fs.writeFileSync(preload, `
+const cp = require("node:child_process");
+const fs = require("node:fs");
+const path = require("node:path");
+const { syncBuiltinESMExports } = require("node:module");
+if (path.basename(process.argv[1] || "") === "statechart.ts") {
+  const spawn = cp.spawn;
+  cp.spawn = function (file, args, ...rest) {
+    const child = spawn.call(this, file, args, ...rest);
+    const worker = args.findIndex((arg) => path.basename(arg) === "worker.ts");
+    if (worker !== -1) child.prependOnceListener("exit", (code, signal) => {
+      if (code !== 0 || signal || !fs.existsSync(path.join(args[worker + 1], "done"))) return;
+      process.kill(process.pid, process.env.STATECHART_TEST_SIGNAL);
+      fs.writeFileSync(process.env.STATECHART_TEST_RECEIPT, "sent");
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50);
+    });
+    return child;
+  };
+  syncBuiltinESMExports();
+}
+`);
+    try {
+      const r = run(path.join(corpus, "Login"), {
+        env: { NODE_OPTIONS: `--require="${preload}"`, STATECHART_TEST_SIGNAL: signal, STATECHART_TEST_RECEIPT: receipt },
+      });
+      assert.equal(read(receipt), "sent");
+      assert.equal(r.status, 128 + os.constants.signals[signal]);
+      assert.equal(r.stderr, `${signal} stopped the check, so the command wrote nothing.\n`);
+      assert.deepEqual(r.files, []);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+}
+
 for (const name of fs.readdirSync(corpus)) {
   test(`${name} writes the committed chart and report from TLC's output`, () => {
     const dir = path.join(corpus, name);
