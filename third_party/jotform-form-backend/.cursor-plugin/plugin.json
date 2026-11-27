@@ -1,0 +1,34 @@
+{
+  "name": "jotform-form-backend",
+  "displayName": "Form Backend",
+  "version": "1.0.0",
+  "description": "Connect website forms to Form Backend, store submissions, and configure response emails.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://www.jotform.com/agents/form-backend/",
+  "license": "MIT",
+  "keywords": [
+    "jotform",
+    "forms",
+    "form-backend",
+    "submissions",
+    "email",
+    "mcp"
+  ],
+  "logo": "assets/logo.png",
+  "mcpServers": "./mcp.json",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "category": "integrations",
+  "tags": [
+    "jotform",
+    "form-backend",
+    "forms",
+    "submissions",
+    "mcp"
+  ],
+  "repository": "https://github.com/cursor/plugins"
+}

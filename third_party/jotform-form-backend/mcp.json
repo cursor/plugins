@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "jotform-form-backend": {
+      "url": "https://mcp.jotform.com/form-backend",
+      "type": "http"
+    }
+  }
+}
