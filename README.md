@@ -156,6 +156,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `easyship` | [Easyship](third_party/easyship/) | Cursor | Integrations | Compare courier rates, create shipments, buy labels, book pickups, track parcels, and read shipping analytics across 550+ couriers. |
 | `jobber` | [Jobber](third_party/jobber/) | Cursor | Integrations | Look up clients, quotes, jobs, visits, and invoices, and create clients, requests, and quotes. |
 | `folk` | [folk](third_party/folk/) | Cursor | Integrations | Search and update people, companies, deals, notes, tasks, and interactions, enrich contacts, and run email campaigns in folk. |
+| `regdatalab` | [RegDataLab](third_party/regdatalab/) | Cursor | Integrations | Search FDA facilities, inspections, recalls, warning letters, 510(k)s, and drug labels for a company. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
