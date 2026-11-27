@@ -132,6 +132,8 @@ try {
     const groupOutlivesWorker = process.platform !== "win32";
     if (worker.pid !== undefined && (running || groupOutlivesWorker)) await killGroup(worker.pid);
     const verdict = await exited;
+    // Let a signal queued during the worker's exit dispatch before publishing.
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
     if (stop) {
       console.error(`${stop} stopped the check, so the command wrote nothing.`);
       exitCode = 128 + os.constants.signals[stop];
