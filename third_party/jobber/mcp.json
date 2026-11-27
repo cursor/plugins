@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "jobber": {
+      "type": "http",
+      "url": "https://mcp.getjobber.com/mcp",
+      "auth": {
+        "CLIENT_ID": "${CLIENT_ID}",
+        "CLIENT_SECRET": "${CLIENT_SECRET}"
+      }
+    }
+  }
+}

@@ -812,6 +812,36 @@
       "name": "lmty",
       "source": "third_party/lmty",
       "description": "Read tracked competitors, competitive intelligence reports, change logs, evidence, social mentions, and market feeds for your products, and browse LMTY's public Markets, event timelines, and company, product, and person profiles."
+    },
+    {
+      "name": "sabre-developer-hub",
+      "source": "third_party/sabre-developer-hub",
+      "description": "Search and read Sabre Developer Hub documentation, OpenAPI specs, and Sabre-published agent skills for travel APIs, SDKs, and product collections."
+    },
+    {
+      "name": "freshbooks",
+      "source": "third_party/freshbooks",
+      "description": "Manage invoices, clients, expenses, bills, time tracking, and accounting reports."
+    },
+    {
+      "name": "campfire",
+      "source": "third_party/campfire",
+      "description": "Pull financial statements, ledgers, AR/AP, revenue recognition, and close status, and ask Ember about your books."
+    },
+    {
+      "name": "easyship",
+      "source": "third_party/easyship",
+      "description": "Compare courier rates, create shipments, buy labels, book pickups, track parcels, and read shipping analytics across 550+ couriers."
+    },
+    {
+      "name": "jobber",
+      "source": "third_party/jobber",
+      "description": "Look up clients, quotes, jobs, visits, and invoices, and create clients, requests, and quotes."
+    },
+    {
+      "name": "folk",
+      "source": "third_party/folk",
+      "description": "Search and update people, companies, deals, notes, tasks, and interactions, enrich contacts, and run email campaigns in folk."
     }
   ]
 }

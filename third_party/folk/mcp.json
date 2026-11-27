@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "folk": {
+      "type": "http",
+      "url": "https://mcp.folk.app/mcp",
+      "placement": "server"
+    }
+  }
+}

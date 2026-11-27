@@ -2,6 +2,10 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.1.1
+
+- Logo: replaced with Google's current Google Docs product icon (`docs_2026`), with the same padding as the other Google plugin logos and a transparent background.
+
 ## 1.1.0
 
 - Refreshed the `google-docs` skill for the latest tool surface.

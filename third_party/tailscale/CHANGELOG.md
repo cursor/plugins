@@ -2,6 +2,11 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.0.7
+
+- The setup skill says the bot computer reaches tailnet hosts by full name only, not by `100.x` address or short name, and that split DNS and subnet routes need nothing turned on.
+- Given a `100.x` address, the bot looks up the device's full name with `tailscale_check_host` before using it on the computer.
+
 ## 1.0.6
 
 - Describe the one-click personal tailnet and the bot computer reaching tailnet hosts by name; company tailnets are in beta.

@@ -74,6 +74,14 @@ When you're unsure whether a prompt is aimed right, run [`/sharpen`](../../skill
 
 The agent says what a top professional would do that you didn't ask for, the rawest material they would start from, the methods and tools they would use, and what other than you or the agent would show the result is right. Then it rewrites your prompt to ask for exactly that, deeper but not bigger. The rewrite asks the agent to prototype any choice an experiment can settle and to recommend an option from what it observed, and it leaves product and preference choices to you. It doesn't do the task. Read the rewrite, then send it, for example with `/poteto-mode`.
 
+When you can't name what you're after, run [`/reframe`](../../skills/reframe/SKILL.md) on your own description and files first:
+
+```text
+/reframe the settings page saves some fields right away and others only on submit, and people lose edits.
+```
+
+The agent gives 8 to 12 expert terms, ranked by how much each would change what you build. Each comes with the part of your description it names, a real project that uses it, with the link checked, and what it lets you ask an agent for. It also borrows terms from 2 or 3 neighboring fields that solved the same problem under other names, and says where each analogy breaks. Then it rewrites your description with the new words. Send the rewrite, or run `/sharpen` on it.
+
 ## Follow up short
 
 When the conversation already carries the context, the prompt shrinks to almost nothing. All of these are enough:
