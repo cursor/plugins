@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+- Show Happy Horse as the plugin display name and align the English and Chinese setup guides.
+
 ## 1.0.1
 
 - Clarify the independent service name and Ace Data Cloud publisher relationship in discovery metadata.

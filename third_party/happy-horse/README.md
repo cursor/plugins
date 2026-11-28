@@ -10,7 +10,7 @@ Generate Happy Horse videos and retrieve the finished clip. This standalone plug
 
 In [Cursor Marketplace](https://cursor.com/marketplace) or **Customize**, search for **Happy Horse**. If the entry from **Ace Data Cloud Dev** is available, select **Install**.
 
-To load a standalone copy, download **Source code (zip)** from the [v1.0.1 release](https://github.com/AceDataCloud/HappyHorseCursor/releases/tag/v1.0.1). Copy the contents of the extracted plugin folder, including its hidden `.cursor-plugin` directory, into `~/.cursor/plugins/local/happy-horse/`. Run **Developer: Reload Window**. Local imports must be allowed. Use one copy in the editor to avoid duplicate tools. [Cursor local installation instructions](https://cursor.com/docs/plugins#test-plugins-locally)
+To load a standalone copy, download **Source code (zip)** from the [v1.0.2 release](https://github.com/AceDataCloud/HappyHorseCursor/releases/tag/v1.0.2). Copy the contents of the extracted plugin folder, including its hidden `.cursor-plugin` directory, into `~/.cursor/plugins/local/happy-horse/`. Run **Developer: Reload Window**. Local imports must be allowed. Use one copy in the editor to avoid duplicate tools. [Cursor local installation instructions](https://cursor.com/docs/plugins#test-plugins-locally)
 
 ## 2. Register or sign in and get a service API token
 

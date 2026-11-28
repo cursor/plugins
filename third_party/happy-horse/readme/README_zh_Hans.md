@@ -10,7 +10,7 @@ Generate Happy Horse videos and retrieve the finished clip. 插件复用 [Ace Da
 
 在 [Cursor 插件市场](https://cursor.com/marketplace)或 **Customize** 中搜索 **Happy Horse**。如果显示由 **Ace Data Cloud Dev** 发布的条目，可选择 **Install**。
 
-也可从[独立插件 v1.0.1 发布页](https://github.com/AceDataCloud/HappyHorseCursor/releases/tag/v1.0.1)下载 **Source code (zip)**。将解压目录中的插件文件（包括隐藏的 `.cursor-plugin` 目录）复制到 `~/.cursor/plugins/local/happy-horse/`，然后运行 **Developer: Reload Window**。本地加载需要允许插件导入；如果编辑器已经安装市场版本，请只保留一份以免工具重复。[Cursor 本地安装说明](https://cursor.com/docs/plugins#test-plugins-locally)
+也可从[独立插件 v1.0.2 发布页](https://github.com/AceDataCloud/HappyHorseCursor/releases/tag/v1.0.2)下载 **Source code (zip)**。将解压目录中的插件文件（包括隐藏的 `.cursor-plugin` 目录）复制到 `~/.cursor/plugins/local/happy-horse/`，然后运行 **Developer: Reload Window**。本地加载需要允许插件导入；如果编辑器已经安装市场版本，请只保留一份以免工具重复。[Cursor 本地安装说明](https://cursor.com/docs/plugins#test-plugins-locally)
 
 ## 2. 注册/登录并取得服务 API Token
 

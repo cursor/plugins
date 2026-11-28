@@ -1,7 +1,7 @@
 {
   "name": "happy-horse",
   "displayName": "Happy Horse",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "minClientVersions": {
     "cursor": "3.13.0"
   },
