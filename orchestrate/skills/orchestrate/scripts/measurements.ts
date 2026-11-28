@@ -163,7 +163,10 @@ export function compareMeasurement(
         detail,
       };
     }
-    const denom = Math.max(Math.abs(claimParsed.numeric), 1);
+    // Keep relative tolerance independent of the unit scale. Flooring at 1
+    // accepts large errors for fractional measurements (e.g. seconds).
+    // A zero claim retains the existing absolute-tolerance fallback.
+    const denom = Math.abs(claimParsed.numeric) || 1;
     const drift =
       Math.abs(measuredParsed.numeric - claimParsed.numeric) / denom;
     const outcome: MeasurementCheck["outcome"] =
