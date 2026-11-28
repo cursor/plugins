@@ -25,7 +25,7 @@ export function mergeWorkerSourceBranches(plan: Plan, t: PlanTask): string[] {
   if (t.type !== "worker" || !mergeWorkerSlice(t.name)) return [];
   return (t.dependsOn ?? []).flatMap(depName => {
     const dep = (plan.tasks ?? []).find(dep => dep.name === depName);
-    if (!dep || dep.type !== "worker" || mergeWorkerSlice(dep.name)) return [];
+    if (!dep || dep.type !== "worker") return [];
     return [plannedBranchForTask(plan, dep)];
   });
 }
