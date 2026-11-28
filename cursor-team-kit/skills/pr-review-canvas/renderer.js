@@ -123,6 +123,11 @@ function renderDiff(target, diffInput) {
       if (hm) { oL = parseInt(hm[1]); nL = parseInt(hm[2]); }
       parsed.push({ type: 'hunk', text: line }); pD = false; pA = false; continue;
     }
+    // Git's missing-newline annotation describes the preceding line; it is not
+    // source text and must not consume either side's line counter.
+    if (line.startsWith('\\ ')) {
+      parsed.push({ type: 'meta', text: line }); pD = false; pA = false; continue;
+    }
     if (line.startsWith('+')) {
       var ae = { type:'add', code:line.slice(1), newLine:nL, consecutive:pA, idx:parsed.length };
       adds.push(ae); parsed.push(ae); nL++; pA = true; pD = false;
@@ -139,7 +144,7 @@ function renderDiff(target, diffInput) {
   var rows = [];
   for (var ri = 0; ri < parsed.length; ri++) {
     var p = parsed[ri];
-    if (p.type === 'hunk') {
+    if (p.type === 'hunk' || p.type === 'meta') {
       rows.push('<tr class="diff-hunk"><td class="diff-ln"></td><td class="diff-ln"></td><td class="diff-code">' + esc(p.text) + '</td></tr>');
     } else if (p.type === 'add') {
       var ai2 = -1; for (var fa=0;fa<adds.length;fa++) if(adds[fa].idx===p.idx){ai2=fa;break;}
