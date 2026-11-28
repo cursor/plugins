@@ -37,6 +37,18 @@ describe("parseHandoffVerification", () => {
     expect(parseHandoffVerification(body)).toBe("verifier-failed");
   });
 
+  test("A one-item list or bold around the value is stripped", () => {
+    expect(parseHandoffVerification(["## Verification", "- unit-test-verified", ""].join("\n"))).toBe(
+      "unit-test-verified"
+    );
+    expect(parseHandoffVerification(["## Verification", "* `live-ui-verified`", ""].join("\n"))).toBe(
+      "live-ui-verified"
+    );
+    expect(parseHandoffVerification(["## Verification", "**type-check-only**", ""].join("\n"))).toBe(
+      "type-check-only"
+    );
+  });
+
   test("Unknown value returns null without falling through to legacy", () => {
     const body = ["## Verification", "totally-made-up", ""].join("\n");
     expect(parseHandoffVerification(body)).toBe(null);
