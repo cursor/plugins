@@ -415,9 +415,12 @@ export function registerTaskCommands(program: Command): void {
         }
 
         const cancelled = results.filter(r => r.action === "cancelled").length;
+        const cancelFailed = results.filter(
+          r => r.action === "cancel-failed"
+        ).length;
         const pruned = results.filter(r => r.action === "pruned").length;
         console.log(
-          `stopped ${results.length} task(s): ${cancelled} cancelled, ${pruned} pruned`
+          `stopped ${results.length} task(s): ${cancelled} cancelled, ${pruned} pruned${cancelFailed > 0 ? `, ${cancelFailed} cancellation failed (cloud agent may still be running)` : ""}`
         );
       }
     );
