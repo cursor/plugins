@@ -206,11 +206,17 @@ import { Agent, CursorAgentError } from "@cursor/sdk";
 const app = express();
 app.use(express.json());
 
-// Pretend this lives in your DB
+// Pretend these live in your DB
 const userAgents = new Map<string, string>();
+const sessionUsers = new Map<string, string>(); // session token -> userId, issued by your login flow
 
 app.post("/agents/:userId/send", async (req, res) => {
   const { userId } = req.params;
+  const token = req.get("authorization")?.replace(/^Bearer /, "");
+  if (!token || sessionUsers.get(token) !== userId) {
+    res.status(401).json({ error: "unauthorized" });
+    return;
+  }
   const { prompt } = req.body;
   const apiKey = process.env.CURSOR_SERVICE_ACCOUNT_KEY!;
 
@@ -255,6 +261,7 @@ app.listen(3000);
 Why this shape:
 
 - Service-account key, not user keys — this is shared infrastructure.
+- Authenticate the caller and check they own `userId` before creating an agent; the route spends the service account's key on whatever prompt arrives.
 - `await using` per request; no lingering agent handles between requests.
 - `userAgents` is a stand-in for your database; persist `agentId` per user for resume.
 - Error surface passes `isRetryable` through so callers can back off intelligently.
