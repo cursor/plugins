@@ -28,7 +28,7 @@ async function main() {
     process.exit(1);
   }
 
-  await using agent = Agent.create({
+  await using agent = await Agent.create({
     apiKey: CURSOR_API_KEY,
     model: { id: "composer-2" },
     cloud: {
@@ -66,13 +66,15 @@ for concrete issues. No praise-only comments. If nothing to flag, say so.`;
     const result = await run.wait();
     if (result.status !== "finished") {
       console.error(`[review] run ${result.id} ended as ${result.status}`);
-      process.exit(2);
+      process.exitCode = 2;
+      return;
     }
     console.log(`[review] done: ${result.durationMs}ms`);
   } catch (err) {
     if (err instanceof CursorAgentError) {
       console.error(`[review] startup failed: ${err.message}`);
-      process.exit(err.isRetryable ? 75 : 1); // EX_TEMPFAIL for transient
+      process.exitCode = err.isRetryable ? 75 : 1; // EX_TEMPFAIL for transient
+      return;
     }
     throw err;
   }
@@ -85,6 +87,7 @@ Why this shape:
 
 - Cloud runtime (needs to post GitHub comments; works independently of the runner).
 - `skipReviewerRequest: true` keeps the action quiet in CI.
+- Set `process.exitCode` and return so `await using` finishes asynchronous cleanup before the process exits.
 - Exit codes: `0` finished, `1` permanent startup failure, `2` run finished with status `error`, `75` transient retryable failure.
 
 ---
@@ -95,7 +98,8 @@ Goal: every morning, resume yesterday's triage agent and ask it to triage today'
 
 ```typescript
 import { Agent, CursorAgentError } from "@cursor/sdk";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, rename, rm } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 
 const STATE_PATH = "/var/lib/triage/state.json";
 
@@ -111,13 +115,13 @@ async function main() {
   const state = await readState();
 
   await using agent = state.agentId
-    ? Agent.resume(state.agentId, {
+    ? await Agent.resume(state.agentId, {
         apiKey: process.env.CURSOR_API_KEY!,
         model: { id: "composer-2" },
         cloud: { repos: [{ url: process.env.REPO_URL!, startingRef: "main" }] },
         mcpServers, // must re-pass on resume
       })
-    : Agent.create({
+    : await Agent.create({
         apiKey: process.env.CURSOR_API_KEY!,
         model: { id: "composer-2" },
         cloud: { repos: [{ url: process.env.REPO_URL!, startingRef: "main" }] },
@@ -146,10 +150,19 @@ async function main() {
 
 async function readState(): Promise<{ agentId?: string; lastRunId?: string }> {
   try { return JSON.parse(await readFile(STATE_PATH, "utf-8")); }
-  catch { return {}; }
+  catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return {};
+    throw err; // damaged or unreadable state must not silently create a new agent
+  }
 }
 async function writeState(s: { agentId: string; lastRunId: string }) {
-  await writeFile(STATE_PATH, JSON.stringify(s));
+  const temporary = `${STATE_PATH}.${randomUUID()}.tmp`;
+  try {
+    await writeFile(temporary, JSON.stringify(s));
+    await rename(temporary, STATE_PATH); // replace only a completely written state file
+  } finally {
+    await rm(temporary, { force: true }).catch(() => {});
+  }
 }
 
 main();
@@ -223,8 +236,8 @@ app.post("/agents/:userId/send", async (req, res) => {
 
   try {
     await using agent = existing
-      ? Agent.resume(existing, options)
-      : Agent.create(options);
+      ? await Agent.resume(existing, options)
+      : await Agent.create(options);
 
     const run = await agent.send(prompt);
     const result = await run.wait();
@@ -271,7 +284,7 @@ Goal: spin off a cloud agent per repo in a list, collect results.
 import { Agent, CursorAgentError } from "@cursor/sdk";
 
 async function dispatchOne(repoUrl: string, apiKey: string, prompt: string) {
-  await using agent = Agent.create({
+  await using agent = await Agent.create({
     apiKey,
     model: { id: "composer-2" },
     cloud: {
@@ -312,14 +325,14 @@ Why this shape:
 - Per-agent `await using` so each completes cleanup even when others are still running.
 - `autoCreatePR: false` because we want to review results first; run a follow-up to open PRs once you've picked which ones pass the audit.
 
-**Rate-limit awareness**: fanning out 100 agents at once will hit backend limits. For large N, batch:
+**Rate-limit awareness**: fanning out 100 agents at once will hit backend limits. For large N, batch while retaining the same settled outcomes, in input order, so one failed repo does not skip later batches:
 
 ```typescript
 async function runInBatches<T, R>(items: T[], size: number, fn: (item: T) => Promise<R>) {
-  const results: R[] = [];
+  const results: PromiseSettledResult<R>[] = [];
   for (let i = 0; i < items.length; i += size) {
     const batch = items.slice(i, i + size);
-    results.push(...await Promise.all(batch.map(fn)));
+    results.push(...await Promise.allSettled(batch.map(fn)));
   }
   return results;
 }
