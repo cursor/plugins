@@ -1,21 +1,21 @@
-# GPT Image by Ace Data Cloud for Cursor
+# GPT Image for Cursor
 
-This independent **GPT Image by Ace Data Cloud** integration brings image generation, image editing and task retrieval into Cursor Agent. It is maintained by Ace Data Cloud, not an official plugin from the model brand or Cursor. The hosted MCP connection avoids running a local server; your service API token is entered once in Configure.
+This independent **GPT Image** integration brings image generation, image editing and task retrieval into Cursor Agent. It is maintained by Ace Data Cloud, not an official plugin from the model brand or Cursor. The hosted MCP connection avoids running a local server; your service API token is entered once in Configure.
 
 Generate GPT Image pictures and retrieve the finished image. This standalone plugin reuses the [Ace Data Cloud openai MCP](https://github.com/AceDataCloud/MCPs/tree/main/openai) and includes a focused Agent skill. Available tools and limits come from the live MCP schema.
 
-[简体中文教程](readme/README_zh_Hans.md) · [Copyable first-run prompt](examples/first-run.md) · [Current pricing](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_pricing_en)
+[简体中文教程](readme/README_zh_Hans.md) · [Copyable first-run prompt](examples/first-run.md) · [Current pricing](https://platform.acedata.cloud/models?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_pricing_en)
 
 ## 1. Find the independent GPT Image plugin
 
-In [Cursor Marketplace](https://cursor.com/marketplace) or **Customize**, search for **GPT Image by Ace Data Cloud**. If the entry from **Ace Data Cloud Dev** is available, select **Install**.
+In [Cursor Marketplace](https://cursor.com/marketplace) or **Customize**, search for **GPT Image**. If the entry from **Ace Data Cloud Dev** is available, select **Install**.
 
-To load a standalone copy, download **Source code (zip)** from the [v1.0.1 release](https://github.com/AceDataCloud/GPTImageCursor/releases/tag/v1.0.1). Copy the contents of the extracted plugin folder, including its hidden `.cursor-plugin` directory, into `~/.cursor/plugins/local/gpt-image/`. Run **Developer: Reload Window**. Local imports must be allowed. Use one copy in the editor to avoid duplicate tools. [Cursor local installation instructions](https://cursor.com/docs/plugins#test-plugins-locally)
+To load a standalone copy, download **Source code (zip)** from the [v1.0.2 release](https://github.com/AceDataCloud/GPTImageCursor/releases/tag/v1.0.2). Copy the contents of the extracted plugin folder, including its hidden `.cursor-plugin` directory, into `~/.cursor/plugins/local/gpt-image/`. Run **Developer: Reload Window**. Local imports must be allowed. Use one copy in the editor to avoid duplicate tools. [Cursor local installation instructions](https://cursor.com/docs/plugins#test-plugins-locally)
 
 ## 2. Register or sign in and get a service API token
 
-1. [Open Ace Data Cloud](https://platform.acedata.cloud/?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_register_signin_en) and register or sign in. Then open [Applications](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_api_key_en). If no General application exists, select **Initialize General Application**.
-2. Open **General application** or an application enabled for **GPT Image**. Confirm service access, balance and [current pricing](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_pricing_en) before any generation.
+1. [Open Ace Data Cloud](https://platform.acedata.cloud/?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_register_signin_en) and register or sign in. Then open [Applications](https://platform.acedata.cloud/console/applications?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_api_key_en). If no General application exists, select **Initialize General Application**.
+2. Open **General application** or an application enabled for **GPT Image**. Confirm service access, balance and [current pricing](https://platform.acedata.cloud/models?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_pricing_en) before any generation.
 3. Copy an existing API Key with the copy button marked **1** below, or open **Manage Keys** marked **2**, then **Create** for a dedicated Cursor token.
 
 ![Copy an existing service API token or open Manage Keys](assets/tutorial/get-api-key-en.png)
@@ -30,7 +30,7 @@ Copy only the service token string: no `Bearer ` prefix, quotation marks or reda
 
 ## 3. Paste the token in Cursor Configure
 
-Open **Customize → Plugins → GPT Image by Ace Data Cloud → Configure** (older versions may show **GPT Image**). Paste the token in **Ace Data Cloud API token**, choose **Save**, wait for completion, then reopen Configure to confirm a masked value. Cursor substitutes `ACEDATACLOUD_API_TOKEN`; the plugin adds `Bearer ` and connects to its hosted HTTP MCP. No Python or Node server needs to be started. Reconnect if tools have not loaded.
+Open **Customize → Plugins → GPT Image → Configure** (older versions may show **GPT Image**). Paste the token in **Ace Data Cloud API token**, choose **Save**, wait for completion, then reopen Configure to confirm a masked value. Cursor substitutes `ACEDATACLOUD_API_TOKEN`; the plugin adds `Bearer ` and connects to its hosted HTTP MCP. No Python or Node server needs to be started. Reconnect if tools have not loaded.
 
 The Configure path and variable behavior follow the [official Cursor plugin reference](https://cursor.com/docs/reference/plugins#variables), checked **2026-10-18**. The screenshots below show Cursor’s tool approval and result views.
 
@@ -85,4 +85,4 @@ Screenshot sources, checksums and reuse boundaries: [image provenance](assets/tu
 
 [Source](https://github.com/AceDataCloud/GPTImageCursor) · [Report a problem](https://github.com/AceDataCloud/GPTImageCursor/issues) · dev@acedata.cloud. The logo reuses an existing Ace Data Cloud integration asset. This tool plugin does not register a Cursor chat-model provider.
 
-[Register / sign in](https://platform.acedata.cloud/?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_register_signin_en) · [Applications / API token](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_api_key_en) · [Current GPT Image pricing](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_pricing_en)
+[Register / sign in](https://platform.acedata.cloud/?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_register_signin_en) · [Applications / API token](https://platform.acedata.cloud/console/applications?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_api_key_en) · [Current GPT Image pricing](https://platform.acedata.cloud/models?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_readme_pricing_en)

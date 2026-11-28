@@ -1,7 +1,7 @@
 {
   "name": "gpt-image",
-  "displayName": "GPT Image by Ace Data Cloud",
-  "version": "1.0.1",
+  "displayName": "GPT Image",
+  "version": "1.0.2",
   "minClientVersions": {
     "cursor": "3.13.0"
   },
@@ -10,7 +10,7 @@
     "name": "Ace Data Cloud Dev",
     "email": "dev@acedata.cloud"
   },
-  "homepage": "https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_manifest_pricing",
+  "homepage": "https://platform.acedata.cloud/models?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=gpt_image_cursor_shared_manifest_pricing",
   "repository": "https://github.com/AceDataCloud/GPTImageCursor",
   "license": "MIT",
   "logo": "assets/logo.png",
