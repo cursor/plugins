@@ -312,14 +312,14 @@ Why this shape:
 - Per-agent `await using` so each completes cleanup even when others are still running.
 - `autoCreatePR: false` because we want to review results first; run a follow-up to open PRs once you've picked which ones pass the audit.
 
-**Rate-limit awareness**: fanning out 100 agents at once will hit backend limits. For large N, batch:
+**Rate-limit awareness**: fanning out 100 agents at once will hit backend limits. For large N, batch while retaining the same settled outcomes, in input order, so one failed repo does not skip later batches:
 
 ```typescript
 async function runInBatches<T, R>(items: T[], size: number, fn: (item: T) => Promise<R>) {
-  const results: R[] = [];
+  const results: PromiseSettledResult<R>[] = [];
   for (let i = 0; i < items.length; i += size) {
     const batch = items.slice(i, i + size);
-    results.push(...await Promise.all(batch.map(fn)));
+    results.push(...await Promise.allSettled(batch.map(fn)));
   }
   return results;
 }
