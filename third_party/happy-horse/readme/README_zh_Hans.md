@@ -1,4 +1,4 @@
-# Happy Horse by Ace Data Cloud：Cursor 接入教程
+# Happy Horse：Cursor 接入教程
 
 这是由 **Ace Data Cloud** 维护的独立 **Happy Horse** 工具插件，提供视频生成、图片或参考素材输入、视频编辑与任务查询；不冒充服务品牌或 Cursor 官方插件。通过托管 MCP 连接，在 Configure 中保存自己的服务 API Token 后，可在 Cursor Agent 里使用，无需启动本地服务。
 
@@ -8,7 +8,7 @@ Generate Happy Horse videos and retrieve the finished clip. 插件复用 [Ace Da
 
 ## 1. 搜索并安装独立 Happy Horse 插件
 
-在 [Cursor 插件市场](https://cursor.com/marketplace)或 **Customize** 中搜索 **Happy Horse by Ace Data Cloud**。如果显示由 **Ace Data Cloud Dev** 发布的条目，可选择 **Install**。
+在 [Cursor 插件市场](https://cursor.com/marketplace)或 **Customize** 中搜索 **Happy Horse**。如果显示由 **Ace Data Cloud Dev** 发布的条目，可选择 **Install**。
 
 也可从[独立插件 v1.0.1 发布页](https://github.com/AceDataCloud/HappyHorseCursor/releases/tag/v1.0.1)下载 **Source code (zip)**。将解压目录中的插件文件（包括隐藏的 `.cursor-plugin` 目录）复制到 `~/.cursor/plugins/local/happy-horse/`，然后运行 **Developer: Reload Window**。本地加载需要允许插件导入；如果编辑器已经安装市场版本，请只保留一份以免工具重复。[Cursor 本地安装说明](https://cursor.com/docs/plugins#test-plugins-locally)
 
@@ -30,7 +30,7 @@ Generate Happy Horse videos and retrieve the finished clip. 插件复用 [Ace Da
 
 ## 3. 粘贴到 Cursor Configure
 
-打开 **Customize → Plugins → Happy Horse by Ace Data Cloud → Configure**（旧版本可能只显示 **Happy Horse**），将Token填到 **Ace Data Cloud API token**，点 **Save**，等保存完成后重开确认遮蔽值。Cursor替换`ACEDATACLOUD_API_TOKEN`，插件自行添加`Bearer `并连接托管HTTP MCP，无需启动本地Python/Node服务。工具未加载时重新连接。
+打开 **Customize → Plugins → Happy Horse → Configure**，将Token填到 **Ace Data Cloud API token**，点 **Save**，等保存完成后重开确认遮蔽值。Cursor替换`ACEDATACLOUD_API_TOKEN`，插件自行添加`Bearer `并连接托管HTTP MCP，无需启动本地Python/Node服务。工具未加载时重新连接。
 
 路径和变量行为依据 **2026-10-18**读取的[Cursor官方插件说明](https://cursor.com/docs/reference/plugins#variables)。下方官方截图展示后续的工具确认和结果界面。
 
