@@ -1,6 +1,5 @@
 import { randomUUID } from "node:crypto";
 import {
-  existsSync,
   mkdirSync,
   readFileSync,
   renameSync,
@@ -198,17 +197,38 @@ function enqueueComment(args: {
 }
 
 function readQueue(path: string): CommentRetryEntry[] {
-  if (!existsSync(path)) return [];
+  let content: string;
   try {
-    const raw = JSON.parse(readFileSync(path, "utf8"));
-    if (!Array.isArray(raw)) return [];
-    return raw.flatMap(entry => {
-      const parsed = parseEntry(entry);
-      return parsed ? [parsed] : [];
-    });
-  } catch {
-    return [];
+    content = readFileSync(path, "utf8");
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") return [];
+    throw new Error(
+      `Cannot read required comment queue ${path} (${code ?? "read error"}); existing queue preserved.`
+    );
   }
+  let raw: unknown;
+  try {
+    raw = JSON.parse(content);
+  } catch {
+    throw new Error(
+      `Invalid JSON in required comment queue ${path}; restore or repair the file before retrying.`
+    );
+  }
+  if (!Array.isArray(raw)) {
+    throw new Error(
+      `Required comment queue ${path} must contain an array; restore or repair the file before retrying.`
+    );
+  }
+  return raw.map((entry, index) => {
+    const parsed = parseEntry(entry);
+    if (!parsed) {
+      throw new Error(
+        `Invalid entry ${index} in required comment queue ${path}; restore or repair the file before retrying.`
+      );
+    }
+    return parsed;
+  });
 }
 
 function writeQueue(path: string, queue: CommentRetryEntry[]): void {
