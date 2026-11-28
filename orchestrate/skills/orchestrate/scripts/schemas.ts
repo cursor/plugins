@@ -36,6 +36,9 @@ const TaskStatusSchema = z.enum([
   "pruned",
 ]);
 
+/** Every task status, in the order the schema declares them. */
+export const TASK_STATUSES = TaskStatusSchema.options;
+
 // Ordered strongest claim first, then the two failure modes, then explicit
 // absence. The verifier prompt has the canonical definitions; this list is
 // the wire enum. Legacy `pass`/`fail`/`inconclusive` handoffs are migrated

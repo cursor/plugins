@@ -37,6 +37,24 @@ describe("parseHandoffVerification", () => {
     expect(parseHandoffVerification(body)).toBe("verifier-failed");
   });
 
+  test("A one-item list or bold around the value is stripped", () => {
+    expect(
+      parseHandoffVerification(
+        ["## Verification", "- unit-test-verified", ""].join("\n")
+      )
+    ).toBe("unit-test-verified");
+    expect(
+      parseHandoffVerification(
+        ["## Verification", "* `live-ui-verified`", ""].join("\n")
+      )
+    ).toBe("live-ui-verified");
+    expect(
+      parseHandoffVerification(
+        ["## Verification", "**type-check-only**", ""].join("\n")
+      )
+    ).toBe("type-check-only");
+  });
+
   test("Unknown value returns null without falling through to legacy", () => {
     const body = ["## Verification", "totally-made-up", ""].join("\n");
     expect(parseHandoffVerification(body)).toBe(null);
@@ -101,6 +119,51 @@ describe("parseHandoffFailureMode", () => {
 });
 
 describe("parseHandoffPrNumber", () => {
+  test("Explicit PR sections win over dependency links", () => {
+    for (const heading of ["PR", "Pull Request"]) {
+      for (const value of [
+        "#42",
+        "https://github.com/example/project/pull/42",
+        "<https://review.cursor.com/github/example/project/pull/42|#42>",
+      ]) {
+        const body = `## What I did\nFollowed https://github.com/example/dependency/pull/7\n## ${heading}\n${value}`;
+        expect(parseHandoffPrNumber(body)).toBe(42);
+      }
+    }
+  });
+
+  test("Explicit absent or invalid PRs do not adopt reference links", () => {
+    for (const value of ["(none)", "", "#42garbage", "0", "9007199254740993"]) {
+      const body = `## PR\n${value}\n## References\nhttps://github.com/example/dependency/pull/7`;
+      expect(parseHandoffPrNumber(body)).toBe(null);
+    }
+  });
+
+  test("Empty trailing PR headings do not inherit dependency links", () => {
+    for (const heading of [
+      "## PR",
+      "## Pull Request",
+      "##\tPR  ",
+      "## Pull Request\t",
+    ]) {
+      const body = `## What I did\nFollowed https://github.com/example/dependency/pull/7\n${heading}`;
+      expect(parseHandoffPrNumber(body)).toBe(null);
+      expect(parseHandoffPrNumber(body.trim())).toBe(null);
+    }
+  });
+
+  test("Canonical section whitespace and CRLF match the section reader", () => {
+    const body =
+      "## What I did\r\nhttps://github.com/example/dependency/pull/7\r\n##\tPR  \r\n\r\n`#42`\r\n";
+    expect(parseHandoffPrNumber(body)).toBe(42);
+  });
+
+  test("Lowercase headings retain the legacy URL fallback", () => {
+    const body =
+      "## pr\n#42\n## References\nhttps://github.com/example/dependency/pull/7";
+    expect(parseHandoffPrNumber(body)).toBe(7);
+  });
+
   test("Reads GitHub pull request URLs", () => {
     const body =
       "Opened https://github.com/example-org/example-repo/pull/109301";
