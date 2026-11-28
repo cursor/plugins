@@ -29,9 +29,18 @@ ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 # spreadsheets, so attacker-controlled evidence (PR titles, filenames,
 # generated text) must not become formula execution when a reviewer
 # opens the file.
+# Fold every line break into a space before the formula check. A Unicode
+# line separator is not `\n`, and if it stays in the row a later =cell
+# becomes its own spreadsheet line.
 clean() {
-	local v
-	v=$(printf '%s' "$1" | tr '\t\n\r' '   ')
+	local v ls ps nel
+	v=$(printf '%s' "$1" | tr '\t\n\r\v\f\034\035\036' '        ')
+	ls=$(printf '\342\200\250')
+	ps=$(printf '\342\200\251')
+	nel=$(printf '\302\205')
+	v=${v//"$ls"/ }
+	v=${v//"$ps"/ }
+	v=${v//"$nel"/ }
 	case "$v" in
 		=*|+*|-*|@*) printf "'%s" "$v" ;;
 		*) printf '%s' "$v" ;;
