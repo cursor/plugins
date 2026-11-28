@@ -104,11 +104,11 @@ Put `<div data-diff="KEY"></div>` placeholders in your body HTML wherever you wa
 
 **CRITICAL: Patch strings can contain `</script>` in addition to newlines, backslashes, and quotes.** Even `json.dumps(...)` is not enough if you paste raw output into executable `<script>` because HTML parsing can terminate the tag early. Never manually embed patch strings in JS/JSON. Instead, use this safe approach:
 
-1. During the fetch step, save patches to a JSON file using `jq` (which handles escaping correctly):
+1. During the fetch step, save the files payload and the full pull diff, then build the patch map. The files API leaves `patch` null when a text diff is too large (`additions` and `deletions` are still set). Passing that through as `""` makes the canvas say "No diff data" for the file. `fill-omitted-patches.mjs` keeps patches the API did return, and for a null patch with a non-zero line count copies the hunks out of the pull diff. Run it from this skill directory:
 ```bash
-gh api repos/{owner}/{repo}/pulls/{number}/files --paginate \
-  --jq '[.[] | {key: (.filename | gsub("[^a-zA-Z0-9]"; "_")), value: (.patch // "")}] | from_entries' \
-  > /tmp/pr-patches-{number}.json
+gh api --paginate --slurp repos/{owner}/{repo}/pulls/{number}/files > /tmp/pr-files-{number}.json
+gh api -H "Accept: application/vnd.github.diff" repos/{owner}/{repo}/pulls/{number} > /tmp/pr-{number}.diff
+node fill-omitted-patches.mjs /tmp/pr-files-{number}.json /tmp/pr-{number}.diff > /tmp/pr-patches-{number}.json
 ```
 
 2. During assembly, use Python to safely inject the JSON into `template.html`:
@@ -151,7 +151,7 @@ Since renderer.js loads in `<head>`, you can also call `renderDiff(target, lines
 ### 4. Assemble and serve
 
 1. Write your body HTML (everything that goes inside `<body>`) to `/tmp/pr-review-{number}-body.html`
-2. Save patches to `/tmp/pr-patches-{number}.json` using the `jq` command from step 3 above
+2. Save patches to `/tmp/pr-patches-{number}.json` using `fill-omitted-patches.mjs` from step 3 above
 3. Run the Python assembly script from step 3 above (reads styles.css, renderer.js, template.html from this skill directory, injects body + patches safely, writes final HTML)
 4. Start a local server on a fixed port:
    ```bash
