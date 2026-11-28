@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 — 2026-11-28
+
+- Show Nano Banana as the plugin display name in Cursor.
+
 ## 1.0.1
 
 - Clarify the independent service name and Ace Data Cloud publisher relationship in discovery metadata.

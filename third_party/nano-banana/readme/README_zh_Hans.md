@@ -1,21 +1,21 @@
-# Nano Banana by Ace Data Cloud：Cursor 接入教程
+# Nano Banana：Cursor 接入教程
 
 这是由 **Ace Data Cloud** 维护的独立 **Nano Banana** 工具插件，提供图片生成、图片编辑与任务查询；不冒充服务品牌或 Cursor 官方插件。通过托管 MCP 连接，在 Configure 中保存自己的服务 API Token 后，可在 Cursor Agent 里使用，无需启动本地服务。
 
 Generate Nano Banana images and retrieve the finished image. 插件复用 [Ace Data Cloud nanobanana MCP](https://github.com/AceDataCloud/MCPs/tree/main/nanobanana)，并提供专用 Agent skill。实际工具参数和限制以在线 MCP schema 为准。
 
-[English guide](../README.md) · [可复制的首跑提示词](../examples/first-run.md) · [当前价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_pricing_zh_hans)
+[English guide](../README.md) · [可复制的首跑提示词](../examples/first-run.md) · [当前价格](https://platform.acedata.cloud/models?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_pricing_zh_hans)
 
 ## 1. 搜索并安装独立 Nano Banana 插件
 
-在 [Cursor 插件市场](https://cursor.com/marketplace)或 **Customize** 中搜索 **Nano Banana by Ace Data Cloud**。如果显示由 **Ace Data Cloud Dev** 发布的条目，可选择 **Install**。
+在 [Cursor 插件市场](https://cursor.com/marketplace)或 **Customize** 中搜索 **Nano Banana**。如果显示由 **Ace Data Cloud Dev** 发布的条目，可选择 **Install**。
 
-也可从[独立插件 v1.0.1 发布页](https://github.com/AceDataCloud/NanoBananaCursor/releases/tag/v1.0.1)下载 **Source code (zip)**。将解压目录中的插件文件（包括隐藏的 `.cursor-plugin` 目录）复制到 `~/.cursor/plugins/local/nano-banana/`，然后运行 **Developer: Reload Window**。本地加载需要允许插件导入；如果编辑器已经安装市场版本，请只保留一份以免工具重复。[Cursor 本地安装说明](https://cursor.com/docs/plugins#test-plugins-locally)
+也可从[独立插件 v1.0.2 发布页](https://github.com/AceDataCloud/NanoBananaCursor/releases/tag/v1.0.2)下载 **Source code (zip)**。将解压目录中的插件文件（包括隐藏的 `.cursor-plugin` 目录）复制到 `~/.cursor/plugins/local/nano-banana/`，然后运行 **Developer: Reload Window**。本地加载需要允许插件导入；如果编辑器已经安装市场版本，请只保留一份以免工具重复。[Cursor 本地安装说明](https://cursor.com/docs/plugins#test-plugins-locally)
 
 ## 2. 注册/登录并取得服务 API Token
 
-1. 打开 [Ace Data Cloud](https://platform.acedata.cloud/?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_register_signin_zh_hans)注册或登录，再进入 [Applications 应用管理](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_api_key_zh_hans)；若尚无通用应用，先点 **Initialize General Application**。
-2. 打开 **General application**，或已开通 **Nano Banana** 的专用应用；生成前确认权限、余额及[当前价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_pricing_zh_hans)。
+1. 打开 [Ace Data Cloud](https://platform.acedata.cloud/?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_register_signin_zh_hans)注册或登录，再进入 [Applications 应用管理](https://platform.acedata.cloud/console/applications?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_api_key_zh_hans)；若尚无通用应用，先点 **Initialize General Application**。
+2. 打开 **General application**，或已开通 **Nano Banana** 的专用应用；生成前确认权限、余额及[当前价格](https://platform.acedata.cloud/models?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_pricing_zh_hans)。
 3. 使用下图标记 **1** 的复制按钮取已有 API Key；需要独立 Cursor 凭据时，点标记 **2** 的 **Manage Keys → Create**。
 
 ![复制已有服务Token或进入Manage Keys](../assets/tutorial/get-api-key-en.png)
@@ -30,7 +30,7 @@ Generate Nano Banana images and retrieve the finished image. 插件复用 [Ace D
 
 ## 3. 粘贴到 Cursor Configure
 
-打开 **Customize → Plugins → Nano Banana by Ace Data Cloud → Configure**（旧版本可能只显示 **Nano Banana**），将Token填到 **Ace Data Cloud API token**，点 **Save**，等保存完成后重开确认遮蔽值。Cursor替换`ACEDATACLOUD_API_TOKEN`，插件自行添加`Bearer `并连接托管HTTP MCP，无需启动本地Python/Node服务。工具未加载时重新连接。
+打开 **Customize → Plugins → Nano Banana → Configure**（旧版本可能只显示 **Nano Banana**），将Token填到 **Ace Data Cloud API token**，点 **Save**，等保存完成后重开确认遮蔽值。Cursor替换`ACEDATACLOUD_API_TOKEN`，插件自行添加`Bearer `并连接托管HTTP MCP，无需启动本地Python/Node服务。工具未加载时重新连接。
 
 路径和变量行为依据 **2026-10-18**读取的[Cursor官方插件说明](https://cursor.com/docs/reference/plugins#variables)。下方官方截图展示后续的工具确认和结果界面。
 
@@ -69,4 +69,4 @@ Generate Nano Banana images and retrieve the finished image. 插件复用 [Ace D
 
 [源码](https://github.com/AceDataCloud/NanoBananaCursor) · [问题反馈](https://github.com/AceDataCloud/NanoBananaCursor/issues) · dev@acedata.cloud。图标复用 Ace Data Cloud 现有集成资源。本插件提供工具，不注册 Cursor 聊天模型 Provider。
 
-[注册/登录](https://platform.acedata.cloud/?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_register_signin_zh_hans) · [Applications / API Token](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_api_key_zh_hans) · [当前Nano Banana价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_pricing_zh_hans)
+[注册/登录](https://platform.acedata.cloud/?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_register_signin_zh_hans) · [Applications / API Token](https://platform.acedata.cloud/console/applications?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_api_key_zh_hans) · [当前Nano Banana价格](https://platform.acedata.cloud/models?utm_source=cursor&utm_medium=referral&utm_campaign=evergreen&utm_content=nano_banana_cursor_shared_readme_pricing_zh_hans)
