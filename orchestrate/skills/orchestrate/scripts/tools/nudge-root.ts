@@ -175,26 +175,70 @@ async function sleep(ms: number): Promise<void> {
   await new Promise(r => setTimeout(r, ms));
 }
 
-async function waitUntilIdle(args: Args, deadline: number): Promise<void> {
-  let attempt = 0;
-  while (Date.now() < deadline) {
-    attempt++;
-    try {
-      const runs = await Agent.listRuns(args.agentId, {
+export interface NudgeClock {
+  now?: () => number;
+  sleep?: (ms: number) => Promise<void>;
+  listRuns?: (
+    agentId: string
+  ) => Promise<{ items?: Array<{ status?: string }> }>;
+}
+
+// How long the next poll may sleep. `--max-wait` is a deadline, so a poll
+// interval longer than the time left must not run past it.
+export function waitMsUntilDeadline(args: {
+  now: number;
+  deadline: number;
+  pollMs: number;
+}): number | null {
+  const remaining = args.deadline - args.now;
+  if (!(remaining > 0)) return null;
+  return Math.min(args.pollMs, remaining);
+}
+
+export async function waitUntilIdle(
+  args: Args,
+  deadline: number,
+  clock: NudgeClock = {}
+): Promise<void> {
+  const now = clock.now ?? Date.now;
+  const sleepFn = clock.sleep ?? sleep;
+  const listRuns =
+    clock.listRuns ??
+    (agentId =>
+      Agent.listRuns(agentId, {
         runtime: "cloud",
         limit: 1,
-      });
-      const status = runs.items[0]?.status;
+      }));
+  let attempt = 0;
+  while (now() < deadline) {
+    attempt++;
+    try {
+      const runs = await listRuns(args.agentId);
+      const status = runs.items?.[0]?.status;
       log(`idle-check ${attempt}: status=${status ?? "(no runs)"}`);
       if (status !== "running") return;
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       log(`idle-check ${attempt}: Agent.listRuns failed: ${msg}`);
     }
-    await sleep(args.pollMs);
+    const waitMs = waitMsUntilDeadline({
+      now: now(),
+      deadline,
+      pollMs: args.pollMs,
+    });
+    if (waitMs === null) break;
+    await sleepFn(waitMs);
   }
-  log(`idle-wait exhausted after ${args.maxWaitMs / 1000}s; giving up`);
-  process.exit(4);
+  const message = `idle-wait exhausted after ${args.maxWaitMs / 1000}s; giving up`;
+  log(message);
+  throw new NudgeDeadlineError(message);
+}
+
+export class NudgeDeadlineError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "NudgeDeadlineError";
+  }
 }
 
 async function sendWithBusyRetry(args: Args, deadline: number): Promise<void> {
@@ -213,14 +257,20 @@ async function sendWithBusyRetry(args: Args, deadline: number): Promise<void> {
       return;
     } catch (err) {
       if (isBusy(err)) {
+        const waitMs = waitMsUntilDeadline({
+          now: Date.now(),
+          deadline,
+          pollMs: args.pollMs,
+        });
+        if (waitMs === null) break;
         log(
           "attempt " +
             attempt +
             ": agent_busy; retrying in " +
-            args.pollMs / 1000 +
+            waitMs / 1000 +
             "s"
         );
-        await sleep(args.pollMs);
+        await sleep(waitMs);
         continue;
       }
       const msg = err instanceof Error ? err.message : String(err);
@@ -236,24 +286,31 @@ async function sendWithBusyRetry(args: Args, deadline: number): Promise<void> {
   process.exit(4);
 }
 
-const args = await parseArgs(process.argv.slice(2));
-const deadline = Date.now() + args.maxWaitMs;
-log(
-  "nudging " +
-    args.agentId +
-    " (mode=" +
-    (args.waitIdle ? "wait-idle" : "send-now") +
-    ", max-wait=" +
-    args.maxWaitMs / 1000 +
-    "s, poll=" +
-    args.pollMs / 1000 +
-    "s, message=" +
-    args.message.length +
-    "ch)"
-);
+if (import.meta.main) {
+  const args = await parseArgs(process.argv.slice(2));
+  const deadline = Date.now() + args.maxWaitMs;
+  log(
+    "nudging " +
+      args.agentId +
+      " (mode=" +
+      (args.waitIdle ? "wait-idle" : "send-now") +
+      ", max-wait=" +
+      args.maxWaitMs / 1000 +
+      "s, poll=" +
+      args.pollMs / 1000 +
+      "s, message=" +
+      args.message.length +
+      "ch)"
+  );
 
-if (args.waitIdle) {
-  await waitUntilIdle(args, deadline);
+  try {
+    if (args.waitIdle) {
+      await waitUntilIdle(args, deadline);
+    }
+    await sendWithBusyRetry(args, deadline);
+  } catch (err) {
+    if (err instanceof NudgeDeadlineError) process.exit(4);
+    throw err;
+  }
+  process.exit(0);
 }
-await sendWithBusyRetry(args, deadline);
-process.exit(0);
