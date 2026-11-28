@@ -12,8 +12,8 @@ function isImport(line) {
   return s.startsWith('import ') || s.startsWith('import{') || s.startsWith('} from ');
 }
 
-function isWhitespaceOnly(del, add) {
-  return del.replace(/^-/, '').replace(/\s/g, '') === add.replace(/^\+/, '').replace(/\s/g, '');
+function isWhitespaceOnly(delCode, addCode) {
+  return delCode.replace(/\s/g, '') === addCode.replace(/\s/g, '');
 }
 
 function esc(s) {
@@ -92,46 +92,65 @@ function renderDiff(target, diffInput) {
   var lines = toLines(diffInput);
   if (!lines.length) { el.innerHTML = '<div style="padding:12px;color:#777;font-size:12px;">No diff data</div>'; return; }
 
-  var filtered = lines.filter(function(l) {
-    if (l.startsWith('--- ') || l.startsWith('+++ ') || l.startsWith('@@') || l.startsWith('diff ')) return true;
-    return !isImport(l);
-  });
-
-  var wsOut = [];
-  for (var wi = 0; wi < filtered.length; wi++) {
-    if (filtered[wi].startsWith('-')) {
-      var dr = [filtered[wi]], wj = wi+1;
-      while (wj < filtered.length && filtered[wj].startsWith('-')) { dr.push(filtered[wj]); wj++; }
-      var ar = [], wk = wj;
-      while (wk < filtered.length && filtered[wk].startsWith('+')) { ar.push(filtered[wk]); wk++; }
-      if (dr.length === ar.length && dr.length > 0) {
-        var allWs = true;
-        for (var wc = 0; wc < dr.length; wc++) { if (!isWhitespaceOnly(dr[wc], ar[wc])) { allWs = false; break; } }
-        if (allWs) { for (var wx = 0; wx < ar.length; wx++) wsOut.push(' ' + ar[wx].slice(1)); wi = wk-1; continue; }
-      }
-    }
-    wsOut.push(filtered[wi]);
-  }
-
-  var dels = [], adds = [], parsed = [];
-  var oL = 0, nL = 0, pD = false, pA = false;
-  for (var pi = 0; pi < wsOut.length; pi++) {
-    var line = wsOut[pi];
+  // Number every line first so hidden imports still advance the counters;
+  // filtering before numbering shifted every gutter number after a hidden line.
+  var numbered = [];
+  var oL = 0, nL = 0;
+  for (var pi = 0; pi < lines.length; pi++) {
+    var line = lines[pi];
     if (line.startsWith('--- ') || line.startsWith('+++ ') || line.startsWith('diff ')) continue;
     if (line.startsWith('@@')) {
       var hm = line.match(/@@ -(\d+)(?:,\d+)? \+(\d+)/);
       if (hm) { oL = parseInt(hm[1]); nL = parseInt(hm[2]); }
-      parsed.push({ type: 'hunk', text: line }); pD = false; pA = false; continue;
+      numbered.push({ type: 'hunk', text: line }); continue;
     }
+    var hidden = isImport(line);
     if (line.startsWith('+')) {
-      var ae = { type:'add', code:line.slice(1), newLine:nL, consecutive:pA, idx:parsed.length };
-      adds.push(ae); parsed.push(ae); nL++; pA = true; pD = false;
+      numbered.push({ type:'add', code:line.slice(1), newLine:nL, hidden:hidden }); nL++;
     } else if (line.startsWith('-')) {
-      var de = { type:'del', code:line.slice(1), oldLine:oL, consecutive:pD, idx:parsed.length };
-      dels.push(de); parsed.push(de); oL++; pD = true; pA = false;
+      numbered.push({ type:'del', code:line.slice(1), oldLine:oL, hidden:hidden }); oL++;
     } else {
       var c = line.startsWith(' ') ? line.slice(1) : line;
-      parsed.push({ type:'ctx', code:c, oldLine:oL, newLine:nL }); oL++; nL++; pD = false; pA = false;
+      numbered.push({ type:'ctx', code:c, oldLine:oL, newLine:nL, hidden:hidden }); oL++; nL++;
+    }
+  }
+
+  var visible = numbered.filter(function(e) { return !e.hidden; });
+
+  // Collapse a run of deletions followed by an equal run of additions when
+  // every pair differs only in whitespace; the context row keeps both numbers.
+  var wsOut = [];
+  for (var wi = 0; wi < visible.length; wi++) {
+    if (visible[wi].type === 'del') {
+      var dr = [visible[wi]], wj = wi+1;
+      while (wj < visible.length && visible[wj].type === 'del') { dr.push(visible[wj]); wj++; }
+      var ar = [], wk = wj;
+      while (wk < visible.length && visible[wk].type === 'add') { ar.push(visible[wk]); wk++; }
+      if (dr.length === ar.length && dr.length > 0) {
+        var allWs = true;
+        for (var wc = 0; wc < dr.length; wc++) { if (!isWhitespaceOnly(dr[wc].code, ar[wc].code)) { allWs = false; break; } }
+        if (allWs) {
+          for (var wx = 0; wx < ar.length; wx++) wsOut.push({ type:'ctx', code:ar[wx].code, oldLine:dr[wx].oldLine, newLine:ar[wx].newLine });
+          wi = wk-1; continue;
+        }
+      }
+    }
+    wsOut.push(visible[wi]);
+  }
+
+  var dels = [], adds = [], parsed = [];
+  var pD = false, pA = false;
+  for (var qi = 0; qi < wsOut.length; qi++) {
+    var e = wsOut[qi];
+    if (e.type === 'hunk') { parsed.push(e); pD = false; pA = false; continue; }
+    if (e.type === 'add') {
+      var ae = { type:'add', code:e.code, newLine:e.newLine, consecutive:pA, idx:parsed.length };
+      adds.push(ae); parsed.push(ae); pA = true; pD = false;
+    } else if (e.type === 'del') {
+      var de = { type:'del', code:e.code, oldLine:e.oldLine, consecutive:pD, idx:parsed.length };
+      dels.push(de); parsed.push(de); pD = true; pA = false;
+    } else {
+      parsed.push({ type:'ctx', code:e.code, oldLine:e.oldLine, newLine:e.newLine }); pD = false; pA = false;
     }
   }
 
