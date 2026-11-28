@@ -21,8 +21,10 @@ Only rewrite history when the user asks for it or agrees to the plan. Before rew
 
 ```bash
 gh pr view <PR> --json title,headRefName,baseRefName,state,commits
-git fetch origin <headRefName> <baseRefName>
-ORIGINAL_TREE=$(git rev-parse origin/<headRefName>^{tree})
+# pull/<PR>/head exists for same-repo and fork PRs. The head branch
+# name often does not exist on origin when the PR comes from a fork.
+git fetch origin "refs/pull/<PR>/head"
+ORIGINAL_TREE=$(git rev-parse "FETCH_HEAD^{tree}")
 ```
 
 Good commit groupings usually follow dependency order:
@@ -37,8 +39,8 @@ After rewriting, verify content identity:
 
 ```bash
 echo "Original tree: $ORIGINAL_TREE"
-echo "Current tree:  $(git rev-parse HEAD^{tree})"
-git diff origin/<headRefName> --stat
+echo "Current tree:  $(git rev-parse "HEAD^{tree}")"
+git diff "$ORIGINAL_TREE" "HEAD^{tree}" --stat
 ```
 
 Do not push if the tree changed unintentionally.
