@@ -940,23 +940,29 @@ export class AgentManager {
         s.branch = runBranch;
       }
       const prNumber = parseHandoffPrNumber(body);
-      const sdkError =
-        rr.status === "finished"
-          ? null
-          : (runResultErrorMessage(rr) ?? lastWaitError);
+      const failed = rr.status !== "finished" && rr.status !== "cancelled";
+      const sdkError = failed
+        ? (runResultErrorMessage(rr) ?? lastWaitError)
+        : null;
       const failureMode =
-        parseHandoffFailureMode(body) ??
-        (rr.status === "finished"
+        rr.status === "cancelled"
           ? null
-          : classifyFailureMode({
-              sdkError,
-              durationMs: rr.durationMs ?? null,
-              lastOutput: body,
-            }));
+          : (parseHandoffFailureMode(body) ??
+            (failed
+              ? classifyFailureMode({
+                  sdkError,
+                  durationMs: rr.durationMs ?? null,
+                  lastOutput: body,
+                })
+              : null));
       const finishedAt = new Date().toISOString();
       const resultStatus = rr.status;
       const nextStatus: TaskStatus =
-        rr.status === "finished" ? "handed-off" : "error";
+        rr.status === "finished"
+          ? "handed-off"
+          : rr.status === "cancelled"
+            ? "cancelled"
+            : "error";
       const handoffPath = writeHandoff({
         handoffsDir: this.handoffsDir,
         task: s,
@@ -976,7 +982,9 @@ export class AgentManager {
       const lastActivityAt = new Date(lastSseActivityAt.value).toISOString();
       // Sidecar writes are wrapped so a disk-full or rename failure can't
       // unwind the just-committed handed-off status via the outer catch.
-      if (rr.status !== "finished") {
+      if (rr.status === "cancelled") {
+        this.logAttention(`${s.name}: run was cancelled; see ${handoffPath}`);
+      } else if (rr.status !== "finished") {
         this.logAttention(
           `${s.name}: run ended with status=${rr.status}; see ${handoffPath}`
         );
