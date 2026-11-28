@@ -1950,13 +1950,14 @@ export async function inspectRunStream(args: {
   try {
     while (Date.now() - startedAt < args.timeoutMs) {
       const remaining = Math.max(0, args.timeoutMs - (Date.now() - startedAt));
+      const deadline = new AbortController();
       const next = await Promise.race([
         iterator.next(),
-        sleep(remaining).then(() => ({
+        sleep(remaining, undefined, { signal: deadline.signal }).then(() => ({
           done: true as const,
           value: undefined,
         })),
-      ]);
+      ]).finally(() => deadline.abort());
       if (next.done) break;
       const event = next.value;
       if (event.type === "assistant") {
@@ -1982,7 +1983,11 @@ export async function inspectRunStream(args: {
       }
     }
   } finally {
-    await Promise.race([iterator.return?.(), sleep(1_000)]);
+    const cleanupDeadline = new AbortController();
+    await Promise.race([
+      iterator.return?.(),
+      sleep(1_000, undefined, { signal: cleanupDeadline.signal }),
+    ]).finally(() => cleanupDeadline.abort());
   }
   const toolCallWindowStart = Date.now() - 5 * 60_000;
 
