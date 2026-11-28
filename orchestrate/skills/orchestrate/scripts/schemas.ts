@@ -1,6 +1,7 @@
 import type { Run, SDKAgent } from "@cursor/sdk";
 import { z } from "zod/v3";
 
+import { plannedBranchForTask } from "./core/branches.ts";
 import { PlanValidationError } from "./errors.ts";
 
 export const TASK_NAME_RE = /^[a-z0-9-]+$/;
@@ -297,6 +298,21 @@ export const PlanSchema = PlanObjectSchema.superRefine((plan, ctx) => {
       });
     }
     names.add(task.name);
+  }
+
+  const plannedBranches = new Map<string, string>();
+  for (const [index, task] of tasks.entries()) {
+    const branch = plannedBranchForTask(plan, task);
+    const other = plannedBranches.get(branch);
+    if (other) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["tasks", index, "name"],
+        message: `planned branch ${branch} collides with task ${other}`,
+      });
+      continue;
+    }
+    plannedBranches.set(branch, task.name);
   }
 
   const byName = new Map(tasks.map(task => [task.name, task]));
