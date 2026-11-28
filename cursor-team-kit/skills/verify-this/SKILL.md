@@ -1,6 +1,6 @@
 ---
 name: verify-this
-description: "Verify a claim with fresh local evidence: restate it falsifiably, capture baseline and treatment, compare artifacts, and return VERIFIED, NOT VERIFIED, or INCONCLUSIVE."
+description: "Verify a claim with fresh local evidence: restate it falsifiably, capture baseline and treatment, compare artifacts, and return VERIFIED, NOT VERIFIED, or INCONCLUSIVE. Use for smoke pass or fail claims, serial capture integrity, and reboot behavior where the evidence is a log file or harness transcript."
 ---
 
 # Verify This
@@ -13,6 +13,7 @@ Verification is not a recap. It proves or disproves a specific claim with repeat
 - A bug fix needs a before/after repro.
 - A UI, CLI, API, performance, or memory claim needs measurement.
 - A test passes but the user-visible behavior still needs confirmation.
+- A smoke pass or fail, a serial capture, or a reboot claim, where the evidence is a log file or harness transcript.
 
 Do not use this for vague claims like "the code is cleaner". Ask for a measurable claim first.
 
