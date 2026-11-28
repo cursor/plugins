@@ -21,7 +21,7 @@ if [[ ! -f "$STATE_FILE" ]]; then
 fi
 
 # Extract completion promise from state file frontmatter
-FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
+FRONTMATTER=$(awk 'NR == 1 && /^---$/ { next } /^---$/ { exit } { print }' "$STATE_FILE")
 COMPLETION_PROMISE=$(echo "$FRONTMATTER" | grep '^completion_promise:' | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
 
 # No promise configured, nothing to check

@@ -22,7 +22,7 @@ if [[ ! -f "$STATE_FILE" ]]; then
 fi
 
 # Parse state file frontmatter
-FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
+FRONTMATTER=$(awk 'NR == 1 && /^---$/ { next } /^---$/ { exit } { print }' "$STATE_FILE")
 ITERATION=$(echo "$FRONTMATTER" | grep '^iteration:' | sed 's/iteration: *//')
 MAX_ITERATIONS=$(echo "$FRONTMATTER" | grep '^max_iterations:' | sed 's/max_iterations: *//')
 COMPLETION_PROMISE=$(echo "$FRONTMATTER" | grep '^completion_promise:' | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
@@ -55,7 +55,7 @@ if [[ $MAX_ITERATIONS -gt 0 ]] && [[ $ITERATION -ge $MAX_ITERATIONS ]]; then
 fi
 
 # Extract prompt text (everything after the closing --- in frontmatter)
-PROMPT_TEXT=$(awk '/^---$/{i++; next} i>=2' "$STATE_FILE")
+PROMPT_TEXT=$(awk 'i >= 2 { print; next } /^---$/ { i++ }' "$STATE_FILE")
 
 if [[ -z "$PROMPT_TEXT" ]]; then
   echo "Ralph loop: no prompt text found in state file. Stopping." >&2
@@ -66,7 +66,11 @@ fi
 # Increment iteration
 NEXT_ITERATION=$((ITERATION + 1))
 TEMP_FILE="${STATE_FILE}.tmp.$$"
-sed "s/^iteration: .*/iteration: $NEXT_ITERATION/" "$STATE_FILE" > "$TEMP_FILE"
+awk -v iteration="$NEXT_ITERATION" '
+  /^---$/ && boundaries < 2 { boundaries++ }
+  boundaries == 1 && /^iteration: / { print "iteration: " iteration; next }
+  { print }
+' "$STATE_FILE" > "$TEMP_FILE"
 mv "$TEMP_FILE" "$STATE_FILE"
 
 # Build the followup message: iteration context + original prompt
