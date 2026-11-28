@@ -316,6 +316,9 @@ Why this shape:
 
 ```typescript
 async function runInBatches<T, R>(items: T[], size: number, fn: (item: T) => Promise<R>) {
+  if (!Number.isSafeInteger(size) || size < 1) {
+    throw new RangeError("Batch size must be a positive safe integer.");
+  }
   const results: R[] = [];
   for (let i = 0; i < items.length; i += size) {
     const batch = items.slice(i, i + size);
