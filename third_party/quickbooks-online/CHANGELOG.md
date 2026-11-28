@@ -2,6 +2,13 @@
 
 All notable changes to this plugin will be documented here.
 
+## 1.2.0
+
+- Renamed the plugin to **Intuit QuickBooks**. The plugin id stays `quickbooks-online`, so installs carry over.
+- Rewrote the description around reporting, invoicing and payment links, customers and products, payroll preview, CSV transaction import, and QuickBooks Capital.
+- Moved the plugin to the `finance-and-legal` category.
+- Refreshed the logo with Intuit's current QuickBooks mark.
+
 ## 1.1.1
 
 - Updated the plugin description to cover financial insights, invoicing, payroll, and QuickBooks Capital.

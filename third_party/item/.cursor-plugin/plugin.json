@@ -1,0 +1,38 @@
+{
+  "name": "item",
+  "displayName": "Item",
+  "version": "1.0.0",
+  "minClientVersions": {
+    "cursor": "3.13.0"
+  },
+  "description": "Search, create, and update CRM contacts, companies, and custom objects, run saved views, manage lists, notes, and tasks, and ask the Item assistant about your customer data.",
+  "author": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "homepage": "https://docs.item.app/mcp-docs",
+  "repository": "https://github.com/cursor/plugins",
+  "license": "MIT",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "item",
+    "crm",
+    "contacts",
+    "companies",
+    "deals",
+    "sales",
+    "customer data",
+    "lists",
+    "tasks",
+    "notes",
+    "mcp"
+  ],
+  "category": "integrations",
+  "tags": [
+    "item",
+    "crm",
+    "sales",
+    "mcp"
+  ],
+  "mcpServers": "./mcp.json"
+}

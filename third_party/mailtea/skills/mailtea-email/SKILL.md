@@ -67,8 +67,13 @@ audience, and website; do not assume the user knows that term.
    `publicationId` to use the connected publication; pass it only when the user
    picked one of several. Show available sender addresses without exposing credentials.
    If the domain or DKIM is unverified, explain the missing verification and link
-   to https://docs.mailtea.app/docs/documentation/domains. Do not change DNS or
-   create senders just because the user asked to check setup.
+   to https://docs.mailtea.app/docs/documentation/domains. Read `domain.get` and
+   relay each record's `next_step` (one plain sentence on what to do, or null)
+   to the user. Do not wait for every record to read `verified`: the receiving
+   MX and tracking records are optional and may stay pending, and DMARC reads
+   `recommended` until one is published, so go by the domain's own `status`. Never replace an existing DMARC record with the
+   starting value. Do not change DNS or create senders just because the user
+   asked to check setup.
 4. Ask only for missing sender, recipient, subject, body, or schedule details.
    Batch missing details into one concise question. A setup check alone does not
    authorize a send. If the user already gave a complete send instruction, follow it.
@@ -222,7 +227,7 @@ Node SDK (`npm i mailtea-sdk`):
 
 ```ts
 import { Mailtea } from "mailtea-sdk";
-const mailtea = new Mailtea(process.env.MAILTEA_API_KEY);
+const mailtea = new Mailtea("YOUR_API_KEY");
 const { id } = await mailtea.emails.send({
   from: "you@yourdomain.com",
   to: "user@example.com",
@@ -236,7 +241,7 @@ Python SDK (`pip install mailtea`):
 
 ```python
 from mailtea import Mailtea
-mailtea = Mailtea()  # reads MAILTEA_API_KEY
+mailtea = Mailtea("YOUR_API_KEY")
 sent = mailtea.emails.send({"from": "you@yourdomain.com", "to": "user@example.com",
                             "subject": "Hello", "html": "<p>Hi from Mailtea</p>"})
 mailtea.emails.get(sent["id"])  # ["status"]

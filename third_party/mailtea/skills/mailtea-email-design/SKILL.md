@@ -70,6 +70,18 @@ Text fields take inline markup, `**bold**`, `*italic*`, `[label](https://url)` ,
 and nothing else. **A `\n` inside one text block becomes a line break**; for two
 visually separate lines with normal spacing, use two blocks.
 
+### Where a block appears (`visibility`)
+
+Any block can carry `visibility`: `all` (default), `email`, or `web`. Footers
+and logos default to `email` (the site has its own); give one
+`visibility: "all"` to keep it on the web page. Set it with
+`edit_block` `attrs:{visibility}`, or as `visibility` on a block in `compose` or
+`insert_blocks`. The outline shows it when it is not `all`. Check each version
+with `issue.preview` and `channel: "email"` or `"web"`. A post where every block
+is `web` has an empty email: the send is accepted, then the post is marked failed
+with the reason `email_channel_empty` (in `issue.delivery_progress` and
+`issue.wait_delivery`). Studio's Review warns first.
+
 ### Brand colour, `set_styles` tokens
 
 ```json
@@ -91,6 +103,32 @@ colour reaches 4.5:1 against the body background and darken it if not.
 
 A button that was given its own colour keeps it and ignores the accent. To
 recolour that one button: `edit_block` with `attrs:{buttonColor, textColor}`.
+
+### Dark mode
+
+Many readers open email on a phone in dark mode. Apple Mail and the Outlook apps
+can use a dark theme you give them; Gmail ignores it and inverts the light
+design, never touching images.
+
+```json
+{"op":"set_styles","tokens":{"darkMode":"on"}}
+```
+
+`darkMode:"on"` derives six dark colours from the light ones (a neutral dark page
+and body, text, headings and links lightened until they read). Override any with
+`darkPageBackground`, `darkBodyBackground`, `darkBodyText`, `darkHeadingColor`,
+`darkLinkColor`, `darkBodyBorderColor` (`#rrggbb` only); setting one turns dark
+mode on. `darkMode:"off"` removes them.
+
+- A logo on a white background shows as a white box in dark mode. Give it a light
+  version: `edit_block` with `attrs:{darkSrc:"https://…"}` on the `image` or
+  `logo`. An empty string clears it.
+- A section with its own background keeps its light design in dark mode unless
+  you give it `attrs:{darkBackground:"#2a2118", darkColor:"#f5e6d3"}`; a button
+  takes `darkBackground` (fill) and `darkColor` (label). These apply only while
+  `darkMode` is on.
+- Keep dark text and links at 4.5:1 or more on `darkBodyBackground`, and keep the
+  light design readable when inverted: Gmail is where most dark-mode readers see it.
 
 `titleFontSizePx` sets the whole heading scale, h2 and h3 derive from it, so
 there is no separate token per level. Sizes are range-checked, not clamped: ask
