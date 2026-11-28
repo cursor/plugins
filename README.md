@@ -156,6 +156,7 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `easyship` | [Easyship](third_party/easyship/) | Cursor | Integrations | Compare courier rates, create shipments, buy labels, book pickups, track parcels, and read shipping analytics across 550+ couriers. |
 | `jobber` | [Jobber](third_party/jobber/) | Cursor | Integrations | Look up clients, quotes, jobs, visits, and invoices, and create clients, requests, and quotes. |
 | `folk` | [folk](third_party/folk/) | Cursor | Integrations | Search and update people, companies, deals, notes, tasks, and interactions, enrich contacts, and run email campaigns in folk. |
+| `mailtea` | [Mailtea](third_party/mailtea/) | Cursor | Integrations | Send email and newsletters from chat: transactional email, scheduled newsletters, contacts, segments, senders, domains and delivery status, plus three skills for email, email design and website design. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure

@@ -842,6 +842,11 @@
       "name": "folk",
       "source": "third_party/folk",
       "description": "Search and update people, companies, deals, notes, tasks, and interactions, enrich contacts, and run email campaigns in folk."
+    },
+    {
+      "name": "mailtea",
+      "source": "third_party/mailtea",
+      "description": "Send email and newsletters from chat: transactional email, scheduled newsletters, contacts, segments, senders, domains and delivery status, plus three skills for email, email design and website design."
     }
   ]
 }

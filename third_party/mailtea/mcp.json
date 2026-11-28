@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "mailtea": {
+      "type": "http",
+      "url": "https://api.mailtea.app/mcp",
+      "placement": "server"
+    }
+  }
+}
