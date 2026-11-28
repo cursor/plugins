@@ -181,3 +181,10 @@ plugins/
 ## License
 
 MIT
+
+## Local Validation
+
+Run parallel validator locally:
+```bash
+python3 .github/scripts/validate.py
+```
