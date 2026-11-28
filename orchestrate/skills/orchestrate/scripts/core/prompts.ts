@@ -34,14 +34,14 @@ export function renderPromptTemplate(
     templateCache.set(name, template);
   }
 
-  let rendered = template;
-  for (const [key, value] of Object.entries(vars)) {
-    rendered = rendered.replaceAll(`{{${key}}}`, value);
-  }
-
-  const unrendered = [...rendered.matchAll(/{{([^{}]+)}}/g)].map(m =>
-    m[1].trim()
-  );
+  const unrendered: string[] = [];
+  // Match placeholders in the template once. Values are task content, so they
+  // must not be interpreted as replacement tokens or additional placeholders.
+  const rendered = template.replace(/{{([^{}]+)}}/g, (placeholder, key: string) => {
+    if (Object.hasOwn(vars, key)) return vars[key];
+    unrendered.push(key.trim());
+    return placeholder;
+  });
   if (unrendered.length > 0) {
     const placeholders = [...new Set(unrendered)].join(", ");
     throw new PlanValidationError(
